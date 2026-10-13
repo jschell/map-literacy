@@ -4,7 +4,7 @@ Learn to understand where you are, which direction you face, how routes connect 
 
 Street lessons cover orientation, roads, landmarks, addresses, return routes and detours. Topographic lessons will add contours, elevation, slope, ridges, valleys and terrain interpretation. Both use shared map, lesson, print and progress components.
 
-**Current state:** planning foundation only. No application, lesson pack, routing deployment or learning-effectiveness result exists.
+**Current state:** executable lesson-pack validation and reproducible synthetic packs. No map interface, real-neighborhood pack, routing deployment or learning-effectiveness result exists.
 
 ## Start here
 
@@ -15,6 +15,7 @@ Street lessons cover orientation, roads, landmarks, addresses, return routes and
 - [Lesson-pack contract](docs/contracts/lesson-pack-v1.md)
 - [Application contract](docs/contracts/application-v1.md)
 - [Validation gates](docs/validation/acceptance.md)
+- [Run the data foundation checks](docs/development.md)
 - [Sources and evidence limits](docs/research/sources.md)
 - [Decisions and open questions](docs/decisions.md)
 - [Original merged idea handoff](https://github.com/jschell/Ideas-for-projects/tree/main/street-map-learning)
@@ -23,7 +24,7 @@ The first useful release is a browser application with one reviewed neighborhood
 
 ## Technical direction
 
-Use plain HTML/CSS/JavaScript, ES modules and a bounded SVG renderer. Focused libraries are allowed; React/Vue are unnecessary. Candidate helpers include osmtogeojson, selected Turf.js functions and optional Leaflet. Keep geometry, topology, scoring and printing independent of the interface. Final dependency releases and interfaces are selected during Plan 01.
+Use plain HTML/CSS/JavaScript, ES modules and a bounded SVG renderer. The current validator uses no external dependencies; Node.js 24 runs preparation tools and tests. Focused libraries are allowed; React/Vue are unnecessary. Candidate helpers include osmtogeojson, selected Turf.js functions and optional Leaflet. Keep geometry, topology, scoring and printing independent of the interface. Dependencies are pinned and checked when adopted.
 
 A static web deployment is the initial target. No accounts, live location or server are needed for the first release. IndexedDB plus JSON export/import is proposed for local records; persistence is not a backup. OSRM/Valhalla and optional TinyJS packaging are later integrations.
 
@@ -32,3 +33,4 @@ A static web deployment is the initial target. No accounts, live location or ser
 Read [AGENTS.md](AGENTS.md) and the applicable plan first. Plans live in docs/plans/active, queue and complete. Complete evidence and update the plan before moving it. Physical print and learner-device checks may remain pending until someone can perform them; never report them as passed from screenshots alone.
 
 This repository now owns implementation planning. The Ideas-for-projects draft remains the historical handoff. Creating this repository and its plans does not settle unresolved curriculum, dependency, service or terrain-source choices.
+

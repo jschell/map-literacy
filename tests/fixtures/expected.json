@@ -1,0 +1,217 @@
+{
+  "validation": [
+    {
+      "pack": "base",
+      "valid": true,
+      "code": null
+    },
+    {
+      "pack": "no-exercises",
+      "valid": true,
+      "code": null
+    },
+    {
+      "pack": "unknown-access",
+      "valid": true,
+      "code": null
+    },
+    {
+      "pack": "incomplete-relation",
+      "valid": true,
+      "code": null
+    },
+    {
+      "pack": "only-turn",
+      "valid": true,
+      "code": null
+    },
+    {
+      "pack": "zero-distance",
+      "valid": true,
+      "code": null
+    },
+    {
+      "pack": "one-way-return",
+      "valid": true,
+      "code": null
+    },
+    {
+      "pack": "bad-reference",
+      "valid": false,
+      "code": "invalid-import"
+    },
+    {
+      "pack": "future-topo",
+      "valid": false,
+      "code": "unsupported-capability"
+    },
+    {
+      "pack": "future-route",
+      "valid": false,
+      "code": "unsupported-capability"
+    },
+    {
+      "pack": "unsupported-version",
+      "valid": false,
+      "code": "unsupported-version"
+    }
+  ],
+  "lessonCases": [
+    {
+      "id": "heading-wrap",
+      "pack": "base",
+      "exercise": "heading",
+      "answers": [
+        359,
+        15,
+        16
+      ],
+      "statuses": [
+        "correct",
+        "correct",
+        "incorrect"
+      ],
+      "implementedIn": "04"
+    },
+    {
+      "id": "endpoint-boundary",
+      "pack": "base",
+      "exercise": "endpoint",
+      "distancesM": [
+        19.9,
+        20,
+        20.1
+      ],
+      "statuses": [
+        "correct",
+        "correct",
+        "incorrect"
+      ],
+      "implementedIn": "04"
+    },
+    {
+      "id": "two-valid-routes",
+      "pack": "base",
+      "exercise": "route",
+      "answers": [
+        [
+          "AB",
+          "BC"
+        ],
+        [
+          "AD",
+          "DC"
+        ]
+      ],
+      "statuses": [
+        "correct",
+        "correct"
+      ],
+      "implementedIn": "04"
+    },
+    {
+      "id": "disconnected-order",
+      "pack": "base",
+      "exercise": "route",
+      "answers": [
+        [
+          "BC",
+          "AB"
+        ]
+      ],
+      "statuses": [
+        "incorrect"
+      ],
+      "implementedIn": "04"
+    },
+    {
+      "id": "one-way-return",
+      "pack": "one-way-return",
+      "expectedPath": null,
+      "implementedIn": "04"
+    },
+    {
+      "id": "bridge-crossing",
+      "pack": "base",
+      "from": "E",
+      "to": "H",
+      "expectedPath": null,
+      "implementedIn": "04"
+    },
+    {
+      "id": "detour",
+      "pack": "base",
+      "exercise": "detour",
+      "answers": [
+        [
+          "AD",
+          "DC"
+        ],
+        [
+          "AB",
+          "BC"
+        ]
+      ],
+      "statuses": [
+        "correct",
+        "incorrect"
+      ],
+      "implementedIn": "04"
+    },
+    {
+      "id": "only-turn",
+      "pack": "only-turn",
+      "exercise": "route",
+      "answers": [
+        [
+          "AB",
+          "BD",
+          "DC"
+        ]
+      ],
+      "statuses": [
+        "incorrect"
+      ],
+      "implementedIn": "04"
+    },
+    {
+      "id": "unknown-access",
+      "pack": "unknown-access",
+      "exercise": "route",
+      "answers": [
+        [
+          "AB",
+          "BC"
+        ]
+      ],
+      "statuses": [
+        "needs-review"
+      ],
+      "implementedIn": "04"
+    },
+    {
+      "id": "zero-distance",
+      "pack": "zero-distance",
+      "exercise": "route",
+      "answers": [
+        []
+      ],
+      "statuses": [
+        "correct"
+      ],
+      "implementedIn": "04"
+    }
+  ],
+  "deferredCases": [
+    {
+      "id": "stale-save",
+      "expected": "conflict",
+      "implementedIn": "05"
+    },
+    {
+      "id": "rollback",
+      "expected": "No partial backup import",
+      "implementedIn": "05"
+    }
+  ]
+}

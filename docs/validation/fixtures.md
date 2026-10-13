@@ -1,6 +1,6 @@
 # Fixture specification
 
-Plan 01 design cases, not implemented fixtures. Plan 02 creates machine-readable files and expected outputs.
+Plan 01 cases are now materialized in tests/fixtures. Structural/import cases are executed; lesson-scoring cases remain expected inputs/outputs for Plan 04 and storage-conflict/rollback cases remain deferred to Plan 05. The current validator does not score lessons or persist records.
 
 Use synthetic origin [0,0], tiny coordinates in degrees and source manifest kind=synthetic with hash of actual generator output. nodes A=[0,0], B=[0.001,0], C=[0.001,0.001], D=[0,0.001]. Four edges AB, BC, AD, DC each directed, drive/allowed, explicit shapes and recomputed lengths. They form two permitted A->C paths [AB,BC] and [AD,DC]; original source contains no claim about actual roads. Reviewed note records fixture recipe. Features/labels map these identities; sourceBounds encompasses all coordinates.
 
@@ -30,3 +30,4 @@ Full envelope materialization must include every required field in lesson-pack-v
 Real-neighborhood candidate: a public-road area around downtown Redmond, WA, approximately bounds [-122.130,47.670,-122.110,47.680]. This is a proposed public study area, not an inferred home address. No local topology, names, restrictions or lesson suitability have been verified. Plan 02 must choose buffered sourceBounds under size limits, acquire current OSM, inspect crossings/access/labels and exclude ambiguous cases. A different public area may be substituted with recorded rationale.
 
 No real route directions, DEM values or geographic correctness claims are inferred from this candidate. Keep synthetic and real datasets explicitly distinguishable.
+

@@ -1,0 +1,6308 @@
+{
+  "base": {
+    "schemaVersion": 1,
+    "id": "synthetic-square",
+    "title": "Synthetic streets and bridge crossing",
+    "revision": 1,
+    "module": "street",
+    "capabilities": [
+      "street-core"
+    ],
+    "review": {
+      "status": "reviewed",
+      "reviewedAt": "2026-10-13T00:00:00.000Z",
+      "note": "Synthetic recipe and known answers reviewed; no real roads represented."
+    },
+    "bounds": [
+      -0.0001,
+      -0.0001,
+      0.0011,
+      0.0011
+    ],
+    "sourceBounds": [
+      -0.0002,
+      -0.0002,
+      0.0012,
+      0.0012
+    ],
+    "sources": [
+      {
+        "id": "synthetic",
+        "kind": "synthetic",
+        "url": null,
+        "query": null,
+        "fetchedAt": "2026-10-13T00:00:00.000Z",
+        "sourceAt": null,
+        "version": "recipe-v1",
+        "sha256": "05c84e46fc2884b850b14844d8ff5cb4a9b716f9c61f3424c416351c8adf4813",
+        "license": "CC0-1.0",
+        "attribution": "Map Literacy synthetic fixture data; no geographic source.",
+        "transforms": [
+          {
+            "name": "generate-fixtures",
+            "version": "1",
+            "parameters": {
+              "sourceFile": "synthetic-source.json"
+            }
+          }
+        ]
+      }
+    ],
+    "features": {
+      "type": "FeatureCollection",
+      "features": [
+        {
+          "type": "Feature",
+          "id": "road:AB",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0,
+                0
+              ],
+              [
+                0.001,
+                0
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road AB",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "road:BC",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0.001,
+                0
+              ],
+              [
+                0.001,
+                0.001
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road BC",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "road:AD",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0,
+                0
+              ],
+              [
+                0,
+                0.001
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road AD",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "road:DC",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0,
+                0.001
+              ],
+              [
+                0.001,
+                0.001
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road DC",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "road:EF",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0.0003,
+                0.0002
+              ],
+              [
+                0.0007,
+                0.0008
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road EF",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "road:GH",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0.0003,
+                0.0008
+              ],
+              [
+                0.0007,
+                0.0002
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road GH",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        }
+      ]
+    },
+    "topology": {
+      "nodes": [
+        {
+          "id": "A",
+          "coordinate": [
+            0,
+            0
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "B",
+          "coordinate": [
+            0.001,
+            0
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "C",
+          "coordinate": [
+            0.001,
+            0.001
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "D",
+          "coordinate": [
+            0,
+            0.001
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "E",
+          "coordinate": [
+            0.0003,
+            0.0002
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "F",
+          "coordinate": [
+            0.0007,
+            0.0008
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "G",
+          "coordinate": [
+            0.0003,
+            0.0008
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "H",
+          "coordinate": [
+            0.0007,
+            0.0002
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        }
+      ],
+      "edges": [
+        {
+          "id": "AB",
+          "from": "A",
+          "to": "B",
+          "featureId": "road:AB",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 111.19508023353292,
+          "shape": [
+            [
+              0,
+              0
+            ],
+            [
+              0.001,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "BC",
+          "from": "B",
+          "to": "C",
+          "featureId": "road:BC",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 111.19508023353292,
+          "shape": [
+            [
+              0.001,
+              0
+            ],
+            [
+              0.001,
+              0.001
+            ]
+          ]
+        },
+        {
+          "id": "AD",
+          "from": "A",
+          "to": "D",
+          "featureId": "road:AD",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 111.19508023353292,
+          "shape": [
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0.001
+            ]
+          ]
+        },
+        {
+          "id": "DC",
+          "from": "D",
+          "to": "C",
+          "featureId": "road:DC",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 111.19508021659693,
+          "shape": [
+            [
+              0,
+              0.001
+            ],
+            [
+              0.001,
+              0.001
+            ]
+          ]
+        },
+        {
+          "id": "EF",
+          "from": "E",
+          "to": "F",
+          "featureId": "road:EF",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 80.18391267121487,
+          "shape": [
+            [
+              0.0003,
+              0.0002
+            ],
+            [
+              0.0007,
+              0.0008
+            ]
+          ]
+        },
+        {
+          "id": "GH",
+          "from": "G",
+          "to": "H",
+          "featureId": "road:GH",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 80.18391267121487,
+          "shape": [
+            [
+              0.0003,
+              0.0008
+            ],
+            [
+              0.0007,
+              0.0002
+            ]
+          ]
+        }
+      ],
+      "restrictions": [],
+      "completeness": "complete",
+      "exclusions": []
+    },
+    "labels": [
+      {
+        "id": "label:AB",
+        "featureId": "road:AB",
+        "text": "Road AB",
+        "anchor": [
+          0,
+          0
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      },
+      {
+        "id": "label:BC",
+        "featureId": "road:BC",
+        "text": "Road BC",
+        "anchor": [
+          0.001,
+          0
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      },
+      {
+        "id": "label:AD",
+        "featureId": "road:AD",
+        "text": "Road AD",
+        "anchor": [
+          0,
+          0
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      },
+      {
+        "id": "label:DC",
+        "featureId": "road:DC",
+        "text": "Road DC",
+        "anchor": [
+          0,
+          0.001
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      },
+      {
+        "id": "label:EF",
+        "featureId": "road:EF",
+        "text": "Road EF",
+        "anchor": [
+          0.0003,
+          0.0002
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      },
+      {
+        "id": "label:GH",
+        "featureId": "road:GH",
+        "text": "Road GH",
+        "anchor": [
+          0.0003,
+          0.0008
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      }
+    ],
+    "exercises": [
+      {
+        "id": "heading",
+        "type": "heading",
+        "prompt": "Face true north.",
+        "review": "reviewed",
+        "sourceIds": [
+          "synthetic"
+        ],
+        "hints": [
+          "North is 0 degrees."
+        ],
+        "scenario": null,
+        "rubric": {
+          "expectedDeg": 0,
+          "toleranceDeg": 15
+        }
+      },
+      {
+        "id": "endpoint",
+        "type": "endpoint",
+        "prompt": "Locate A.",
+        "review": "reviewed",
+        "sourceIds": [
+          "synthetic"
+        ],
+        "hints": [],
+        "scenario": null,
+        "rubric": {
+          "expected": [
+            0,
+            0
+          ],
+          "toleranceM": 20
+        }
+      },
+      {
+        "id": "route",
+        "type": "route",
+        "prompt": "Trace any valid route from A to C.",
+        "review": "reviewed",
+        "sourceIds": [
+          "synthetic"
+        ],
+        "hints": [],
+        "scenario": null,
+        "rubric": {
+          "startNodeId": "A",
+          "endNodeId": "C",
+          "mode": "drive",
+          "objective": "any-valid",
+          "maxDistanceM": null
+        }
+      },
+      {
+        "id": "detour",
+        "type": "detour",
+        "prompt": "Reach C when BC is closed in this synthetic exercise.",
+        "review": "reviewed",
+        "sourceIds": [
+          "synthetic"
+        ],
+        "hints": [],
+        "scenario": {
+          "id": "closure",
+          "closedEdgeIds": [
+            "BC"
+          ],
+          "label": "Synthetic closure, not a real road condition."
+        },
+        "rubric": {
+          "startNodeId": "A",
+          "endNodeId": "C",
+          "mode": "drive",
+          "objective": "any-valid",
+          "maxDistanceM": null
+        }
+      }
+    ],
+    "print": {
+      "paper": "letter",
+      "orientation": "landscape",
+      "marginMm": 10,
+      "scaleDenominator": 5000,
+      "labelMinPt": 8,
+      "mapRotationDeg": 0
+    },
+    "extensions": {}
+  },
+  "no-exercises": {
+    "schemaVersion": 1,
+    "id": "synthetic-no-exercises",
+    "title": "Synthetic streets and bridge crossing",
+    "revision": 1,
+    "module": "street",
+    "capabilities": [
+      "street-core"
+    ],
+    "review": {
+      "status": "reviewed",
+      "reviewedAt": "2026-10-13T00:00:00.000Z",
+      "note": "Synthetic recipe and known answers reviewed; no real roads represented."
+    },
+    "bounds": [
+      -0.0001,
+      -0.0001,
+      0.0011,
+      0.0011
+    ],
+    "sourceBounds": [
+      -0.0002,
+      -0.0002,
+      0.0012,
+      0.0012
+    ],
+    "sources": [
+      {
+        "id": "synthetic",
+        "kind": "synthetic",
+        "url": null,
+        "query": null,
+        "fetchedAt": "2026-10-13T00:00:00.000Z",
+        "sourceAt": null,
+        "version": "recipe-v1",
+        "sha256": "05c84e46fc2884b850b14844d8ff5cb4a9b716f9c61f3424c416351c8adf4813",
+        "license": "CC0-1.0",
+        "attribution": "Map Literacy synthetic fixture data; no geographic source.",
+        "transforms": [
+          {
+            "name": "generate-fixtures",
+            "version": "1",
+            "parameters": {
+              "sourceFile": "synthetic-source.json"
+            }
+          },
+          {
+            "name": "fixture-variant",
+            "version": "1",
+            "parameters": {
+              "name": "no-exercises"
+            }
+          }
+        ]
+      }
+    ],
+    "features": {
+      "type": "FeatureCollection",
+      "features": [
+        {
+          "type": "Feature",
+          "id": "road:AB",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0,
+                0
+              ],
+              [
+                0.001,
+                0
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road AB",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "road:BC",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0.001,
+                0
+              ],
+              [
+                0.001,
+                0.001
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road BC",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "road:AD",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0,
+                0
+              ],
+              [
+                0,
+                0.001
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road AD",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "road:DC",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0,
+                0.001
+              ],
+              [
+                0.001,
+                0.001
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road DC",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "road:EF",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0.0003,
+                0.0002
+              ],
+              [
+                0.0007,
+                0.0008
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road EF",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "road:GH",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0.0003,
+                0.0008
+              ],
+              [
+                0.0007,
+                0.0002
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road GH",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        }
+      ]
+    },
+    "topology": {
+      "nodes": [
+        {
+          "id": "A",
+          "coordinate": [
+            0,
+            0
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "B",
+          "coordinate": [
+            0.001,
+            0
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "C",
+          "coordinate": [
+            0.001,
+            0.001
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "D",
+          "coordinate": [
+            0,
+            0.001
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "E",
+          "coordinate": [
+            0.0003,
+            0.0002
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "F",
+          "coordinate": [
+            0.0007,
+            0.0008
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "G",
+          "coordinate": [
+            0.0003,
+            0.0008
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "H",
+          "coordinate": [
+            0.0007,
+            0.0002
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        }
+      ],
+      "edges": [
+        {
+          "id": "AB",
+          "from": "A",
+          "to": "B",
+          "featureId": "road:AB",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 111.19508023353292,
+          "shape": [
+            [
+              0,
+              0
+            ],
+            [
+              0.001,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "BC",
+          "from": "B",
+          "to": "C",
+          "featureId": "road:BC",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 111.19508023353292,
+          "shape": [
+            [
+              0.001,
+              0
+            ],
+            [
+              0.001,
+              0.001
+            ]
+          ]
+        },
+        {
+          "id": "AD",
+          "from": "A",
+          "to": "D",
+          "featureId": "road:AD",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 111.19508023353292,
+          "shape": [
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0.001
+            ]
+          ]
+        },
+        {
+          "id": "DC",
+          "from": "D",
+          "to": "C",
+          "featureId": "road:DC",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 111.19508021659693,
+          "shape": [
+            [
+              0,
+              0.001
+            ],
+            [
+              0.001,
+              0.001
+            ]
+          ]
+        },
+        {
+          "id": "EF",
+          "from": "E",
+          "to": "F",
+          "featureId": "road:EF",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 80.18391267121487,
+          "shape": [
+            [
+              0.0003,
+              0.0002
+            ],
+            [
+              0.0007,
+              0.0008
+            ]
+          ]
+        },
+        {
+          "id": "GH",
+          "from": "G",
+          "to": "H",
+          "featureId": "road:GH",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 80.18391267121487,
+          "shape": [
+            [
+              0.0003,
+              0.0008
+            ],
+            [
+              0.0007,
+              0.0002
+            ]
+          ]
+        }
+      ],
+      "restrictions": [],
+      "completeness": "complete",
+      "exclusions": []
+    },
+    "labels": [
+      {
+        "id": "label:AB",
+        "featureId": "road:AB",
+        "text": "Road AB",
+        "anchor": [
+          0,
+          0
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      },
+      {
+        "id": "label:BC",
+        "featureId": "road:BC",
+        "text": "Road BC",
+        "anchor": [
+          0.001,
+          0
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      },
+      {
+        "id": "label:AD",
+        "featureId": "road:AD",
+        "text": "Road AD",
+        "anchor": [
+          0,
+          0
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      },
+      {
+        "id": "label:DC",
+        "featureId": "road:DC",
+        "text": "Road DC",
+        "anchor": [
+          0,
+          0.001
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      },
+      {
+        "id": "label:EF",
+        "featureId": "road:EF",
+        "text": "Road EF",
+        "anchor": [
+          0.0003,
+          0.0002
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      },
+      {
+        "id": "label:GH",
+        "featureId": "road:GH",
+        "text": "Road GH",
+        "anchor": [
+          0.0003,
+          0.0008
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      }
+    ],
+    "exercises": [],
+    "print": {
+      "paper": "letter",
+      "orientation": "landscape",
+      "marginMm": 10,
+      "scaleDenominator": 5000,
+      "labelMinPt": 8,
+      "mapRotationDeg": 0
+    },
+    "extensions": {}
+  },
+  "unknown-access": {
+    "schemaVersion": 1,
+    "id": "synthetic-unknown-access",
+    "title": "Synthetic streets and bridge crossing",
+    "revision": 1,
+    "module": "street",
+    "capabilities": [
+      "street-core"
+    ],
+    "review": {
+      "status": "reviewed",
+      "reviewedAt": "2026-10-13T00:00:00.000Z",
+      "note": "Synthetic recipe and known answers reviewed; no real roads represented."
+    },
+    "bounds": [
+      -0.0001,
+      -0.0001,
+      0.0011,
+      0.0011
+    ],
+    "sourceBounds": [
+      -0.0002,
+      -0.0002,
+      0.0012,
+      0.0012
+    ],
+    "sources": [
+      {
+        "id": "synthetic",
+        "kind": "synthetic",
+        "url": null,
+        "query": null,
+        "fetchedAt": "2026-10-13T00:00:00.000Z",
+        "sourceAt": null,
+        "version": "recipe-v1",
+        "sha256": "05c84e46fc2884b850b14844d8ff5cb4a9b716f9c61f3424c416351c8adf4813",
+        "license": "CC0-1.0",
+        "attribution": "Map Literacy synthetic fixture data; no geographic source.",
+        "transforms": [
+          {
+            "name": "generate-fixtures",
+            "version": "1",
+            "parameters": {
+              "sourceFile": "synthetic-source.json"
+            }
+          },
+          {
+            "name": "fixture-variant",
+            "version": "1",
+            "parameters": {
+              "name": "unknown-access"
+            }
+          }
+        ]
+      }
+    ],
+    "features": {
+      "type": "FeatureCollection",
+      "features": [
+        {
+          "type": "Feature",
+          "id": "road:AB",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0,
+                0
+              ],
+              [
+                0.001,
+                0
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road AB",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "road:BC",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0.001,
+                0
+              ],
+              [
+                0.001,
+                0.001
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road BC",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "road:AD",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0,
+                0
+              ],
+              [
+                0,
+                0.001
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road AD",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "road:DC",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0,
+                0.001
+              ],
+              [
+                0.001,
+                0.001
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road DC",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "road:EF",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0.0003,
+                0.0002
+              ],
+              [
+                0.0007,
+                0.0008
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road EF",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "road:GH",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0.0003,
+                0.0008
+              ],
+              [
+                0.0007,
+                0.0002
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road GH",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        }
+      ]
+    },
+    "topology": {
+      "nodes": [
+        {
+          "id": "A",
+          "coordinate": [
+            0,
+            0
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "B",
+          "coordinate": [
+            0.001,
+            0
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "C",
+          "coordinate": [
+            0.001,
+            0.001
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "D",
+          "coordinate": [
+            0,
+            0.001
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "E",
+          "coordinate": [
+            0.0003,
+            0.0002
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "F",
+          "coordinate": [
+            0.0007,
+            0.0008
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "G",
+          "coordinate": [
+            0.0003,
+            0.0008
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "H",
+          "coordinate": [
+            0.0007,
+            0.0002
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        }
+      ],
+      "edges": [
+        {
+          "id": "AB",
+          "from": "A",
+          "to": "B",
+          "featureId": "road:AB",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 111.19508023353292,
+          "shape": [
+            [
+              0,
+              0
+            ],
+            [
+              0.001,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "BC",
+          "from": "B",
+          "to": "C",
+          "featureId": "road:BC",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "unknown",
+          "lengthM": 111.19508023353292,
+          "shape": [
+            [
+              0.001,
+              0
+            ],
+            [
+              0.001,
+              0.001
+            ]
+          ]
+        },
+        {
+          "id": "AD",
+          "from": "A",
+          "to": "D",
+          "featureId": "road:AD",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 111.19508023353292,
+          "shape": [
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0.001
+            ]
+          ]
+        },
+        {
+          "id": "DC",
+          "from": "D",
+          "to": "C",
+          "featureId": "road:DC",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 111.19508021659693,
+          "shape": [
+            [
+              0,
+              0.001
+            ],
+            [
+              0.001,
+              0.001
+            ]
+          ]
+        },
+        {
+          "id": "EF",
+          "from": "E",
+          "to": "F",
+          "featureId": "road:EF",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 80.18391267121487,
+          "shape": [
+            [
+              0.0003,
+              0.0002
+            ],
+            [
+              0.0007,
+              0.0008
+            ]
+          ]
+        },
+        {
+          "id": "GH",
+          "from": "G",
+          "to": "H",
+          "featureId": "road:GH",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 80.18391267121487,
+          "shape": [
+            [
+              0.0003,
+              0.0008
+            ],
+            [
+              0.0007,
+              0.0002
+            ]
+          ]
+        }
+      ],
+      "restrictions": [],
+      "completeness": "complete",
+      "exclusions": []
+    },
+    "labels": [
+      {
+        "id": "label:AB",
+        "featureId": "road:AB",
+        "text": "Road AB",
+        "anchor": [
+          0,
+          0
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      },
+      {
+        "id": "label:BC",
+        "featureId": "road:BC",
+        "text": "Road BC",
+        "anchor": [
+          0.001,
+          0
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      },
+      {
+        "id": "label:AD",
+        "featureId": "road:AD",
+        "text": "Road AD",
+        "anchor": [
+          0,
+          0
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      },
+      {
+        "id": "label:DC",
+        "featureId": "road:DC",
+        "text": "Road DC",
+        "anchor": [
+          0,
+          0.001
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      },
+      {
+        "id": "label:EF",
+        "featureId": "road:EF",
+        "text": "Road EF",
+        "anchor": [
+          0.0003,
+          0.0002
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      },
+      {
+        "id": "label:GH",
+        "featureId": "road:GH",
+        "text": "Road GH",
+        "anchor": [
+          0.0003,
+          0.0008
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      }
+    ],
+    "exercises": [
+      {
+        "id": "heading",
+        "type": "heading",
+        "prompt": "Face true north.",
+        "review": "reviewed",
+        "sourceIds": [
+          "synthetic"
+        ],
+        "hints": [
+          "North is 0 degrees."
+        ],
+        "scenario": null,
+        "rubric": {
+          "expectedDeg": 0,
+          "toleranceDeg": 15
+        }
+      },
+      {
+        "id": "endpoint",
+        "type": "endpoint",
+        "prompt": "Locate A.",
+        "review": "reviewed",
+        "sourceIds": [
+          "synthetic"
+        ],
+        "hints": [],
+        "scenario": null,
+        "rubric": {
+          "expected": [
+            0,
+            0
+          ],
+          "toleranceM": 20
+        }
+      },
+      {
+        "id": "route",
+        "type": "route",
+        "prompt": "Trace any valid route from A to C.",
+        "review": "draft",
+        "sourceIds": [
+          "synthetic"
+        ],
+        "hints": [],
+        "scenario": null,
+        "rubric": {
+          "startNodeId": "A",
+          "endNodeId": "C",
+          "mode": "drive",
+          "objective": "any-valid",
+          "maxDistanceM": null
+        }
+      },
+      {
+        "id": "detour",
+        "type": "detour",
+        "prompt": "Reach C when BC is closed in this synthetic exercise.",
+        "review": "draft",
+        "sourceIds": [
+          "synthetic"
+        ],
+        "hints": [],
+        "scenario": {
+          "id": "closure",
+          "closedEdgeIds": [
+            "BC"
+          ],
+          "label": "Synthetic closure, not a real road condition."
+        },
+        "rubric": {
+          "startNodeId": "A",
+          "endNodeId": "C",
+          "mode": "drive",
+          "objective": "any-valid",
+          "maxDistanceM": null
+        }
+      }
+    ],
+    "print": {
+      "paper": "letter",
+      "orientation": "landscape",
+      "marginMm": 10,
+      "scaleDenominator": 5000,
+      "labelMinPt": 8,
+      "mapRotationDeg": 0
+    },
+    "extensions": {}
+  },
+  "incomplete-relation": {
+    "schemaVersion": 1,
+    "id": "synthetic-incomplete-relation",
+    "title": "Synthetic streets and bridge crossing",
+    "revision": 1,
+    "module": "street",
+    "capabilities": [
+      "street-core"
+    ],
+    "review": {
+      "status": "reviewed",
+      "reviewedAt": "2026-10-13T00:00:00.000Z",
+      "note": "Synthetic recipe and known answers reviewed; no real roads represented."
+    },
+    "bounds": [
+      -0.0001,
+      -0.0001,
+      0.0011,
+      0.0011
+    ],
+    "sourceBounds": [
+      -0.0002,
+      -0.0002,
+      0.0012,
+      0.0012
+    ],
+    "sources": [
+      {
+        "id": "synthetic",
+        "kind": "synthetic",
+        "url": null,
+        "query": null,
+        "fetchedAt": "2026-10-13T00:00:00.000Z",
+        "sourceAt": null,
+        "version": "recipe-v1",
+        "sha256": "05c84e46fc2884b850b14844d8ff5cb4a9b716f9c61f3424c416351c8adf4813",
+        "license": "CC0-1.0",
+        "attribution": "Map Literacy synthetic fixture data; no geographic source.",
+        "transforms": [
+          {
+            "name": "generate-fixtures",
+            "version": "1",
+            "parameters": {
+              "sourceFile": "synthetic-source.json"
+            }
+          },
+          {
+            "name": "fixture-variant",
+            "version": "1",
+            "parameters": {
+              "name": "incomplete-relation"
+            }
+          }
+        ]
+      }
+    ],
+    "features": {
+      "type": "FeatureCollection",
+      "features": [
+        {
+          "type": "Feature",
+          "id": "road:AB",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0,
+                0
+              ],
+              [
+                0.001,
+                0
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road AB",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "road:BC",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0.001,
+                0
+              ],
+              [
+                0.001,
+                0.001
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road BC",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "road:AD",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0,
+                0
+              ],
+              [
+                0,
+                0.001
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road AD",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "road:DC",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0,
+                0.001
+              ],
+              [
+                0.001,
+                0.001
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road DC",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "road:EF",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0.0003,
+                0.0002
+              ],
+              [
+                0.0007,
+                0.0008
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road EF",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "road:GH",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0.0003,
+                0.0008
+              ],
+              [
+                0.0007,
+                0.0002
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road GH",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        }
+      ]
+    },
+    "topology": {
+      "nodes": [
+        {
+          "id": "A",
+          "coordinate": [
+            0,
+            0
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "B",
+          "coordinate": [
+            0.001,
+            0
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "C",
+          "coordinate": [
+            0.001,
+            0.001
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "D",
+          "coordinate": [
+            0,
+            0.001
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "E",
+          "coordinate": [
+            0.0003,
+            0.0002
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "F",
+          "coordinate": [
+            0.0007,
+            0.0008
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "G",
+          "coordinate": [
+            0.0003,
+            0.0008
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "H",
+          "coordinate": [
+            0.0007,
+            0.0002
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        }
+      ],
+      "edges": [
+        {
+          "id": "AB",
+          "from": "A",
+          "to": "B",
+          "featureId": "road:AB",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 111.19508023353292,
+          "shape": [
+            [
+              0,
+              0
+            ],
+            [
+              0.001,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "BC",
+          "from": "B",
+          "to": "C",
+          "featureId": "road:BC",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 111.19508023353292,
+          "shape": [
+            [
+              0.001,
+              0
+            ],
+            [
+              0.001,
+              0.001
+            ]
+          ]
+        },
+        {
+          "id": "AD",
+          "from": "A",
+          "to": "D",
+          "featureId": "road:AD",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 111.19508023353292,
+          "shape": [
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0.001
+            ]
+          ]
+        },
+        {
+          "id": "DC",
+          "from": "D",
+          "to": "C",
+          "featureId": "road:DC",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 111.19508021659693,
+          "shape": [
+            [
+              0,
+              0.001
+            ],
+            [
+              0.001,
+              0.001
+            ]
+          ]
+        },
+        {
+          "id": "EF",
+          "from": "E",
+          "to": "F",
+          "featureId": "road:EF",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 80.18391267121487,
+          "shape": [
+            [
+              0.0003,
+              0.0002
+            ],
+            [
+              0.0007,
+              0.0008
+            ]
+          ]
+        },
+        {
+          "id": "GH",
+          "from": "G",
+          "to": "H",
+          "featureId": "road:GH",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 80.18391267121487,
+          "shape": [
+            [
+              0.0003,
+              0.0008
+            ],
+            [
+              0.0007,
+              0.0002
+            ]
+          ]
+        }
+      ],
+      "restrictions": [],
+      "completeness": "partial",
+      "exclusions": [
+        {
+          "id": "missing-member",
+          "objectIds": [
+            "B",
+            "BC"
+          ],
+          "reason": "Synthetic missing relation member; route content awaits review."
+        }
+      ]
+    },
+    "labels": [
+      {
+        "id": "label:AB",
+        "featureId": "road:AB",
+        "text": "Road AB",
+        "anchor": [
+          0,
+          0
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      },
+      {
+        "id": "label:BC",
+        "featureId": "road:BC",
+        "text": "Road BC",
+        "anchor": [
+          0.001,
+          0
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      },
+      {
+        "id": "label:AD",
+        "featureId": "road:AD",
+        "text": "Road AD",
+        "anchor": [
+          0,
+          0
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      },
+      {
+        "id": "label:DC",
+        "featureId": "road:DC",
+        "text": "Road DC",
+        "anchor": [
+          0,
+          0.001
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      },
+      {
+        "id": "label:EF",
+        "featureId": "road:EF",
+        "text": "Road EF",
+        "anchor": [
+          0.0003,
+          0.0002
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      },
+      {
+        "id": "label:GH",
+        "featureId": "road:GH",
+        "text": "Road GH",
+        "anchor": [
+          0.0003,
+          0.0008
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      }
+    ],
+    "exercises": [
+      {
+        "id": "heading",
+        "type": "heading",
+        "prompt": "Face true north.",
+        "review": "reviewed",
+        "sourceIds": [
+          "synthetic"
+        ],
+        "hints": [
+          "North is 0 degrees."
+        ],
+        "scenario": null,
+        "rubric": {
+          "expectedDeg": 0,
+          "toleranceDeg": 15
+        }
+      },
+      {
+        "id": "endpoint",
+        "type": "endpoint",
+        "prompt": "Locate A.",
+        "review": "reviewed",
+        "sourceIds": [
+          "synthetic"
+        ],
+        "hints": [],
+        "scenario": null,
+        "rubric": {
+          "expected": [
+            0,
+            0
+          ],
+          "toleranceM": 20
+        }
+      },
+      {
+        "id": "route",
+        "type": "route",
+        "prompt": "Trace any valid route from A to C.",
+        "review": "draft",
+        "sourceIds": [
+          "synthetic"
+        ],
+        "hints": [],
+        "scenario": null,
+        "rubric": {
+          "startNodeId": "A",
+          "endNodeId": "C",
+          "mode": "drive",
+          "objective": "any-valid",
+          "maxDistanceM": null
+        }
+      },
+      {
+        "id": "detour",
+        "type": "detour",
+        "prompt": "Reach C when BC is closed in this synthetic exercise.",
+        "review": "draft",
+        "sourceIds": [
+          "synthetic"
+        ],
+        "hints": [],
+        "scenario": {
+          "id": "closure",
+          "closedEdgeIds": [
+            "BC"
+          ],
+          "label": "Synthetic closure, not a real road condition."
+        },
+        "rubric": {
+          "startNodeId": "A",
+          "endNodeId": "C",
+          "mode": "drive",
+          "objective": "any-valid",
+          "maxDistanceM": null
+        }
+      }
+    ],
+    "print": {
+      "paper": "letter",
+      "orientation": "landscape",
+      "marginMm": 10,
+      "scaleDenominator": 5000,
+      "labelMinPt": 8,
+      "mapRotationDeg": 0
+    },
+    "extensions": {}
+  },
+  "only-turn": {
+    "schemaVersion": 1,
+    "id": "synthetic-only-turn",
+    "title": "Synthetic streets and bridge crossing",
+    "revision": 1,
+    "module": "street",
+    "capabilities": [
+      "street-core"
+    ],
+    "review": {
+      "status": "reviewed",
+      "reviewedAt": "2026-10-13T00:00:00.000Z",
+      "note": "Synthetic recipe and known answers reviewed; no real roads represented."
+    },
+    "bounds": [
+      -0.0001,
+      -0.0001,
+      0.0011,
+      0.0011
+    ],
+    "sourceBounds": [
+      -0.0002,
+      -0.0002,
+      0.0012,
+      0.0012
+    ],
+    "sources": [
+      {
+        "id": "synthetic",
+        "kind": "synthetic",
+        "url": null,
+        "query": null,
+        "fetchedAt": "2026-10-13T00:00:00.000Z",
+        "sourceAt": null,
+        "version": "recipe-v1",
+        "sha256": "05c84e46fc2884b850b14844d8ff5cb4a9b716f9c61f3424c416351c8adf4813",
+        "license": "CC0-1.0",
+        "attribution": "Map Literacy synthetic fixture data; no geographic source.",
+        "transforms": [
+          {
+            "name": "generate-fixtures",
+            "version": "1",
+            "parameters": {
+              "sourceFile": "synthetic-source.json"
+            }
+          },
+          {
+            "name": "fixture-variant",
+            "version": "1",
+            "parameters": {
+              "name": "only-turn"
+            }
+          }
+        ]
+      }
+    ],
+    "features": {
+      "type": "FeatureCollection",
+      "features": [
+        {
+          "type": "Feature",
+          "id": "road:AB",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0,
+                0
+              ],
+              [
+                0.001,
+                0
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road AB",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "road:BC",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0.001,
+                0
+              ],
+              [
+                0.001,
+                0.001
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road BC",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "road:AD",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0,
+                0
+              ],
+              [
+                0,
+                0.001
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road AD",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "road:DC",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0,
+                0.001
+              ],
+              [
+                0.001,
+                0.001
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road DC",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "road:EF",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0.0003,
+                0.0002
+              ],
+              [
+                0.0007,
+                0.0008
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road EF",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "road:GH",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0.0003,
+                0.0008
+              ],
+              [
+                0.0007,
+                0.0002
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road GH",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "road:BD",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0.001,
+                0
+              ],
+              [
+                0,
+                0.001
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road BD",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        }
+      ]
+    },
+    "topology": {
+      "nodes": [
+        {
+          "id": "A",
+          "coordinate": [
+            0,
+            0
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "B",
+          "coordinate": [
+            0.001,
+            0
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "C",
+          "coordinate": [
+            0.001,
+            0.001
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "D",
+          "coordinate": [
+            0,
+            0.001
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "E",
+          "coordinate": [
+            0.0003,
+            0.0002
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "F",
+          "coordinate": [
+            0.0007,
+            0.0008
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "G",
+          "coordinate": [
+            0.0003,
+            0.0008
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "H",
+          "coordinate": [
+            0.0007,
+            0.0002
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        }
+      ],
+      "edges": [
+        {
+          "id": "AB",
+          "from": "A",
+          "to": "B",
+          "featureId": "road:AB",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 111.19508023353292,
+          "shape": [
+            [
+              0,
+              0
+            ],
+            [
+              0.001,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "BC",
+          "from": "B",
+          "to": "C",
+          "featureId": "road:BC",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 111.19508023353292,
+          "shape": [
+            [
+              0.001,
+              0
+            ],
+            [
+              0.001,
+              0.001
+            ]
+          ]
+        },
+        {
+          "id": "AD",
+          "from": "A",
+          "to": "D",
+          "featureId": "road:AD",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 111.19508023353292,
+          "shape": [
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0.001
+            ]
+          ]
+        },
+        {
+          "id": "DC",
+          "from": "D",
+          "to": "C",
+          "featureId": "road:DC",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 111.19508021659693,
+          "shape": [
+            [
+              0,
+              0.001
+            ],
+            [
+              0.001,
+              0.001
+            ]
+          ]
+        },
+        {
+          "id": "EF",
+          "from": "E",
+          "to": "F",
+          "featureId": "road:EF",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 80.18391267121487,
+          "shape": [
+            [
+              0.0003,
+              0.0002
+            ],
+            [
+              0.0007,
+              0.0008
+            ]
+          ]
+        },
+        {
+          "id": "GH",
+          "from": "G",
+          "to": "H",
+          "featureId": "road:GH",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 80.18391267121487,
+          "shape": [
+            [
+              0.0003,
+              0.0008
+            ],
+            [
+              0.0007,
+              0.0002
+            ]
+          ]
+        },
+        {
+          "id": "BD",
+          "from": "B",
+          "to": "D",
+          "featureId": "road:BD",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 157.25359053143487,
+          "shape": [
+            [
+              0.001,
+              0
+            ],
+            [
+              0,
+              0.001
+            ]
+          ]
+        }
+      ],
+      "restrictions": [
+        {
+          "id": "only-bc",
+          "edgeSequence": [
+            "AB",
+            "BC"
+          ],
+          "rule": "only",
+          "mode": "drive",
+          "sourceId": "synthetic"
+        }
+      ],
+      "completeness": "complete",
+      "exclusions": []
+    },
+    "labels": [
+      {
+        "id": "label:AB",
+        "featureId": "road:AB",
+        "text": "Road AB",
+        "anchor": [
+          0,
+          0
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      },
+      {
+        "id": "label:BC",
+        "featureId": "road:BC",
+        "text": "Road BC",
+        "anchor": [
+          0.001,
+          0
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      },
+      {
+        "id": "label:AD",
+        "featureId": "road:AD",
+        "text": "Road AD",
+        "anchor": [
+          0,
+          0
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      },
+      {
+        "id": "label:DC",
+        "featureId": "road:DC",
+        "text": "Road DC",
+        "anchor": [
+          0,
+          0.001
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      },
+      {
+        "id": "label:EF",
+        "featureId": "road:EF",
+        "text": "Road EF",
+        "anchor": [
+          0.0003,
+          0.0002
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      },
+      {
+        "id": "label:GH",
+        "featureId": "road:GH",
+        "text": "Road GH",
+        "anchor": [
+          0.0003,
+          0.0008
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      }
+    ],
+    "exercises": [
+      {
+        "id": "heading",
+        "type": "heading",
+        "prompt": "Face true north.",
+        "review": "reviewed",
+        "sourceIds": [
+          "synthetic"
+        ],
+        "hints": [
+          "North is 0 degrees."
+        ],
+        "scenario": null,
+        "rubric": {
+          "expectedDeg": 0,
+          "toleranceDeg": 15
+        }
+      },
+      {
+        "id": "endpoint",
+        "type": "endpoint",
+        "prompt": "Locate A.",
+        "review": "reviewed",
+        "sourceIds": [
+          "synthetic"
+        ],
+        "hints": [],
+        "scenario": null,
+        "rubric": {
+          "expected": [
+            0,
+            0
+          ],
+          "toleranceM": 20
+        }
+      },
+      {
+        "id": "route",
+        "type": "route",
+        "prompt": "Trace any valid route from A to C.",
+        "review": "reviewed",
+        "sourceIds": [
+          "synthetic"
+        ],
+        "hints": [],
+        "scenario": null,
+        "rubric": {
+          "startNodeId": "A",
+          "endNodeId": "C",
+          "mode": "drive",
+          "objective": "any-valid",
+          "maxDistanceM": null
+        }
+      },
+      {
+        "id": "detour",
+        "type": "detour",
+        "prompt": "Reach C when BC is closed in this synthetic exercise.",
+        "review": "reviewed",
+        "sourceIds": [
+          "synthetic"
+        ],
+        "hints": [],
+        "scenario": {
+          "id": "closure",
+          "closedEdgeIds": [
+            "BC"
+          ],
+          "label": "Synthetic closure, not a real road condition."
+        },
+        "rubric": {
+          "startNodeId": "A",
+          "endNodeId": "C",
+          "mode": "drive",
+          "objective": "any-valid",
+          "maxDistanceM": null
+        }
+      }
+    ],
+    "print": {
+      "paper": "letter",
+      "orientation": "landscape",
+      "marginMm": 10,
+      "scaleDenominator": 5000,
+      "labelMinPt": 8,
+      "mapRotationDeg": 0
+    },
+    "extensions": {}
+  },
+  "zero-distance": {
+    "schemaVersion": 1,
+    "id": "synthetic-zero-distance",
+    "title": "Synthetic streets and bridge crossing",
+    "revision": 1,
+    "module": "street",
+    "capabilities": [
+      "street-core"
+    ],
+    "review": {
+      "status": "reviewed",
+      "reviewedAt": "2026-10-13T00:00:00.000Z",
+      "note": "Synthetic recipe and known answers reviewed; no real roads represented."
+    },
+    "bounds": [
+      -0.0001,
+      -0.0001,
+      0.0011,
+      0.0011
+    ],
+    "sourceBounds": [
+      -0.0002,
+      -0.0002,
+      0.0012,
+      0.0012
+    ],
+    "sources": [
+      {
+        "id": "synthetic",
+        "kind": "synthetic",
+        "url": null,
+        "query": null,
+        "fetchedAt": "2026-10-13T00:00:00.000Z",
+        "sourceAt": null,
+        "version": "recipe-v1",
+        "sha256": "05c84e46fc2884b850b14844d8ff5cb4a9b716f9c61f3424c416351c8adf4813",
+        "license": "CC0-1.0",
+        "attribution": "Map Literacy synthetic fixture data; no geographic source.",
+        "transforms": [
+          {
+            "name": "generate-fixtures",
+            "version": "1",
+            "parameters": {
+              "sourceFile": "synthetic-source.json"
+            }
+          },
+          {
+            "name": "fixture-variant",
+            "version": "1",
+            "parameters": {
+              "name": "zero-distance"
+            }
+          }
+        ]
+      }
+    ],
+    "features": {
+      "type": "FeatureCollection",
+      "features": [
+        {
+          "type": "Feature",
+          "id": "road:AB",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0,
+                0
+              ],
+              [
+                0.001,
+                0
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road AB",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "road:BC",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0.001,
+                0
+              ],
+              [
+                0.001,
+                0.001
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road BC",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "road:AD",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0,
+                0
+              ],
+              [
+                0,
+                0.001
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road AD",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "road:DC",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0,
+                0.001
+              ],
+              [
+                0.001,
+                0.001
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road DC",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "road:EF",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0.0003,
+                0.0002
+              ],
+              [
+                0.0007,
+                0.0008
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road EF",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "road:GH",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0.0003,
+                0.0008
+              ],
+              [
+                0.0007,
+                0.0002
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road GH",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        }
+      ]
+    },
+    "topology": {
+      "nodes": [
+        {
+          "id": "A",
+          "coordinate": [
+            0,
+            0
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "B",
+          "coordinate": [
+            0.001,
+            0
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "C",
+          "coordinate": [
+            0.001,
+            0.001
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "D",
+          "coordinate": [
+            0,
+            0.001
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "E",
+          "coordinate": [
+            0.0003,
+            0.0002
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "F",
+          "coordinate": [
+            0.0007,
+            0.0008
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "G",
+          "coordinate": [
+            0.0003,
+            0.0008
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "H",
+          "coordinate": [
+            0.0007,
+            0.0002
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        }
+      ],
+      "edges": [
+        {
+          "id": "AB",
+          "from": "A",
+          "to": "B",
+          "featureId": "road:AB",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 111.19508023353292,
+          "shape": [
+            [
+              0,
+              0
+            ],
+            [
+              0.001,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "BC",
+          "from": "B",
+          "to": "C",
+          "featureId": "road:BC",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 111.19508023353292,
+          "shape": [
+            [
+              0.001,
+              0
+            ],
+            [
+              0.001,
+              0.001
+            ]
+          ]
+        },
+        {
+          "id": "AD",
+          "from": "A",
+          "to": "D",
+          "featureId": "road:AD",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 111.19508023353292,
+          "shape": [
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0.001
+            ]
+          ]
+        },
+        {
+          "id": "DC",
+          "from": "D",
+          "to": "C",
+          "featureId": "road:DC",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 111.19508021659693,
+          "shape": [
+            [
+              0,
+              0.001
+            ],
+            [
+              0.001,
+              0.001
+            ]
+          ]
+        },
+        {
+          "id": "EF",
+          "from": "E",
+          "to": "F",
+          "featureId": "road:EF",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 80.18391267121487,
+          "shape": [
+            [
+              0.0003,
+              0.0002
+            ],
+            [
+              0.0007,
+              0.0008
+            ]
+          ]
+        },
+        {
+          "id": "GH",
+          "from": "G",
+          "to": "H",
+          "featureId": "road:GH",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 80.18391267121487,
+          "shape": [
+            [
+              0.0003,
+              0.0008
+            ],
+            [
+              0.0007,
+              0.0002
+            ]
+          ]
+        }
+      ],
+      "restrictions": [],
+      "completeness": "complete",
+      "exclusions": []
+    },
+    "labels": [
+      {
+        "id": "label:AB",
+        "featureId": "road:AB",
+        "text": "Road AB",
+        "anchor": [
+          0,
+          0
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      },
+      {
+        "id": "label:BC",
+        "featureId": "road:BC",
+        "text": "Road BC",
+        "anchor": [
+          0.001,
+          0
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      },
+      {
+        "id": "label:AD",
+        "featureId": "road:AD",
+        "text": "Road AD",
+        "anchor": [
+          0,
+          0
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      },
+      {
+        "id": "label:DC",
+        "featureId": "road:DC",
+        "text": "Road DC",
+        "anchor": [
+          0,
+          0.001
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      },
+      {
+        "id": "label:EF",
+        "featureId": "road:EF",
+        "text": "Road EF",
+        "anchor": [
+          0.0003,
+          0.0002
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      },
+      {
+        "id": "label:GH",
+        "featureId": "road:GH",
+        "text": "Road GH",
+        "anchor": [
+          0.0003,
+          0.0008
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      }
+    ],
+    "exercises": [
+      {
+        "id": "heading",
+        "type": "heading",
+        "prompt": "Face true north.",
+        "review": "reviewed",
+        "sourceIds": [
+          "synthetic"
+        ],
+        "hints": [
+          "North is 0 degrees."
+        ],
+        "scenario": null,
+        "rubric": {
+          "expectedDeg": 0,
+          "toleranceDeg": 15
+        }
+      },
+      {
+        "id": "endpoint",
+        "type": "endpoint",
+        "prompt": "Locate A.",
+        "review": "reviewed",
+        "sourceIds": [
+          "synthetic"
+        ],
+        "hints": [],
+        "scenario": null,
+        "rubric": {
+          "expected": [
+            0,
+            0
+          ],
+          "toleranceM": 20
+        }
+      },
+      {
+        "id": "route",
+        "type": "route",
+        "prompt": "Trace any valid route from A to C.",
+        "review": "reviewed",
+        "sourceIds": [
+          "synthetic"
+        ],
+        "hints": [],
+        "scenario": null,
+        "rubric": {
+          "startNodeId": "A",
+          "endNodeId": "A",
+          "mode": "drive",
+          "objective": "any-valid",
+          "maxDistanceM": null
+        }
+      },
+      {
+        "id": "detour",
+        "type": "detour",
+        "prompt": "Reach C when BC is closed in this synthetic exercise.",
+        "review": "reviewed",
+        "sourceIds": [
+          "synthetic"
+        ],
+        "hints": [],
+        "scenario": {
+          "id": "closure",
+          "closedEdgeIds": [
+            "BC"
+          ],
+          "label": "Synthetic closure, not a real road condition."
+        },
+        "rubric": {
+          "startNodeId": "A",
+          "endNodeId": "C",
+          "mode": "drive",
+          "objective": "any-valid",
+          "maxDistanceM": null
+        }
+      }
+    ],
+    "print": {
+      "paper": "letter",
+      "orientation": "landscape",
+      "marginMm": 10,
+      "scaleDenominator": 5000,
+      "labelMinPt": 8,
+      "mapRotationDeg": 0
+    },
+    "extensions": {}
+  },
+  "one-way-return": {
+    "schemaVersion": 1,
+    "id": "synthetic-one-way-return",
+    "title": "Synthetic streets and bridge crossing",
+    "revision": 1,
+    "module": "street",
+    "capabilities": [
+      "street-core"
+    ],
+    "review": {
+      "status": "reviewed",
+      "reviewedAt": "2026-10-13T00:00:00.000Z",
+      "note": "Synthetic recipe and known answers reviewed; no real roads represented."
+    },
+    "bounds": [
+      -0.0001,
+      -0.0001,
+      0.0011,
+      0.0011
+    ],
+    "sourceBounds": [
+      -0.0002,
+      -0.0002,
+      0.0012,
+      0.0012
+    ],
+    "sources": [
+      {
+        "id": "synthetic",
+        "kind": "synthetic",
+        "url": null,
+        "query": null,
+        "fetchedAt": "2026-10-13T00:00:00.000Z",
+        "sourceAt": null,
+        "version": "recipe-v1",
+        "sha256": "05c84e46fc2884b850b14844d8ff5cb4a9b716f9c61f3424c416351c8adf4813",
+        "license": "CC0-1.0",
+        "attribution": "Map Literacy synthetic fixture data; no geographic source.",
+        "transforms": [
+          {
+            "name": "generate-fixtures",
+            "version": "1",
+            "parameters": {
+              "sourceFile": "synthetic-source.json"
+            }
+          },
+          {
+            "name": "fixture-variant",
+            "version": "1",
+            "parameters": {
+              "name": "one-way-return"
+            }
+          }
+        ]
+      }
+    ],
+    "features": {
+      "type": "FeatureCollection",
+      "features": [
+        {
+          "type": "Feature",
+          "id": "road:AB",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0,
+                0
+              ],
+              [
+                0.001,
+                0
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road AB",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "road:BC",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0.001,
+                0
+              ],
+              [
+                0.001,
+                0.001
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road BC",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "road:AD",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0,
+                0
+              ],
+              [
+                0,
+                0.001
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road AD",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "road:DC",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0,
+                0.001
+              ],
+              [
+                0.001,
+                0.001
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road DC",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "road:EF",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0.0003,
+                0.0002
+              ],
+              [
+                0.0007,
+                0.0008
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road EF",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "road:GH",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0.0003,
+                0.0008
+              ],
+              [
+                0.0007,
+                0.0002
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road GH",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        }
+      ]
+    },
+    "topology": {
+      "nodes": [
+        {
+          "id": "A",
+          "coordinate": [
+            0,
+            0
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "B",
+          "coordinate": [
+            0.001,
+            0
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "C",
+          "coordinate": [
+            0.001,
+            0.001
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "D",
+          "coordinate": [
+            0,
+            0.001
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "E",
+          "coordinate": [
+            0.0003,
+            0.0002
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "F",
+          "coordinate": [
+            0.0007,
+            0.0008
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "G",
+          "coordinate": [
+            0.0003,
+            0.0008
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "H",
+          "coordinate": [
+            0.0007,
+            0.0002
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        }
+      ],
+      "edges": [
+        {
+          "id": "AB",
+          "from": "A",
+          "to": "B",
+          "featureId": "road:AB",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 111.19508023353292,
+          "shape": [
+            [
+              0,
+              0
+            ],
+            [
+              0.001,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "BC",
+          "from": "B",
+          "to": "C",
+          "featureId": "road:BC",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 111.19508023353292,
+          "shape": [
+            [
+              0.001,
+              0
+            ],
+            [
+              0.001,
+              0.001
+            ]
+          ]
+        },
+        {
+          "id": "AD",
+          "from": "A",
+          "to": "D",
+          "featureId": "road:AD",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 111.19508023353292,
+          "shape": [
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0.001
+            ]
+          ]
+        },
+        {
+          "id": "DC",
+          "from": "D",
+          "to": "C",
+          "featureId": "road:DC",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 111.19508021659693,
+          "shape": [
+            [
+              0,
+              0.001
+            ],
+            [
+              0.001,
+              0.001
+            ]
+          ]
+        },
+        {
+          "id": "EF",
+          "from": "E",
+          "to": "F",
+          "featureId": "road:EF",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 80.18391267121487,
+          "shape": [
+            [
+              0.0003,
+              0.0002
+            ],
+            [
+              0.0007,
+              0.0008
+            ]
+          ]
+        },
+        {
+          "id": "GH",
+          "from": "G",
+          "to": "H",
+          "featureId": "road:GH",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 80.18391267121487,
+          "shape": [
+            [
+              0.0003,
+              0.0008
+            ],
+            [
+              0.0007,
+              0.0002
+            ]
+          ]
+        }
+      ],
+      "restrictions": [],
+      "completeness": "complete",
+      "exclusions": []
+    },
+    "labels": [
+      {
+        "id": "label:AB",
+        "featureId": "road:AB",
+        "text": "Road AB",
+        "anchor": [
+          0,
+          0
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      },
+      {
+        "id": "label:BC",
+        "featureId": "road:BC",
+        "text": "Road BC",
+        "anchor": [
+          0.001,
+          0
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      },
+      {
+        "id": "label:AD",
+        "featureId": "road:AD",
+        "text": "Road AD",
+        "anchor": [
+          0,
+          0
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      },
+      {
+        "id": "label:DC",
+        "featureId": "road:DC",
+        "text": "Road DC",
+        "anchor": [
+          0,
+          0.001
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      },
+      {
+        "id": "label:EF",
+        "featureId": "road:EF",
+        "text": "Road EF",
+        "anchor": [
+          0.0003,
+          0.0002
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      },
+      {
+        "id": "label:GH",
+        "featureId": "road:GH",
+        "text": "Road GH",
+        "anchor": [
+          0.0003,
+          0.0008
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      }
+    ],
+    "exercises": [
+      {
+        "id": "heading",
+        "type": "heading",
+        "prompt": "Face true north.",
+        "review": "reviewed",
+        "sourceIds": [
+          "synthetic"
+        ],
+        "hints": [
+          "North is 0 degrees."
+        ],
+        "scenario": null,
+        "rubric": {
+          "expectedDeg": 0,
+          "toleranceDeg": 15
+        }
+      },
+      {
+        "id": "endpoint",
+        "type": "endpoint",
+        "prompt": "Locate A.",
+        "review": "reviewed",
+        "sourceIds": [
+          "synthetic"
+        ],
+        "hints": [],
+        "scenario": null,
+        "rubric": {
+          "expected": [
+            0,
+            0
+          ],
+          "toleranceM": 20
+        }
+      },
+      {
+        "id": "route",
+        "type": "route",
+        "prompt": "Trace any valid route from A to C.",
+        "review": "draft",
+        "sourceIds": [
+          "synthetic"
+        ],
+        "hints": [],
+        "scenario": null,
+        "rubric": {
+          "startNodeId": "B",
+          "endNodeId": "A",
+          "mode": "drive",
+          "objective": "any-valid",
+          "maxDistanceM": null
+        }
+      },
+      {
+        "id": "detour",
+        "type": "detour",
+        "prompt": "Reach C when BC is closed in this synthetic exercise.",
+        "review": "reviewed",
+        "sourceIds": [
+          "synthetic"
+        ],
+        "hints": [],
+        "scenario": {
+          "id": "closure",
+          "closedEdgeIds": [
+            "BC"
+          ],
+          "label": "Synthetic closure, not a real road condition."
+        },
+        "rubric": {
+          "startNodeId": "A",
+          "endNodeId": "C",
+          "mode": "drive",
+          "objective": "any-valid",
+          "maxDistanceM": null
+        }
+      }
+    ],
+    "print": {
+      "paper": "letter",
+      "orientation": "landscape",
+      "marginMm": 10,
+      "scaleDenominator": 5000,
+      "labelMinPt": 8,
+      "mapRotationDeg": 0
+    },
+    "extensions": {}
+  },
+  "bad-reference": {
+    "schemaVersion": 1,
+    "id": "synthetic-bad-reference",
+    "title": "Synthetic streets and bridge crossing",
+    "revision": 1,
+    "module": "street",
+    "capabilities": [
+      "street-core"
+    ],
+    "review": {
+      "status": "reviewed",
+      "reviewedAt": "2026-10-13T00:00:00.000Z",
+      "note": "Synthetic recipe and known answers reviewed; no real roads represented."
+    },
+    "bounds": [
+      -0.0001,
+      -0.0001,
+      0.0011,
+      0.0011
+    ],
+    "sourceBounds": [
+      -0.0002,
+      -0.0002,
+      0.0012,
+      0.0012
+    ],
+    "sources": [
+      {
+        "id": "synthetic",
+        "kind": "synthetic",
+        "url": null,
+        "query": null,
+        "fetchedAt": "2026-10-13T00:00:00.000Z",
+        "sourceAt": null,
+        "version": "recipe-v1",
+        "sha256": "05c84e46fc2884b850b14844d8ff5cb4a9b716f9c61f3424c416351c8adf4813",
+        "license": "CC0-1.0",
+        "attribution": "Map Literacy synthetic fixture data; no geographic source.",
+        "transforms": [
+          {
+            "name": "generate-fixtures",
+            "version": "1",
+            "parameters": {
+              "sourceFile": "synthetic-source.json"
+            }
+          },
+          {
+            "name": "fixture-variant",
+            "version": "1",
+            "parameters": {
+              "name": "bad-reference"
+            }
+          }
+        ]
+      }
+    ],
+    "features": {
+      "type": "FeatureCollection",
+      "features": [
+        {
+          "type": "Feature",
+          "id": "road:AB",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0,
+                0
+              ],
+              [
+                0.001,
+                0
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road AB",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "road:BC",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0.001,
+                0
+              ],
+              [
+                0.001,
+                0.001
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road BC",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "road:AD",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0,
+                0
+              ],
+              [
+                0,
+                0.001
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road AD",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "road:DC",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0,
+                0.001
+              ],
+              [
+                0.001,
+                0.001
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road DC",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "road:EF",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0.0003,
+                0.0002
+              ],
+              [
+                0.0007,
+                0.0008
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road EF",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "road:GH",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0.0003,
+                0.0008
+              ],
+              [
+                0.0007,
+                0.0002
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road GH",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        }
+      ]
+    },
+    "topology": {
+      "nodes": [
+        {
+          "id": "A",
+          "coordinate": [
+            0,
+            0
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "B",
+          "coordinate": [
+            0.001,
+            0
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "C",
+          "coordinate": [
+            0.001,
+            0.001
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "D",
+          "coordinate": [
+            0,
+            0.001
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "E",
+          "coordinate": [
+            0.0003,
+            0.0002
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "F",
+          "coordinate": [
+            0.0007,
+            0.0008
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "G",
+          "coordinate": [
+            0.0003,
+            0.0008
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "H",
+          "coordinate": [
+            0.0007,
+            0.0002
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        }
+      ],
+      "edges": [
+        {
+          "id": "AB",
+          "from": "missing",
+          "to": "B",
+          "featureId": "road:AB",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 111.19508023353292,
+          "shape": [
+            [
+              0,
+              0
+            ],
+            [
+              0.001,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "BC",
+          "from": "B",
+          "to": "C",
+          "featureId": "road:BC",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 111.19508023353292,
+          "shape": [
+            [
+              0.001,
+              0
+            ],
+            [
+              0.001,
+              0.001
+            ]
+          ]
+        },
+        {
+          "id": "AD",
+          "from": "A",
+          "to": "D",
+          "featureId": "road:AD",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 111.19508023353292,
+          "shape": [
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0.001
+            ]
+          ]
+        },
+        {
+          "id": "DC",
+          "from": "D",
+          "to": "C",
+          "featureId": "road:DC",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 111.19508021659693,
+          "shape": [
+            [
+              0,
+              0.001
+            ],
+            [
+              0.001,
+              0.001
+            ]
+          ]
+        },
+        {
+          "id": "EF",
+          "from": "E",
+          "to": "F",
+          "featureId": "road:EF",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 80.18391267121487,
+          "shape": [
+            [
+              0.0003,
+              0.0002
+            ],
+            [
+              0.0007,
+              0.0008
+            ]
+          ]
+        },
+        {
+          "id": "GH",
+          "from": "G",
+          "to": "H",
+          "featureId": "road:GH",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 80.18391267121487,
+          "shape": [
+            [
+              0.0003,
+              0.0008
+            ],
+            [
+              0.0007,
+              0.0002
+            ]
+          ]
+        }
+      ],
+      "restrictions": [],
+      "completeness": "complete",
+      "exclusions": []
+    },
+    "labels": [
+      {
+        "id": "label:AB",
+        "featureId": "road:AB",
+        "text": "Road AB",
+        "anchor": [
+          0,
+          0
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      },
+      {
+        "id": "label:BC",
+        "featureId": "road:BC",
+        "text": "Road BC",
+        "anchor": [
+          0.001,
+          0
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      },
+      {
+        "id": "label:AD",
+        "featureId": "road:AD",
+        "text": "Road AD",
+        "anchor": [
+          0,
+          0
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      },
+      {
+        "id": "label:DC",
+        "featureId": "road:DC",
+        "text": "Road DC",
+        "anchor": [
+          0,
+          0.001
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      },
+      {
+        "id": "label:EF",
+        "featureId": "road:EF",
+        "text": "Road EF",
+        "anchor": [
+          0.0003,
+          0.0002
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      },
+      {
+        "id": "label:GH",
+        "featureId": "road:GH",
+        "text": "Road GH",
+        "anchor": [
+          0.0003,
+          0.0008
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      }
+    ],
+    "exercises": [
+      {
+        "id": "heading",
+        "type": "heading",
+        "prompt": "Face true north.",
+        "review": "reviewed",
+        "sourceIds": [
+          "synthetic"
+        ],
+        "hints": [
+          "North is 0 degrees."
+        ],
+        "scenario": null,
+        "rubric": {
+          "expectedDeg": 0,
+          "toleranceDeg": 15
+        }
+      },
+      {
+        "id": "endpoint",
+        "type": "endpoint",
+        "prompt": "Locate A.",
+        "review": "reviewed",
+        "sourceIds": [
+          "synthetic"
+        ],
+        "hints": [],
+        "scenario": null,
+        "rubric": {
+          "expected": [
+            0,
+            0
+          ],
+          "toleranceM": 20
+        }
+      },
+      {
+        "id": "route",
+        "type": "route",
+        "prompt": "Trace any valid route from A to C.",
+        "review": "reviewed",
+        "sourceIds": [
+          "synthetic"
+        ],
+        "hints": [],
+        "scenario": null,
+        "rubric": {
+          "startNodeId": "A",
+          "endNodeId": "C",
+          "mode": "drive",
+          "objective": "any-valid",
+          "maxDistanceM": null
+        }
+      },
+      {
+        "id": "detour",
+        "type": "detour",
+        "prompt": "Reach C when BC is closed in this synthetic exercise.",
+        "review": "reviewed",
+        "sourceIds": [
+          "synthetic"
+        ],
+        "hints": [],
+        "scenario": {
+          "id": "closure",
+          "closedEdgeIds": [
+            "BC"
+          ],
+          "label": "Synthetic closure, not a real road condition."
+        },
+        "rubric": {
+          "startNodeId": "A",
+          "endNodeId": "C",
+          "mode": "drive",
+          "objective": "any-valid",
+          "maxDistanceM": null
+        }
+      }
+    ],
+    "print": {
+      "paper": "letter",
+      "orientation": "landscape",
+      "marginMm": 10,
+      "scaleDenominator": 5000,
+      "labelMinPt": 8,
+      "mapRotationDeg": 0
+    },
+    "extensions": {}
+  },
+  "future-topo": {
+    "schemaVersion": 1,
+    "id": "synthetic-future-topo",
+    "title": "Synthetic streets and bridge crossing",
+    "revision": 1,
+    "module": "topographic",
+    "capabilities": [
+      "terrain-v1"
+    ],
+    "review": {
+      "status": "reviewed",
+      "reviewedAt": "2026-10-13T00:00:00.000Z",
+      "note": "Synthetic recipe and known answers reviewed; no real roads represented."
+    },
+    "bounds": [
+      -0.0001,
+      -0.0001,
+      0.0011,
+      0.0011
+    ],
+    "sourceBounds": [
+      -0.0002,
+      -0.0002,
+      0.0012,
+      0.0012
+    ],
+    "sources": [
+      {
+        "id": "synthetic",
+        "kind": "synthetic",
+        "url": null,
+        "query": null,
+        "fetchedAt": "2026-10-13T00:00:00.000Z",
+        "sourceAt": null,
+        "version": "recipe-v1",
+        "sha256": "05c84e46fc2884b850b14844d8ff5cb4a9b716f9c61f3424c416351c8adf4813",
+        "license": "CC0-1.0",
+        "attribution": "Map Literacy synthetic fixture data; no geographic source.",
+        "transforms": [
+          {
+            "name": "generate-fixtures",
+            "version": "1",
+            "parameters": {
+              "sourceFile": "synthetic-source.json"
+            }
+          },
+          {
+            "name": "fixture-variant",
+            "version": "1",
+            "parameters": {
+              "name": "future-topo"
+            }
+          }
+        ]
+      }
+    ],
+    "features": {
+      "type": "FeatureCollection",
+      "features": [
+        {
+          "type": "Feature",
+          "id": "road:AB",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0,
+                0
+              ],
+              [
+                0.001,
+                0
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road AB",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "road:BC",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0.001,
+                0
+              ],
+              [
+                0.001,
+                0.001
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road BC",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "road:AD",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0,
+                0
+              ],
+              [
+                0,
+                0.001
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road AD",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "road:DC",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0,
+                0.001
+              ],
+              [
+                0.001,
+                0.001
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road DC",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "road:EF",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0.0003,
+                0.0002
+              ],
+              [
+                0.0007,
+                0.0008
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road EF",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "road:GH",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0.0003,
+                0.0008
+              ],
+              [
+                0.0007,
+                0.0002
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road GH",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        }
+      ]
+    },
+    "topology": {
+      "nodes": [
+        {
+          "id": "A",
+          "coordinate": [
+            0,
+            0
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "B",
+          "coordinate": [
+            0.001,
+            0
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "C",
+          "coordinate": [
+            0.001,
+            0.001
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "D",
+          "coordinate": [
+            0,
+            0.001
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "E",
+          "coordinate": [
+            0.0003,
+            0.0002
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "F",
+          "coordinate": [
+            0.0007,
+            0.0008
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "G",
+          "coordinate": [
+            0.0003,
+            0.0008
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "H",
+          "coordinate": [
+            0.0007,
+            0.0002
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        }
+      ],
+      "edges": [
+        {
+          "id": "AB",
+          "from": "A",
+          "to": "B",
+          "featureId": "road:AB",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 111.19508023353292,
+          "shape": [
+            [
+              0,
+              0
+            ],
+            [
+              0.001,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "BC",
+          "from": "B",
+          "to": "C",
+          "featureId": "road:BC",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 111.19508023353292,
+          "shape": [
+            [
+              0.001,
+              0
+            ],
+            [
+              0.001,
+              0.001
+            ]
+          ]
+        },
+        {
+          "id": "AD",
+          "from": "A",
+          "to": "D",
+          "featureId": "road:AD",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 111.19508023353292,
+          "shape": [
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0.001
+            ]
+          ]
+        },
+        {
+          "id": "DC",
+          "from": "D",
+          "to": "C",
+          "featureId": "road:DC",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 111.19508021659693,
+          "shape": [
+            [
+              0,
+              0.001
+            ],
+            [
+              0.001,
+              0.001
+            ]
+          ]
+        },
+        {
+          "id": "EF",
+          "from": "E",
+          "to": "F",
+          "featureId": "road:EF",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 80.18391267121487,
+          "shape": [
+            [
+              0.0003,
+              0.0002
+            ],
+            [
+              0.0007,
+              0.0008
+            ]
+          ]
+        },
+        {
+          "id": "GH",
+          "from": "G",
+          "to": "H",
+          "featureId": "road:GH",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 80.18391267121487,
+          "shape": [
+            [
+              0.0003,
+              0.0008
+            ],
+            [
+              0.0007,
+              0.0002
+            ]
+          ]
+        }
+      ],
+      "restrictions": [],
+      "completeness": "complete",
+      "exclusions": []
+    },
+    "labels": [
+      {
+        "id": "label:AB",
+        "featureId": "road:AB",
+        "text": "Road AB",
+        "anchor": [
+          0,
+          0
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      },
+      {
+        "id": "label:BC",
+        "featureId": "road:BC",
+        "text": "Road BC",
+        "anchor": [
+          0.001,
+          0
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      },
+      {
+        "id": "label:AD",
+        "featureId": "road:AD",
+        "text": "Road AD",
+        "anchor": [
+          0,
+          0
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      },
+      {
+        "id": "label:DC",
+        "featureId": "road:DC",
+        "text": "Road DC",
+        "anchor": [
+          0,
+          0.001
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      },
+      {
+        "id": "label:EF",
+        "featureId": "road:EF",
+        "text": "Road EF",
+        "anchor": [
+          0.0003,
+          0.0002
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      },
+      {
+        "id": "label:GH",
+        "featureId": "road:GH",
+        "text": "Road GH",
+        "anchor": [
+          0.0003,
+          0.0008
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      }
+    ],
+    "exercises": [
+      {
+        "id": "heading",
+        "type": "heading",
+        "prompt": "Face true north.",
+        "review": "reviewed",
+        "sourceIds": [
+          "synthetic"
+        ],
+        "hints": [
+          "North is 0 degrees."
+        ],
+        "scenario": null,
+        "rubric": {
+          "expectedDeg": 0,
+          "toleranceDeg": 15
+        }
+      },
+      {
+        "id": "endpoint",
+        "type": "endpoint",
+        "prompt": "Locate A.",
+        "review": "reviewed",
+        "sourceIds": [
+          "synthetic"
+        ],
+        "hints": [],
+        "scenario": null,
+        "rubric": {
+          "expected": [
+            0,
+            0
+          ],
+          "toleranceM": 20
+        }
+      },
+      {
+        "id": "route",
+        "type": "route",
+        "prompt": "Trace any valid route from A to C.",
+        "review": "reviewed",
+        "sourceIds": [
+          "synthetic"
+        ],
+        "hints": [],
+        "scenario": null,
+        "rubric": {
+          "startNodeId": "A",
+          "endNodeId": "C",
+          "mode": "drive",
+          "objective": "any-valid",
+          "maxDistanceM": null
+        }
+      },
+      {
+        "id": "detour",
+        "type": "detour",
+        "prompt": "Reach C when BC is closed in this synthetic exercise.",
+        "review": "reviewed",
+        "sourceIds": [
+          "synthetic"
+        ],
+        "hints": [],
+        "scenario": {
+          "id": "closure",
+          "closedEdgeIds": [
+            "BC"
+          ],
+          "label": "Synthetic closure, not a real road condition."
+        },
+        "rubric": {
+          "startNodeId": "A",
+          "endNodeId": "C",
+          "mode": "drive",
+          "objective": "any-valid",
+          "maxDistanceM": null
+        }
+      }
+    ],
+    "print": {
+      "paper": "letter",
+      "orientation": "landscape",
+      "marginMm": 10,
+      "scaleDenominator": 5000,
+      "labelMinPt": 8,
+      "mapRotationDeg": 0
+    },
+    "extensions": {}
+  },
+  "future-route": {
+    "schemaVersion": 1,
+    "id": "synthetic-future-route",
+    "title": "Synthetic streets and bridge crossing",
+    "revision": 1,
+    "module": "street",
+    "capabilities": [
+      "street-core",
+      "directions-v1"
+    ],
+    "review": {
+      "status": "reviewed",
+      "reviewedAt": "2026-10-13T00:00:00.000Z",
+      "note": "Synthetic recipe and known answers reviewed; no real roads represented."
+    },
+    "bounds": [
+      -0.0001,
+      -0.0001,
+      0.0011,
+      0.0011
+    ],
+    "sourceBounds": [
+      -0.0002,
+      -0.0002,
+      0.0012,
+      0.0012
+    ],
+    "sources": [
+      {
+        "id": "synthetic",
+        "kind": "synthetic",
+        "url": null,
+        "query": null,
+        "fetchedAt": "2026-10-13T00:00:00.000Z",
+        "sourceAt": null,
+        "version": "recipe-v1",
+        "sha256": "05c84e46fc2884b850b14844d8ff5cb4a9b716f9c61f3424c416351c8adf4813",
+        "license": "CC0-1.0",
+        "attribution": "Map Literacy synthetic fixture data; no geographic source.",
+        "transforms": [
+          {
+            "name": "generate-fixtures",
+            "version": "1",
+            "parameters": {
+              "sourceFile": "synthetic-source.json"
+            }
+          },
+          {
+            "name": "fixture-variant",
+            "version": "1",
+            "parameters": {
+              "name": "future-route"
+            }
+          }
+        ]
+      }
+    ],
+    "features": {
+      "type": "FeatureCollection",
+      "features": [
+        {
+          "type": "Feature",
+          "id": "road:AB",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0,
+                0
+              ],
+              [
+                0.001,
+                0
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road AB",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "road:BC",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0.001,
+                0
+              ],
+              [
+                0.001,
+                0.001
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road BC",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "road:AD",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0,
+                0
+              ],
+              [
+                0,
+                0.001
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road AD",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "road:DC",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0,
+                0.001
+              ],
+              [
+                0.001,
+                0.001
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road DC",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "road:EF",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0.0003,
+                0.0002
+              ],
+              [
+                0.0007,
+                0.0008
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road EF",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "road:GH",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0.0003,
+                0.0008
+              ],
+              [
+                0.0007,
+                0.0002
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road GH",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        }
+      ]
+    },
+    "topology": {
+      "nodes": [
+        {
+          "id": "A",
+          "coordinate": [
+            0,
+            0
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "B",
+          "coordinate": [
+            0.001,
+            0
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "C",
+          "coordinate": [
+            0.001,
+            0.001
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "D",
+          "coordinate": [
+            0,
+            0.001
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "E",
+          "coordinate": [
+            0.0003,
+            0.0002
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "F",
+          "coordinate": [
+            0.0007,
+            0.0008
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "G",
+          "coordinate": [
+            0.0003,
+            0.0008
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "H",
+          "coordinate": [
+            0.0007,
+            0.0002
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        }
+      ],
+      "edges": [
+        {
+          "id": "AB",
+          "from": "A",
+          "to": "B",
+          "featureId": "road:AB",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 111.19508023353292,
+          "shape": [
+            [
+              0,
+              0
+            ],
+            [
+              0.001,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "BC",
+          "from": "B",
+          "to": "C",
+          "featureId": "road:BC",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 111.19508023353292,
+          "shape": [
+            [
+              0.001,
+              0
+            ],
+            [
+              0.001,
+              0.001
+            ]
+          ]
+        },
+        {
+          "id": "AD",
+          "from": "A",
+          "to": "D",
+          "featureId": "road:AD",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 111.19508023353292,
+          "shape": [
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0.001
+            ]
+          ]
+        },
+        {
+          "id": "DC",
+          "from": "D",
+          "to": "C",
+          "featureId": "road:DC",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 111.19508021659693,
+          "shape": [
+            [
+              0,
+              0.001
+            ],
+            [
+              0.001,
+              0.001
+            ]
+          ]
+        },
+        {
+          "id": "EF",
+          "from": "E",
+          "to": "F",
+          "featureId": "road:EF",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 80.18391267121487,
+          "shape": [
+            [
+              0.0003,
+              0.0002
+            ],
+            [
+              0.0007,
+              0.0008
+            ]
+          ]
+        },
+        {
+          "id": "GH",
+          "from": "G",
+          "to": "H",
+          "featureId": "road:GH",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 80.18391267121487,
+          "shape": [
+            [
+              0.0003,
+              0.0008
+            ],
+            [
+              0.0007,
+              0.0002
+            ]
+          ]
+        }
+      ],
+      "restrictions": [],
+      "completeness": "complete",
+      "exclusions": []
+    },
+    "labels": [
+      {
+        "id": "label:AB",
+        "featureId": "road:AB",
+        "text": "Road AB",
+        "anchor": [
+          0,
+          0
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      },
+      {
+        "id": "label:BC",
+        "featureId": "road:BC",
+        "text": "Road BC",
+        "anchor": [
+          0.001,
+          0
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      },
+      {
+        "id": "label:AD",
+        "featureId": "road:AD",
+        "text": "Road AD",
+        "anchor": [
+          0,
+          0
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      },
+      {
+        "id": "label:DC",
+        "featureId": "road:DC",
+        "text": "Road DC",
+        "anchor": [
+          0,
+          0.001
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      },
+      {
+        "id": "label:EF",
+        "featureId": "road:EF",
+        "text": "Road EF",
+        "anchor": [
+          0.0003,
+          0.0002
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      },
+      {
+        "id": "label:GH",
+        "featureId": "road:GH",
+        "text": "Road GH",
+        "anchor": [
+          0.0003,
+          0.0008
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      }
+    ],
+    "exercises": [
+      {
+        "id": "heading",
+        "type": "heading",
+        "prompt": "Face true north.",
+        "review": "reviewed",
+        "sourceIds": [
+          "synthetic"
+        ],
+        "hints": [
+          "North is 0 degrees."
+        ],
+        "scenario": null,
+        "rubric": {
+          "expectedDeg": 0,
+          "toleranceDeg": 15
+        }
+      },
+      {
+        "id": "endpoint",
+        "type": "endpoint",
+        "prompt": "Locate A.",
+        "review": "reviewed",
+        "sourceIds": [
+          "synthetic"
+        ],
+        "hints": [],
+        "scenario": null,
+        "rubric": {
+          "expected": [
+            0,
+            0
+          ],
+          "toleranceM": 20
+        }
+      },
+      {
+        "id": "route",
+        "type": "route",
+        "prompt": "Trace any valid route from A to C.",
+        "review": "reviewed",
+        "sourceIds": [
+          "synthetic"
+        ],
+        "hints": [],
+        "scenario": null,
+        "rubric": {
+          "startNodeId": "A",
+          "endNodeId": "C",
+          "mode": "drive",
+          "objective": "any-valid",
+          "maxDistanceM": null
+        }
+      },
+      {
+        "id": "detour",
+        "type": "detour",
+        "prompt": "Reach C when BC is closed in this synthetic exercise.",
+        "review": "reviewed",
+        "sourceIds": [
+          "synthetic"
+        ],
+        "hints": [],
+        "scenario": {
+          "id": "closure",
+          "closedEdgeIds": [
+            "BC"
+          ],
+          "label": "Synthetic closure, not a real road condition."
+        },
+        "rubric": {
+          "startNodeId": "A",
+          "endNodeId": "C",
+          "mode": "drive",
+          "objective": "any-valid",
+          "maxDistanceM": null
+        }
+      }
+    ],
+    "print": {
+      "paper": "letter",
+      "orientation": "landscape",
+      "marginMm": 10,
+      "scaleDenominator": 5000,
+      "labelMinPt": 8,
+      "mapRotationDeg": 0
+    },
+    "extensions": {}
+  },
+  "unsupported-version": {
+    "schemaVersion": 2,
+    "id": "synthetic-unsupported-version",
+    "title": "Synthetic streets and bridge crossing",
+    "revision": 1,
+    "module": "street",
+    "capabilities": [
+      "street-core"
+    ],
+    "review": {
+      "status": "reviewed",
+      "reviewedAt": "2026-10-13T00:00:00.000Z",
+      "note": "Synthetic recipe and known answers reviewed; no real roads represented."
+    },
+    "bounds": [
+      -0.0001,
+      -0.0001,
+      0.0011,
+      0.0011
+    ],
+    "sourceBounds": [
+      -0.0002,
+      -0.0002,
+      0.0012,
+      0.0012
+    ],
+    "sources": [
+      {
+        "id": "synthetic",
+        "kind": "synthetic",
+        "url": null,
+        "query": null,
+        "fetchedAt": "2026-10-13T00:00:00.000Z",
+        "sourceAt": null,
+        "version": "recipe-v1",
+        "sha256": "05c84e46fc2884b850b14844d8ff5cb4a9b716f9c61f3424c416351c8adf4813",
+        "license": "CC0-1.0",
+        "attribution": "Map Literacy synthetic fixture data; no geographic source.",
+        "transforms": [
+          {
+            "name": "generate-fixtures",
+            "version": "1",
+            "parameters": {
+              "sourceFile": "synthetic-source.json"
+            }
+          },
+          {
+            "name": "fixture-variant",
+            "version": "1",
+            "parameters": {
+              "name": "unsupported-version"
+            }
+          }
+        ]
+      }
+    ],
+    "features": {
+      "type": "FeatureCollection",
+      "features": [
+        {
+          "type": "Feature",
+          "id": "road:AB",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0,
+                0
+              ],
+              [
+                0.001,
+                0
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road AB",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "road:BC",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0.001,
+                0
+              ],
+              [
+                0.001,
+                0.001
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road BC",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "road:AD",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0,
+                0
+              ],
+              [
+                0,
+                0.001
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road AD",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "road:DC",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0,
+                0.001
+              ],
+              [
+                0.001,
+                0.001
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road DC",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "road:EF",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0.0003,
+                0.0002
+              ],
+              [
+                0.0007,
+                0.0008
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road EF",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        },
+        {
+          "type": "Feature",
+          "id": "road:GH",
+          "geometry": {
+            "type": "LineString",
+            "coordinates": [
+              [
+                0.0003,
+                0.0008
+              ],
+              [
+                0.0007,
+                0.0002
+              ]
+            ]
+          },
+          "properties": {
+            "sourceId": "synthetic",
+            "role": "road",
+            "name": "Road GH",
+            "tags": {
+              "synthetic": "yes"
+            }
+          }
+        }
+      ]
+    },
+    "topology": {
+      "nodes": [
+        {
+          "id": "A",
+          "coordinate": [
+            0,
+            0
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "B",
+          "coordinate": [
+            0.001,
+            0
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "C",
+          "coordinate": [
+            0.001,
+            0.001
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "D",
+          "coordinate": [
+            0,
+            0.001
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "E",
+          "coordinate": [
+            0.0003,
+            0.0002
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "F",
+          "coordinate": [
+            0.0007,
+            0.0008
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "G",
+          "coordinate": [
+            0.0003,
+            0.0008
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        },
+        {
+          "id": "H",
+          "coordinate": [
+            0.0007,
+            0.0002
+          ],
+          "sourceId": "synthetic",
+          "sourceObjectId": null
+        }
+      ],
+      "edges": [
+        {
+          "id": "AB",
+          "from": "A",
+          "to": "B",
+          "featureId": "road:AB",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 111.19508023353292,
+          "shape": [
+            [
+              0,
+              0
+            ],
+            [
+              0.001,
+              0
+            ]
+          ]
+        },
+        {
+          "id": "BC",
+          "from": "B",
+          "to": "C",
+          "featureId": "road:BC",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 111.19508023353292,
+          "shape": [
+            [
+              0.001,
+              0
+            ],
+            [
+              0.001,
+              0.001
+            ]
+          ]
+        },
+        {
+          "id": "AD",
+          "from": "A",
+          "to": "D",
+          "featureId": "road:AD",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 111.19508023353292,
+          "shape": [
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              0.001
+            ]
+          ]
+        },
+        {
+          "id": "DC",
+          "from": "D",
+          "to": "C",
+          "featureId": "road:DC",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 111.19508021659693,
+          "shape": [
+            [
+              0,
+              0.001
+            ],
+            [
+              0.001,
+              0.001
+            ]
+          ]
+        },
+        {
+          "id": "EF",
+          "from": "E",
+          "to": "F",
+          "featureId": "road:EF",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 80.18391267121487,
+          "shape": [
+            [
+              0.0003,
+              0.0002
+            ],
+            [
+              0.0007,
+              0.0008
+            ]
+          ]
+        },
+        {
+          "id": "GH",
+          "from": "G",
+          "to": "H",
+          "featureId": "road:GH",
+          "sourceId": "synthetic",
+          "mode": "drive",
+          "access": "allowed",
+          "lengthM": 80.18391267121487,
+          "shape": [
+            [
+              0.0003,
+              0.0008
+            ],
+            [
+              0.0007,
+              0.0002
+            ]
+          ]
+        }
+      ],
+      "restrictions": [],
+      "completeness": "complete",
+      "exclusions": []
+    },
+    "labels": [
+      {
+        "id": "label:AB",
+        "featureId": "road:AB",
+        "text": "Road AB",
+        "anchor": [
+          0,
+          0
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      },
+      {
+        "id": "label:BC",
+        "featureId": "road:BC",
+        "text": "Road BC",
+        "anchor": [
+          0.001,
+          0
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      },
+      {
+        "id": "label:AD",
+        "featureId": "road:AD",
+        "text": "Road AD",
+        "anchor": [
+          0,
+          0
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      },
+      {
+        "id": "label:DC",
+        "featureId": "road:DC",
+        "text": "Road DC",
+        "anchor": [
+          0,
+          0.001
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      },
+      {
+        "id": "label:EF",
+        "featureId": "road:EF",
+        "text": "Road EF",
+        "anchor": [
+          0.0003,
+          0.0002
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      },
+      {
+        "id": "label:GH",
+        "featureId": "road:GH",
+        "text": "Road GH",
+        "anchor": [
+          0.0003,
+          0.0008
+        ],
+        "rotationDeg": 0,
+        "visibleIn": "labeled",
+        "priority": 50
+      }
+    ],
+    "exercises": [
+      {
+        "id": "heading",
+        "type": "heading",
+        "prompt": "Face true north.",
+        "review": "reviewed",
+        "sourceIds": [
+          "synthetic"
+        ],
+        "hints": [
+          "North is 0 degrees."
+        ],
+        "scenario": null,
+        "rubric": {
+          "expectedDeg": 0,
+          "toleranceDeg": 15
+        }
+      },
+      {
+        "id": "endpoint",
+        "type": "endpoint",
+        "prompt": "Locate A.",
+        "review": "reviewed",
+        "sourceIds": [
+          "synthetic"
+        ],
+        "hints": [],
+        "scenario": null,
+        "rubric": {
+          "expected": [
+            0,
+            0
+          ],
+          "toleranceM": 20
+        }
+      },
+      {
+        "id": "route",
+        "type": "route",
+        "prompt": "Trace any valid route from A to C.",
+        "review": "reviewed",
+        "sourceIds": [
+          "synthetic"
+        ],
+        "hints": [],
+        "scenario": null,
+        "rubric": {
+          "startNodeId": "A",
+          "endNodeId": "C",
+          "mode": "drive",
+          "objective": "any-valid",
+          "maxDistanceM": null
+        }
+      },
+      {
+        "id": "detour",
+        "type": "detour",
+        "prompt": "Reach C when BC is closed in this synthetic exercise.",
+        "review": "reviewed",
+        "sourceIds": [
+          "synthetic"
+        ],
+        "hints": [],
+        "scenario": {
+          "id": "closure",
+          "closedEdgeIds": [
+            "BC"
+          ],
+          "label": "Synthetic closure, not a real road condition."
+        },
+        "rubric": {
+          "startNodeId": "A",
+          "endNodeId": "C",
+          "mode": "drive",
+          "objective": "any-valid",
+          "maxDistanceM": null
+        }
+      }
+    ],
+    "print": {
+      "paper": "letter",
+      "orientation": "landscape",
+      "marginMm": 10,
+      "scaleDenominator": 5000,
+      "labelMinPt": 8,
+      "mapRotationDeg": 0
+    },
+    "extensions": {}
+  }
+}

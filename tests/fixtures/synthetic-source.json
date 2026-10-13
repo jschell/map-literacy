@@ -1,0 +1,46 @@
+{
+  "recipeVersion": 1,
+  "coordinates": {
+    "A": [
+      0,
+      0
+    ],
+    "B": [
+      0.001,
+      0
+    ],
+    "C": [
+      0.001,
+      0.001
+    ],
+    "D": [
+      0,
+      0.001
+    ],
+    "E": [
+      0.0003,
+      0.0002
+    ],
+    "F": [
+      0.0007,
+      0.0008
+    ],
+    "G": [
+      0.0003,
+      0.0008
+    ],
+    "H": [
+      0.0007,
+      0.0002
+    ]
+  },
+  "links": [
+    "AB",
+    "BC",
+    "AD",
+    "DC",
+    "EF",
+    "GH"
+  ],
+  "note": "Synthetic geometry; EF and GH cross without a shared node."
+}
