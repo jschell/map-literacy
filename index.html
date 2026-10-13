@@ -26,13 +26,13 @@
     <p id="status" role="status" aria-live="polite">Load the synthetic map or import a validated lesson pack. No location is selected automatically.</p>
     <section id="map-panel" class="map-panel" aria-label="Map viewer"><div id="map"></div></section>
     <p id="attribution" class="note" aria-label="Map sources"></p>
-    <section class="inspection"><label>Feature selection<select id="feature"><option value="">No feature selected</option></select></label><p id="selection">Choose a road on the map or use the feature list.</p></section>
+    <section class="inspection"><label>Find feature<input id="feature-filter" type="search" maxlength="120" disabled></label><label>Feature selection<select id="feature"><option value="">No feature selected</option></select><span id="feature-matches" class="note"></span></label><p id="selection">Choose a road on the map or use the feature list.</p></section>
     <section class="route-review" aria-labelledby="trace-title">
       <h2 id="trace-title">Trace a path</h2>
       <div class="trace-controls">
         <label>Trace mode<select id="trace-mode" disabled><option value="drive">Driving</option><option value="walk">Walking</option></select></label>
-        <label>Start graph node<select id="trace-start" disabled><option value="">Choose a start node</option></select></label>
-        <label>Next directed edge<select id="trace-edge" disabled><option value="">Choose a directed edge</option></select></label>
+        <label>Find start node<input id="trace-start-filter" type="search" maxlength="120" disabled></label><label>Start graph node<select id="trace-start" disabled><option value="">Choose a start node</option></select><span id="trace-start-matches" class="note"></span></label>
+        <label>Find directed edge<input id="trace-edge-filter" type="search" maxlength="120" disabled></label><label>Next directed edge<select id="trace-edge" disabled><option value="">Choose a directed edge</option></select><span id="trace-edge-matches" class="note"></span></label>
       </div>
       <div class="editor-actions"><button id="trace-add" type="button" disabled>Add edge</button><button id="trace-map" type="button" aria-pressed="false" disabled>Trace with map taps</button><button id="trace-back" type="button" disabled>Remove last edge</button><button id="trace-clear" type="button" disabled>Clear trace</button></div>
       <label class="trace-print"><input id="include-trace" type="checkbox" disabled>Include trace on printed map</label>

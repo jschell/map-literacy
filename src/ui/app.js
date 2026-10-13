@@ -1,5 +1,7 @@
 import { readImport } from '../data/read-pack.js';
 import { createMapModel } from '../map/model.js';
+import { createSearchSelect } from './search-select.js';
+import { assertRenderable } from '../map/render-limits.js';
 import { createRouteTrace } from './route-trace.js';
 import { createLabelEditor } from './label-editor.js';
 import { createExercisePrint } from '../print/exercise.js';
@@ -18,7 +20,7 @@ function cachedModel(cache, key, create) {
 const announce = (text) => { get('status').textContent = text; };
 
 function selectFeature(id) {
-  selected = id || null; get('feature').value = id || '';
+  selected = id || null; featurePicker.choose(selected);
   const feature = pack?.features.features.find((f) => f.id === id);
   get('selection').textContent = feature ? `${feature.properties.name ?? 'Unnamed feature'} · ${feature.id}. Drawing geometry alone does not establish a permitted driving route.` : 'Choose a road on the map or use the feature list.';
   editor.selectedFeature(selected); updateView();
@@ -80,6 +82,7 @@ function updateView() {
   announce(`${pack.title} · ${pack.review.status === 'reviewed' ? 'Reviewed pack' : 'Unreviewed draft'} · ${pack.features.features.length} features · ${model.labels.length} labels shown${model.suppressedLabels ? `, ${model.suppressedLabels} suppressed to avoid collisions/edges` : ''} · screen rotated ${rotation}°. ${printError}`);
 }
 function install(value) {
+  assertRenderable(value);
   pack = value; selected = null; rotation = 0;
   screenModels.clear(); paperModels.clear(); printPagesKey = null; screenViewKey = null; paperViewKey = null; screenSelected = null;
   get('print-exercise').replaceChildren();
@@ -89,10 +92,9 @@ function install(value) {
   get('print-output').value = 'map';
   get('scale').value = String(pack.print.scaleDenominator);
   get('orientation').value = pack.print.orientation;
-  const options = document.createDocumentFragment(); options.append(new Option('No feature selected', ''));
+
   get('attribution').textContent = pack.sources.map((s) => `${s.attribution} · ${s.license} · source ${s.sourceAt?.slice(0, 10) ?? 'date unknown'}`).join(' | ');
-  for (const f of pack.features.features) options.append(new Option(`${f.properties.name ?? 'Unnamed feature'} (${f.id})`, f.id));
-  get('feature').replaceChildren(options);
+  featurePicker.set(pack.features.features.map((f) => ({ id: f.id, text: `${f.properties.name ?? 'Unnamed feature'} (${f.id})` })), '', true); featurePicker.enabled(true);
   get('selection').textContent = 'Choose a road on the map or use the feature list.'; editor.installed(); trace.installed(); updateView();
   get('map').dataset.loadVersion = String(++loadVersion);
 }
@@ -102,8 +104,9 @@ async function load(operation) {
   try { const value = await operation(current.signal); if (job === current && !current.signal.aborted) install(value); }
   catch (error) { if (job === current && !current.signal.aborted) announce(`Map not loaded: ${error.message} ${error.errors?.[0]?.path ?? ''} The previous map is retained.`); }
 }
+const featurePicker = createSearchSelect({ select: get('feature'), filter: get('feature-filter'), summary: get('feature-matches'), placeholder: 'No feature selected' });
 const trace = createRouteTrace({ getPack: () => pack, redraw: updateView });
-const editor = createLabelEditor({ getPack: () => pack, getModel: () => currentModel, applyPack: (value) => { pack = value; screenModels.clear(); paperModels.clear(); printPagesKey = null; screenViewKey = null; paperViewKey = null; screenSelected = null; trace.packChanged(); updateView(); } });
+const editor = createLabelEditor({ getPack: () => pack, getModel: () => currentModel, applyPack: (value) => { assertRenderable(value); pack = value; screenModels.clear(); paperModels.clear(); printPagesKey = null; screenViewKey = null; paperViewKey = null; screenSelected = null; trace.packChanged(); updateView(); } });
 
 get('demo').addEventListener('click', () => load(async (signal) => {
   const response = await fetch('tests/fixtures/street-square.json', { signal });

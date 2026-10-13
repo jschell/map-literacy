@@ -109,3 +109,5 @@ h2.sheet-block { font-size: 12pt; line-height: 1.4; }
   #exercise-pages[data-orientation=portrait] { page: letter-portrait; }
   #exercise-pages[data-orientation=landscape] { page: letter-landscape; }
 }
+
+.trace-controls input, .inspection input { width: 100%; min-width: 0; }

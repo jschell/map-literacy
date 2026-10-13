@@ -1,7 +1,10 @@
+import { createSearchSelect } from './search-select.js';
 import { createTraceReview } from '../route/trace.js';
 const get = (id) => document.getElementById(id);
 
 export function createRouteTrace({ getPack, redraw }) {
+  const startPicker = createSearchSelect({ select: get('trace-start'), filter: get('trace-start-filter'), summary: get('trace-start-matches'), placeholder: 'Choose a start node' });
+  const edgePicker = createSearchSelect({ select: get('trace-edge'), filter: get('trace-edge-filter'), summary: get('trace-edge-matches'), placeholder: 'Choose a directed edge' });
   let review = null, state = null, tracing = false;
   const message = (text) => { get('trace-status').textContent = text; };
   function toggle(value) {
@@ -11,12 +14,8 @@ export function createRouteTrace({ getPack, redraw }) {
   function refresh() {
     const trace = state ? review.inspect(state) : null;
     const choices = state ? review.choices(state) : [];
-    get('trace-edge').replaceChildren(new Option('Choose a directed edge', ''));
-    for (const { edge, disabled, reason } of choices) {
-      const option = new Option(`${review.name(edge.featureId)} · ${edge.from} → ${edge.to} (${edge.id}) · ${edge.access}${disabled ? ` — ${reason}` : ''}`, edge.id);
-      option.disabled = disabled; get('trace-edge').add(option);
-    }
-    get('trace-edge').disabled = !state;
+    edgePicker.set(choices.map(({ edge, disabled, reason }) => ({ id: edge.id, disabled, text: `${review.name(edge.featureId)} · ${edge.from} → ${edge.to} (${edge.id}) · ${edge.access}${disabled ? ` — ${reason}` : ''}` })), '', true);
+    edgePicker.enabled(Boolean(state));
     get('trace-add').disabled = true;
     get('trace-back').disabled = !trace?.edges.length; get('trace-clear').disabled = !trace?.edges.length;
     get('trace-map').disabled = !state;
@@ -42,6 +41,7 @@ export function createRouteTrace({ getPack, redraw }) {
     if (state) state = { ...state, mode: get('trace-mode').value, edgeIds: [] };
     toggle(false); refresh(); redraw();
   });
+  get('trace-edge-filter').addEventListener('input', () => { get('trace-add').disabled = !get('trace-edge').value; });
   get('trace-edge').addEventListener('change', () => { get('trace-add').disabled = !get('trace-edge').value; });
   get('trace-add').addEventListener('click', () => append(get('trace-edge').value));
   get('trace-back').addEventListener('click', () => { if (state) { state = { ...state, edgeIds: state.edgeIds.slice(0, -1) }; refresh(); redraw(); } });
@@ -60,9 +60,8 @@ export function createRouteTrace({ getPack, redraw }) {
     },
     installed() {
       review = createTraceReview(getPack()); state = null; toggle(false);
-      const options = document.createDocumentFragment(); options.append(new Option('Choose a start node', ''));
-      for (const node of review.starts) options.append(new Option(`${node.id} · ${node.coordinate.map((v) => v.toFixed(5)).join(', ')}`, node.id));
-      get('trace-start').replaceChildren(options);
+      startPicker.set(review.starts.map((node) => ({ id: node.id, text: `${node.id} · ${node.coordinate.map((v) => v.toFixed(5)).join(', ')}` })), '', true);
+      startPicker.enabled(true);
       get('trace-start').disabled = false; get('trace-mode').disabled = false; get('include-trace').checked = false;
       refresh();
     },

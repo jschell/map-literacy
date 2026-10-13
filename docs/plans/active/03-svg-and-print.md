@@ -48,6 +48,8 @@ Exercise-print follow-up: selected heading/endpoint/route/detour learner workshe
 
 Performance follow-up: reproducible neighborhood/display/graph stress profiles and raw 20-sample p95 reports are implemented. Display and graph profiles reach the joint 100,000-position budget; high-percentile ceiling delays remain too large to claim a practical performance envelope. Reused SVG/label layers and four-entry model caches reduce avoidable churn; measured limits and device/ruler procedure are explicit. See [performance evidence](../../validation/performance.md) and [manual checks](../../validation/physical-print-check.md).
 
-Remaining: practical device-specific performance budget/pack sizing, actual Safari/Firefox/tablet and physical-print calibration. These are not implied by headless Chromium success. Plan 02 real lesson review and newer-source comparison remain queued, not complete.
+Initial budget follow-up: enforced neighborhood rendering limits (1,000 features/10,000 display coordinates/200 authored labels) and bounded searchable native selectors are implemented. Larger schema-valid files retain their preparation support; browser rejection preserves the previous map/trace. A new 20-sample report records graph import around 2.1s and 218 DOM nodes, with remaining latency outliers explicit. See [budget evidence](../../validation/render-budget.md).
+
+Remaining: actual-device acceptance of the provisional performance budget/pack sizing, actual Safari/Firefox/tablet and physical-print calibration. These are not implied by headless Chromium success. Plan 02 real lesson review and newer-source comparison remain queued, not complete.
 
 Next action: validate practical pack sizing on the chosen device matrix and complete physical geometry/label acceptance; coordinate physical/device checks when available.

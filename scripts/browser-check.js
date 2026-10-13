@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import { mkdir, readFile } from 'node:fs/promises';
+import { makePerfPack } from './perf-pack.js';
 import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 const require = createRequire(import.meta.url);
@@ -295,6 +296,41 @@ try {
   assert.equal(await page.locator('#exercise-pages .sheet-answer, #exercise-pages .sheet-hint').count(), 0);
   await loadDemo(); await page.waitForFunction(() => document.getElementById('print-output').value === 'map');
   assert.equal(await page.locator('#exercise-pages .exercise-page').count(), 0);
+  // Search remains native and bounded without losing items beyond the first 200.
+  const neighborhood = makePerfPack('neighborhood').pack;
+  await importReady({ name: 'neighborhood.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(neighborhood)) });
+  assert.ok(await page.locator('#feature option').count() <= 202);
+  await page.locator('#feature-filter').fill('f999');
+  await page.locator('#feature').selectOption('f999');
+  await page.locator('#feature-filter').fill('no-matches');
+  assert.equal(await page.locator('#feature').inputValue(), 'f999');
+  assert.ok((await page.locator('#feature-matches').textContent()).includes('0 matches'));
+  await page.locator('#feature-filter').fill('');
+  assert.equal(await page.locator('#feature').inputValue(), 'f999');
+  assert.equal(await page.locator('#map .feature--selected').getAttribute('data-feature-id'), 'f999');
+  await page.locator('#label-text').fill('One label too many');
+  await page.getByRole('button', { name: 'Apply label', exact: true }).click();
+  assert.ok((await page.locator('#edit-status').textContent()).includes('Label not changed'));
+  assert.ok((await page.locator('#edit-status').textContent()).includes('initial browser limit'));
+  assert.equal(await page.locator('#label-choice option').count(), 201);
+  const graph = makePerfPack('graph-ceiling').pack;
+  await importReady({ name: 'graph.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(graph)) });
+  assert.ok(await page.locator('#trace-start option').count() <= 202);
+  await page.locator('#trace-start-filter').fill('n12000');
+  await page.locator('#trace-start').selectOption('n12000');
+  await page.locator('#trace-start-filter').fill('no-match');
+  assert.equal(await page.locator('#trace-start').inputValue(), 'n12000');
+  await page.locator('#trace-edge-filter').fill('e24000');
+  await page.locator('#trace-edge').selectOption('e24000'); await page.locator('#trace-add').click();
+  assert.equal(await page.locator('#trace-steps li').count(), 1);
+  const versionBeforeRejection = await page.locator('#map').getAttribute('data-load-version');
+  await page.locator('#import').setInputFiles({ name: 'oversized.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(makePerfPack('display-ceiling').pack)) });
+  await page.waitForFunction(() => document.getElementById('status').textContent.includes('initial browser limit'));
+  assert.equal(await page.locator('#map').getAttribute('data-load-version'), versionBeforeRejection);
+  assert.equal(await page.locator('#map .feature').count(), 1);
+  assert.equal(await page.locator('#trace-steps li').count(), 1);
+  assert.equal(await page.locator('#trace-start').inputValue(), 'n12000');
+  await loadDemo();
   let realPack = null;
   if (process.env.MAP_LITERACY_REVIEW_PACK) {
     const started = Date.now();
@@ -330,13 +366,15 @@ try {
   assert.equal(await mobile.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
   await mobile.screenshot({ path: new URL('mobile.png', output).pathname, fullPage: true });
   if (process.env.MAP_LITERACY_REVIEW_PACK) {
+    const mobileVersion = await mobile.locator('#map').getAttribute('data-load-version');
     await mobile.locator('#import').setInputFiles(process.env.MAP_LITERACY_REVIEW_PACK);
+    await mobile.waitForFunction((old) => document.getElementById('map').dataset.loadVersion !== old, mobileVersion);
     await mobile.waitForFunction(() => document.getElementById('status').textContent.includes('Unreviewed draft'));
     assert.equal(await mobile.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
     await mobile.screenshot({ path: new URL('real-mobile.png', output).pathname, fullPage: true });
   }
   await mobile.close();
   assert.deepEqual(errors, []);
-  console.log(JSON.stringify({ syntheticFeatures: 6, variantsAndSelection: 'passed', labelEditingAndExport: 'passed', directedTracingAndPrint: 'passed', exerciseSheetsAndPagination: 'passed', invalidImportRetainsMap: 'passed', pdfDimensions: physical, mobileOverflow: false, realPack, browserErrors: errors }));
+  console.log(JSON.stringify({ syntheticFeatures: 6, variantsAndSelection: 'passed', labelEditingAndExport: 'passed', directedTracingAndPrint: 'passed', exerciseSheetsAndPagination: 'passed', boundedSearchAndRenderLimits: 'passed', invalidImportRetainsMap: 'passed', pdfDimensions: physical, mobileOverflow: false, realPack, browserErrors: errors }));
 } finally { await browser.close(); server?.kill(); }
 

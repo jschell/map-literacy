@@ -5,6 +5,7 @@ import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { platform, arch, cpus } from 'node:os';
 import { makePerfPack } from './perf-pack.js';
+import { assertRenderable } from '../src/map/render-limits.js';
 import { validatePack } from '../src/data/validate-pack.js';
 const require = createRequire(import.meta.url), { chromium } = require('playwright');
 const mod = process.env.MAP_LITERACY_PORTABLE_CHROMIUM === '1' ? require('@sparticuz/chromium') : null, portable = mod?.default ?? mod;
@@ -32,6 +33,16 @@ try {
 
     await page.evaluate(() => { window.importStart = performance.now(); });
     await page.locator('#import').setInputFiles({ name: `${profile}.json`, mimeType: 'application/json', buffer: Buffer.from(json) });
+    let renderable = true;
+    try { assertRenderable(pack); } catch { renderable = false; }
+    if (!renderable) {
+      await page.waitForFunction(() => document.getElementById('status').textContent.includes('initial browser limit'));
+      const rejected = { profile, compactBytes: Buffer.byteLength(json), rendererAccepted: false, rejectionMs: await page.evaluate(() => performance.now() - window.importStart), reason: 'Initial browser render budget exceeded; validated preparation data is unchanged.' };
+      assert.equal(await page.locator('#map svg').count(), 0);
+      report.profiles.push(rejected); console.log(JSON.stringify(rejected));
+      await writeFile(new URL('report.json', output), JSON.stringify(report, null, 2) + '\n');
+      continue;
+    }
     await page.waitForFunction((title) => document.getElementById('status').textContent.includes(title), pack.title);
     const importMs = await page.evaluate(async () => { await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))); return performance.now() - window.importStart; });
     const result = { profile, compactBytes: Buffer.byteLength(json), features: pack.features.features.length, labels: pack.labels.length, nodes: pack.topology.nodes.length, edges: pack.topology.edges.length, restrictions: pack.topology.restrictions.length, importMs, metrics: {} };
@@ -54,6 +65,7 @@ try {
       result.metrics[operation] = stats(values); console.log(JSON.stringify({ profile, operation, medianMs: result.metrics[operation].medianMs, p95Ms: result.metrics[operation].p95Ms }));
     }
     if (profile === 'graph-ceiling') {
+      await page.locator('#trace-start-filter').fill('n12000');
       await page.locator('#trace-start').selectOption('n12000');
       const values = [];
       for (let i = 0; i < samples; i++) {
