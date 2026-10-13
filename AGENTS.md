@@ -2,7 +2,7 @@
 
 ## Purpose and authorization
 
-Map Literacy is a new implementation repository for street and topographic map learning. The current work initializes documentation and plans; no executable application is included. The ideas repository's specs-only rule applies there, not here. Implementation work follows the applicable plan and user task.
+Map Literacy is a new implementation repository for street and topographic map learning. Design contracts and plans are established; no executable application is included yet. The ideas repository's specs-only rule applies there, not here. Implementation work follows the applicable plan and user task.
 
 ## Development principles
 
@@ -21,7 +21,7 @@ Map Literacy is a new implementation repository for street and topographic map l
 
 ## Plans and review
 
-Use docs/plans/{active,queue,complete}. The active implementation plan is 01; roadmap 00 and bootstrap completion record are navigation/reference documents. Maintain dependencies, acceptance criteria, evidence, blockers and next action. Do not mark a plan complete because files exist; verify its outcomes. After an authorized completed step, progress within the task scope without unnecessary confirmation.
+Use docs/plans/{active,queue,complete}. The active implementation plan is 02; roadmap 00 and bootstrap completion record are navigation/reference documents. Maintain dependencies, acceptance criteria, evidence, blockers and next action. Do not mark a plan complete because files exist; verify its outcomes. After an authorized completed step, progress within the task scope without unnecessary confirmation.
 
 Use a focused branch and PR; conventional commit messages. Keep changes reviewable but avoid repeated tiny PRs for one unresolved issue. Describe what changed, why and validation. Do not silently merge PRs.
 

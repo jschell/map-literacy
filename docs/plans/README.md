@@ -6,8 +6,8 @@ Plans are work packages with evidence-based completion, not claims that an appli
 |---|---|---|---|
 | [00 Roadmap](00-roadmap.md) | Reference | — | Scope, sequence and gates |
 | [Bootstrap record](complete/00-repository-bootstrap.md) | Complete: documentation only | — | README, contributor guidance, context and plans |
-| [01 Contracts and validation](active/01-contracts-and-validation.md) | Active: implementation not started | Bootstrap | Contracts and measurable acceptance |
-| [02 Source and lesson packs](queue/02-source-and-lesson-packs.md) | Queue | 01 | Reproducible, validated source packs |
+| [01 Contracts and validation](complete/01-contracts-and-validation.md) | Complete: design contracts | Bootstrap | Contracts and measurable acceptance |
+| [02 Source and lesson packs](active/02-source-and-lesson-packs.md) | Active: implementation not started | 01 | Reproducible, validated source packs |
 | [03 SVG and print](queue/03-svg-and-print.md) | Queue | 01; 02 for real-map validation | Readable interactive/printed variants |
 | [04 Street lessons](queue/04-street-lessons.md) | Queue | 02, 03 | Deterministic exercises and rubric |
 | [05 Persistence and browser release](queue/05-persistence-and-browser-release.md) | Queue | 04 | Recoverable local app and static deployment |

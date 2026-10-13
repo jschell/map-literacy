@@ -1,6 +1,6 @@
 # Architecture proposal
 
-Status: planning baseline; finalize interfaces in Plan 01.
+Status: street-core v1 contract baseline; see [pack contract](contracts/lesson-pack-v1.md) and [application contract](contracts/application-v1.md). Runtime implementation begins in Plan 02.
 
 ## Shared core
 
@@ -9,7 +9,7 @@ Status: planning baseline; finalize interfaces in Plan 01.
 | Acquisition | Bounded source fetch/import, completeness and provenance | Browser fetch or JavaScript preparation tool |
 | Pack validator | Version, bounds, identifiers, units, references and review status | Pure JavaScript validation |
 | Map model | Display features plus separate graph/elevation layers | GeoJSON and explicit source/topology records |
-| Projection | Geographic/local coordinates and paper units | Tested transform; choose local metric CRS where appropriate |
+| Projection | Geographic/local coordinates and paper units | Tested transform; local azimuthal equidistant for bounded street-core; terrain CRS later |
 | Renderer | Road/terrain layers, labels and interactive overlays | SVG for bounded teaching maps |
 | Lessons | State, answers, tolerances, hints and review | Deterministic JavaScript modules |
 | Print | Fixed extent/layout and answer variants | SVG + external CSS print rules |
@@ -21,7 +21,7 @@ Proposed later folders: src/{data,geo,map,lessons,print,storage,routing,ui}, scr
 
 ## Lesson-pack boundary
 
-Candidate sections: schemaVersion, pack identity/revision, module, bounds and coordinate systems, source manifest, display features, topology, optional elevation/contours, manual labels, reviewed exercises/rubrics, print presets and optional routes. Final types and ranges are Plan 01 work.
+Candidate sections: schemaVersion, pack identity/revision, module, bounds and coordinate systems, source manifest, display features, topology, optional elevation/contours, manual labels, reviewed exercises/rubrics, print presets and optional routes. Street-core types/ranges are defined by the linked contract. Terrain/directions are reserved capabilities rejected until their later payload contracts are implemented.
 
 Source entries record canonical URL/query, fetched time, source time/version when supplied, hash, extraction/transform versions, license, attribution and reviewer status. Derivative packs retain this manifest. Route provider/version/options and elevation resolution/units/reference are independent source entries. Stored routes may use different snapshots; detect and report inconsistencies.
 
@@ -45,4 +45,4 @@ Routes are calculated by an external engine through HTTP, then normalized into p
 
 ## Failure and lifecycle work
 
-Plan 01 must define startup (open storage -> validate/migrate -> select pack -> readiness), shutdown/save semantics, canceled work, storage failure, corrupt imports, missing source, unknown correctness and zero exercises. Route failure must not silently substitute straight-line directions. Elevation nodata must not silently become zero meters.
+The application contract defines startup (open storage -> validate/migrate -> select pack -> readiness), shutdown/save semantics, canceled work, storage failure, corrupt imports, missing source, unknown correctness and zero exercises. Route failure must not silently substitute straight-line directions. Elevation nodata must not silently become zero meters.
