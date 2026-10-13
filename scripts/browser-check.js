@@ -138,8 +138,11 @@ try {
   await page.locator('#place-label').click();
   const mapBox = await page.locator('#map svg').boundingBox();
   await page.locator('#map svg').click({ position: { x: mapBox.width / 2, y: mapBox.height / 2 } });
-  assert.ok(Math.abs(Number(await page.locator('#label-lon').inputValue()) - .0005) < .000001);
-  assert.ok(Math.abs(Number(await page.locator('#label-lat').inputValue()) - .0005) < .000001);
+  // MouseEvent client coordinates are integer CSS pixels; allow 1.5 pixels of click quantization.
+  const clipBox = await page.locator('#map clipPath polygon').evaluate((n) => ({ width: n.getBBox().width, height: n.getBBox().height }));
+  const clickToleranceDeg = .001 / Math.min(clipBox.width, clipBox.height) * 1.5;
+  assert.ok(Math.abs(Number(await page.locator('#label-lon').inputValue()) - .0005) < clickToleranceDeg);
+  assert.ok(Math.abs(Number(await page.locator('#label-lat').inputValue()) - .0005) < clickToleranceDeg);
   await page.getByRole('button', { name: 'Apply label', exact: true }).click();
   const downloadEvent = page.waitForEvent('download');
   await page.locator('#export-pack').click();
@@ -222,6 +225,63 @@ try {
   assert.equal(await page.locator('#print').isDisabled(), true);
   await page.locator('#demo').click();
   await page.waitForFunction(() => document.getElementById('orientation').value === 'landscape' && !document.getElementById('print').disabled);
+  // Exercise sheets are independent of review heading/trace controls.
+  await page.locator('#demo').click();
+  await page.waitForFunction(() => document.getElementById('print-exercise').options.length === 4 && document.getElementById('trace-start').value === '');
+  await page.locator('#heading').selectOption('90');
+  await page.locator('#trace-start').selectOption('A');
+  await page.locator('#trace-edge').selectOption('AB'); await page.locator('#trace-add').click();
+  await page.locator('#include-trace').check();
+  for (const orientation of ['portrait', 'landscape']) {
+    await page.locator('#orientation').selectOption(orientation);
+    for (const exercise of ['heading', 'endpoint', 'route', 'detour']) {
+      await page.locator('#print-exercise').selectOption(exercise);
+      for (const audience of ['instructor', 'learner']) {
+        await page.locator('#print-output').selectOption(audience);
+        assert.equal(await page.locator('#print').isDisabled(), false);
+        assert.equal(await page.locator('#paper-map .trace-line').count(), 0);
+        assert.equal(await page.locator('#paper-map .heading-arrow').count(), audience === 'instructor' && exercise === 'heading' ? 1 : 0);
+        if (audience === 'learner') {
+          assert.equal(await page.locator('#exercise-pages .sheet-answer, #exercise-pages .sheet-hint').count(), 0);
+          assert.equal(await page.locator('#exercise-pages .sheet-answer-space').count(), 1);
+        }
+        if (exercise === 'endpoint') assert.equal(await page.locator('#paper-map .exercise-mark').count(), audience === 'instructor' ? 1 : 0);
+        if (exercise === 'detour') assert.equal(await page.locator('#paper-map .closure-line').count(), 2);
+        await page.emulateMedia({ media: 'print' });
+        assert.equal(await page.locator('#exercise-pages .exercise-page').evaluateAll((pages) => pages.every((page) => [...page.children].every((node) => node.scrollHeight <= node.clientHeight + 1))), true);
+        const pdf = await page.pdf({ path: new URL(`${audience}-${exercise}-${orientation}.pdf`, output).pathname, preferCSSPageSize: true, printBackground: true });
+        const pdfText = pdf.toString('latin1'), expectedPages = await page.locator('#exercise-pages .exercise-page').count() + 1;
+        assert.equal((pdfText.match(/\/Type \/Page\b/g) ?? []).length, expectedPages);
+        const expectedBox = orientation === 'portrait' ? [612, 792] : [792, 612];
+        const boxes = [...pdfText.matchAll(/\/MediaBox\s*\[0 0 ([\d.]+) ([\d.]+)\]/g)];
+        assert.equal(boxes.length, expectedPages);
+        assert.ok(boxes.every((m) => JSON.stringify(m.slice(1).map(Number)) === JSON.stringify(expectedBox)));
+        await page.emulateMedia({ media: 'screen' });
+      }
+    }
+  }
+  const longPack = JSON.parse(await readFile(new URL('../tests/fixtures/street-square.json', import.meta.url), 'utf8'));
+  longPack.id = 'long-print'; longPack.title = 'Map'.repeat(40);
+  longPack.exercises[0].prompt = '<img src=x onerror=alert(1)>' + 'P'.repeat(1900);
+  longPack.exercises[0].hints = ['H'.repeat(2000), 'I'.repeat(2000), 'J'.repeat(2000)];
+  longPack.sources[0].attribution = 'C'.repeat(2000); longPack.exercises[0].review = 'draft';
+  await page.locator('#import').setInputFiles({ name: 'long-print.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(longPack)) });
+  await page.waitForFunction(() => document.getElementById('status').textContent.includes('MapMapMap'));
+  await page.locator('#print-exercise').selectOption('heading'); await page.locator('#print-output').selectOption('instructor');
+  assert.ok(await page.locator('#exercise-pages .exercise-page').count() > 1);
+  assert.equal(await page.locator('#exercise-pages img, #exercise-pages script').count(), 0);
+  assert.ok((await page.locator('#exercise-pages .sheet-paragraph').allTextContents()).join('').includes(longPack.exercises[0].prompt));
+  for (const hint of longPack.exercises[0].hints) assert.ok((await page.locator('#exercise-pages .sheet-hint').allTextContents()).join('').includes(hint));
+  assert.ok((await page.locator('#exercise-pages .sheet-credit').allTextContents()).join('').includes(longPack.sources[0].attribution));
+  assert.ok((await page.locator('#paper-title').textContent()).includes('UNREVIEWED DRAFT'));
+  await page.emulateMedia({ media: 'print' });
+  assert.equal(await page.locator('#exercise-pages .sheet-content').evaluateAll((nodes) => nodes.every((n) => n.scrollHeight <= n.clientHeight + 1)), true);
+  await page.pdf({ path: new URL('long-instructor.pdf', output).pathname, preferCSSPageSize: true, printBackground: true });
+  await page.emulateMedia({ media: 'screen' });
+  await page.locator('#print-output').selectOption('learner');
+  assert.equal(await page.locator('#exercise-pages .sheet-answer, #exercise-pages .sheet-hint').count(), 0);
+  await page.locator('#demo').click(); await page.waitForFunction(() => document.getElementById('print-output').value === 'map');
+  assert.equal(await page.locator('#exercise-pages .exercise-page').count(), 0);
   let realPack = null;
   if (process.env.MAP_LITERACY_REVIEW_PACK) {
     const started = Date.now();
@@ -264,6 +324,6 @@ try {
   }
   await mobile.close();
   assert.deepEqual(errors, []);
-  console.log(JSON.stringify({ syntheticFeatures: 6, variantsAndSelection: 'passed', labelEditingAndExport: 'passed', directedTracingAndPrint: 'passed', invalidImportRetainsMap: 'passed', pdfDimensions: physical, mobileOverflow: false, realPack, browserErrors: errors }));
+  console.log(JSON.stringify({ syntheticFeatures: 6, variantsAndSelection: 'passed', labelEditingAndExport: 'passed', directedTracingAndPrint: 'passed', exerciseSheetsAndPagination: 'passed', invalidImportRetainsMap: 'passed', pdfDimensions: physical, mobileOverflow: false, realPack, browserErrors: errors }));
 } finally { await browser.close(); server?.kill(); }
 

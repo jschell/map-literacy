@@ -80,3 +80,32 @@ input[type=file] { max-width: 240px; }
 .trace-arrow { fill: none; stroke: black; stroke-linecap: round; stroke-linejoin: round; }
 
 .heading-arrow, .north-arrow, .north-label, .scale-bar, .scale-label { pointer-events: none; }
+
+#exercise-pages { display: none; }
+.pagination-stage { position: absolute; left: -10000px; top: 0; visibility: hidden; }
+.exercise-page { font-family: system-ui, sans-serif; font-size: 10pt; line-height: 1.4; color: black; background: white; }
+[data-orientation=portrait] .exercise-page { width: 195.9mm; height: 259.4mm; }
+[data-orientation=landscape] .exercise-page { width: 259.4mm; height: 195.9mm; }
+.sheet-page-heading { height: 13.5mm; font-size: 11pt; font-weight: 700; overflow-wrap: anywhere; }
+.sheet-content { overflow: hidden; padding-top: 1mm; }
+[data-orientation=portrait] .sheet-content { height: 225mm; }
+[data-orientation=landscape] .sheet-content { height: 161.5mm; }
+.sheet-block { margin: 0 0 3mm; white-space: pre-wrap; overflow-wrap: anywhere; }
+h2.sheet-block { font-size: 12pt; line-height: 1.4; }
+.sheet-answer { border-left: .5mm solid black; padding-left: 3mm; }
+.sheet-answer-space { height: 40mm; border-bottom: .25mm solid #888; }
+.sheet-footer { height: 20.9mm; padding-top: 3mm; font-size: 8pt; overflow-wrap: anywhere; }
+.exercise-mark { font-family: system-ui, sans-serif; pointer-events: none; }
+.closure-line { fill: none; stroke: black; pointer-events: none; }
+@media print {
+  #exercise-pages { display: block; }
+  #exercise-pages[data-orientation=portrait] .exercise-page { page: letter-portrait; }
+  #exercise-pages[data-orientation=landscape] .exercise-page { page: letter-landscape; }
+  .exercise-page { break-before: page; break-inside: avoid; }
+  .pagination-stage { display: none; }
+}
+#exercise-pages:empty { display: none; }
+@media print {
+  #exercise-pages[data-orientation=portrait] { page: letter-portrait; }
+  #exercise-pages[data-orientation=landscape] { page: letter-landscape; }
+}

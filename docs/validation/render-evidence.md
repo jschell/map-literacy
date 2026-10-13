@@ -42,3 +42,13 @@ Trace PDFs are single-page Letter: Poppler independently confirmed 612 x 792 poi
 ### Print-mode stability correction
 
 The first PR 09 CI run passed all 83 Node tests and fixture checks, then failed an intermittent paper-width measurement in the browser check. The same failure reproduced locally. ResizeObserver treated the print-hidden screen map as a viewport change and scheduled an unnecessary whole-view redraw; a locator could then measure a detached paper SVG. The resize handler now ignores hidden/print-mode screen geometry and guards its queued callback. Browser measurements query/measure the current SVG in one task after verifying print layout; tolerances remain 0.1 CSS pixel. A regression check requires the paper SVG to remain the same node through print mode and PDF generation. Local synthetic-only CI-equivalent checks passed after the correction.
+
+## Exercise worksheet/instructor follow-up — 2026-10-12
+
+87 Node tests passed. Print-content tests cover learner/instructor answer separation, literal long text and source retention, draft status, endpoint/heading criteria, route/detour problem annotations and non-unique manual path acceptance, pack immutability and off-map/unknown selection errors.
+
+Chromium checks generated all 16 audience/exercise/orientation combinations (learner/instructor × heading/endpoint/route/detour × portrait/landscape). Each PDF's page count matched the map plus measured text pages, and every MediaBox matched Letter orientation. Learner DOM output contained no answer/hint blocks or review-trace geometry even with screen heading/trace enabled; instructor endpoint/heading visuals were separate. Content/header/footer containment passed, and map-only output remained a single page without blank trailing pages.
+
+A long-input fixture used a nearly 2,000-character literal hostile prompt, three 2,000-character hints, a 2,000-character attribution and long title. Text continued to extra pages without lost prompt/hint/credit characters or injected elements. Switching instructor to learner removed answer/hint blocks; import reset to map output. Poppler independently confirmed two-page learner detour portrait and instructor endpoint landscape dimensions. Their map/text pages were visually inspected. No real pack was approved, and actual-printer/device calibration remains pending.
+
+The expanded control layout exposed integer-pixel pointer quantization in the existing rotated-anchor browser assertion. That interaction check now uses a 1.5 CSS-pixel tolerance derived from the fixture's displayed extent, while independent geographic transform tolerances and 0.1 CSS-pixel paper checks remain unchanged. The full synthetic-only and optional Redmond browser workflows both passed.
