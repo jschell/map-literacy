@@ -14,7 +14,7 @@
 | Live GPS | Deferred; route preview/simulation first | Separate future plan |
 | Offline | No full-offline guarantee | Define separately if needed |
 | Pilot | Small exploratory evaluation | Plans 01 and 06 define rubric/protocol |
-| License | Not selected for application code | Decide before implementation distribution |
+| License | MIT for project code and original documentation; CC0 synthetic fixture JSON | User selected MIT on 2026-10-12; third-party data retains its licenses |
 
 Unresolved before core implementation: pack schema/versioning, learner interaction/rubric, tolerances, projection, print scale error, content budgets, browser/device matrix, accessibility, state/event contracts, persistence failures and source refresh rules.
 
@@ -28,6 +28,6 @@ Street-core v1 uses built-in browser APIs and SVG, with no mandatory runtime lib
 
 Pack coordinates are longitude/latitude; local spherical azimuthal equidistant supports bounded areas <=5km diagonal and abs(latitude)<=70. Projection/scale tolerances require independent tests. Rubric defaults are 15 degrees/20m, explicitly serialized per exercise and revisable after pilot. Future terrain/directions capabilities fail clearly before writes until Plans 08/07 define their payloads.
 
-Browser target matrix and 4–6 learner pilot protocol are proposed test targets, not available devices or recruited participants. See contracts/validation documents for budgets and ownership. Application code license remains an explicit pre-distribution decision; no implicit license granted by copied research.
+Browser target matrix and 4–6 learner pilot protocol are proposed test targets, not available devices or recruited participants. See contracts/validation documents for budgets and ownership. Application code and original documentation are MIT licensed following the user's 2026-10-12 instruction. Copied research and acquired third-party data retain their own rights.
 
 Primary browser lifecycle/concurrency references reviewed: https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB and https://developer.mozilla.org/en-US/docs/Web/API/Web_Locks_API . Web Locks are not required; IDB transaction/version checks are authoritative and notifications optional.

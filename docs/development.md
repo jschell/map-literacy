@@ -1,6 +1,6 @@
 # Data foundation development
 
-Requires Node.js 24.x for tools/tests. Browser modules in src/data and src/geo have no Node imports or third-party dependencies. No npm install is required. Package is private; application-code license/distribution remains unresolved.
+Requires Node.js 24.x for tools/tests. Browser modules in src/data and src/geo have no Node imports or third-party dependencies. No npm install is required. Package is private (not configured for npm publication); project code is MIT licensed. Synthetic JSON fixtures remain CC0-1.0; acquired third-party data retains its source license.
 
 Commands:
 
