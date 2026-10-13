@@ -1,6 +1,9 @@
 :root { color-scheme: light; font-family: system-ui, sans-serif; color: #202d2b; background: #f5f3ec; }
 * { box-sizing: border-box; }
 body { margin: 0; }
+.skip-links { position: absolute; z-index: 10; top: 0; left: 12px; }
+.skip-links a { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.skip-links a:focus { position: relative; display: block; width: auto; height: auto; padding: 12px; background: white; color: #202d2b; clip-path: none; }
 main { max-width: 1240px; margin: auto; padding: 32px; }
 .eyebrow { font-size: 12px; font-weight: 700; letter-spacing: .16em; color: #426b5e; }
 h1 { font-family: Georgia, serif; font-size: clamp(28px, 4vw, 44px); font-weight: 400; margin: 10px 0; }
@@ -54,6 +57,7 @@ input[type=file] { max-width: 240px; }
   :root { background: white; color: black; }
   body { margin: 0; padding: 0; }
   main { display: none; }
+  .skip-links { display: none; }
   #print-sheet { display: block; break-after: avoid; }
   #print-sheet[data-orientation=landscape] { page: letter-landscape; width: 259.4mm; height: 195.9mm; }
   #print-sheet[data-orientation=portrait] { page: letter-portrait; width: 195.9mm; height: 259.4mm; }

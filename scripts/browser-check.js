@@ -3,6 +3,7 @@ import { checkPreferences } from './preferences-browser-check.js';
 import { checkAutosave } from './autosave-browser-check.js';
 import { checkStorage } from './storage-browser-check.js';
 import { checkStorageUpgrades } from './storage-upgrade-browser-check.js';
+import { checkAccessibility } from './accessibility-browser-check.js';
 import { createRequire } from 'node:module';
 import { mkdir, readFile } from 'node:fs/promises';
 import { makePerfPack } from './perf-pack.js';
@@ -51,6 +52,7 @@ try {
   storageChecks.upgrades = await checkStorageUpgrades(page);
   const autosaveChecks = await checkAutosave(page, base);
   const preferenceChecks = await checkPreferences(page, base);
+  const accessibilityChecks = await checkAccessibility(page, base);
   assert.equal(await page.locator('#map svg').count(), 0);
   await loadDemo();
   await page.locator('#map svg').waitFor();
@@ -463,6 +465,6 @@ try {
   }
   await mobile.close();
   assert.deepEqual(errors, []);
-  console.log(JSON.stringify({ syntheticFeatures: 6, storageChecks, autosaveChecks, preferenceChecks, memoryLessonSessions: 'passed', sessionBackupControls: 'passed', variantsAndSelection: 'passed', labelEditingAndExport: 'passed', directedTracingAndPrint: 'passed', exerciseSheetsAndPagination: 'passed', boundedSearchAndRenderLimits: 'passed', invalidImportRetainsMap: 'passed', pdfDimensions: physical, mobileOverflow: false, realPack, browserErrors: errors }));
+  console.log(JSON.stringify({ syntheticFeatures: 6, storageChecks, autosaveChecks, preferenceChecks, accessibilityChecks, memoryLessonSessions: 'passed', sessionBackupControls: 'passed', variantsAndSelection: 'passed', labelEditingAndExport: 'passed', directedTracingAndPrint: 'passed', exerciseSheetsAndPagination: 'passed', boundedSearchAndRenderLimits: 'passed', invalidImportRetainsMap: 'passed', pdfDimensions: physical, mobileOverflow: false, realPack, browserErrors: errors }));
 } finally { await browser.close(); server?.kill(); }
 

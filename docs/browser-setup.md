@@ -46,10 +46,11 @@ Also serve X-Content-Type-Options: nosniff. There are no runtime CDNs or inline 
 | Surface | Evidence |
 |---|---|
 | Container Chromium 153 desktop and touch emulation | Automated app, storage, preferences and PDF checks pass |
+| Container Chromium keyboard and browser semantics | Four exercises, retries/hints, focus after saving, downloads, print activation and 320/640-pixel reflow pass; screen-reader/device acceptance pending |
 | Actual Safari/iOS or Firefox devices | Pending; no supported release matrix selected |
 | Physical monochrome Letter portrait/landscape | Calibration/readability pending |
 | Actual quota exhaustion, eviction and private browsing | Pending; unavailable/quota paths use injected test failures |
 | Public static host | Not selected or published |
 
-Run npm test, npm run fixtures:check and npm run browser:check for automated checks. See [storage evidence](validation/storage.md), [map/print usage](map-review.md) and [physical checks](validation/physical-print-check.md). Real lesson/curriculum review remains separate from technical correctness.
+Run npm test, npm run fixtures:check and npm run browser:check for automated checks. See [keyboard/accessibility evidence](validation/accessibility.md), [storage evidence](validation/storage.md), [map/print usage](map-review.md) and [physical checks](validation/physical-print-check.md). Real lesson/curriculum review remains separate from technical correctness.
 

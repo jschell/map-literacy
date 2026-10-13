@@ -8,6 +8,7 @@
   <script type="module" src="src/ui/app.js"></script>
 </head>
 <body>
+  <nav class="skip-links" aria-label="Page shortcuts"><a id="skip-map" href="#map-panel">Skip to map</a><a id="skip-lessons" href="#lesson-title">Skip to lessons</a><a id="skip-trace" href="#trace-title">Skip to path tracing</a></nav>
   <main>
     <header class="app-header"><p class="eyebrow">MAP LITERACY</p><h1>Read the map. Understand the place.</h1><p>Explore map layers and prepare a clear paper map.</p></header>
     <section class="controls" aria-label="Map controls">
@@ -28,19 +29,20 @@
     <p class="note">View preferences cover labels, screen rotation, print scale and Letter orientation. Pack defaults apply until preferences are chosen. Session backup files preserve progress separately.</p>
     <p class="note">Worksheets add question and source-credit pages after the map. Learner output omits answer arrows and your review trace. Print instructor guides separately.</p>
     <p id="status" role="status" aria-live="polite">Load the synthetic map or import a validated lesson pack. No location is selected automatically.</p>
-    <section id="map-panel" class="map-panel" aria-label="Map viewer"><div id="map"></div></section>
+    <section id="map-panel" class="map-panel" tabindex="-1" aria-label="Map viewer" aria-describedby="map-help"><div id="map"></div></section>
+    <p id="map-help" class="note">Keyboard alternatives: choose a road in Feature selection, or build a path with Start graph node, Next directed edge and Add edge below.</p>
     <p id="attribution" class="note" aria-label="Map sources"></p>
     <section class="inspection"><label>Find feature<input id="feature-filter" type="search" maxlength="120" disabled></label><label>Feature selection<select id="feature"><option value="">No feature selected</option></select><span id="feature-matches" class="note"></span></label><p id="selection">Choose a road on the map or use the feature list.</p></section>
     <section class="label-editor" aria-labelledby="lesson-title">
-      <h2 id="lesson-title">Practice street lessons</h2>
+      <h2 id="lesson-title" tabindex="-1">Practice street lessons</h2>
       <p class="note">Practice while stationary. Progress saves in this browser after accepted actions. Check the save status and keep downloaded backups against browser data loss. Unfinished answers are discarded on refresh. Restoring or selecting another pack replaces the current map/session. Exercises follow reviewed pack order.</p>
       <p id="save-status" role="status" aria-live="polite">Opening browser storage…</p>
       <div class="editor-actions"><button id="save-retry" type="button" disabled>Retry saving</button><button id="save-reload" type="button" disabled>Reload latest, discard changes</button><button id="save-fork" type="button" disabled>Save as new session</button></div>
       <label>Saved session<select id="saved-session"><option value="">Choose a saved session</option></select></label>
-      <div class="editor-actions"><button id="saved-refresh" type="button" disabled>Refresh saved sessions</button><button id="saved-next" type="button" disabled>Next saved-session page</button><button id="saved-resume" type="button" disabled>Resume selected session</button></div><p id="saved-list-status" class="note"></p>
+      <div class="editor-actions"><button id="saved-refresh" type="button" disabled>Refresh saved sessions</button><button id="saved-next" type="button" disabled>Next saved-session page</button><button id="saved-resume" type="button" disabled>Resume selected session</button></div><p id="saved-list-status" class="note" role="status"></p>
       <button id="lesson-start" type="button" disabled>Begin lesson session</button>
       <p id="lesson-revision" class="note"></p><p id="lesson-prompt"></p>
-      <fieldset id="lesson-fields" disabled><legend>Current answer</legend>
+      <fieldset id="lesson-fields" aria-describedby="lesson-prompt lesson-revision" disabled><legend>Current answer</legend>
         <label id="lesson-heading" hidden>True heading in degrees (0–359.999)<input id="answer-heading" type="number" min="0" max="359.999" step="any"></label>
         <div id="lesson-endpoint" class="label-inputs" hidden><label>Endpoint longitude<input id="answer-lon" type="number" min="-180" max="180" step="any"></label><label>Endpoint latitude<input id="answer-lat" type="number" min="-90" max="90" step="any"></label></div>
         <p id="lesson-route" hidden></p>
@@ -50,7 +52,7 @@
       <ol id="lesson-hints"></ol><p id="lesson-status" role="status" aria-live="polite">Load a reviewed pack to practice.</p>
     </section>
     <section class="route-review" aria-labelledby="trace-title">
-      <h2 id="trace-title">Trace a path</h2>
+      <h2 id="trace-title" tabindex="-1">Trace a path</h2>
       <div class="trace-controls">
         <label>Trace mode<select id="trace-mode" disabled><option value="drive">Driving</option><option value="walk">Walking</option></select></label>
         <label>Find start node<input id="trace-start-filter" type="search" maxlength="120" disabled></label><label>Start graph node<select id="trace-start" disabled><option value="">Choose a start node</option></select><span id="trace-start-matches" class="note"></span></label>
