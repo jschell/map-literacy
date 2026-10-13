@@ -1,3 +1,4 @@
+import { checkedBackup } from './backup.js';
 import { canonical, checkedBundle, checkedPack, storageError } from './records.js';
 export const DATABASE_VERSION = 1;
 const normalize = (error) => typeof error?.code === 'string' ? error : storageError(error?.name === 'QuotaExceededError' ? 'storage-full' : 'storage-unavailable', error?.message ?? 'Browser storage is unavailable.');
@@ -95,6 +96,57 @@ export function openStorage({ factory = globalThis.indexedDB, name = 'map-litera
               });
             });
           }, signal);
+        },
+        importBackup(value, { signal } = {}) {
+          let backup; try { backup = checkedBackup(value); } catch (e) { return Promise.reject(e); }
+          return transaction(['packs', 'sessions', 'attempts', 'meta'], 'readwrite', ({ tx, read, abort, result }) => {
+            for (const [name, records] of [['packs', backup.packs], ['sessions', backup.sessions], ['attempts', backup.attempts]]) {
+              const store = tx.objectStore(name);
+              for (const record of records) read(store.get(name === 'packs' ? [record.id, record.revision] : record.id), (old) => {
+                if (old && canonical(old) !== canonical(record)) { abort(storageError('conflict', `Backup conflicts with an existing ${name} record. No records were imported.`)); return; }
+                if (!old) store.add(record);
+              });
+            }
+            for (const session of backup.sessions) {
+              const order = { name: `attempt-order:${session.id}`, version: session.version, ids: backup.attempts.filter((a) => a.sessionId === session.id).map((a) => a.id) };
+              const meta = tx.objectStore('meta');
+              read(meta.get(order.name), (old) => {
+                if (old && canonical(old) !== canonical(order)) { abort(storageError('conflict', 'Backup attempt order conflicts with existing progress.')); return; }
+                if (!old) meta.add(order);
+              });
+            }
+            result({ packs: backup.packs.length, sessions: backup.sessions.length, attempts: backup.attempts.length });
+          }, signal);
+        },
+        exportBackup({ sessionId, signal, exportedAt = new Date().toISOString() } = {}) {
+          if (sessionId !== undefined) return api.loadSession(sessionId, { signal }).then((bundle) => {
+            if (!bundle) throw storageError('missing-session', 'The selected session is not stored.');
+            return checkedBackup({ backupVersion: 1, exportedAt, packs: [bundle.pack], sessions: [bundle.session], attempts: bundle.attempts, settings: {} });
+          });
+          return transaction(['packs', 'sessions', 'attempts', 'meta', 'settings'], 'readonly', ({ tx, read, result }) => {
+            const records = {}, orders = new Map(); let remaining = 4, orderRemaining = 0;
+            function finish() {
+              if (remaining || orderRemaining) return;
+              if (records.settings.length) throw storageError('unsupported-capability', 'Settings backup is not supported by this release.');
+              const attempts = new Map(records.attempts.map((a) => [a.id, a])), ordered = [];
+              for (const session of records.sessions) {
+                const order = orders.get(session.id);
+                if (!order || order.version !== session.version || !Array.isArray(order.ids) || order.ids.length > 1000 || new Set(order.ids).size !== order.ids.length) throw storageError('invalid-record', 'Stored attempt order is invalid.');
+                for (const id of order.ids) { if (!attempts.has(id) || attempts.get(id).sessionId !== session.id) throw storageError('invalid-record', 'Stored attempt reference is invalid.'); ordered.push(attempts.get(id)); }
+              }
+              if (ordered.length !== records.attempts.length) throw storageError('invalid-record', 'Stored attempts are not fully referenced.');
+              result({ backupVersion: 1, exportedAt, packs: records.packs, sessions: records.sessions, attempts: ordered, settings: {} });
+            }
+            for (const [name, count] of [['packs', 21], ['sessions', 101], ['attempts', 10001], ['settings', 1]]) read(tx.objectStore(name).getAll(undefined, count), (values) => {
+              if (name !== 'settings' && values.length === count) throw storageError('limit-exceeded', `Too many ${name} for a full backup. Export individual sessions instead.`);
+              records[name] = values; remaining--;
+              if (name === 'sessions') {
+                orderRemaining = values.length;
+                for (const session of values) read(tx.objectStore('meta').get(`attempt-order:${session.id}`), (order) => { orders.set(session.id, order); orderRemaining--; finish(); });
+              }
+              finish();
+            });
+          }, signal).then(checkedBackup);
         },
         loadPack(id, revision, { signal } = {}) {
           return transaction(['packs'], 'readonly', ({ tx, read, result }) => {

@@ -9,7 +9,8 @@ export async function checkStorage(page) {
     const assert = (condition, message) => { if (!condition) throw new Error(`Storage check: ${message}`); };
     const rejects = async (operation, code) => { try { await operation(); } catch (e) { assert(e.code === code, `expected ${code}, got ${e.code}`); return; } throw new Error(`Expected rejection: ${code}`); };
     const bundle = (controller) => { const { session, attempts } = controller.snapshot(); return { pack, session, attempts }; };
-    let first, second;
+    let first, second, restored;
+    const restoredName = `${name}-restored`;
     try {
       first = await openStorage({ name }); second = await openStorage({ name });
       assert((await first.savePack(pack)).inserted, 'first pack insertion');
@@ -75,6 +76,23 @@ export async function checkStorage(page) {
       await rejects(() => first.commit(collision), 'conflict');
       assert(await first.loadSession(collision.session.id) === null, 'late conflict rolls back new session');
       assert(await first.loadPack(nextPack.id, nextPack.revision) === null, 'late conflict rolls back new pack too');
+      const backup = await first.exportBackup();
+      restored = await openStorage({ name: restoredName });
+      await restored.importBackup(backup); await restored.importBackup(backup);
+      assert(canonical(await restored.exportBackup({ exportedAt: backup.exportedAt })) === canonical(backup), 'full backup restore/idempotent import');
+      const one = await first.exportBackup({ sessionId: history.session.id });
+      assert(one.sessions.length === 1 && one.attempts.length === 3 && one.packs.length === 1, 'per-session backup');
+      const conflicting = structuredClone(backup); conflicting.sessions[0].version++;
+      const freshPack = structuredClone(pack); freshPack.revision += 3;
+      const freshController = createLessonSession(freshPack); const fresh = freshController.snapshot();
+      conflicting.packs.unshift(freshPack); conflicting.sessions.unshift(fresh.session);
+      await rejects(() => restored.importBackup(conflicting), 'conflict');
+      assert(await restored.loadPack(freshPack.id, freshPack.revision) === null, 'backup conflict rolls back pack');
+      assert(await restored.loadSession(fresh.session.id) === null, 'backup conflict rolls back session');
+      assert(canonical(await restored.exportBackup({ exportedAt: backup.exportedAt })) === canonical(backup), 'conflicting backup retains all prior records');
+      const canceled = new AbortController(); canceled.abort();
+      await rejects(() => restored.importBackup(backup, { signal: canceled.signal }), 'canceled');
+      restored.close();
       // Verify versionchange closes our connection and reports reload-needed.
       let changed = false;
       second = await openStorage({ name, onVersionChange: () => { changed = true; } }); first.close();
@@ -83,11 +101,11 @@ export async function checkStorage(page) {
       assert(changed, 'versionchange notification'); upgrade.result.close();
       await rejects(() => second.loadSession(answer.session.id), 'storage-unavailable');
       await rejects(() => openStorage({ name }), 'storage-unavailable');
-      return { transactions: 'passed', conflicts: 'passed', abortRollback: 'passed', versionChange: 'passed' };
+      return { backupRoundtrip: 'passed', backupRollback: 'passed', transactions: 'passed', conflicts: 'passed', abortRollback: 'passed', versionChange: 'passed' };
     } finally {
-      first?.close(); second?.close();
+      first?.close(); second?.close(); restored?.close();
       // Only a unique disposable test database is removed. Application recovery never deletes data.
-      await new Promise((resolve, reject) => { const r = indexedDB.deleteDatabase(name); r.onsuccess = resolve; r.onerror = () => reject(r.error); });
+      for (const testName of [name, restoredName]) await new Promise((resolve, reject) => { const r = indexedDB.deleteDatabase(testName); r.onsuccess = resolve; r.onerror = () => reject(r.error); });
     }
   });
 }

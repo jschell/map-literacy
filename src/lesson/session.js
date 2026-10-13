@@ -1,4 +1,5 @@
 import { validatePack } from '../data/validate-pack.js';
+import { checkedBundle } from '../storage/records.js';
 import { scoreAnswer } from './score.js';
 const fail = (code, message) => { throw Object.assign(new Error(message), { code }); };
 
@@ -10,10 +11,21 @@ export function createLessonSession(value, { id = () => crypto.randomUUID(), now
   if (!order.length) fail('no-reviewed-exercises', 'No reviewed exercises are available.');
   const startedAt = now();
   const session = { id: id(), version: 0, packId: pack.id, packRevision: pack.revision, exerciseOrder: order, index: 0, answers: Object.create(null), hintCounts: Object.fromEntries(order.map((exerciseId) => [exerciseId, 0])), startedAt, updatedAt: startedAt, status: 'active' };
-  const attempts = []; let phase = 'practicing', draft = null;
+  return lessonController(pack, session, [], { id, now });
+}
+
+export function resumeLessonSession(value, options = {}) {
+  const { pack, session, attempts } = checkedBundle(value);
+  return lessonController(pack, session, attempts, options);
+}
+
+function lessonController(pack, session, attempts, { id = () => crypto.randomUUID(), now = () => new Date().toISOString() } = {}) {
+  const order = session.exerciseOrder;
+  let phase = session.status === 'completed' ? 'completed' : Object.hasOwn(session.answers, order[session.index]) ? 'feedback' : 'practicing', draft = null;
   const exercise = () => pack.exercises.find((e) => e.id === order[session.index]);
   const active = () => { if (session.status !== 'active') fail('session-ended', 'Start a new session.'); };
-  const touch = () => { session.version += 1; session.updatedAt = now(); };
+  const timestamp = () => { const value = now(); return value < session.updatedAt ? session.updatedAt : value; };
+  const touch = () => { session.version += 1; session.updatedAt = timestamp(); };
   return {
     snapshot: () => structuredClone({ session, attempts, phase, draft, exercise: exercise() }),
     setAnswer(answer) { active(); if (phase !== 'practicing') fail('feedback-active', 'Retry before changing the answer.'); draft = structuredClone(answer); },
@@ -28,7 +40,7 @@ export function createLessonSession(value, { id = () => crypto.randomUUID(), now
       const e = exercise(), score = scoreAnswer(pack, e.id, draft);
       if (score.status === 'unanswered') return score;
       if (attempts.length >= 1000) fail('attempt-limit', 'This memory session has reached 1,000 attempts. End it before starting another.');
-      const attempt = { id: id(), sessionId: session.id, packId: pack.id, packRevision: pack.revision, exerciseId: e.id, answer: structuredClone(draft), result: score, hintsUsed: session.hintCounts[e.id] ?? 0, submittedAt: now() };
+      const attempt = { id: id(), sessionId: session.id, packId: pack.id, packRevision: pack.revision, exerciseId: e.id, answer: structuredClone(draft), result: score, hintsUsed: session.hintCounts[e.id] ?? 0, submittedAt: timestamp() };
       attempts.push(attempt); session.answers[e.id] = attempt.id; phase = 'feedback'; touch(); return structuredClone(score);
     },
     retry() { active(); if (phase !== 'feedback') fail('no-feedback', 'Submit an answer before retrying.'); draft = null; phase = 'practicing'; touch(); },

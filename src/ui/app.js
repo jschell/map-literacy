@@ -100,14 +100,14 @@ function install(value) {
   get('map').dataset.loadVersion = String(++loadVersion);
 }
 async function load(operation) {
-  job?.abort(); const current = new AbortController(); job = current;
+  lessons.cancelPending(); job?.abort(); const current = new AbortController(); job = current;
   announce('Reading and validating map…');
   try { const value = await operation(current.signal); if (job === current && !current.signal.aborted) install(value); }
   catch (error) { if (job === current && !current.signal.aborted) announce(`Map not loaded: ${error.message} ${error.errors?.[0]?.path ?? ''} The previous map is retained.`); }
 }
 const featurePicker = createSearchSelect({ select: get('feature'), filter: get('feature-filter'), summary: get('feature-matches'), placeholder: 'No feature selected' });
 const trace = createRouteTrace({ getPack: () => pack, redraw: updateView });
-const lessons = createLessons({ getPack: () => pack, getTrace: () => trace.overlay() });
+const lessons = createLessons({ getPack: () => pack, getTrace: () => trace.overlay(), cancelPackLoad: () => { job?.abort(); if (pack) updateView(); else announce('Choose a map or restore a session backup.'); }, installPack: (value) => { job?.abort(); install(value); } });
 const editor = createLabelEditor({ getPack: () => pack, getModel: () => currentModel, applyPack: (value) => { assertRenderable(value); pack = value; screenModels.clear(); paperModels.clear(); printPagesKey = null; screenViewKey = null; paperViewKey = null; screenSelected = null; trace.packChanged(); lessons.packChanged(); updateView(); } });
 
 get('demo').addEventListener('click', () => load(async (signal) => {

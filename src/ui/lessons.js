@@ -1,12 +1,15 @@
-import { createLessonSession } from '../lesson/session.js';
+import { readBackup, serializeBackup } from '../storage/backup.js';
+import { createLessonSession, resumeLessonSession } from '../lesson/session.js';
 const get = (id) => document.getElementById(id);
 const messages = { correct: 'Correct.', incorrect: 'Try again.', 'needs-review': 'This answer needs review.', unanswered: 'Enter a valid answer before submitting.' };
-export function createLessons({ getPack, getTrace }) {
-  let controller = null;
+export function createLessons({ getPack, getTrace, installPack, cancelPackLoad }) {
+  let controller = null, restoreJob = null;
+  const cancelPending = () => { restoreJob?.abort(); restoreJob = null; };
   const status = (text) => { get('lesson-status').textContent = text; };
   function clearAnswer() { for (const id of ['answer-heading', 'answer-lon', 'answer-lat']) get(id).value = ''; }
   function refresh() {
     const state = controller?.snapshot(), active = state?.session.status === 'active', practicing = active && state.phase === 'practicing', e = state?.exercise;
+    get('lesson-export').disabled = !controller;
     get('lesson-start').disabled = !getPack() || Boolean(active) || getPack().review.status !== 'reviewed' || !getPack().exercises.some((e) => e.review === 'reviewed');
     get('lesson-fields').disabled = !practicing;
     get('lesson-heading').hidden = e?.type !== 'heading'; get('lesson-endpoint').hidden = e?.type !== 'endpoint'; get('lesson-route').hidden = !['route', 'detour'].includes(e?.type);
@@ -36,6 +39,31 @@ export function createLessons({ getPack, getTrace }) {
   get('lesson-next').addEventListener('click', () => run(() => { controller.next(); clearAnswer(); get('lesson-hints').replaceChildren(); status(controller.snapshot().phase === 'completed' ? 'Session completed in memory. Refresh discards it.' : 'Next exercise. Choose a new trace when needed.'); }));
   get('lesson-end').addEventListener('click', () => run(() => { controller.end(); clearAnswer(); status('Session ended in memory. Refresh discards it.'); }));
   get('lesson-hint').addEventListener('click', () => run(() => { const hint = controller.hint(); if (hint !== null) { const li = document.createElement('li'); li.textContent = hint; get('lesson-hints').append(li); status('Hint shown. Hints are counted separately from correctness.'); } }));
+  get('lesson-export').addEventListener('click', () => run(() => {
+    const { session, attempts } = controller.snapshot();
+    const text = serializeBackup({ backupVersion: 1, exportedAt: new Date().toISOString(), packs: [getPack()], sessions: [session], attempts, settings: {} });
+    const url = URL.createObjectURL(new Blob([text], { type: 'application/json' })), link = document.createElement('a');
+    link.href = url; link.download = `map-literacy-session-${session.id}.json`; link.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+    status('Session backup downloaded. Keep the file to restore committed attempts and hints. Unfinished answers and review traces are not included.');
+  }));
+  get('lesson-import').addEventListener('change', async () => {
+    const file = get('lesson-import').files[0]; get('lesson-import').value = ''; if (!file) return;
+    cancelPackLoad(); cancelPending(); const current = new AbortController(); restoreJob = current;
+    status('Reading and validating session backup…');
+    try {
+      const backup = await readBackup(file, current.signal);
+      if (restoreJob !== current || current.signal.aborted) return;
+      if (backup.sessions.length !== 1 || backup.packs.length !== 1) throw new Error('Restore requires a per-session backup containing exactly one session and its pack revision.');
+      const session = backup.sessions[0], pack = backup.packs.find((p) => p.id === session.packId && p.revision === session.packRevision);
+      const next = resumeLessonSession({ pack, session, attempts: backup.attempts });
+      installPack(pack); controller = next; clearAnswer(); get('lesson-hints').replaceChildren();
+      const state = controller.snapshot();
+      for (const text of state.exercise.hints.slice(0, state.session.hintCounts[state.exercise.id])) { const li = document.createElement('li'); li.textContent = text; get('lesson-hints').append(li); }
+      const last = state.attempts.find((a) => a.id === state.session.answers[state.exercise.id]);
+      status(`Session restored in memory from revision ${session.packRevision}. Unfinished answers and review traces were discarded.${last ? ` Last submitted answer: ${last.result.status}; ${last.result.reasonCode.replaceAll('-', ' ')}.` : ''} Download again after making progress.`);
+    } catch (error) { if (restoreJob === current && !current.signal.aborted) status(`Session not restored: ${error.message} The previous map and session are retained.`); }
+    finally { if (restoreJob === current) restoreJob = null; refresh(); }
+  });
   refresh();
-  return { installed() { controller = null; clearAnswer(); get('lesson-hints').replaceChildren(); status('Memory only: refresh/import discards the session. No reviewed exercises are available unless the pack and exercise are reviewed. Practice while stationary.'); refresh(); }, packChanged() { this.installed(); status('Pack content changed. The old session has ended; review the new revision before practicing.'); } };
+  return { cancelPending, installed() { cancelPending(); controller = null; clearAnswer(); get('lesson-hints').replaceChildren(); status('Memory only: refresh/import discards the session. No reviewed exercises are available unless the pack and exercise are reviewed. Practice while stationary.'); refresh(); }, packChanged() { this.installed(); status('Pack content changed. The old session has ended; review the new revision before practicing.'); } };
 }
