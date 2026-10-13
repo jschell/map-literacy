@@ -60,8 +60,9 @@ export function createRouteTrace({ getPack, redraw }) {
     },
     installed() {
       review = createTraceReview(getPack()); state = null; toggle(false);
-      get('trace-start').replaceChildren(new Option('Choose a start node', ''));
-      for (const node of review.starts) get('trace-start').add(new Option(`${node.id} · ${node.coordinate.map((v) => v.toFixed(5)).join(', ')}`, node.id));
+      const options = document.createDocumentFragment(); options.append(new Option('Choose a start node', ''));
+      for (const node of review.starts) options.append(new Option(`${node.id} · ${node.coordinate.map((v) => v.toFixed(5)).join(', ')}`, node.id));
+      get('trace-start').replaceChildren(options);
       get('trace-start').disabled = false; get('trace-mode').disabled = false; get('include-trace').checked = false;
       refresh();
     },

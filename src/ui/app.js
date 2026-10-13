@@ -4,11 +4,17 @@ import { createRouteTrace } from './route-trace.js';
 import { createLabelEditor } from './label-editor.js';
 import { createExercisePrint } from '../print/exercise.js';
 import { paginateExercise } from '../print/pages.js';
-import { renderMap } from '../map/render.js';
+import { renderMap, updateMapLabels } from '../map/render.js';
 const get = (id) => document.getElementById(id);
-let pack = null, rotation = 0, selected = null, job = null, currentModel = null;
-let printPagesKey = null;
+let pack = null, rotation = 0, selected = null, job = null, currentModel = null, loadVersion = 0;
+let printPagesKey = null, screenViewKey = null, paperViewKey = null, screenSelected = null, screenVariant = null, paperVariant = null;
 const screenModels = new Map(), paperModels = new Map();
+function cachedModel(cache, key, create) {
+  if (cache.has(key)) { const model = cache.get(key); cache.delete(key); cache.set(key, model); return model; }
+  const model = create(); cache.set(key, model);
+  if (cache.size > 4) cache.delete(cache.keys().next().value);
+  return model;
+}
 const announce = (text) => { get('status').textContent = text; };
 
 function selectFeature(id) {
@@ -26,16 +32,28 @@ function updateView() {
   const screenWidth = Math.max(280, Math.min(2000, Math.round(get('map').clientWidth)));
   const screenHeight = Math.max(320, Math.min(560, screenWidth * .56));
   const screenKey = `${variant}:${rotation}:${screenWidth}`;
-  if (!screenModels.has(screenKey)) screenModels.set(screenKey, createMapModel(pack, { variant, rotationDeg: rotation, screenWidth, screenHeight }));
-  const model = screenModels.get(screenKey); currentModel = model;
-  get('map').replaceChildren(renderMap(document, model, { selectedId: selected, headingDeg, route: trace.overlay(), onSelect: (id) => { if (!editor.isPlacing()) { if (trace.isTracing()) trace.selectFeature(id); else selectFeature(id); } } }));
-  get('include-trace').disabled = get('print-output').value !== 'map' || !trace.overlay()?.edges.length;
+  const model = cachedModel(screenModels, screenKey, () => createMapModel(pack, { variant, rotationDeg: rotation, screenWidth, screenHeight })); currentModel = model;
+  const overlay = trace.overlay();
+  const viewKey = JSON.stringify([rotation, screenWidth, screenHeight, headingDeg, overlay?.startNodeId, overlay?.mode, overlay?.edgeIds]);
+  if (screenViewKey !== viewKey) {
+    get('map').replaceChildren(renderMap(document, model, { selectedId: selected, headingDeg, route: overlay, onSelect: (id) => { if (!editor.isPlacing()) { if (trace.isTracing()) trace.selectFeature(id); else selectFeature(id); } } }));
+    screenViewKey = viewKey;
+  } else {
+    if (screenVariant !== variant) updateMapLabels(document, get('map').querySelector('svg'), model);
+    if (screenSelected !== selected) {
+      for (const shape of get('map').querySelectorAll('.feature')) {
+        const id = shape.getAttribute('data-feature-id');
+        if (id === screenSelected || id === selected) shape.classList.toggle('feature--selected', id === selected);
+      }
+    }
+  }
+  screenSelected = selected; screenVariant = variant;
+  get('include-trace').disabled = get('print-output').value !== 'map' || !overlay?.edges.length;
   const printTrace = trace.printOverlay();
   let printError = '';
   try {
     const paperKey = `${variant}:${scaleDenominator}:${orientation}`;
-    if (!paperModels.has(paperKey)) paperModels.set(paperKey, createMapModel(pack, { paper: true, variant, scaleDenominator, orientation }));
-    const paper = paperModels.get(paperKey);
+    const paper = cachedModel(paperModels, paperKey, () => createMapModel(pack, { paper: true, variant, scaleDenominator, orientation }));
     const output = get('print-output').value;
     const spec = output === 'map' ? null : createExercisePrint(pack, get('print-exercise').value, output);
     const pagesKey = `${pack.id}:${pack.revision}:${orientation}:${output}:${get('print-exercise').value}`;
@@ -43,13 +61,19 @@ function updateView() {
       const pages = spec ? paginateExercise(document, spec, pack, orientation) : [];
       get('exercise-pages').dataset.orientation = orientation; get('exercise-pages').replaceChildren(...pages); printPagesKey = pagesKey;
     }
-    get('paper-map').replaceChildren(renderMap(document, paper, { headingDeg: spec ? spec.headingDeg : headingDeg, route: spec ? null : printTrace, annotations: spec?.annotations }));
+    const paperHeading = spec ? spec.headingDeg : headingDeg, paperTrace = spec ? null : printTrace;
+    const paperKeyForView = JSON.stringify([orientation, scaleDenominator, pack.revision, output, spec?.exerciseId, paperHeading, paperTrace?.startNodeId, paperTrace?.mode, paperTrace?.edgeIds]);
+    if (paperViewKey !== paperKeyForView) {
+      get('paper-map').replaceChildren(renderMap(document, paper, { headingDeg: paperHeading, route: paperTrace, annotations: spec?.annotations }));
+      paperViewKey = paperKeyForView;
+    } else if (paperVariant !== variant) updateMapLabels(document, get('paper-map').querySelector('svg'), paper);
+    paperVariant = variant;
     get('print').disabled = false;
     get('paper-title').textContent = spec?.title ?? `${pack.title} — ${variant}${paper.draft ? ' — UNREVIEWED DRAFT' : ''}`;
     get('paper-summary').textContent = spec?.summary ?? 'Mark a route, indicate your heading and explain how the roads connect.';
     get('paper-footer').textContent = spec ? `Letter ${orientation} · North up · 1:${scaleDenominator.toLocaleString()} · Print at 100% / actual size; measure the scale bar. ${spec.kind} · Page 1 of ${get('exercise-pages').children.length + 1} · Source credits follow the map.` : `Letter ${orientation} · ${printTrace ? `Trace preview: ${printTrace.edges.length} steps, ${Math.round(printTrace.lengthM)} m; S start, E end${printTrace.warnings.length ? '; needs review' : ''}; not route approval. ` : ''}North up · 1:${scaleDenominator.toLocaleString()} · Print at 100% / actual size; measure the scale bar. ${pack.sources.map((s) => `${s.attribution} · source ${s.sourceAt?.slice(0, 10) ?? 'date unknown'}`).join(' | ')}`;
   } catch (error) {
-    get('paper-map').replaceChildren(); get('exercise-pages').replaceChildren(); printPagesKey = null; get('print').disabled = true; printError = error.message;
+    get('paper-map').replaceChildren(); get('exercise-pages').replaceChildren(); printPagesKey = null; paperViewKey = null; get('print').disabled = true; printError = error.message;
     get('paper-summary').textContent = '';
     get('paper-title').textContent = 'Print output is unavailable'; get('paper-footer').textContent = printError;
   }
@@ -57,7 +81,7 @@ function updateView() {
 }
 function install(value) {
   pack = value; selected = null; rotation = 0;
-  screenModels.clear(); paperModels.clear(); printPagesKey = null;
+  screenModels.clear(); paperModels.clear(); printPagesKey = null; screenViewKey = null; paperViewKey = null; screenSelected = null;
   get('print-exercise').replaceChildren();
   for (const exercise of pack.exercises) get('print-exercise').add(new Option(`${exercise.type} · ${exercise.id}${exercise.review !== 'reviewed' ? ' · draft' : ''}`, exercise.id));
   if (!pack.exercises.length) get('print-exercise').add(new Option('No exercises in this pack', ''));
@@ -65,10 +89,12 @@ function install(value) {
   get('print-output').value = 'map';
   get('scale').value = String(pack.print.scaleDenominator);
   get('orientation').value = pack.print.orientation;
-  get('feature').replaceChildren(new Option('No feature selected', ''));
+  const options = document.createDocumentFragment(); options.append(new Option('No feature selected', ''));
   get('attribution').textContent = pack.sources.map((s) => `${s.attribution} · ${s.license} · source ${s.sourceAt?.slice(0, 10) ?? 'date unknown'}`).join(' | ');
-  for (const f of pack.features.features) get('feature').add(new Option(`${f.properties.name ?? 'Unnamed feature'} (${f.id})`, f.id));
+  for (const f of pack.features.features) options.append(new Option(`${f.properties.name ?? 'Unnamed feature'} (${f.id})`, f.id));
+  get('feature').replaceChildren(options);
   get('selection').textContent = 'Choose a road on the map or use the feature list.'; editor.installed(); trace.installed(); updateView();
+  get('map').dataset.loadVersion = String(++loadVersion);
 }
 async function load(operation) {
   job?.abort(); const current = new AbortController(); job = current;
@@ -77,7 +103,7 @@ async function load(operation) {
   catch (error) { if (job === current && !current.signal.aborted) announce(`Map not loaded: ${error.message} ${error.errors?.[0]?.path ?? ''} The previous map is retained.`); }
 }
 const trace = createRouteTrace({ getPack: () => pack, redraw: updateView });
-const editor = createLabelEditor({ getPack: () => pack, getModel: () => currentModel, applyPack: (value) => { pack = value; screenModels.clear(); paperModels.clear(); printPagesKey = null; trace.packChanged(); updateView(); } });
+const editor = createLabelEditor({ getPack: () => pack, getModel: () => currentModel, applyPack: (value) => { pack = value; screenModels.clear(); paperModels.clear(); printPagesKey = null; screenViewKey = null; paperViewKey = null; screenSelected = null; trace.packChanged(); updateView(); } });
 
 get('demo').addEventListener('click', () => load(async (signal) => {
   const response = await fetch('tests/fixtures/street-square.json', { signal });

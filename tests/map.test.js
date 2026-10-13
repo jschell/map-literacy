@@ -105,3 +105,18 @@ test('Letter fit limits depend on orientation without automatic rescaling', () =
   assert.equal(createMapModel(tall, { paper: true, orientation: 'portrait', scaleDenominator: 1000 }).metersToUnits, 1);
   assert.throws(() => createMapModel(tall, { paper: true, orientation: 'landscape', scaleDenominator: 1000 }), (e) => e.code === 'print-extent-too-large');
 });
+
+test('parallel roads remain geometrically distinct at both neighborhood print scales', () => {
+  const p = structuredClone(pack);
+  for (const [id, latitude] of [['divided:one', .0003], ['divided:two', .0004]]) {
+    p.features.features.push({ type: 'Feature', id, geometry: { type: 'LineString', coordinates: [[.0001, latitude], [.0009, latitude]] }, properties: { sourceId: p.sources[0].id, role: 'road', name: null, tags: {} } });
+  }
+  for (const orientation of ['portrait', 'landscape']) for (const scaleDenominator of [5000, 10000]) {
+    const m = createMapModel(p, { paper: true, orientation, scaleDenominator });
+    const a = m.convert([.0005, .0003]), b = m.convert([.0005, .0004]);
+    const separationMm = Math.hypot(a[0] - b[0], a[1] - b[1]);
+    assert.ok(Math.abs(separationMm - 11.11950802335329 * 1000 / scaleDenominator) < .001);
+    assert.ok(separationMm - .4 > .7); // Separate local-road strokes, without assuming printer readability.
+    assert.equal(m.paths.filter((f) => f.id.startsWith('divided:')).length, 2);
+  }
+});

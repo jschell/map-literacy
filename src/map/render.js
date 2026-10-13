@@ -55,9 +55,8 @@ export function renderMap(doc, model, { selectedId = null, headingDeg = null, ro
     if (route.startNodeId !== route.endNodeId) marker(route.end, 'E');
   }
   for (const item of model.landmarks) group.append(element(doc, 'circle', { cx: item.point[0], cy: item.point[1], r: model.paper ? 1.2 : 5, class: 'landmark' }));
-  const labelLayer = element(doc, 'g', { 'clip-path': `url(#${clipId})` }); svg.append(labelLayer);
-  for (const l of model.labels) labelLayer.append(element(doc, 'text', { x: l.point[0], y: l.point[1], class: 'map-label', 'font-size': l.fontSize,
-    'text-anchor': 'middle', transform: `rotate(${l.rotationDeg} ${l.point[0]} ${l.point[1]})`, 'stroke-width': model.paper ? 0.9 : 4 }, l.text));
+  const labelLayer = element(doc, 'g', { class: 'map-label-layer', 'clip-path': `url(#${clipId})` }); svg.append(labelLayer);
+  updateMapLabels(doc, svg, model);
   if (headingDeg !== null && Number.isFinite(headingDeg)) {
     const x = model.width / 2, y = model.height / 2, size = model.paper ? 5 : 25;
     group.append(element(doc, 'path', { d: `M${x},${y-size} L${x-size/2},${y+size/2} L${x},${y} L${x+size/2},${y+size/2} Z`, class: 'heading-arrow', transform: `rotate(${headingDeg + model.rotationDeg} ${x} ${y})` }));
@@ -89,3 +88,11 @@ export function renderMap(doc, model, { selectedId = null, headingDeg = null, ro
   return svg;
 }
 
+
+/** Reuse geometry/hit targets when only label visibility changes. */
+export function updateMapLabels(doc, svg, model) {
+  const labelLayer = svg.querySelector('.map-label-layer'); labelLayer.replaceChildren();
+  for (const l of model.labels) labelLayer.append(element(doc, 'text', { x: l.point[0], y: l.point[1], class: 'map-label', 'font-size': l.fontSize,
+    'text-anchor': 'middle', transform: `rotate(${l.rotationDeg} ${l.point[0]} ${l.point[1]})`, 'stroke-width': model.paper ? 0.9 : 4 }, l.text));
+  svg.setAttribute('aria-label', `${model.title}, ${model.variant} map${model.draft ? ', unreviewed draft' : ''}`);
+}

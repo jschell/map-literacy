@@ -61,3 +61,9 @@ Optional MAP_LITERACY_REVIEW_PACK points to a local real pack for additional imp
 
 Source formulas: USGS Map Projections—A Working Manual, https://pubs.usgs.gov/publication/pp1395 . The implemented spherical azimuthal-equidistant transform is bounded to the street pack contract, and tested against known equatorial distances, forward/inverse consistency and local scale tolerances. No ellipsoidal or magnetic-heading capability is advertised.
 
+
+## Performance and manual release checks
+
+Run `npm run browser:perf` with the same portable/executable flags to generate deterministic neighborhood and boundary stress packs, PDFs and 20-sample interaction measurements. See [performance evidence](validation/performance.md) for raw results and limits. Schema ceilings are not a practical device performance guarantee; large packs still have slow interactions/imports. Geometry caches retain four recent screen and paper models, and unchanged SVG geometry is reused for label/selection-only changes.
+
+Use [physical-print-check.md](validation/physical-print-check.md) to record actual Letter scale/readability and native device/browser observations. These checks remain pending.
