@@ -9,7 +9,7 @@ Deliver a recoverable local browser application and documented static-host deplo
 
 ## Work
 
-- [x] Implement version-1 IndexedDB initialization/transactions and explicit multi-tab conflict behavior; future schema migration fixtures remain pending.
+- [x] Implement version-1 IndexedDB initialization/transactions, schema compatibility checks and explicit multi-tab conflict behavior; blocked/canceled/failed upgrade fixtures pass. Actual future migration transformations need version-specific fixtures.
 - [x] Implement pack/progress JSON backup APIs with validation and atomic conflict rules, plus explicit single-session UI download/restore and backup guidance.
 - [x] Add failed-save retry, unavailable-storage memory/export mode and versionchange/blocked-open recovery messages; Saved is shown only after transaction completion. Actual quota/eviction/device and future migration checks remain pending.
 - [x] Document no-build static assets, pinned install/local serve and the implemented external-asset CSP; host publication remains pending.
@@ -54,7 +54,9 @@ Setup/recovery guidance now documents consistent browser origins/profiles, local
 
 Validation: 125 Node tests and real Chromium checks pass, including preference serialization/retry, reload/file restore, competing tabs, retained invalid stored values and atomic full-backup preference conflicts. Existing lesson, source, map, print and touch-emulation checks remain covered.
 
-Next action: complete future migration fixtures and release/browser accessibility checks, then select hosting within publication authorization. Actual device/print/quota/eviction and real lesson approval remain pending.
+Database compatibility follow-up: opening validates the exact version-1 store/key/index structure before returning APIs. Incompatible structures and newer versions report retained data and a compatible-app recovery path. Real Chromium fixtures verify a blocked open canceled before the blocker closes, unsupported upgrade rejection, rollback of destructive queued migration changes, clean retry after partial initialization, and retained records across eight malformed schema variants. Production supports version 1 only; the version-2 rollback fixture does not implement a migration. Validation: 125 Node tests, reproducible fixtures and full Chromium checks pass.
+
+Next action: complete release/browser keyboard and accessibility checks, then select hosting within publication authorization. Actual future migration transformations require their own fixtures. Actual device/print/quota/eviction and real lesson approval remain pending.
 
 
 

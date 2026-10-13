@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { checkPreferences } from './preferences-browser-check.js';
 import { checkAutosave } from './autosave-browser-check.js';
 import { checkStorage } from './storage-browser-check.js';
+import { checkStorageUpgrades } from './storage-upgrade-browser-check.js';
 import { createRequire } from 'node:module';
 import { mkdir, readFile } from 'node:fs/promises';
 import { makePerfPack } from './perf-pack.js';
@@ -47,6 +48,7 @@ const importReady = (file) => afterInstall(() => page.locator('#import').setInpu
 try {
   await page.goto(base);
   const storageChecks = await checkStorage(page);
+  storageChecks.upgrades = await checkStorageUpgrades(page);
   const autosaveChecks = await checkAutosave(page, base);
   const preferenceChecks = await checkPreferences(page, base);
   assert.equal(await page.locator('#map svg').count(), 0);

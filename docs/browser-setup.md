@@ -23,6 +23,8 @@ Download session backup protects committed progress and its pack. Download view 
 
 Unsupported stored preference values produce visible defaults without automatically rewriting the original record. Unknown record versions remain read-only until a compatible app is used. Reload saved view preferences resolves a conflict by discarding local choices. Failed writes retain current memory choices for retry/download.
 
+An incompatible database structure or newer database version prevents storage from opening. The app retains the original database and allows memory practice with file downloads. Use a compatible app to access existing records, or use a separate browser profile to restore a retained backup. Retrying cannot repair an incompatible schema; recovery never deletes or recreates it. Version 1 is the only implemented database version.
+
 ## Remove local data
 
 Download any records you want to keep, then close all app tabs. Use the browser's site-data controls for the exact app address to clear its local storage. This removes stored packs, sessions, attempts and preferences; there is no account or server copy. Application recovery never deletes the database automatically. The current UI does not provide per-session deletion.
