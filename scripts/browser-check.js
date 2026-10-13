@@ -44,6 +44,38 @@ try {
   await page.locator('#map svg').waitFor();
   assert.equal(await page.locator('#map .feature').count(), 6);
   assert.ok((await page.locator('#attribution').textContent()).includes('CC0-1.0'));
+  await page.locator('#lesson-start').click();
+  await page.locator('#answer-heading').focus(); await page.keyboard.type('359');
+  await page.locator('#lesson-hint').click();
+  await page.locator('#lesson-submit').click();
+  assert.ok((await page.locator('#lesson-status').textContent()).startsWith('Correct.'));
+  assert.equal(await page.locator('#lesson-submit').isDisabled(), true);
+  await page.locator('#lesson-retry').click();
+  await page.locator('#answer-heading').fill('16');
+  await page.locator('#lesson-submit').click();
+  assert.ok((await page.locator('#lesson-status').textContent()).startsWith('Try again.'));
+  assert.ok((await page.locator('#lesson-revision').textContent()).includes('2 attempts'));
+  await page.locator('#lesson-next').click();
+  await page.locator('#lesson-submit').click();
+  assert.ok((await page.locator('#lesson-status').textContent()).startsWith('Enter a valid answer'));
+  await page.locator('#answer-lon').fill('0'); await page.locator('#answer-lat').fill('0');
+  await page.locator('#lesson-submit').click(); await page.locator('#lesson-next').click();
+  await page.locator('#trace-start').selectOption('A');
+  for (const id of ['AB', 'BC']) { await page.locator('#trace-edge').selectOption(id); await page.locator('#trace-add').click(); }
+  await page.locator('#lesson-submit').click();
+  assert.ok((await page.locator('#lesson-status').textContent()).startsWith('Correct.'));
+  await page.locator('#lesson-next').click();
+  assert.ok((await page.locator('#lesson-route').textContent()).includes('Closed directed edges: BC'));
+  await page.locator('#lesson-submit').click();
+  assert.ok((await page.locator('#lesson-status').textContent()).includes('closed edge'));
+  await page.locator('#lesson-retry').click(); await page.locator('#trace-clear').click();
+  for (const id of ['AD', 'DC']) { await page.locator('#trace-edge').selectOption(id); await page.locator('#trace-add').click(); }
+  await page.locator('#lesson-submit').click();
+  assert.ok((await page.locator('#lesson-status').textContent()).startsWith('Correct.'));
+  await page.locator('#lesson-next').click();
+  assert.ok((await page.locator('#lesson-status').textContent()).includes('Session completed'));
+  await page.reload(); assert.equal(await page.locator('#lesson-revision').textContent(), '');
+  await loadDemo(); assert.equal(await page.locator('#lesson-revision').textContent(), '');
   await page.evaluate(() => { window.geometryBeforeLabels = document.querySelector('#map .feature'); window.paperBeforeLabels = document.querySelector('#paper-map svg'); });
   const geometry = await page.locator('#map .feature').evaluateAll((nodes) => nodes.map((n) => n.getAttribute('d')));
   await page.locator('#variant').selectOption('blank');
@@ -135,6 +167,7 @@ try {
   assert.equal(await page.locator('#map .trace-line').count(), 0);
   // Authoring: keyboard fields, rotated-map placement, atomic failure, undo and download/re-import.
   const fixture = JSON.parse(await readFile(new URL('../tests/fixtures/street-square.json', import.meta.url), 'utf8'));
+  await page.locator('#lesson-start').click();
   const editedId = fixture.labels[0].id;
   await page.locator('#label-choice').selectOption(editedId);
   await page.locator('#label-text').fill('Reviewed placement');
@@ -144,6 +177,9 @@ try {
   await page.locator('#label-lat').fill('0.0004');
   await page.getByRole('button', { name: 'Apply label', exact: true }).click();
   assert.ok((await page.locator('#edit-status').textContent()).includes(`Draft revision ${fixture.revision + 1}`));
+  assert.equal(await page.locator('#lesson-start').isDisabled(), true);
+  assert.equal(await page.locator('#lesson-revision').textContent(), '');
+  assert.ok((await page.locator('#lesson-status').textContent()).includes('Pack content changed'));
   assert.ok((await page.locator('#paper-title').textContent()).includes('UNREVIEWED DRAFT'));
   await page.locator('#label-lon').fill('1');
   await page.getByRole('button', { name: 'Apply label', exact: true }).click();
@@ -351,6 +387,10 @@ try {
   }
   const mobile = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
   await mobile.goto(base); await mobile.locator('#demo').tap(); await mobile.locator('#map svg').waitFor();
+  await mobile.locator('#lesson-start').tap(); await mobile.locator('#answer-heading').fill('0');
+  await mobile.locator('#lesson-submit').tap();
+  assert.ok((await mobile.locator('#lesson-status').textContent()).startsWith('Correct.'));
+  await mobile.locator('#lesson-end').tap();
   assert.equal(await mobile.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
   await mobile.locator('#trace-start').selectOption('A');
   await mobile.locator('#trace-map').tap();
@@ -375,6 +415,6 @@ try {
   }
   await mobile.close();
   assert.deepEqual(errors, []);
-  console.log(JSON.stringify({ syntheticFeatures: 6, variantsAndSelection: 'passed', labelEditingAndExport: 'passed', directedTracingAndPrint: 'passed', exerciseSheetsAndPagination: 'passed', boundedSearchAndRenderLimits: 'passed', invalidImportRetainsMap: 'passed', pdfDimensions: physical, mobileOverflow: false, realPack, browserErrors: errors }));
+  console.log(JSON.stringify({ syntheticFeatures: 6, memoryLessonSessions: 'passed', variantsAndSelection: 'passed', labelEditingAndExport: 'passed', directedTracingAndPrint: 'passed', exerciseSheetsAndPagination: 'passed', boundedSearchAndRenderLimits: 'passed', invalidImportRetainsMap: 'passed', pdfDimensions: physical, mobileOverflow: false, realPack, browserErrors: errors }));
 } finally { await browser.close(); server?.kill(); }
 

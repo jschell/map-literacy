@@ -4,7 +4,7 @@ Learn to understand where you are, which direction you face, how routes connect 
 
 Street lessons cover orientation, roads, landmarks, addresses, return routes and detours. Topographic lessons will add contours, elevation, slope, ridges, valleys and terrain interpretation. Both use shared map, lesson, print and progress components.
 
-**Current state:** a vanilla JavaScript map review interface with pack import, rotation, label variants, heading arrows, feature selection and fixed-scale print output. Data validation and OSM preparation are implemented; the Redmond draft renders but remains unreviewed. Route scoring, learner records, reviewed real lessons and routing deployment are not implemented.
+**Current state:** a vanilla JavaScript map review interface with pack import, rotation, label variants, heading arrows, feature selection and fixed-scale print output. Data validation and OSM preparation are implemented; the Redmond draft renders but remains unreviewed. Reviewed street lessons now support heading, endpoint, route and detour scoring in revision-locked memory sessions, with hints, retries and multiple valid routes. Refresh/import/edit discards the session; durable learner records, reviewed real lessons and routing deployment remain pending.
 
 ## Start here
 
@@ -41,5 +41,6 @@ This repository now owns implementation planning. The Ideas-for-projects draft r
 ## License
 
 Project code and original documentation are licensed under [MIT](LICENSE). Generated synthetic fixture JSON retains its [CC0-1.0 designation](tests/fixtures/README.md). Third-party map/elevation data and quoted research retain their own licenses and attribution requirements; the MIT license does not relicense them.
+
 
 
