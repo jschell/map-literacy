@@ -2,9 +2,12 @@ import { readImport } from '../data/read-pack.js';
 import { createMapModel } from '../map/model.js';
 import { createRouteTrace } from './route-trace.js';
 import { createLabelEditor } from './label-editor.js';
+import { createExercisePrint } from '../print/exercise.js';
+import { paginateExercise } from '../print/pages.js';
 import { renderMap } from '../map/render.js';
 const get = (id) => document.getElementById(id);
 let pack = null, rotation = 0, selected = null, job = null, currentModel = null;
+let printPagesKey = null;
 const screenModels = new Map(), paperModels = new Map();
 const announce = (text) => { get('status').textContent = text; };
 
@@ -26,25 +29,40 @@ function updateView() {
   if (!screenModels.has(screenKey)) screenModels.set(screenKey, createMapModel(pack, { variant, rotationDeg: rotation, screenWidth, screenHeight }));
   const model = screenModels.get(screenKey); currentModel = model;
   get('map').replaceChildren(renderMap(document, model, { selectedId: selected, headingDeg, route: trace.overlay(), onSelect: (id) => { if (!editor.isPlacing()) { if (trace.isTracing()) trace.selectFeature(id); else selectFeature(id); } } }));
+  get('include-trace').disabled = get('print-output').value !== 'map' || !trace.overlay()?.edges.length;
   const printTrace = trace.printOverlay();
   let printError = '';
   try {
     const paperKey = `${variant}:${scaleDenominator}:${orientation}`;
     if (!paperModels.has(paperKey)) paperModels.set(paperKey, createMapModel(pack, { paper: true, variant, scaleDenominator, orientation }));
     const paper = paperModels.get(paperKey);
-    get('paper-map').replaceChildren(renderMap(document, paper, { headingDeg, route: printTrace }));
+    const output = get('print-output').value;
+    const spec = output === 'map' ? null : createExercisePrint(pack, get('print-exercise').value, output);
+    const pagesKey = `${pack.id}:${pack.revision}:${orientation}:${output}:${get('print-exercise').value}`;
+    if (pagesKey !== printPagesKey) {
+      const pages = spec ? paginateExercise(document, spec, pack, orientation) : [];
+      get('exercise-pages').dataset.orientation = orientation; get('exercise-pages').replaceChildren(...pages); printPagesKey = pagesKey;
+    }
+    get('paper-map').replaceChildren(renderMap(document, paper, { headingDeg: spec ? spec.headingDeg : headingDeg, route: spec ? null : printTrace, annotations: spec?.annotations }));
     get('print').disabled = false;
-    get('paper-title').textContent = `${pack.title} — ${variant}${paper.draft ? ' — UNREVIEWED DRAFT' : ''}`;
-    get('paper-footer').textContent = `Letter ${orientation} · ${printTrace ? `Trace preview: ${printTrace.edges.length} steps, ${Math.round(printTrace.lengthM)} m; S start, E end${printTrace.warnings.length ? '; needs review' : ''}; not route approval. ` : ''}North up · 1:${scaleDenominator.toLocaleString()} · Print at 100% / actual size; measure the scale bar. ${pack.sources.map((s) => `${s.attribution} · source ${s.sourceAt?.slice(0, 10) ?? 'date unknown'}`).join(' | ')}`;
+    get('paper-title').textContent = spec?.title ?? `${pack.title} — ${variant}${paper.draft ? ' — UNREVIEWED DRAFT' : ''}`;
+    get('paper-summary').textContent = spec?.summary ?? 'Mark a route, indicate your heading and explain how the roads connect.';
+    get('paper-footer').textContent = spec ? `Letter ${orientation} · North up · 1:${scaleDenominator.toLocaleString()} · Print at 100% / actual size; measure the scale bar. ${spec.kind} · Page 1 of ${get('exercise-pages').children.length + 1} · Source credits follow the map.` : `Letter ${orientation} · ${printTrace ? `Trace preview: ${printTrace.edges.length} steps, ${Math.round(printTrace.lengthM)} m; S start, E end${printTrace.warnings.length ? '; needs review' : ''}; not route approval. ` : ''}North up · 1:${scaleDenominator.toLocaleString()} · Print at 100% / actual size; measure the scale bar. ${pack.sources.map((s) => `${s.attribution} · source ${s.sourceAt?.slice(0, 10) ?? 'date unknown'}`).join(' | ')}`;
   } catch (error) {
-    get('paper-map').replaceChildren(); get('print').disabled = true; printError = error.message;
-    get('paper-title').textContent = 'Map cannot be printed at this scale'; get('paper-footer').textContent = printError;
+    get('paper-map').replaceChildren(); get('exercise-pages').replaceChildren(); printPagesKey = null; get('print').disabled = true; printError = error.message;
+    get('paper-summary').textContent = '';
+    get('paper-title').textContent = 'Print output is unavailable'; get('paper-footer').textContent = printError;
   }
   announce(`${pack.title} · ${pack.review.status === 'reviewed' ? 'Reviewed pack' : 'Unreviewed draft'} · ${pack.features.features.length} features · ${model.labels.length} labels shown${model.suppressedLabels ? `, ${model.suppressedLabels} suppressed to avoid collisions/edges` : ''} · screen rotated ${rotation}°. ${printError}`);
 }
 function install(value) {
   pack = value; selected = null; rotation = 0;
-  screenModels.clear(); paperModels.clear();
+  screenModels.clear(); paperModels.clear(); printPagesKey = null;
+  get('print-exercise').replaceChildren();
+  for (const exercise of pack.exercises) get('print-exercise').add(new Option(`${exercise.type} · ${exercise.id}${exercise.review !== 'reviewed' ? ' · draft' : ''}`, exercise.id));
+  if (!pack.exercises.length) get('print-exercise').add(new Option('No exercises in this pack', ''));
+  get('print-exercise').disabled = !pack.exercises.length;
+  get('print-output').value = 'map';
   get('scale').value = String(pack.print.scaleDenominator);
   get('orientation').value = pack.print.orientation;
   get('feature').replaceChildren(new Option('No feature selected', ''));
@@ -59,7 +77,7 @@ async function load(operation) {
   catch (error) { if (job === current && !current.signal.aborted) announce(`Map not loaded: ${error.message} ${error.errors?.[0]?.path ?? ''} The previous map is retained.`); }
 }
 const trace = createRouteTrace({ getPack: () => pack, redraw: updateView });
-const editor = createLabelEditor({ getPack: () => pack, getModel: () => currentModel, applyPack: (value) => { pack = value; screenModels.clear(); paperModels.clear(); trace.packChanged(); updateView(); } });
+const editor = createLabelEditor({ getPack: () => pack, getModel: () => currentModel, applyPack: (value) => { pack = value; screenModels.clear(); paperModels.clear(); printPagesKey = null; trace.packChanged(); updateView(); } });
 
 get('demo').addEventListener('click', () => load(async (signal) => {
   const response = await fetch('tests/fixtures/street-square.json', { signal });
@@ -68,7 +86,7 @@ get('demo').addEventListener('click', () => load(async (signal) => {
 }));
 get('import').addEventListener('change', () => { const file = get('import').files[0]; if (file) load((signal) => readImport(file, signal)); get('import').value = ''; });
 get('rotate').addEventListener('click', () => { rotation = (rotation + 90) % 360; updateView(); });
-for (const id of ['variant', 'heading', 'scale', 'orientation']) get(id).addEventListener('change', updateView);
+for (const id of ['variant', 'heading', 'scale', 'orientation', 'print-output', 'print-exercise']) get(id).addEventListener('change', updateView);
 get('feature').addEventListener('change', () => selectFeature(get('feature').value));
 get('print').addEventListener('click', () => { updateView(); if (!get('print').disabled) window.print(); });
 let lastWidth = 0;

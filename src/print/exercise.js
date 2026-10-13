@@ -1,0 +1,72 @@
+import { validatePack } from '../data/validate-pack.js';
+
+/** Printable teaching content, deliberately separate from scoring and transient traces. */
+export function createExercisePrint(pack, exerciseId, audience) {
+  if (!validatePack(pack).valid) throw new Error('Choose a validated lesson pack.');
+  if (!['learner', 'instructor'].includes(audience)) throw new Error('Choose learner or instructor output.');
+  const exercise = pack.exercises.find((e) => e.id === exerciseId);
+  if (!exercise) throw new Error('Choose an exercise from this pack.');
+  if ((exercise.scenario?.closedEdgeIds.length ?? 0) > 1000) throw new Error('This print layout supports at most 1,000 closure edges; use a smaller lesson.');
+  const instructor = audience === 'instructor', rubric = exercise.rubric;
+  const draft = pack.review.status !== 'reviewed' || exercise.review !== 'reviewed';
+  const kind = instructor ? 'Instructor guide' : 'Learner worksheet';
+  const blocks = [], markers = [], closedEdges = [];
+  const add = (text, type = 'paragraph') => blocks.push({ type, text });
+  add(pack.title, 'heading');
+  add(`Exercise ID: ${exercise.id} · Pack revision ${pack.revision}`);
+  add(`${kind} · ${exercise.type}${draft ? ' · UNREVIEWED DRAFT' : ''}`, 'heading');
+  add(exercise.prompt);
+  if (draft) add('This lesson requires content review before use. Printed output is a draft preview.');
+  let headingDeg = null;
+  if (exercise.type === 'heading') {
+    if (instructor) {
+      headingDeg = rubric.expectedDeg;
+      add(`Expected true heading: ${rubric.expectedDeg}°. Accept circular angular error up to ${rubric.toleranceDeg}° (inclusive); north is 0° and angles increase clockwise.`, 'answer');
+    } else add('Write the true heading in degrees and draw an arrow on the map.');
+  } else if (exercise.type === 'endpoint') {
+    if (instructor) {
+      markers.push({ coordinate: rubric.expected, text: 'X' });
+      add(`Expected endpoint (longitude, latitude): ${rubric.expected.join(', ')}. X marks the answer on the instructor map. Accept geographic distance up to ${rubric.toleranceM} m (inclusive).`, 'answer');
+    } else add('Mark the endpoint on the map and explain how you located it.');
+  } else {
+    const nodes = new Map(pack.topology.nodes.map((n) => [n.id, n]));
+    markers.push({ coordinate: nodes.get(rubric.startNodeId).coordinate, text: 'S' });
+    if (rubric.startNodeId !== rubric.endNodeId) markers.push({ coordinate: nodes.get(rubric.endNodeId).coordinate, text: 'E' });
+    else markers[0].text = 'S/E';
+    add(`S = start node ${rubric.startNodeId}; E = end node ${rubric.endNodeId}. Mode: ${rubric.mode === 'drive' ? 'driving' : 'walking'}.`);
+    if (rubric.objective === 'max-distance') add(`Maximum allowed route distance: ${rubric.maxDistanceM} m.`);
+    if (exercise.scenario) {
+      add(`Exercise-only closure: ${exercise.scenario.label}`);
+      add('Cross marks on the map identify closed edges for this synthetic scenario, not real road conditions.');
+      const edges = new Map(pack.topology.edges.map((e) => [e.id, e]));
+      for (const id of exercise.scenario.closedEdgeIds) {
+        const edge = edges.get(id); closedEdges.push(edge);
+        add(`Closed edge ${id}: ${edge.from} → ${edge.to} (${edge.mode}).`);
+      }
+    }
+    if (instructor) {
+      add('Accept any connected directed path from S to E that matches the mode and allowed access, obeys turn-sequence restrictions and avoids the exercise closures. Apply the stated distance limit when present. There is no single exact-match route answer.', 'answer');
+      add('Unknown access, unresolved restrictions or excluded geometry need manual review; do not mark them correct from the drawing alone. No sample route is automatically approved or generated.');
+      if (rubric.startNodeId === rubric.endNodeId) add('An empty path may be valid when start equals end and no positive-distance requirement applies.', 'answer');
+    } else add('Draw a path on the map, list its directed edges if known, and explain the road connections and your choices.');
+  }
+  if (instructor) {
+    add('Hints supplied by the author', 'heading');
+    if (!exercise.hints.length) add('No authored hints.');
+    for (const hint of exercise.hints) add(hint, 'hint');
+    if (pack.topology.completeness === 'partial') add('Topology is incomplete. Review the pack exclusions before accepting route answers.');
+    add('These are authored answer criteria for manual checking. Automatic scoring, learner records and real-world driving permission are not provided by this print tool.');
+  } else {
+    add('Answer and explanation', 'heading'); add('', 'answer-space');
+  }
+  add('Source credits', 'heading');
+  for (const source of pack.sources) {
+    add(`${source.attribution}\nLicense: ${source.license}\nSource date: ${source.sourceAt?.slice(0, 10) ?? 'unknown'}${source.url ? `\nSource: ${source.url}` : ''}`, 'credit');
+  }
+  if (blocks.reduce((sum, b) => sum + b.text.length, 0) > 100000) throw new Error('Exercise print text exceeds the layout limit; use a smaller source/lesson selection.');
+  const inside = ([lon, lat]) => lon >= pack.bounds[0] && lon <= pack.bounds[2] && lat >= pack.bounds[1] && lat <= pack.bounds[3];
+  if ((exercise.type === 'endpoint' && !inside(rubric.expected)) || !markers.every((m) => inside(m.coordinate)) || !closedEdges.every((e) => e.shape.every(inside))) throw new Error('Exercise endpoints or closures leave this print extent; choose a suitable lesson extent.');
+  return { kind, exerciseId, audience, draft, blocks, annotations: { markers, closedEdges }, headingDeg,
+    title: `${kind} — ${exercise.type}${draft ? ' — UNREVIEWED DRAFT' : ''}`,
+    summary: `${exercise.type} · Questions${instructor ? ' and answer criteria' : ''} and source credits follow the map.` };
+}

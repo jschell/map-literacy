@@ -40,7 +40,11 @@ Supported scales: 1:1,000, 1:5,000 and 1:10,000. The new 1:1,000 preset makes th
 
 Print at 100% / actual size, turn off browser headers/footers and use Letter with the orientation selected in the app. Verify the print dialog matches; browser/printer settings can override CSS page sizing. Physically measure the bar: at 1:1,000 a 20m bar must be 20mm (or a 50m bar, 50mm); at 1:5,000 a 200m bar must be 40mm. Require <=1% error and readable monochrome labels on the real printer. Inspect collisions and road connections, especially complex crossings; PDF geometry does not establish printer calibration or correct driving maneuvers.
 
-Current worksheet text is a generic map prompt. Exercise-specific questions and instructor answers belong to the lesson phase; do not treat the current sheet as a completed curriculum.
+Map only retains the generic prompt and optional review trace. Select Learner worksheet or Instructor guide and an exercise to print the map followed by question/credit pages. Heading, endpoint, route and detour exercises are supported. Both outputs use the selected Letter orientation, scale and label variant. Instructor guides must be printed separately.
+
+Learner output includes the authored prompt, written-answer space, route endpoints and exercise-only closure marks. It omits hints, answer rubrics, endpoint-answer markers, expected-heading arrows and the current review trace regardless of screen controls. Instructor output adds heading/endpoint answer criteria and visual answers, authored hints and manual route/detour acceptance rules. It does not invent a unique route or approve a generated path. Pack/exercise draft status remains visible; authors must review prompt usability and printed label placement before treating sheets as curriculum.
+
+Text pages use measured physical widths, 10pt body text and 8pt footers. Long literal prompts/hints/credits continue onto additional Letter pages; source credit, license, date and source URL remain complete. Print rendering is bounded to 64 text pages, 100,000 text characters and 1,000 closure edges for one exercise. Exceeding limits or putting an answer/closure outside the map extent disables printing with an explanation rather than truncating content. A pack without exercises still supports Map only; worksheet output explains that an exercise is required.
 
 ## Automated browser checks
 

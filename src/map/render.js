@@ -7,7 +7,7 @@ const element = (doc, tag, attrs = {}, text = null) => {
 };
 
 /** No imported HTML/styles are executed. Returns a detached SVG. */
-export function renderMap(doc, model, { selectedId = null, headingDeg = null, route = null, onSelect = () => {} } = {}) {
+export function renderMap(doc, model, { selectedId = null, headingDeg = null, route = null, annotations = null, onSelect = () => {} } = {}) {
   const clipId = `clip-${crypto.randomUUID()}`;
   const svg = element(doc, 'svg', { viewBox: `0 0 ${model.width} ${model.height}`, class: model.paper ? 'map-svg print-map' : 'map-svg screen-map', role: 'img', 'aria-label': `${model.title}, ${model.variant} map${model.draft ? ', unreviewed draft' : ''}` });
   svg.append(element(doc, 'title', {}, model.title));
@@ -61,6 +61,21 @@ export function renderMap(doc, model, { selectedId = null, headingDeg = null, ro
   if (headingDeg !== null && Number.isFinite(headingDeg)) {
     const x = model.width / 2, y = model.height / 2, size = model.paper ? 5 : 25;
     group.append(element(doc, 'path', { d: `M${x},${y-size} L${x-size/2},${y+size/2} L${x},${y} L${x+size/2},${y+size/2} Z`, class: 'heading-arrow', transform: `rotate(${headingDeg + model.rotationDeg} ${x} ${y})` }));
+  }
+  if (annotations) {
+    const marks = element(doc, 'g', { class: 'exercise-annotations', 'pointer-events': 'none' }); svg.append(marks);
+    for (const edge of annotations.closedEdges) {
+      const d = edge.shape.map((point, i) => `${i ? 'L' : 'M'}${model.convert(point).join(',')}`).join(' ');
+      marks.append(element(doc, 'path', { d, class: 'closure-line', 'stroke-width': .6, 'stroke-dasharray': '1 1', 'clip-path': `url(#${clipId})` }));
+      const i = Math.max(1, Math.floor(edge.shape.length / 2)), a = model.convert(edge.shape[i - 1]), b = model.convert(edge.shape[i]);
+      const x = a[0] + (b[0] - a[0]) / 3, y = a[1] + (b[1] - a[1]) / 3;
+      marks.append(element(doc, 'path', { d: `M${x-2},${y-2} L${x+2},${y+2} M${x-2},${y+2} L${x+2},${y-2}`, class: 'closure-line', 'stroke-width': .8 }));
+    }
+    for (const marker of annotations.markers) {
+      const [cx, cy] = model.convert(marker.coordinate);
+      marks.append(element(doc, 'circle', { cx, cy, r: 3, fill: 'white', stroke: 'black', 'stroke-width': .3 }));
+      marks.append(element(doc, 'text', { x: cx, y: cy, class: 'exercise-mark', 'text-anchor': 'middle', 'dominant-baseline': 'central', 'font-size': 3, fill: 'black' }, marker.text));
+    }
   }
   const unit = model.paper ? 1 : 4, x = model.width - 10 * unit, y = 10 * unit;
   svg.append(element(doc, 'path', { d: `M${x},${y-4*unit} L${x-2*unit},${y+3*unit} L${x+2*unit},${y+3*unit} Z`, class: 'north-arrow', transform: `rotate(${model.rotationDeg} ${x} ${y})` }));

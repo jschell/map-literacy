@@ -18,8 +18,11 @@
       <label>Heading<select id="heading"><option value="">Hidden</option><option value="0">North</option><option value="90">East</option><option value="180">South</option><option value="270">West</option></select></label>
       <label>Print scale<select id="scale"><option value="1000">1:1,000</option><option value="5000" selected>1:5,000</option><option value="10000">1:10,000</option></select></label>
       <label>Letter orientation<select id="orientation"><option value="landscape">Landscape (11 × 8.5 in)</option><option value="portrait">Portrait (8.5 × 11 in)</option></select></label>
+      <label>Print output<select id="print-output"><option value="map">Map only</option><option value="learner">Learner worksheet</option><option value="instructor">Instructor guide</option></select></label>
+      <label>Exercise<select id="print-exercise" disabled><option value="">No exercises loaded</option></select></label>
       <button id="print" type="button" disabled>Print map</button>
     </section>
+    <p class="note">Worksheets add question and source-credit pages after the map. Learner output omits answer arrows and your review trace. Print instructor guides separately.</p>
     <p id="status" role="status" aria-live="polite">Load the synthetic map or import a validated lesson pack. No location is selected automatically.</p>
     <section id="map-panel" class="map-panel" aria-label="Map viewer"><div id="map"></div></section>
     <p id="attribution" class="note" aria-label="Map sources"></p>
@@ -62,9 +65,10 @@
   </main>
   <section data-orientation="landscape" id="print-sheet" aria-label="Printable map">
     <div id="paper-map"></div>
-    <div class="worksheet"><strong id="paper-title"></strong><p>Mark a route, indicate your heading and explain how the roads connect.</p></div>
+    <div class="worksheet"><strong id="paper-title"></strong><p id="paper-summary">Mark a route, indicate your heading and explain how the roads connect.</p></div>
     <footer id="paper-footer"></footer>
   </section>
+  <section id="exercise-pages" data-orientation="landscape" aria-label="Exercise print pages"></section>
 </body>
 </html>
 
