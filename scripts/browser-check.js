@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { checkAutosave } from './autosave-browser-check.js';
 import { checkStorage } from './storage-browser-check.js';
 import { createRequire } from 'node:module';
 import { mkdir, readFile } from 'node:fs/promises';
@@ -27,11 +28,13 @@ try { browser = await chromium.launch({ headless: true,
   ...(process.env.MAP_LITERACY_BROWSER_EXECUTABLE ? { executablePath: process.env.MAP_LITERACY_BROWSER_EXECUTABLE, ...(portable ? { args: portable.args } : {}) }
     : portable ? { executablePath: await portable.executablePath(), args: portable.args } : {}) }); }
 catch (error) { server?.kill(); throw error; }
-const page = await browser.newPage({ viewport: { width: 1280, height: 1000 } });
+const desktopContext = await browser.newContext({ viewport: { width: 1280, height: 1000 } });
+const page = await desktopContext.newPage();
 const errors = [];
 page.on('pageerror', (e) => errors.push(e.message));
 page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); });
 async function afterInstall(operation) {
+  await page.waitForFunction(() => !document.getElementById('save-status')?.textContent.startsWith('Saving'));
   const version = await page.locator('#map').getAttribute('data-load-version');
   await operation();
   await page.waitForFunction((old) => (document.getElementById('map').dataset.loadVersion ?? null) !== old, version);
@@ -41,12 +44,14 @@ const importReady = (file) => afterInstall(() => page.locator('#import').setInpu
 try {
   await page.goto(base);
   const storageChecks = await checkStorage(page);
+  const autosaveChecks = await checkAutosave(page, base);
   assert.equal(await page.locator('#map svg').count(), 0);
   await loadDemo();
   await page.locator('#map svg').waitFor();
   assert.equal(await page.locator('#map .feature').count(), 6);
   assert.ok((await page.locator('#attribution').textContent()).includes('CC0-1.0'));
   await page.locator('#lesson-start').click();
+  await page.waitForFunction(() => document.getElementById('save-status').textContent.startsWith('Saved in this browser'));
   await page.locator('#answer-heading').focus(); await page.keyboard.type('359');
   await page.locator('#lesson-hint').click();
   await page.locator('#lesson-submit').click();
@@ -56,7 +61,7 @@ try {
   const sessionBackupPath = new URL('session-backup.json', output).pathname; await sessionDownload.saveAs(sessionBackupPath);
   await page.reload();
   await afterInstall(() => page.locator('#lesson-import').setInputFiles(sessionBackupPath));
-  await page.waitForFunction(() => document.getElementById('lesson-status').textContent.includes('Session restored in memory'));
+  await page.waitForFunction(() => document.getElementById('lesson-status').textContent.includes('Session restored from revision'));
   assert.ok((await page.locator('#lesson-revision').textContent()).includes('1 attempts'));
   assert.equal(await page.locator('#lesson-hint').isDisabled(), true);
   assert.equal(await page.locator('#answer-heading').inputValue(), '');
@@ -76,7 +81,7 @@ try {
   await page.evaluate(async () => { Blob.prototype.arrayBuffer = window.originalBackupRead; window.releaseBackupRead(); await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))); });
   assert.equal(await page.locator('#lesson-revision').textContent(), '');
   await afterInstall(() => page.locator('#lesson-import').setInputFiles(sessionBackupPath));
-  await page.waitForFunction(() => document.getElementById('lesson-status').textContent.includes('Session restored in memory'));
+  await page.waitForFunction(() => document.getElementById('lesson-status').textContent.includes('Session restored from revision'));
   await page.locator('#lesson-import').setInputFiles({ name: 'bad-backup.json', mimeType: 'application/json', buffer: Buffer.from('{}') });
   await page.waitForFunction(() => document.getElementById('lesson-status').textContent.includes('Session not restored'));
   const oversizedBackup = JSON.parse(await readFile(sessionBackupPath, 'utf8'));
@@ -452,6 +457,6 @@ try {
   }
   await mobile.close();
   assert.deepEqual(errors, []);
-  console.log(JSON.stringify({ syntheticFeatures: 6, storageChecks, memoryLessonSessions: 'passed', sessionBackupControls: 'passed', variantsAndSelection: 'passed', labelEditingAndExport: 'passed', directedTracingAndPrint: 'passed', exerciseSheetsAndPagination: 'passed', boundedSearchAndRenderLimits: 'passed', invalidImportRetainsMap: 'passed', pdfDimensions: physical, mobileOverflow: false, realPack, browserErrors: errors }));
+  console.log(JSON.stringify({ syntheticFeatures: 6, storageChecks, autosaveChecks, memoryLessonSessions: 'passed', sessionBackupControls: 'passed', variantsAndSelection: 'passed', labelEditingAndExport: 'passed', directedTracingAndPrint: 'passed', exerciseSheetsAndPagination: 'passed', boundedSearchAndRenderLimits: 'passed', invalidImportRetainsMap: 'passed', pdfDimensions: physical, mobileOverflow: false, realPack, browserErrors: errors }));
 } finally { await browser.close(); server?.kill(); }
 

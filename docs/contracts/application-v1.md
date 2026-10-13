@@ -134,3 +134,14 @@ resumeLessonSession({pack,session,attempts},options) returns a detached revision
 
 Browser Download session backup exports the current controller and its pack. Restore session backup requires exactly one session and explicitly replaces the current map/session only after record and renderer preflight; failures retain both. Map selection/author edits cancel pending restore reads. Multi-session restore stays in the storage API until a saved-session selector exists. These file controls remain memory only after restore; automatic saves, session listing/resume from IndexedDB, save-state events and cross-tab UI recovery remain pending.
 
+
+## Implemented automatic progress saves
+
+createAutosave binds one validated session and a stored-version lease. One write may be pending; identical calls reuse it and differing snapshots reject save-pending. UI mutation controls are disabled during that write. Initial begin, hints, accepted attempts, retry, next and end commit the pack/session/attempt snapshot. Draft reset has no durable mutation. Saved is displayed only after commit resolution; validation and transaction failures report not-saved and retain the lease/memory data. Retry storage reconnects without deleting data. Failed or pending progress is guarded against replacement until saved or explicitly backed up.
+
+storage.listSessions({afterId?,signal}) returns <=100 bounded headers and an optional continuation ID. Startup opens storage and lists sessions without selecting a pack. Explicit resume reads and validates the full committed revision before replacing state. Restore of an identical stored session binds its version; changed same-ID file content enters conflict instead of overwriting it. Session file backup remains available in degraded mode.
+
+Conflict recovery is explicit: Reload latest, discard changes reads the current stored version and replaces memory; Save as new session generates fresh session/attempt UUIDs and copies committed attempts, hint counts and original timestamps. It never merges competing answers or changes the original record. Pack revision conflicts cannot be fixed by a session fork. Focus re-reads warn about changed versions; transaction leases enforce correctness independently of notifications. Pagehide closes storage, BFCache return reconnects, and versionchange reports reload-needed. Future migrations/settings/release/device acceptance remain pending.
+
+DOM events are emitted for answer-submitted, answer-scored, hint-shown, session-reset, save-completed and save-failed with their defined IDs/results/job/version fields. Save events occur after transaction completion/abort or rejected preflight. Pack lifecycle/settings and cross-tab notification events remain later work. No raw live tracks or learner names are collected.
+

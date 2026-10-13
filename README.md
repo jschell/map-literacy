@@ -4,7 +4,7 @@ Learn to understand where you are, which direction you face, how routes connect 
 
 Street lessons cover orientation, roads, landmarks, addresses, return routes and detours. Topographic lessons will add contours, elevation, slope, ridges, valleys and terrain interpretation. Both use shared map, lesson, print and progress components.
 
-**Current state:** a vanilla JavaScript map review interface with pack import, rotation, label variants, heading arrows, feature selection and fixed-scale print output. Data validation and OSM preparation are implemented; the Redmond draft renders but remains unreviewed. Reviewed street lessons now support heading, endpoint, route and detour scoring in revision-locked memory sessions, with hints, retries and multiple valid routes. Session backup download/restore preserves committed attempts and hints; refresh/import/edit still discards unexported memory progress. Automatic durable learner records, reviewed real lessons and routing deployment remain pending.
+**Current state:** a vanilla JavaScript map review interface with pack import, rotation, label variants, heading arrows, feature selection and fixed-scale print output. Data validation and OSM preparation are implemented; the Redmond draft renders but remains unreviewed. Reviewed street lessons now support heading, endpoint, route and detour scoring in revision-locked sessions, with hints, retries and multiple valid routes. Accepted progress saves in this browser with explicit saved-session resume, failed-save retry and conflict recovery. Session backup download/restore preserves committed attempts and hints; unfinished answers remain memory only. Reviewed real lessons, saved preferences and routing deployment remain pending.
 
 ## Start here
 
@@ -30,7 +30,7 @@ The first useful release is a browser application with one reviewed neighborhood
 
 Use plain HTML/CSS/JavaScript, ES modules and a bounded SVG renderer. The current validator uses no external dependencies; Node.js 24 runs preparation tools and tests. Focused libraries are allowed; React/Vue are unnecessary. Candidate helpers include osmtogeojson, selected Turf.js functions and optional Leaflet. Keep geometry, topology, scoring and printing independent of the interface. Dependencies are pinned and checked when adopted.
 
-A static web deployment is the initial target. No accounts, live location or server are needed for the first release. The IndexedDB adapter and JSON backup APIs are implemented; automatic local-record integration is pending; persistence is not a backup. OSRM/Valhalla and optional TinyJS packaging are later integrations.
+A static web deployment is the initial target. No accounts, live location or server are needed for the first release. The IndexedDB adapter, automatic progress saves and JSON backup APIs are implemented; persistence is not a backup. OSRM/Valhalla and optional TinyJS packaging are later integrations.
 
 ## Working on the project
 
@@ -45,6 +45,7 @@ Project code and original documentation are licensed under [MIT](LICENSE). Gener
 
 
 
-The transactional IndexedDB adapter is implemented and tested independently. Learner controls use memory sessions with explicit session backup download/restore. Automatic saves, saved-session selection and save-state integration remain pending. See [storage evidence](docs/validation/storage.md).
+The transactional IndexedDB adapter is implemented and tested independently. Learner controls automatically save accepted progress, resume explicitly selected saved sessions and retain failed writes in memory for retry/export. Keep downloaded backups against browser data loss; unfinished answers and review traces are not saved. See [storage evidence](docs/validation/storage.md).
+
 
 
