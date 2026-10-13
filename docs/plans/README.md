@@ -8,8 +8,8 @@ Plans are work packages with evidence-based completion, not claims that an appli
 | [Bootstrap record](complete/00-repository-bootstrap.md) | Complete: documentation only | — | README, contributor guidance, context and plans |
 | [01 Contracts and validation](complete/01-contracts-and-validation.md) | Complete: design contracts | Bootstrap | Contracts and measurable acceptance |
 | [02 Source and lesson packs](queue/02-source-and-lesson-packs.md) | Queue: resume review after renderer | 01 | Reproducible, validated source packs |
-| [03 SVG and print](active/03-svg-and-print.md) | Active: viewer and print foundation implemented | 01; implemented 02 slice | Readable interactive/printed variants |
-| [04 Street lessons](queue/04-street-lessons.md) | Queue | 02, 03 | Deterministic exercises and rubric |
+| [03 SVG and print](queue/03-svg-and-print.md) | Queue: physical/device acceptance pending | 01; implemented 02 slice | Readable interactive/printed variants |
+| [04 Street lessons](active/04-street-lessons.md) | Active: pure scoring implemented | Implemented 02–03 slices | Deterministic exercises and rubric |
 | [05 Persistence and browser release](queue/05-persistence-and-browser-release.md) | Queue | 04 | Recoverable local app and static deployment |
 | [06 Learning pilot](queue/06-learning-pilot.md) | Queue | 05 | Exploratory usefulness/transfer evidence |
 | [07 Directions and simulation](queue/07-directions-and-simulation.md) | Queue | 05; 06 findings inform scope | Reviewed maneuvers and stationary playback |

@@ -1,6 +1,6 @@
 # Plan 03 — SVG rendering and print
 
-Status: active; initial projection, map review UI and fixed-scale print renderer implemented.
+Status: queued for external validation; initial projection, map review UI and fixed-scale print renderer implemented.
 Dependencies: 01 and the implemented acquisition/validation slice of 02; real lesson approval remains in 02.
 
 ## Outcome

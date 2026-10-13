@@ -11,7 +11,7 @@ Street lessons cover orientation, roads, landmarks, addresses, return routes and
 - [Scope and first release](docs/product-scope.md)
 - [Architecture proposal](docs/architecture.md)
 - [Plan index and dependencies](docs/plans/README.md)
-- [Next work: SVG and print](docs/plans/active/03-svg-and-print.md)
+- [Next work: street lessons](docs/plans/active/04-street-lessons.md)
 - [Run the map review interface](docs/map-review.md)
 - [Renderer validation evidence](docs/validation/render-evidence.md)
 - [Lesson-pack contract](docs/contracts/lesson-pack-v1.md)
