@@ -74,6 +74,11 @@ get('print').addEventListener('click', () => { updateView(); if (!get('print').d
 let lastWidth = 0;
 new ResizeObserver(() => {
   const width = Math.round(get('map').clientWidth);
-  if (width !== lastWidth) { lastWidth = width; screenModels.clear(); if (pack) requestAnimationFrame(updateView); }
+  // Print CSS hides the screen map; that is not a new screen viewport.
+  if (width < 280 || matchMedia('print').matches) return;
+  if (width !== lastWidth) {
+    lastWidth = width; screenModels.clear();
+    if (pack) requestAnimationFrame(() => { if (!matchMedia('print').matches && get('map').clientWidth >= 280) updateView(); });
+  }
 }).observe(get('map-panel'));
 

@@ -174,9 +174,18 @@ try {
   for (const [orientation, width, height] of [['landscape', 259.4, 145], ['portrait', 195.9, 208.5]]) {
     await page.locator('#orientation').selectOption(orientation);
     assert.equal(await page.locator('#print').isDisabled(), false);
+    await page.evaluate(() => { window.printMeasurementNode = document.querySelector('#paper-map svg'); });
     await page.emulateMedia({ media: 'print' });
-    physical[orientation] = await page.locator('#paper-map svg').evaluate((node) => ({ width: node.getBoundingClientRect().width, height: node.getBoundingClientRect().height }));
-    assert.ok(Math.abs(physical[orientation].width - width * 96 / 25.4) < 0.1);
+    await page.waitForFunction(({ width, height }) => {
+      const rect = document.querySelector('#paper-map svg')?.getBoundingClientRect();
+      return matchMedia('print').matches && rect && Math.abs(rect.width - width * 96 / 25.4) < .1 && Math.abs(rect.height - height * 96 / 25.4) < .1;
+    }, { width, height });
+    // Query and measure in one task; a locator handle can refer to a detached old SVG.
+    physical[orientation] = await page.evaluate(() => {
+      const rect = document.querySelector('#paper-map svg').getBoundingClientRect();
+      return { width: rect.width, height: rect.height };
+    });
+    assert.ok(Math.abs(physical[orientation].width - width * 96 / 25.4) < 0.1, JSON.stringify({ orientation, physical: physical[orientation] }));
     assert.ok(Math.abs(physical[orientation].height - height * 96 / 25.4) < 0.1);
     assert.ok((await page.locator('#paper-footer').textContent()).includes(`Letter ${orientation}`));
     const fits = await page.locator('#print-sheet').evaluate((sheet) => {
@@ -186,6 +195,7 @@ try {
     assert.equal(fits, true);
     const pdf = await page.pdf({ path: new URL(`synthetic-${orientation}.pdf`, output).pathname, preferCSSPageSize: true, printBackground: true });
     // Inspect this pinned Chromium's uncompressed page dictionaries, not arbitrary imported PDFs.
+    assert.equal(await page.evaluate(() => window.printMeasurementNode === document.querySelector('#paper-map svg')), true, 'Paper SVG stays stable through print mode and PDF generation');
     const pdfText = pdf.toString('latin1');
     assert.equal((pdfText.match(/\/Type \/Page\b/g) ?? []).length, 1);
     const mediaBox = pdfText.match(/\/MediaBox\s*\[0 0 ([\d.]+) ([\d.]+)\]/);
