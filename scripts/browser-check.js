@@ -51,6 +51,41 @@ try {
   await page.locator('#lesson-hint').click();
   await page.locator('#lesson-submit').click();
   assert.ok((await page.locator('#lesson-status').textContent()).startsWith('Correct.'));
+  const sessionDownloadEvent = page.waitForEvent('download');
+  await page.locator('#lesson-export').click(); const sessionDownload = await sessionDownloadEvent;
+  const sessionBackupPath = new URL('session-backup.json', output).pathname; await sessionDownload.saveAs(sessionBackupPath);
+  await page.reload();
+  await afterInstall(() => page.locator('#lesson-import').setInputFiles(sessionBackupPath));
+  await page.waitForFunction(() => document.getElementById('lesson-status').textContent.includes('Session restored in memory'));
+  assert.ok((await page.locator('#lesson-revision').textContent()).includes('1 attempts'));
+  assert.equal(await page.locator('#lesson-hint').isDisabled(), true);
+  assert.equal(await page.locator('#answer-heading').inputValue(), '');
+  assert.equal(await page.locator('#lesson-hints li').count(), 1);
+  await page.evaluate(() => {
+    window.originalBackupRead = Blob.prototype.arrayBuffer;
+    window.delayedBackupStarted = false;
+    Blob.prototype.arrayBuffer = async function () {
+      const bytes = await window.originalBackupRead.call(this);
+      if (this.name === 'session-backup.json') { window.delayedBackupStarted = true; await new Promise((resolve) => { window.releaseBackupRead = resolve; }); }
+      return bytes;
+    };
+  });
+  await page.locator('#lesson-import').setInputFiles(sessionBackupPath);
+  await page.waitForFunction(() => window.delayedBackupStarted);
+  await loadDemo();
+  await page.evaluate(async () => { Blob.prototype.arrayBuffer = window.originalBackupRead; window.releaseBackupRead(); await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))); });
+  assert.equal(await page.locator('#lesson-revision').textContent(), '');
+  await afterInstall(() => page.locator('#lesson-import').setInputFiles(sessionBackupPath));
+  await page.waitForFunction(() => document.getElementById('lesson-status').textContent.includes('Session restored in memory'));
+  await page.locator('#lesson-import').setInputFiles({ name: 'bad-backup.json', mimeType: 'application/json', buffer: Buffer.from('{}') });
+  await page.waitForFunction(() => document.getElementById('lesson-status').textContent.includes('Session not restored'));
+  const oversizedBackup = JSON.parse(await readFile(sessionBackupPath, 'utf8'));
+  const expandedFeatures = oversizedBackup.packs[0].features.features;
+  for (let n = expandedFeatures.length; n < 1001; n++) expandedFeatures.push({ ...structuredClone(expandedFeatures[0]), id: `extra-${n}` });
+  await page.locator('#lesson-import').setInputFiles({ name: 'oversized-backup.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(oversizedBackup)) });
+  await page.waitForFunction(() => document.getElementById('lesson-status').textContent.includes('Session not restored') && document.getElementById('lesson-status').textContent.includes('initial browser limit'));
+  assert.equal(await page.locator('#map .feature').count(), 6);
+  assert.ok((await page.locator('#lesson-revision').textContent()).includes('1 attempts'));
   assert.equal(await page.locator('#lesson-submit').isDisabled(), true);
   await page.locator('#lesson-retry').click();
   await page.locator('#answer-heading').fill('16');
@@ -417,6 +452,6 @@ try {
   }
   await mobile.close();
   assert.deepEqual(errors, []);
-  console.log(JSON.stringify({ syntheticFeatures: 6, storageChecks, memoryLessonSessions: 'passed', variantsAndSelection: 'passed', labelEditingAndExport: 'passed', directedTracingAndPrint: 'passed', exerciseSheetsAndPagination: 'passed', boundedSearchAndRenderLimits: 'passed', invalidImportRetainsMap: 'passed', pdfDimensions: physical, mobileOverflow: false, realPack, browserErrors: errors }));
+  console.log(JSON.stringify({ syntheticFeatures: 6, storageChecks, memoryLessonSessions: 'passed', sessionBackupControls: 'passed', variantsAndSelection: 'passed', labelEditingAndExport: 'passed', directedTracingAndPrint: 'passed', exerciseSheetsAndPagination: 'passed', boundedSearchAndRenderLimits: 'passed', invalidImportRetainsMap: 'passed', pdfDimensions: physical, mobileOverflow: false, realPack, browserErrors: errors }));
 } finally { await browser.close(); server?.kill(); }
 
