@@ -1,0 +1,8 @@
+{
+  "id": "redmond-public-roads",
+  "title": "Downtown Redmond public-road candidate",
+  "revision": 1,
+  "bounds": [-122.127, 47.672, -122.123, 47.675],
+  "sourceBounds": [-122.129, 47.670, -122.121, 47.677],
+  "endpoint": "https://overpass-api.de/api/interpreter"
+}

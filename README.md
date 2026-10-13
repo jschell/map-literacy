@@ -4,7 +4,7 @@ Learn to understand where you are, which direction you face, how routes connect 
 
 Street lessons cover orientation, roads, landmarks, addresses, return routes and detours. Topographic lessons will add contours, elevation, slope, ridges, valleys and terrain interpretation. Both use shared map, lesson, print and progress components.
 
-**Current state:** executable lesson-pack validation and reproducible synthetic packs. No map interface, real-neighborhood pack, routing deployment or learning-effectiveness result exists.
+**Current state:** executable lesson-pack validation, reproducible synthetic packs and bounded OSM preparation. A live downtown Redmond draft was validated and reproduced from saved source bytes. No reviewed real-neighborhood lesson pack, map interface, routing deployment or learning-effectiveness result exists.
 
 ## Start here
 
@@ -16,6 +16,8 @@ Street lessons cover orientation, roads, landmarks, addresses, return routes and
 - [Application contract](docs/contracts/application-v1.md)
 - [Validation gates](docs/validation/acceptance.md)
 - [Run the data foundation checks](docs/development.md)
+- [Prepare OSM sources](docs/osm-preparation.md)
+- [Live source preparation evidence](docs/validation/osm-redmond-evidence.md)
 - [Sources and evidence limits](docs/research/sources.md)
 - [Decisions and open questions](docs/decisions.md)
 - [Original merged idea handoff](https://github.com/jschell/Ideas-for-projects/tree/main/street-map-learning)
@@ -37,3 +39,4 @@ This repository now owns implementation planning. The Ideas-for-projects draft r
 ## License
 
 Project code and original documentation are licensed under [MIT](LICENSE). Generated synthetic fixture JSON retains its [CC0-1.0 designation](tests/fixtures/README.md). Third-party map/elevation data and quoted research retain their own licenses and attribution requirements; the MIT license does not relicense them.
+

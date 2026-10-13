@@ -10,7 +10,9 @@
     "test": "node --test",
     "fixtures": "node scripts/generate-fixtures.js",
     "fixtures:check": "node scripts/generate-fixtures.js --check",
-    "validate": "node scripts/validate-pack.js"
+    "validate": "node scripts/validate-pack.js",
+    "osm:prepare": "node scripts/prepare-osm.js",
+    "osm:compare": "node scripts/compare-osm.js"
   },
   "license": "MIT"
 }
