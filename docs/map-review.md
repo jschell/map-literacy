@@ -67,3 +67,9 @@ Source formulas: USGS Map Projections—A Working Manual, https://pubs.usgs.gov/
 Run `npm run browser:perf` with the same portable/executable flags to generate deterministic neighborhood and boundary stress packs, PDFs and 20-sample interaction measurements. See [performance evidence](validation/performance.md) for raw results and limits. Schema ceilings are not a practical device performance guarantee; large packs still have slow interactions/imports. Geometry caches retain four recent screen and paper models, and unchanged SVG geometry is reused for label/selection-only changes.
 
 Use [physical-print-check.md](validation/physical-print-check.md) to record actual Letter scale/readability and native device/browser observations. These checks remain pending.
+
+## Initial browser limits and search
+
+The current viewer accepts 1,000 features, 10,000 feature-geometry coordinates and 200 authored labels. Larger schema-valid preparation files receive a readable limit message before replacing the current map; prepare a smaller lesson extent. Local edits use the same budget. See [render-budget.md](validation/render-budget.md) for current measured results; historical ceiling benchmarks are not current rendering support.
+
+Use Find feature, Find start node or Find directed edge to locate items by displayed name/ID/coordinate/description. Each native list shows up to 200 matches and preserves the current selection if it lies outside the filtered results. Filtering itself does not select a location, reset a path or add an edge. The complete validated graph remains available for search and trace checks. Actual-device performance and physical Letter calibration remain pending.

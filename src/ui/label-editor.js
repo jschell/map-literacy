@@ -36,7 +36,7 @@ export function createLabelEditor({ getPack, getModel, applyPack }) {
   function commit(operation, chosen, text) {
     try {
       const old = getPack(), next = operation(old);
-      previous = old; applyPack(next); refresh(chosen);
+      applyPack(next); previous = old; refresh(chosen);
       message(`${text} Draft revision ${next.revision}; review cleared. Export the pack to keep this edit. Refreshing or loading another pack loses local edits.`);
     } catch (error) { message(`Label not changed: ${error.message} ${error.errors?.[0]?.path ?? ''}`); }
   }

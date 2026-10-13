@@ -1,4 +1,5 @@
 import { createProjection, boundsPerimeter, rotateScreen } from '../geo/projection.js';
+import { assertRenderable } from './render-limits.js';
 import { validatePack } from '../data/validate-pack.js';
 
 const rounded = (v) => Number(v.toFixed(4));
@@ -16,6 +17,7 @@ export const LETTER_LAYOUTS = Object.freeze({
 export function createMapModel(pack, { paper = false, variant = 'labeled', rotationDeg = 0, scaleDenominator = pack.print.scaleDenominator, orientation = pack.print.orientation, screenWidth = 1000, screenHeight = 560 } = {}) {
   const validation = validatePack(pack);
   if (!validation.valid) throw Object.assign(new Error('Invalid lesson pack.'), { errors: validation.errors });
+  assertRenderable(pack);
   if (!['labeled', 'partial', 'blank'].includes(variant) || !Number.isFinite(rotationDeg)) throw new Error('Invalid view options.');
   if (![1000, 5000, 10000].includes(scaleDenominator)) throw new Error('Unsupported print scale.');
   if (!Number.isFinite(screenWidth) || !Number.isFinite(screenHeight) || screenWidth < 280 || screenWidth > 2000 || screenHeight < 280 || screenHeight > 1000) throw new Error('Unsupported screen dimensions.');
