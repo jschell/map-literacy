@@ -63,12 +63,48 @@ try {
   await page.waitForFunction(() => document.querySelectorAll('#map .map-label').length > 1);
   await page.locator('#heading').selectOption('90');
   await page.screenshot({ path: new URL('desktop.png', output).pathname, fullPage: true });
-  await page.emulateMedia({ media: 'print' });
-  const physical = await page.locator('#paper-map svg').evaluate((node) => ({ width: node.getBoundingClientRect().width, height: node.getBoundingClientRect().height }));
-  assert.ok(Math.abs(physical.width - 259.4 * 96 / 25.4) < 0.1);
-  assert.ok(Math.abs(physical.height - 145 * 96 / 25.4) < 0.1);
-  await page.pdf({ path: new URL('synthetic-map.pdf', output).pathname, preferCSSPageSize: true, printBackground: true });
-  await page.emulateMedia({ media: 'screen' });
+  const physical = {};
+  for (const [orientation, width, height] of [['landscape', 259.4, 145], ['portrait', 195.9, 208.5]]) {
+    await page.locator('#orientation').selectOption(orientation);
+    assert.equal(await page.locator('#print').isDisabled(), false);
+    await page.emulateMedia({ media: 'print' });
+    physical[orientation] = await page.locator('#paper-map svg').evaluate((node) => ({ width: node.getBoundingClientRect().width, height: node.getBoundingClientRect().height }));
+    assert.ok(Math.abs(physical[orientation].width - width * 96 / 25.4) < 0.1);
+    assert.ok(Math.abs(physical[orientation].height - height * 96 / 25.4) < 0.1);
+    assert.ok((await page.locator('#paper-footer').textContent()).includes(`Letter ${orientation}`));
+    const fits = await page.locator('#print-sheet').evaluate((sheet) => {
+      const box = sheet.getBoundingClientRect();
+      return [...sheet.children].every((child) => { const r = child.getBoundingClientRect(); return r.right <= box.right + .1 && r.bottom <= box.bottom + .1 && child.scrollHeight <= child.clientHeight + 1; });
+    });
+    assert.equal(fits, true);
+    const pdf = await page.pdf({ path: new URL(`synthetic-${orientation}.pdf`, output).pathname, preferCSSPageSize: true, printBackground: true });
+    // Inspect this pinned Chromium's uncompressed page dictionaries, not arbitrary imported PDFs.
+    const pdfText = pdf.toString('latin1');
+    assert.equal((pdfText.match(/\/Type \/Page\b/g) ?? []).length, 1);
+    const mediaBox = pdfText.match(/\/MediaBox\s*\[0 0 ([\d.]+) ([\d.]+)\]/);
+    assert.ok(mediaBox, 'Generated PDF has a readable MediaBox');
+    assert.deepEqual(mediaBox.slice(1).map(Number), orientation === 'portrait' ? [612, 792] : [792, 612]);
+    await page.emulateMedia({ media: 'screen' });
+  }
+  // Import honors the pack default; a wide extent fits landscape, then fails portrait.
+  const wide = JSON.parse(await readFile(new URL('../tests/fixtures/street-square.json', import.meta.url), 'utf8'));
+  wide.bounds = [-.0005, 0, .0015, .001]; wide.sourceBounds = [-.005, -.005, .005, .005];
+  await page.locator('#import').setInputFiles({ name: 'wide.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(wide)) });
+  await page.waitForFunction(() => document.getElementById('orientation').value === 'landscape');
+  assert.equal(await page.locator('#print').isDisabled(), false);
+  await page.locator('#orientation').selectOption('portrait');
+  assert.equal(await page.locator('#print').isDisabled(), true);
+  assert.ok((await page.locator('#status').textContent()).includes('does not fit'));
+  assert.equal(await page.locator('#paper-map svg').count(), 0);
+  await page.locator('#orientation').selectOption('landscape');
+  assert.equal(await page.locator('#print').isDisabled(), false);
+  wide.print.orientation = 'portrait'; wide.bounds = [0, 0, .0016, .0016];
+  await page.locator('#import').setInputFiles({ name: 'tall.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(wide)) });
+  await page.waitForFunction(() => document.getElementById('orientation').value === 'portrait' && !document.getElementById('print').disabled);
+  await page.locator('#orientation').selectOption('landscape');
+  assert.equal(await page.locator('#print').isDisabled(), true);
+  await page.locator('#demo').click();
+  await page.waitForFunction(() => document.getElementById('orientation').value === 'landscape' && !document.getElementById('print').disabled);
   let realPack = null;
   if (process.env.MAP_LITERACY_REVIEW_PACK) {
     const started = Date.now();
@@ -80,9 +116,18 @@ try {
     await page.emulateMedia({ media: 'print' });
     await page.pdf({ path: new URL('real-map.pdf', output).pathname, preferCSSPageSize: true, printBackground: true });
     await page.emulateMedia({ media: 'screen' });
+    await page.locator('#scale').selectOption('10000');
+    await page.locator('#orientation').selectOption('portrait');
+    assert.equal(await page.locator('#print').isDisabled(), false);
+    await page.emulateMedia({ media: 'print' });
+    await page.pdf({ path: new URL('real-portrait.pdf', output).pathname, preferCSSPageSize: true, printBackground: true });
+    await page.emulateMedia({ media: 'screen' });
   }
   const mobile = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
   await mobile.goto(base); await mobile.locator('#demo').tap(); await mobile.locator('#map svg').waitFor();
+  assert.equal(await mobile.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
+  await mobile.locator('#orientation').selectOption('portrait');
+  assert.equal(await mobile.locator('#print').isDisabled(), false);
   assert.equal(await mobile.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
   await mobile.screenshot({ path: new URL('mobile.png', output).pathname, fullPage: true });
   if (process.env.MAP_LITERACY_REVIEW_PACK) {
@@ -95,3 +140,4 @@ try {
   assert.deepEqual(errors, []);
   console.log(JSON.stringify({ syntheticFeatures: 6, variantsAndSelection: 'passed', invalidImportRetainsMap: 'passed', pdfDimensions: physical, mobileOverflow: false, realPack, browserErrors: errors }));
 } finally { await browser.close(); server?.kill(); }
+

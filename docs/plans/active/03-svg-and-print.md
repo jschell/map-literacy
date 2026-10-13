@@ -13,7 +13,7 @@ Render interactive and monochrome paper variants from shared geographic data. Th
 - [x] Draw road hierarchy, landmarks, water, crossings, selected one-way symbols and SVG interaction layers.
 - [x] Separate labels from geometry; use imported manual placement overrides and deterministic initial collision policy (in-app label editing remains pending).
 - [ ] Create labeled/partial/blank views, heading arrows, road selection and route overlays with keyboard/touch equivalents.
-- [ ] Complete external print CSS and Letter portrait/landscape presets, questions/instructor pages, scale bar, north arrow, source date and attribution. Landscape exists; add portrait to schema/model/UI/CSS with orientation-specific layout and regression coverage.
+- [ ] Complete external print CSS and Letter portrait/landscape presets, questions/instructor pages, scale bar, north arrow, source date and attribution. Both orientations now exist in schema/model/UI/CSS with regression coverage; exercise/instructor sheets remain pending.
 - [ ] Measure bounded-pack performance and inspect target-browser PDF output; provide actual-paper calibration procedure.
 
 ## Acceptance and validation
@@ -38,6 +38,8 @@ Added 1:1,000 as a compatible v1 print preset for small synthetic maps; source/p
 
 Validation: 71 Node tests passed; Chromium desktop/mobile-emulation checks passed with no browser/CSP errors; hostile label text stayed literal; malformed import retained prior map; PDF dimensions match 259.4 x 145mm map box. One-page Letter landscape synthetic/Redmond PDFs rendered and visually inspected. Redmond draft import displayed 918 features in about 0.2–0.3s on this container. See [evidence](../../validation/render-evidence.md).
 
-Remaining: portrait preset and orientation selection, route overlays, author label-edit/save controls, exercise-specific and instructor pages, maximum-pack/p95 measurements, actual Safari/Firefox/tablet and physical-print calibration. These are not implied by headless Chromium success. Plan 02 real lesson review and newer-source comparison remain queued, not complete.
+Letter orientation follow-up: selectable portrait/landscape, pack-default import, separate page layouts and orientation-specific fit errors are implemented. 73 Node tests and browser checks passed; both synthetic PDFs are single-page Letter at the expected dimensions. Physical-print calibration is still pending.
 
-Next action: add selectable Letter portrait/landscape output with schema, layout and browser/PDF checks for both orientations, then finalize label review, route-overlay interactions and exercise-specific sheets; coordinate physical/device checks when available.
+Remaining: route overlays, author label-edit/save controls, exercise-specific and instructor pages, maximum-pack/p95 measurements, actual Safari/Firefox/tablet and physical-print calibration. These are not implied by headless Chromium success. Plan 02 real lesson review and newer-source comparison remain queued, not complete.
+
+Next action: finalize label review, route-overlay interactions and exercise-specific sheets; coordinate physical/device checks when available.

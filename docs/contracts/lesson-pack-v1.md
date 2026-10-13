@@ -81,9 +81,14 @@ Initial product target: US Letter (8.5 x 11 inches), selectable portrait or land
 | Portrait | 215.9 x 279.4 | 195.9 x 259.4 |
 | Landscape | 279.4 x 215.9 | 259.4 x 195.9 |
 
-Implementation status: the current v1 validator and renderer accept landscape only. Plan 03 must add portrait schema support, orientation selection, paper layout and matching validation before portrait support is advertised. The preset below describes the implemented landscape layout, not the full initial-release target. Both orientations must preserve geographic scale, minimum label size, north arrow and source attribution; portrait map/question/footer slots must be defined and tested as part of that implementation.
+PrintPreset={paper:letter,orientation:portrait/landscape,marginMm:10,scaleDenominator:1000/5000/10000,labelMinPt:8,mapRotationDeg:0}. Both orientations are accepted by the v1 validator and renderer. A pack supplies its default orientation; the viewer may override it without mutating the pack. Reserve the following vertical slots:
 
-PrintPreset={paper:letter,orientation:landscape,marginMm:10,scaleDenominator:1000/5000/10000,labelMinPt:8,mapRotationDeg:0}. Page 279.4 x 215.9 mm; printable box 259.4 x 195.9 mm. Reserve map box 259.4 x 145 mm, questions box 259.4 x 30 mm and footer 259.4 x 20.9 mm, vertically in that order; additional questions use separate pages. Center the geographic extent in the map box; do not stretch axes independently. If extent/labels cannot fit requested scale, report print-extent-too-large and offer another extent/preset; do not silently rescale.
+| Orientation | Map width x height (mm) | Questions width x height (mm) | Footer width x height (mm) |
+|---|---|---|---|
+| Portrait | 195.9 x 208.5 | 195.9 x 30 | 195.9 x 20.9 |
+| Landscape | 259.4 x 145 | 259.4 x 30 | 259.4 x 20.9 |
+
+Additional questions use separate Letter pages. Center the geographic extent in the map box; do not stretch axes independently. Changing orientation changes available space, not geographic scale or north-up orientation. If extent/labels cannot fit requested scale, report print-extent-too-large and offer another orientation, extent or scale preset; do not silently rescale. Both orientations preserve minimum label size, north arrow and source attribution.
 
 Street projection: local spherical azimuthal equidistant centered on bounds midpoint, radius 6371008.8 m. Geographic center must be fixed per pack revision; forward/inverse tested with independent known distances and angular cases. Screen x=easting and y=-northing; displayed clockwise rotation is separate. True heading is measured clockwise from true north, not the page top. No magnetic/grid heading lessons in v1. Scale error across declared extent <=0.5%; paper calibration target <=1%. Terrain must supply its own horizontal/vertical CRS contract in Plan 08.
 
@@ -94,4 +99,5 @@ A complete machine-readable synthetic street pack is in [street-square.json](../
 Future topographic envelope example: schemaVersion=1, module=topographic, capabilities=[terrain-v1], with elevation source metadata. Future route envelope: module=street, capabilities=[street-core,directions-v1], route provider/version/options and maneuvers in a documented extension. Both are explicit unsupported-capability in street-core, before writes. Plan 07/08 must finish their payloads before support is advertised.
 
 Reject: duplicate IDs, wrong coordinate order/range, missing source reference, nonexistent node/edge, invalid type/rubric pair, missing synthetic closure, unsupplied hash, unknown capability/version, unsupported geometry/extent, nonfinite number, imported limits exceeded. Pack import is all-or-nothing; correctness unknown is not a structural import failure when the pack records exclusions.
+
 

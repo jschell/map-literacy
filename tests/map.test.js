@@ -82,3 +82,26 @@ test('phone maps retain readable native label size instead of shrinking a deskto
   assert.equal(m.width, 354); assert.ok(m.labels.every((l) => l.fontSize >= 13));
   assert.equal(createMapModel(pack, { paper: true, scaleDenominator: 1000 }).metersToUnits, 1);
 });
+
+
+test('Letter orientations retain true scale, north-up geometry and label size', () => {
+  for (const orientation of ['portrait', 'landscape']) {
+    const p = structuredClone(pack); p.print.orientation = orientation;
+    const m = createMapModel(p, { paper: true, scaleDenominator: 1000, rotationDeg: 90 });
+    const a = m.convert([0, 0]), b = m.convert([0.0005, 0]);
+    assert.ok(Math.abs(Math.hypot(a[0] - b[0], a[1] - b[1]) - distanceM([0, 0], [0.0005, 0])) < 0.01);
+    assert.equal(m.rotationDeg, 0); assert.equal(m.orientation, orientation);
+    assert.ok(m.labels.length > 0);
+    assert.ok(m.labels.every((l) => l.fontSize >= 8 * 25.4 / 72));
+    assert.ok(distanceM([0.0005, 0], m.invert(b)) < 0.1);
+  }
+  assert.throws(() => createMapModel(pack, { paper: true, orientation: 'square' }), /Unsupported print orientation/);
+});
+test('Letter fit limits depend on orientation without automatic rescaling', () => {
+  const wide = structuredClone(pack); wide.bounds = [-.0005, 0, .0015, .001]; wide.sourceBounds = [-.005, -.005, .005, .005];
+  assert.equal(createMapModel(wide, { paper: true, orientation: 'landscape', scaleDenominator: 1000 }).metersToUnits, 1);
+  assert.throws(() => createMapModel(wide, { paper: true, orientation: 'portrait', scaleDenominator: 1000 }), (e) => e.code === 'print-extent-too-large');
+  const tall = structuredClone(pack); tall.bounds = [0, 0, .0016, .0016]; tall.sourceBounds = [-.005, -.005, .005, .005];
+  assert.equal(createMapModel(tall, { paper: true, orientation: 'portrait', scaleDenominator: 1000 }).metersToUnits, 1);
+  assert.throws(() => createMapModel(tall, { paper: true, orientation: 'landscape', scaleDenominator: 1000 }), (e) => e.code === 'print-extent-too-large');
+});
