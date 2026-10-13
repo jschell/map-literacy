@@ -14,7 +14,8 @@
     "osm:prepare": "node scripts/prepare-osm.js",
     "osm:compare": "node scripts/compare-osm.js",
     "dev": "node scripts/dev-server.js",
-    "browser:check": "node scripts/browser-check.js"
+    "browser:check": "node scripts/browser-check.js",
+    "browser:perf": "node scripts/browser-performance.js"
   },
   "license": "MIT",
   "devDependencies": {

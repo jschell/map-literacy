@@ -26,8 +26,9 @@ export function createLabelEditor({ getPack, getModel, applyPack }) {
   }
   function refresh(chosen = labelId) {
     const pack = getPack(); labelId = pack?.labels.some((l) => l.id === chosen) ? chosen : null;
-    get('label-choice').replaceChildren(new Option('New label for selected feature', ''));
-    for (const label of pack?.labels ?? []) get('label-choice').add(new Option(`${label.text} (${label.id})`, label.id));
+    const options = document.createDocumentFragment(); options.append(new Option('New label for selected feature', ''));
+    for (const label of pack?.labels ?? []) options.append(new Option(`${label.text} (${label.id})`, label.id));
+    get('label-choice').replaceChildren(options);
     get('label-choice').value = labelId ?? ''; get('label-choice').disabled = !pack;
     get('export-pack').disabled = !pack; get('undo-label').disabled = !previous;
     fill();

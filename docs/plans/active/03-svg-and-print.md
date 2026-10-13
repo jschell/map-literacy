@@ -14,11 +14,11 @@ Render interactive and monochrome paper variants from shared geographic data. Th
 - [x] Separate labels from geometry; use imported manual placement overrides and deterministic initial collision policy (in-app label editing/export now implemented).
 - [x] Create labeled/partial/blank views, heading arrows, road selection and route overlays with native keyboard controls and container touch-emulation evidence; actual target-device validation remains below.
 - [x] Complete external print CSS and Letter portrait/landscape presets, questions/instructor pages, scale bar, north arrow, source date and attribution. Both orientations now exist in schema/model/UI/CSS with regression coverage; selected exercise learner/instructor sheets and measured text pagination are now implemented.
-- [ ] Measure bounded-pack performance and inspect target-browser PDF output; provide actual-paper calibration procedure.
+- [x] Measure bounded-pack performance and inspect container Chromium PDF output; provide actual-paper calibration procedure. Actual target-browser/device validation remains below.
 
 ## Acceptance and validation
 
-- [ ] Known distances/angles match Plan 01 tolerances and all variants preserve extent.
+- [x] Automated known-distance/cardinal-angle checks meet Plan 01 tolerances; label variants preserve geometry/extent. Physical calibration remains pending.
 - [ ] Bridge/junction and divided-road cases remain distinguishable at chosen scale.
 - [ ] Keyboard/touch targets work without color-only feedback; labels do not obscure required answers.
 - [ ] Both Letter orientations produce one-page map worksheets with correct page dimensions, margins, legible labels and visible scale/attribution; additional question/instructor pages remain Letter. PDF inspection passes layout checks; physical monochrome print calibration/readability for each orientation is separately performed or explicitly pending.
@@ -46,6 +46,8 @@ Route-overlay follow-up: explicit graph-node start, walking/driving edge tracing
 
 Exercise-print follow-up: selected heading/endpoint/route/detour learner worksheets and separate instructor guides share the fixed-scale map model. Learner output omits review traces, answer arrows, rubric answers and hints; instructor output includes authored criteria without inventing a unique route. Long text/source credits flow onto measured Letter pages with explicit layout limits. 87 Node tests and browser/PDF checks passed across both audiences, all four exercise types and both orientations; no physical-printer or curriculum approval is implied.
 
-Remaining: maximum-pack/p95 measurements, actual Safari/Firefox/tablet and physical-print calibration. These are not implied by headless Chromium success. Plan 02 real lesson review and newer-source comparison remain queued, not complete.
+Performance follow-up: reproducible neighborhood/display/graph stress profiles and raw 20-sample p95 reports are implemented. Display and graph profiles reach the joint 100,000-position budget; high-percentile ceiling delays remain too large to claim a practical performance envelope. Reused SVG/label layers and four-entry model caches reduce avoidable churn; measured limits and device/ruler procedure are explicit. See [performance evidence](../../validation/performance.md) and [manual checks](../../validation/physical-print-check.md).
 
-Next action: measure maximum-pack/p95 performance and finish remaining geometry/label acceptance evidence; coordinate physical/device checks when available.
+Remaining: practical device-specific performance budget/pack sizing, actual Safari/Firefox/tablet and physical-print calibration. These are not implied by headless Chromium success. Plan 02 real lesson review and newer-source comparison remain queued, not complete.
+
+Next action: validate practical pack sizing on the chosen device matrix and complete physical geometry/label acceptance; coordinate physical/device checks when available.

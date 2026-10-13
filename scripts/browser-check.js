@@ -29,25 +29,38 @@ const page = await browser.newPage({ viewport: { width: 1280, height: 1000 } });
 const errors = [];
 page.on('pageerror', (e) => errors.push(e.message));
 page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); });
+async function afterInstall(operation) {
+  const version = await page.locator('#map').getAttribute('data-load-version');
+  await operation();
+  await page.waitForFunction((old) => (document.getElementById('map').dataset.loadVersion ?? null) !== old, version);
+}
+const loadDemo = () => afterInstall(() => page.locator('#demo').click());
+const importReady = (file) => afterInstall(() => page.locator('#import').setInputFiles(file));
 try {
   await page.goto(base);
   assert.equal(await page.locator('#map svg').count(), 0);
-  await page.getByRole('button', { name: 'Load synthetic map' }).click();
+  await loadDemo();
   await page.locator('#map svg').waitFor();
   assert.equal(await page.locator('#map .feature').count(), 6);
   assert.ok((await page.locator('#attribution').textContent()).includes('CC0-1.0'));
+  await page.evaluate(() => { window.geometryBeforeLabels = document.querySelector('#map .feature'); window.paperBeforeLabels = document.querySelector('#paper-map svg'); });
   const geometry = await page.locator('#map .feature').evaluateAll((nodes) => nodes.map((n) => n.getAttribute('d')));
   await page.locator('#variant').selectOption('blank');
   assert.equal(await page.locator('#map .map-label').count(), 0);
+  assert.equal(await page.evaluate(() => window.geometryBeforeLabels === document.querySelector('#map .feature') && window.paperBeforeLabels === document.querySelector('#paper-map svg')), true);
   assert.deepEqual(await page.locator('#map .feature').evaluateAll((nodes) => nodes.map((n) => n.getAttribute('d'))), geometry);
   await page.locator('#variant').selectOption('labeled');
   await page.locator('#variant').selectOption('partial');
   assert.ok(await page.locator('#map .map-label').count() > 0);
   await page.locator('#variant').selectOption('labeled');
   await page.locator('#feature').selectOption('road:AB');
+  assert.equal(await page.evaluate(() => window.geometryBeforeLabels === document.querySelector('#map .feature')), true);
+  assert.equal(await page.locator('#map .feature--selected').getAttribute('data-feature-id'), 'road:AB');
   assert.ok((await page.locator('#selection').textContent()).includes('road:AB'));
   await page.locator('#heading').selectOption('90');
+  await page.evaluate(() => { window.paperBeforeRotation = document.querySelector('#paper-map svg'); });
   await page.getByRole('button', { name: 'Rotate 90°' }).click();
+  assert.equal(await page.evaluate(() => window.paperBeforeRotation === document.querySelector('#paper-map svg')), true);
   assert.ok((await page.locator('#status').textContent()).includes('90°'));
   assert.ok((await page.locator('#map .heading-arrow').getAttribute('transform')).includes('180'));
   await page.locator('#import').setInputFiles({ name: 'invalid.json', mimeType: 'application/json', buffer: Buffer.from('{') });
@@ -56,10 +69,10 @@ try {
   const hostile = JSON.parse(await readFile(new URL('../tests/fixtures/street-square.json', import.meta.url), 'utf8'));
   const payload = '<img src=x onerror=alert(1)>';
   hostile.labels = [{ ...hostile.labels[0], text: payload, anchor: [.0005, .0005] }];
-  await page.locator('#import').setInputFiles({ name: 'literal-text.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(hostile)) });
+  await importReady({ name: 'literal-text.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(hostile)) });
   await page.waitForFunction((text) => document.querySelector('#map .map-label')?.textContent === text, payload);
   assert.equal(await page.locator('#map img, #map script').count(), 0);
-  await page.locator('#demo').click();
+  await loadDemo();
   await page.waitForFunction(() => document.querySelectorAll('#map .map-label').length > 1);
   // Directed graph trace: native keyboard controls, map taps, print opt-in and constraints.
   await page.locator('#trace-start').selectOption('A');
@@ -103,7 +116,7 @@ try {
   assert.equal(await page.locator('#trace-add').isDisabled(), true);
   const variants = JSON.parse(await readFile(new URL('../tests/fixtures/packs.json', import.meta.url), 'utf8'));
   for (const name of ['unknown-access', 'only-turn']) {
-    await page.locator('#import').setInputFiles({ name: `${name}.json`, mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(variants[name])) });
+    await importReady({ name: `${name}.json`, mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(variants[name])) });
     await page.waitForFunction(() => document.getElementById('trace-start').value === '');
     await page.locator('#trace-mode').selectOption('drive');
     await page.locator('#trace-start').selectOption('A');
@@ -116,7 +129,7 @@ try {
       assert.ok((await page.locator('#paper-footer').textContent()).includes('needs review'));
     }
   }
-  await page.locator('#demo').click();
+  await loadDemo();
   await page.waitForFunction(() => document.getElementById('trace-start').value === '');
   assert.equal(await page.locator('#map .trace-line').count(), 0);
   // Authoring: keyboard fields, rotated-map placement, atomic failure, undo and download/re-import.
@@ -156,7 +169,7 @@ try {
   assert.deepEqual(saved.sources, fixture.sources); assert.deepEqual(saved.topology, fixture.topology);
   await page.locator('#undo-label').click();
   assert.ok((await page.locator('#edit-status').textContent()).includes(`draft revision ${fixture.revision + 3}`));
-  await page.locator('#import').setInputFiles(savedPath);
+  await importReady(savedPath);
   await page.waitForFunction(() => [...document.querySelectorAll('#label-choice option')].some((n) => n.textContent.includes('Reviewed placement')));
   await page.locator('#label-choice').selectOption(editedId);
   assert.equal(await page.locator('#label-text').inputValue(), 'Reviewed placement');
@@ -169,7 +182,7 @@ try {
   await page.locator('#label-text').fill('New label');
   await page.getByRole('button', { name: 'Apply label', exact: true }).click();
   assert.equal(await page.locator('#label-choice option').count(), fixture.labels.length + 2);
-  await page.locator('#demo').click();
+  await loadDemo();
   await page.waitForFunction(() => document.getElementById('undo-label').disabled);
   await page.locator('#heading').selectOption('90');
   await page.screenshot({ path: new URL('desktop.png', output).pathname, fullPage: true });
@@ -209,7 +222,7 @@ try {
   // Import honors the pack default; a wide extent fits landscape, then fails portrait.
   const wide = JSON.parse(await readFile(new URL('../tests/fixtures/street-square.json', import.meta.url), 'utf8'));
   wide.bounds = [-.0005, 0, .0015, .001]; wide.sourceBounds = [-.005, -.005, .005, .005];
-  await page.locator('#import').setInputFiles({ name: 'wide.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(wide)) });
+  await importReady({ name: 'wide.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(wide)) });
   await page.waitForFunction(() => document.getElementById('orientation').value === 'landscape');
   assert.equal(await page.locator('#print').isDisabled(), false);
   await page.locator('#orientation').selectOption('portrait');
@@ -219,14 +232,14 @@ try {
   await page.locator('#orientation').selectOption('landscape');
   assert.equal(await page.locator('#print').isDisabled(), false);
   wide.print.orientation = 'portrait'; wide.bounds = [0, 0, .0016, .0016];
-  await page.locator('#import').setInputFiles({ name: 'tall.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(wide)) });
+  await importReady({ name: 'tall.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(wide)) });
   await page.waitForFunction(() => document.getElementById('orientation').value === 'portrait' && !document.getElementById('print').disabled);
   await page.locator('#orientation').selectOption('landscape');
   assert.equal(await page.locator('#print').isDisabled(), true);
-  await page.locator('#demo').click();
+  await loadDemo();
   await page.waitForFunction(() => document.getElementById('orientation').value === 'landscape' && !document.getElementById('print').disabled);
   // Exercise sheets are independent of review heading/trace controls.
-  await page.locator('#demo').click();
+  await loadDemo();
   await page.waitForFunction(() => document.getElementById('print-exercise').options.length === 4 && document.getElementById('trace-start').value === '');
   await page.locator('#heading').selectOption('90');
   await page.locator('#trace-start').selectOption('A');
@@ -265,7 +278,7 @@ try {
   longPack.exercises[0].prompt = '<img src=x onerror=alert(1)>' + 'P'.repeat(1900);
   longPack.exercises[0].hints = ['H'.repeat(2000), 'I'.repeat(2000), 'J'.repeat(2000)];
   longPack.sources[0].attribution = 'C'.repeat(2000); longPack.exercises[0].review = 'draft';
-  await page.locator('#import').setInputFiles({ name: 'long-print.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(longPack)) });
+  await importReady({ name: 'long-print.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(longPack)) });
   await page.waitForFunction(() => document.getElementById('status').textContent.includes('MapMapMap'));
   await page.locator('#print-exercise').selectOption('heading'); await page.locator('#print-output').selectOption('instructor');
   assert.ok(await page.locator('#exercise-pages .exercise-page').count() > 1);
@@ -280,12 +293,12 @@ try {
   await page.emulateMedia({ media: 'screen' });
   await page.locator('#print-output').selectOption('learner');
   assert.equal(await page.locator('#exercise-pages .sheet-answer, #exercise-pages .sheet-hint').count(), 0);
-  await page.locator('#demo').click(); await page.waitForFunction(() => document.getElementById('print-output').value === 'map');
+  await loadDemo(); await page.waitForFunction(() => document.getElementById('print-output').value === 'map');
   assert.equal(await page.locator('#exercise-pages .exercise-page').count(), 0);
   let realPack = null;
   if (process.env.MAP_LITERACY_REVIEW_PACK) {
     const started = Date.now();
-    await page.locator('#import').setInputFiles(process.env.MAP_LITERACY_REVIEW_PACK);
+    await importReady(process.env.MAP_LITERACY_REVIEW_PACK);
     await page.waitForFunction(() => document.getElementById('status').textContent.includes('Unreviewed draft'));
     realPack = { loadMs: Date.now() - started, features: await page.locator('#map .feature').count() };
     assert.ok(realPack.features > 0);
