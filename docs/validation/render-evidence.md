@@ -22,3 +22,11 @@ Pending: physical monochrome output/ruler calibration, Safari/Firefox/actual tab
 Synthetic paper SVG measurements: landscape 980.40625 x 548.03125 CSS pixels (259.4 x 145 mm), portrait 740.40625 x 788.03125 (195.9 x 208.5 mm). Automated checks inspect pinned Chromium's generated PDF page dictionaries for one page and the exact MediaBox. Poppler independently confirmed one-page 792 x 612 point landscape and 612 x 792 point portrait output. Both rendered synthetic PDFs were visually inspected for labels, north arrow, scale, prompt and footer. The Redmond draft was additionally rendered in landscape at 1:5,000 and portrait at 1:10,000; no source or review status was changed.
 
 Physical printer calibration and Safari/Firefox/actual tablet evidence remain pending. Other paper sizes remain deferred. Browser/PDF checks establish generated geometry, not actual printer accuracy.
+
+## Label editing/export follow-up — 2026-10-12
+
+77 Node tests passed. Pure authoring checks cover immutable source/topology/geometry, invalid-edit atomicity, revision increments and review invalidation, literal text export/import, addition/removal, and undo as a new draft revision after export. Fixtures still reproduce exactly.
+
+Chromium browser checks exercised native label fields, rejected an out-of-extent anchor while retaining the prior pack, placed an anchor at map center after rotation, edited visibility/rotation/text, downloaded and re-imported the resulting pack, removed/restored/added labels, and applied a label with touch emulation. Source/topology content in the download matched the original. Both Letter PDF and mobile overflow checks still passed with zero browser/CSP errors. Desktop/mobile editor screenshots were visually inspected. Redmond remained a 918-feature draft; no real pack was approved or committed.
+
+This is local draft authoring with explicit file export, not persistent browser storage, learner-progress backup, reviewed curriculum or a full cartographic label solver. Actual tablet/browser and physical printer checks remain pending.

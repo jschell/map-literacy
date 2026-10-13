@@ -61,6 +61,55 @@ try {
   assert.equal(await page.locator('#map img, #map script').count(), 0);
   await page.locator('#demo').click();
   await page.waitForFunction(() => document.querySelectorAll('#map .map-label').length > 1);
+  // Authoring: keyboard fields, rotated-map placement, atomic failure, undo and download/re-import.
+  const fixture = JSON.parse(await readFile(new URL('../tests/fixtures/street-square.json', import.meta.url), 'utf8'));
+  const editedId = fixture.labels[0].id;
+  await page.locator('#label-choice').selectOption(editedId);
+  await page.locator('#label-text').fill('Reviewed placement');
+  await page.locator('#label-visible').selectOption('partial');
+  await page.locator('#label-rotation').fill('15');
+  await page.locator('#label-lon').fill('0.0004');
+  await page.locator('#label-lat').fill('0.0004');
+  await page.getByRole('button', { name: 'Apply label', exact: true }).click();
+  assert.ok((await page.locator('#edit-status').textContent()).includes(`Draft revision ${fixture.revision + 1}`));
+  assert.ok((await page.locator('#paper-title').textContent()).includes('UNREVIEWED DRAFT'));
+  await page.locator('#label-lon').fill('1');
+  await page.getByRole('button', { name: 'Apply label', exact: true }).click();
+  assert.ok((await page.locator('#edit-status').textContent()).includes('Label not changed'));
+  await page.getByRole('button', { name: 'Rotate 90°' }).click();
+  await page.locator('#place-label').click();
+  const mapBox = await page.locator('#map svg').boundingBox();
+  await page.locator('#map svg').click({ position: { x: mapBox.width / 2, y: mapBox.height / 2 } });
+  assert.ok(Math.abs(Number(await page.locator('#label-lon').inputValue()) - .0005) < .000001);
+  assert.ok(Math.abs(Number(await page.locator('#label-lat').inputValue()) - .0005) < .000001);
+  await page.getByRole('button', { name: 'Apply label', exact: true }).click();
+  const downloadEvent = page.waitForEvent('download');
+  await page.locator('#export-pack').click();
+  const download = await downloadEvent;
+  const savedPath = new URL('edited-pack.json', output).pathname;
+  await download.saveAs(savedPath);
+  const saved = JSON.parse(await readFile(savedPath, 'utf8'));
+  assert.equal(saved.revision, fixture.revision + 2);
+  assert.equal(saved.labels[0].text, 'Reviewed placement');
+  assert.equal(saved.labels[0].visibleIn, 'partial');
+  assert.deepEqual(saved.sources, fixture.sources); assert.deepEqual(saved.topology, fixture.topology);
+  await page.locator('#undo-label').click();
+  assert.ok((await page.locator('#edit-status').textContent()).includes(`draft revision ${fixture.revision + 3}`));
+  await page.locator('#import').setInputFiles(savedPath);
+  await page.waitForFunction(() => [...document.querySelectorAll('#label-choice option')].some((n) => n.textContent.includes('Reviewed placement')));
+  await page.locator('#label-choice').selectOption(editedId);
+  assert.equal(await page.locator('#label-text').inputValue(), 'Reviewed placement');
+  await page.locator('#delete-label').click();
+  assert.equal(await page.locator(`#label-choice option[value="${editedId}"]`).count(), 0);
+  await page.locator('#undo-label').click();
+  assert.equal(await page.locator(`#label-choice option[value="${editedId}"]`).count(), 1);
+  await page.locator('#label-choice').selectOption('');
+  await page.locator('#feature').selectOption('road:AB');
+  await page.locator('#label-text').fill('New label');
+  await page.getByRole('button', { name: 'Apply label', exact: true }).click();
+  assert.equal(await page.locator('#label-choice option').count(), fixture.labels.length + 2);
+  await page.locator('#demo').click();
+  await page.waitForFunction(() => document.getElementById('undo-label').disabled);
   await page.locator('#heading').selectOption('90');
   await page.screenshot({ path: new URL('desktop.png', output).pathname, fullPage: true });
   const physical = {};
@@ -126,6 +175,10 @@ try {
   const mobile = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
   await mobile.goto(base); await mobile.locator('#demo').tap(); await mobile.locator('#map svg').waitFor();
   assert.equal(await mobile.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
+  await mobile.locator('#feature').selectOption('road:AB');
+  await mobile.locator('#label-text').fill('Touch label');
+  await mobile.getByRole('button', { name: 'Apply label', exact: true }).tap();
+  assert.ok((await mobile.locator('#edit-status').textContent()).includes('Label applied'));
   await mobile.locator('#orientation').selectOption('portrait');
   assert.equal(await mobile.locator('#print').isDisabled(), false);
   assert.equal(await mobile.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
@@ -138,6 +191,6 @@ try {
   }
   await mobile.close();
   assert.deepEqual(errors, []);
-  console.log(JSON.stringify({ syntheticFeatures: 6, variantsAndSelection: 'passed', invalidImportRetainsMap: 'passed', pdfDimensions: physical, mobileOverflow: false, realPack, browserErrors: errors }));
+  console.log(JSON.stringify({ syntheticFeatures: 6, variantsAndSelection: 'passed', labelEditingAndExport: 'passed', invalidImportRetainsMap: 'passed', pdfDimensions: physical, mobileOverflow: false, realPack, browserErrors: errors }));
 } finally { await browser.close(); server?.kill(); }
 

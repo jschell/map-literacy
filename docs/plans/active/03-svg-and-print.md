@@ -11,7 +11,7 @@ Render interactive and monochrome paper variants from shared geographic data. Th
 
 - [x] Implement calibrated geographic-to-display/paper transforms and extent clipping.
 - [x] Draw road hierarchy, landmarks, water, crossings, selected one-way symbols and SVG interaction layers.
-- [x] Separate labels from geometry; use imported manual placement overrides and deterministic initial collision policy (in-app label editing remains pending).
+- [x] Separate labels from geometry; use imported manual placement overrides and deterministic initial collision policy (in-app label editing/export now implemented).
 - [ ] Create labeled/partial/blank views, heading arrows, road selection and route overlays with keyboard/touch equivalents.
 - [ ] Complete external print CSS and Letter portrait/landscape presets, questions/instructor pages, scale bar, north arrow, source date and attribution. Both orientations now exist in schema/model/UI/CSS with regression coverage; exercise/instructor sheets remain pending.
 - [ ] Measure bounded-pack performance and inspect target-browser PDF output; provide actual-paper calibration procedure.
@@ -40,6 +40,8 @@ Validation: 71 Node tests passed; Chromium desktop/mobile-emulation checks passe
 
 Letter orientation follow-up: selectable portrait/landscape, pack-default import, separate page layouts and orientation-specific fit errors are implemented. 73 Node tests and browser checks passed; both synthetic PDFs are single-page Letter at the expected dimensions. Physical-print calibration is still pending.
 
-Remaining: route overlays, author label-edit/save controls, exercise-specific and instructor pages, maximum-pack/p95 measurements, actual Safari/Firefox/tablet and physical-print calibration. These are not implied by headless Chromium success. Plan 02 real lesson review and newer-source comparison remain queued, not complete.
+Label authoring follow-up: native forms support add/edit/remove, geographic click/tap placement with coordinate alternatives, single-step undo and validated standalone export. Edits/undo increment revisions and clear pack/exercise approval while preserving source hashes, geometry and topology. 77 Node tests and browser checks passed, including download/re-import and rotated placement. Storage remains a later plan.
 
-Next action: finalize label review, route-overlay interactions and exercise-specific sheets; coordinate physical/device checks when available.
+Remaining: route overlays, exercise-specific and instructor pages, maximum-pack/p95 measurements, actual Safari/Firefox/tablet and physical-print calibration. These are not implied by headless Chromium success. Plan 02 real lesson review and newer-source comparison remain queued, not complete.
+
+Next action: add route-overlay interactions and exercise-specific sheets; coordinate physical/device checks when available.
