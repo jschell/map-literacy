@@ -33,13 +33,13 @@ Clearing browser storage does not remove downloaded JSON files or original impor
 
 ## Static deployment requirements
 
-No frontend build is needed. A deployment bundle needs index.html, styles.css, src/**/*.js and tests/fixtures/street-square.json. Exclude raw data, artifacts, node_modules, .git and local configuration. Serve correct HTML/CSS/JavaScript/JSON MIME types over HTTPS. Configure the same response CSP as the local server:
+No frontend compilation is needed. npm run release:build copies an explicit asset set into dist/site for Cloudflare/static hosts and dist/pages for GitHub Pages, with a deterministic local hash manifest. See [packaging and hosted setup](static-deployment.md). Both retain MIT code licensing and the synthetic fixture's CC0 notice. Exclude raw data, artifacts, node_modules, .git and local configuration. Serve correct HTML/CSS/JavaScript/JSON MIME types over HTTPS. Header-capable hosts use the same response CSP as the local server:
 
 ```text
 default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
 ```
 
-Also serve X-Content-Type-Options: nosniff. There are no runtime CDNs or inline scripts/styles. Hosting choice and publication are still pending; this document does not deploy a site. Network access is required to load app assets; no guaranteed offline mode or synchronization is provided.
+Also serve X-Content-Type-Options: nosniff. There are no runtime CDNs or inline scripts/styles. Cloudflare Workers Static Assets is the preferred full-header target; GitHub Pages has a prepared meta-CSP variant with explicitly weaker response-header coverage. Neither is published here. Network access is required to load app assets; no guaranteed offline mode or synchronization is provided.
 
 ## Evidence and remaining release gates
 
@@ -50,7 +50,8 @@ Also serve X-Content-Type-Options: nosniff. There are no runtime CDNs or inline 
 | Actual Safari/iOS or Firefox devices | Pending; no supported release matrix selected |
 | Physical monochrome Letter portrait/landscape | Calibration/readability pending |
 | Actual quota exhaustion, eviction and private browsing | Pending; unavailable/quota paths use injected test failures |
-| Public static host | Not selected or published |
+| Static package/local release | Reproducible Cloudflare and GitHub Pages packages; packaged browser and project-prefix/meta-CSP checks pass |
+| Public static host | Cloudflare preferred; GitHub Pages alternative prepared; neither published or externally verified |
 
 Run npm test, npm run fixtures:check and npm run browser:check for automated checks. See [keyboard/accessibility evidence](validation/accessibility.md), [storage evidence](validation/storage.md), [map/print usage](map-review.md) and [physical checks](validation/physical-print-check.md). Real lesson/curriculum review remains separate from technical correctness.
 

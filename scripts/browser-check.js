@@ -4,6 +4,7 @@ import { checkAutosave } from './autosave-browser-check.js';
 import { checkStorage } from './storage-browser-check.js';
 import { checkStorageUpgrades } from './storage-upgrade-browser-check.js';
 import { checkAccessibility } from './accessibility-browser-check.js';
+import { checkPagesPackage } from './pages-browser-check.js';
 import { createRequire } from 'node:module';
 import { mkdir, readFile } from 'node:fs/promises';
 import { makePerfPack } from './perf-pack.js';
@@ -435,6 +436,7 @@ try {
     await page.pdf({ path: new URL('real-portrait.pdf', output).pathname, preferCSSPageSize: true, printBackground: true });
     await page.emulateMedia({ media: 'screen' });
   }
+  const pagesPackageChecks = process.env.MAP_LITERACY_RELEASE_CHECK === '1' ? await checkPagesPackage(page) : null;
   const mobile = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
   await mobile.goto(base); await mobile.locator('#demo').tap(); await mobile.locator('#map svg').waitFor();
   await mobile.locator('#lesson-start').tap(); await mobile.locator('#answer-heading').fill('0');
@@ -465,6 +467,6 @@ try {
   }
   await mobile.close();
   assert.deepEqual(errors, []);
-  console.log(JSON.stringify({ syntheticFeatures: 6, storageChecks, autosaveChecks, preferenceChecks, accessibilityChecks, memoryLessonSessions: 'passed', sessionBackupControls: 'passed', variantsAndSelection: 'passed', labelEditingAndExport: 'passed', directedTracingAndPrint: 'passed', exerciseSheetsAndPagination: 'passed', boundedSearchAndRenderLimits: 'passed', invalidImportRetainsMap: 'passed', pdfDimensions: physical, mobileOverflow: false, realPack, browserErrors: errors }));
+  console.log(JSON.stringify({ syntheticFeatures: 6, pagesPackageChecks, storageChecks, autosaveChecks, preferenceChecks, accessibilityChecks, memoryLessonSessions: 'passed', sessionBackupControls: 'passed', variantsAndSelection: 'passed', labelEditingAndExport: 'passed', directedTracingAndPrint: 'passed', exerciseSheetsAndPagination: 'passed', boundedSearchAndRenderLimits: 'passed', invalidImportRetainsMap: 'passed', pdfDimensions: physical, mobileOverflow: false, realPack, browserErrors: errors }));
 } finally { await browser.close(); server?.kill(); }
 
