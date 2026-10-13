@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { checkStorage } from './storage-browser-check.js';
 import { createRequire } from 'node:module';
 import { mkdir, readFile } from 'node:fs/promises';
 import { makePerfPack } from './perf-pack.js';
@@ -39,6 +40,7 @@ const loadDemo = () => afterInstall(() => page.locator('#demo').click());
 const importReady = (file) => afterInstall(() => page.locator('#import').setInputFiles(file));
 try {
   await page.goto(base);
+  const storageChecks = await checkStorage(page);
   assert.equal(await page.locator('#map svg').count(), 0);
   await loadDemo();
   await page.locator('#map svg').waitFor();
@@ -415,6 +417,6 @@ try {
   }
   await mobile.close();
   assert.deepEqual(errors, []);
-  console.log(JSON.stringify({ syntheticFeatures: 6, memoryLessonSessions: 'passed', variantsAndSelection: 'passed', labelEditingAndExport: 'passed', directedTracingAndPrint: 'passed', exerciseSheetsAndPagination: 'passed', boundedSearchAndRenderLimits: 'passed', invalidImportRetainsMap: 'passed', pdfDimensions: physical, mobileOverflow: false, realPack, browserErrors: errors }));
+  console.log(JSON.stringify({ syntheticFeatures: 6, storageChecks, memoryLessonSessions: 'passed', variantsAndSelection: 'passed', labelEditingAndExport: 'passed', directedTracingAndPrint: 'passed', exerciseSheetsAndPagination: 'passed', boundedSearchAndRenderLimits: 'passed', invalidImportRetainsMap: 'passed', pdfDimensions: physical, mobileOverflow: false, realPack, browserErrors: errors }));
 } finally { await browser.close(); server?.kill(); }
 

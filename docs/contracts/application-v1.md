@@ -114,3 +114,12 @@ createLessonSession clones a validated reviewed pack and locks its revision. Rev
 
 Browser controls submit geographic heading/endpoint answers or the current directed review trace with an explicit matching start/mode. Reset clears numeric answer inputs but retains the independent map-review trace and submitted attempts. Imports and successful author edits clear session UI; invalid imports leave it intact. Beginning another session replaces the prior memory session. Refresh loses memory sessions; this is visibly disclosed. Event dispatch, progress export, persistence, concurrent-tab protection and resume behavior remain Plan 05; no Saved status is displayed.
 
+
+## Implemented IndexedDB foundation
+
+openStorage({factory,name,signal,onBlocked,onVersionChange}) opens version 1 (default name map-literacy). The adapter exposes savePack(pack), commit({pack,session,attempts},{expectedVersion,signal}), loadPack(id,revision), loadSession(id) and close(). New sessions use expectedVersion:null; updates require the stored version. Successful promises resolve at transaction completion. All callbacks that enqueue dependent requests run synchronously in request handlers, keeping the transaction active.
+
+Session bundles are validated and copied before writes: reviewed pack/exercise order, UUID/reference/revision/date/hint bounds, recomputed rubric result and last-attempt links. Maximum 1,000 attempts and 16 MiB per bundle; individual packs retain their schema/10 MiB boundary. Attempt ordering is stored under meta name attempt-order:<sessionId> in the same transaction. Pack/attempt content is immutable; updates cannot drop prior attempts, regress versions/index/hints or reopen completed sessions. Same-version idempotent retries may retain identical records but cannot add attempts.
+
+Cancellation before completion aborts the transaction; completion cannot be undone. Quota and other DOM errors map to storage-full/storage-unavailable; conflicts retain old records. A versionchange closes the connection and reports reload-needed. Blocked opens notify the caller and wait; cancellation closes any eventual connection. No database deletion, automatic migration recovery or network backup occurs. Settings persistence, future upgrade migrations, full progress backups, UI save/retry states, events and session resume remain pending; current learner UI remains memory only.
+
