@@ -20,6 +20,6 @@ jobs:
       - run: npm run fixtures:check
       - run: npm run validate -- tests/fixtures/street-square.json
       - run: npm ci --ignore-scripts --no-audit --no-fund
-      - run: npm run browser:check
+      - run: npm run browser:release
         env:
           MAP_LITERACY_PORTABLE_CHROMIUM: '1'
