@@ -1,6 +1,6 @@
 # Plan 04 — Street lessons and scoring
 
-Status: active; scoring and revision-locked memory lesson sessions implemented.
+Status: queued for remaining address-system specification and external lesson acceptance; scoring and memory session implementation are available.
 Dependencies: implemented acquisition/validation and renderer slices of 02–03. Real lesson approval and physical/device acceptance remain queued.
 
 ## Outcome
@@ -12,7 +12,7 @@ Build orientation, endpoint, connected-route and detour lessons with determinist
 - [x] Implement revision-locked memory session state and deterministic reviewed exercise order; persistence remains Plan 05.
 - [x] Implement heading/orientation and endpoint checks using defined angular/distance tolerances.
 - [x] Submit current directed review traces against explicit exercise starts/modes/objectives; accept multiple valid answers.
-- [x] Evaluate authored synthetic edge closures without mutating original source records; learner controls remain pending.
+- [x] Evaluate authored synthetic edge closures without mutating original source records; learner trace submission is implemented.
 - [x] Add counted hints, deterministic reason/metric feedback and known/unknown feedback states; instructor guides remain the manual review aid.
 - [ ] Specify local address-system module from documented examples; defer automatic generalized numbering rules.
 - [x] Generate matched worksheets and instructor rubrics (implemented in Plan 03).
@@ -20,7 +20,7 @@ Build orientation, endpoint, connected-route and detour lessons with determinist
 ## Acceptance and validation
 
 - [ ] Tests cover rotated maps, wrap-around headings, tolerance boundaries, one-way return, bridge crossing, no valid answer and multiple routes.
-- [ ] Wrong/ambiguous/unreviewed answers receive appropriate feedback; no engine shortest-path exact-match assumption.
+- [x] Wrong/ambiguous/unreviewed answers receive appropriate deterministic feedback; no engine shortest-path exact-match assumption.
 - [ ] Refresh/reset behavior follows the contract; interaction and paper versions use the same pack/exercise revision.
 - [ ] Usability checks demonstrate completion with keyboard and touch without driving-time interaction.
 
@@ -38,5 +38,6 @@ Memory-session follow-up: begin/end, heading and geographic endpoint controls, c
 
 Validation: 109 Node tests and Chromium browser checks pass. Browser checks complete all four exercise types, valid/invalid detours, retry/hints, empty endpoint input, keyboard input, touch-emulated submission, refresh/import clearing and draft author-edit invalidation. Physical/device/curriculum and durable recovery acceptance are still pending.
 
-Next action: review the remaining address-system scope and lesson acceptance gaps, then implement recoverable storage in Plan 05.
+Next action: specify address-system lessons only after selecting documented local examples; generalized numbering remains deferred. Perform real-device/curriculum acceptance when observations are available. Plan 05 may use the implemented scoring/session slice; this plan is not complete.
+
 

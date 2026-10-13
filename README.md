@@ -11,7 +11,7 @@ Street lessons cover orientation, roads, landmarks, addresses, return routes and
 - [Scope and first release](docs/product-scope.md)
 - [Architecture proposal](docs/architecture.md)
 - [Plan index and dependencies](docs/plans/README.md)
-- [Next work: street lessons](docs/plans/active/04-street-lessons.md)
+- [Next work: persistence and browser release](docs/plans/active/05-persistence-and-browser-release.md)
 - [Run the map review interface](docs/map-review.md)
 - [Renderer validation evidence](docs/validation/render-evidence.md)
 - [Lesson-pack contract](docs/contracts/lesson-pack-v1.md)
@@ -43,4 +43,7 @@ This repository now owns implementation planning. The Ideas-for-projects draft r
 Project code and original documentation are licensed under [MIT](LICENSE). Generated synthetic fixture JSON retains its [CC0-1.0 designation](tests/fixtures/README.md). Third-party map/elevation data and quoted research retain their own licenses and attribution requirements; the MIT license does not relicense them.
 
 
+
+
+The transactional IndexedDB adapter is implemented and tested independently. Learner controls still use memory sessions until backup/resume and save-state integration are complete. See [storage evidence](docs/validation/storage.md).
 
