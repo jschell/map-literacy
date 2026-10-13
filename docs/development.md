@@ -1,6 +1,6 @@
 # Data foundation development
 
-Requires Node.js 24.x for tools/tests. Browser modules in src/data and src/geo have no Node imports or third-party dependencies. No npm install is required. Package is private (not configured for npm publication); project code is MIT licensed. Synthetic JSON fixtures remain CC0-1.0; acquired third-party data retains its source license.
+Requires Node.js 24.x for tools/tests. Browser modules in src/data and src/geo have no Node imports or third-party dependencies. No npm install is required for core Node tests. Browser QA uses pinned dev dependencies; install them with npm ci --ignore-scripts. Package is private (not configured for npm publication); project code is MIT licensed. Synthetic JSON fixtures remain CC0-1.0; acquired third-party data retains its source license.
 
 Commands:
 
@@ -16,4 +16,4 @@ validatePack is synchronous and non-mutating. pack-schema.js contains the execut
 
 Structural validity is not a verified route, valid answer or current real-world permission. Draft/unknown-access cases may be structurally valid; later session/scoring modules enforce review and uncertainty. Exclusions require partial topology. Original OSM relation reconstruction is not implemented yet.
 
-Synthetic fixture data stays distinct from real OSM. Bounded OSM acquisition/import and source comparison are now implemented; see [preparation guide](osm-preparation.md) and [live Redmond evidence](validation/osm-redmond-evidence.md). The live pack remains draft; real-neighborhood lesson review and a newer snapshot comparison remain in Plan 02. UI, SVG rendering, browser device checks, scoring and persistence are later plans. CI uses pinned checkout/setup-node action commits resolved from their official v4 refs during implementation; Node major 24 matches local testing.
+Synthetic fixture data stays distinct from real OSM. Bounded OSM acquisition/import and source comparison are now implemented; see [preparation guide](osm-preparation.md) and [live Redmond evidence](validation/osm-redmond-evidence.md). The live pack remains draft; real-neighborhood lesson review and a newer snapshot comparison remain in Plan 02. The [map review interface and print renderer](map-review.md) are now implemented. Scoring/persistence and physical-device/paper checks remain pending. CI uses pinned checkout/setup-node action commits resolved from their official v4 refs during implementation; Node major 24 matches local testing.

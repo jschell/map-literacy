@@ -1,6 +1,6 @@
 # Lesson pack v1
 
-Status: street-core v1 structural/reference validation implemented. Scoring, rendering and persistence remain later work; terrain/routing payloads remain later-plan contracts.
+Status: street-core v1 structural/reference validation implemented. An initial SVG/print renderer is implemented; scoring and persistence remain later work; terrain/routing payloads remain later-plan contracts.
 
 ## Envelope and primitives
 
@@ -50,7 +50,7 @@ Exclusion = {id, objectIds:ID[], reason:text}. Original OSM source records must 
 
 An exclusion requires topology.completeness=partial. Exclusion objectIds may identify unresolved source objects, so they need not resolve to derived graph IDs. Exercise endpoint references still resolve to nodes. Heading exercises do not take closure scenarios. Reviewed-route approval also requires later path/source review; structural validation alone is not proof of a permitted or available route.
 
-Label = {id, featureId, text, anchor:[lon,lat], rotationDeg:finite [-180,180], visibleIn:labeled/partial, priority:integer 0..100}. Omit labels for blank view. Duplicate label IDs rejected. Text is literal, <=120 chars.
+Label = {id, featureId, text, anchor:[lon,lat], rotationDeg:finite [-180,180], visibleIn:labeled/partial, priority:integer 0..100}. Labeled mode considers all authored labels; partial mode considers only visibleIn=partial. Blank mode considers none. Without authored labels, the renderer generates a deterministic initial name subset for review; these generated labels are not approval of content. Omit labels for blank view. Duplicate label IDs rejected. Text is literal, <=120 chars.
 
 ## Exercises
 
@@ -74,7 +74,7 @@ Score result={status:correct/incorrect/needs-review/unanswered, metrics:JSON num
 
 ## Print preset and geometry
 
-PrintPreset={paper:letter,orientation:landscape,marginMm:10,scaleDenominator:5000/10000,labelMinPt:8,mapRotationDeg:0}. Page 279.4 x 215.9 mm; printable box 259.4 x 195.9 mm. Reserve map box 259.4 x 145 mm, questions box 259.4 x 30 mm and footer 259.4 x 20.9 mm, vertically in that order; additional questions use separate pages. Center the geographic extent in the map box; do not stretch axes independently. If extent/labels cannot fit requested scale, report print-extent-too-large and offer another extent/preset; do not silently rescale.
+PrintPreset={paper:letter,orientation:landscape,marginMm:10,scaleDenominator:1000/5000/10000,labelMinPt:8,mapRotationDeg:0}. Page 279.4 x 215.9 mm; printable box 259.4 x 195.9 mm. Reserve map box 259.4 x 145 mm, questions box 259.4 x 30 mm and footer 259.4 x 20.9 mm, vertically in that order; additional questions use separate pages. Center the geographic extent in the map box; do not stretch axes independently. If extent/labels cannot fit requested scale, report print-extent-too-large and offer another extent/preset; do not silently rescale.
 
 Street projection: local spherical azimuthal equidistant centered on bounds midpoint, radius 6371008.8 m. Geographic center must be fixed per pack revision; forward/inverse tested with independent known distances and angular cases. Screen x=easting and y=-northing; displayed clockwise rotation is separate. True heading is measured clockwise from true north, not the page top. No magnetic/grid heading lessons in v1. Scale error across declared extent <=0.5%; paper calibration target <=1%. Terrain must supply its own horizontal/vertical CRS contract in Plan 08.
 

@@ -52,7 +52,7 @@ Settings record is versioned independently from pack; all settings exposed in UI
 | labels | labeled; labeled/partial/blank |
 | mapRotationDeg | number 0; [0,360), normalize interactive steps; stored finite |
 | reducedMotion | system; system/on/off |
-| printScale | integer 5000; 5000/10000 |
+| printScale | integer 5000; 1000/5000/10000 |
 | showInstructorAnswers | boolean false; separate output, never learner worksheet |
 
 Margins, label minimum and paper are fixed v1 preset; not configurable settings. An unavailable stored enum produces validated-default plus visible migration note; never overwrite old settings without transactional migration. Hint limit/answer tolerances belong to reviewed exercises, not preferences.
@@ -80,3 +80,5 @@ Multi-tab safety comes from IDB transaction/version checks, not notifications. B
 Persist each accepted attempt, hint and preference change immediately through serialized transactions. Never rely on unload for durability. pagehide stops jobs/listeners and closes DB after pending normal tasks where possible; termination may interrupt writes, so only committed records are resumed. Relaunch ignores unfinished memory drafts. Do not prevent closing as a substitute for incremental persistence.
 
 Core error codes: invalid-import, unsupported-version, unsupported-capability, extent-unsupported, revision-conflict, storage-unavailable, storage-full, migration-blocked, conflict, canceled, no-reviewed-exercises. Show a concise action (choose valid pack, export/retry, close other tabs, reload) and retain prior usable state.
+
+The initial review UI takes the pack print preset on import. Persistent preference resolution belongs to Plan 05; no settings storage is advertised yet.

@@ -1,6 +1,6 @@
 # Plan 02 — Source and lesson packs
 
-Status: active; validation, synthetic fixtures and bounded OSM preparation implemented; real lesson review pending.
+Status: queued for review completion after Plan 03 inspection support; validation and bounded OSM preparation are implemented.
 Dependencies: 01.
 
 ## Outcome
@@ -39,5 +39,5 @@ Task 1 is partially complete: schema and fixture materialization delivered; scor
 
 Validation for this slice: 60 tests passed on Node 24; deterministic synthetic fixtures still reproduce. Live reduced Redmond acquisition yielded 918 drawn ways and 5,839 unknown-access edges; source SHA-256 verified, prepared pack validated, cached-source import reproduced pack/report/raw bytes exactly. Initial wider area exceeded issue budget and was reduced. See [evidence](../../validation/osm-redmond-evidence.md). Live artifacts were preserved outside git as a source checkpoint.
 
-Remaining: one reviewed real-neighborhood lesson pack, restrictions/access/content review and a genuinely newer snapshot comparison. A replay comparison is not evidence of real-world change. Next action: review a small usable subset of the captured geometry and add reviewed orientation/position content while retaining explicit route uncertainty; implement renderer support needed to inspect labels/print extent.
+Remaining: one reviewed real-neighborhood lesson pack, restrictions/access/content review and a genuinely newer snapshot comparison. A replay comparison is not evidence of real-world change. Next action: review a small usable subset of the captured geometry and add reviewed orientation/position content while retaining explicit route uncertainty; use the Plan 03 map review interface to inspect labels/print extent. Renderer support is now implemented; pending source and exercise review remains a separate gate.
 

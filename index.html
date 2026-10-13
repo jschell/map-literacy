@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Map Literacy — map review</title>
+  <link rel="stylesheet" href="styles.css">
+  <script type="module" src="src/ui/app.js"></script>
+</head>
+<body>
+  <main>
+    <header class="app-header"><p class="eyebrow">MAP LITERACY</p><h1>Read the map. Understand the place.</h1><p>Explore map layers and prepare a clear paper map.</p></header>
+    <section class="controls" aria-label="Map controls">
+      <button id="demo" type="button">Load synthetic map</button>
+      <label class="file-control">Import lesson pack<input id="import" type="file" accept=".json,application/json"></label>
+      <label>Labels<select id="variant"><option value="labeled">Labeled</option><option value="partial">Partly labeled</option><option value="blank">Blank</option></select></label>
+      <button id="rotate" type="button">Rotate 90°</button>
+      <label>Heading<select id="heading"><option value="">Hidden</option><option value="0">North</option><option value="90">East</option><option value="180">South</option><option value="270">West</option></select></label>
+      <label>Print scale<select id="scale"><option value="1000">1:1,000</option><option value="5000" selected>1:5,000</option><option value="10000">1:10,000</option></select></label>
+      <button id="print" type="button" disabled>Print map</button>
+    </section>
+    <p id="status" role="status" aria-live="polite">Load the synthetic map or import a validated lesson pack. No location is selected automatically.</p>
+    <section id="map-panel" class="map-panel" aria-label="Map viewer"><div id="map"></div></section>
+    <section class="inspection"><label>Feature selection<select id="feature"><option value="">No feature selected</option></select></label><p id="selection">Choose a road on the map or use the feature list.</p></section>
+    <p class="note">This is a map review tool. Route scoring, learner records and live navigation are not available yet. Draft maps require review.</p>
+  </main>
+  <section id="print-sheet" aria-label="Printable map">
+    <div id="paper-map"></div>
+    <div class="worksheet"><strong id="paper-title"></strong><p>Mark a route, indicate your heading and explain how the roads connect.</p></div>
+    <footer id="paper-footer"></footer>
+  </section>
+</body>
+</html>
