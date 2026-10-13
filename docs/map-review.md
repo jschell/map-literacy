@@ -12,7 +12,17 @@ The viewer supports labeled/partial/blank maps, 90-degree page rotation, a true-
 
 Geometry and topology remain separate. Source bridge tags receive white casing; tunnels are dashed; explicit supported one-way tags receive arrows. These are source display symbols, not driving permission. A draft badge remains on unreviewed real content. Synthetic fixture revision 2 explicitly describes EF bridging over GH, directional source ways and midpoint labels.
 
-Manual labels supplied in a pack override automatic name placement. In labeled view all labels are candidates; partial view keeps authored visibleIn=partial labels. When there are no authored labels, a deterministic priority/ID order, name deduplication and alternating subset supply an initial review view. Approximate text-width collision checks are provisional; suppressed labels must be inspected before approving exercises. The authoring controls below edit/export labels; tracing and scoring routes remain pending.
+Manual labels supplied in a pack override automatic name placement. In labeled view all labels are candidates; partial view keeps authored visibleIn=partial labels. When there are no authored labels, a deterministic priority/ID order, name deduplication and alternating subset supply an initial review view. Approximate text-width collision checks are provisional; suppressed labels must be inspected before approving exercises. The authoring controls below edit/export labels; directed path tracing is available below; exercise scoring remains pending.
+
+## Directed path tracing
+
+Choose walking/driving mode and an explicit start graph node. A start marker shows its position. Select a next directed edge and Add edge; the list shows its from/to nodes and access flag. Each addition must begin at the current node, match the mode, stay inside the displayed lesson extent and avoid known blocked access or forbidden/only restriction sequences. A geometric crossing is not a graph junction. The current endpoint, ordered steps and total source edge length remain visible. Remove last edge or Clear trace edits the in-memory path; changing start/mode clears it.
+
+"Trace with map taps" appends a tapped road only when it has exactly one usable outgoing edge from the current node. Otherwise use the directed-edge list. Native controls provide a keyboard alternative. Label anchor placement takes precedence over tracing while active. Screen rotation and label variants preserve the same edge sequence; dashed black/white geometry, directional chevrons and S/E markers do not rely on color.
+
+Unknown access, draft content and partial topology produce visible review warnings. This is inspection of loaded graph constraints, not exercise correctness, route approval or directions. It does not search for a shortest path, fetch a routing provider, evaluate detour closures, provide maneuvers or track location. Trace length is bounded to 1,000 edges.
+
+The print checkbox is off initially. Enable it to include the monochrome overlay and trace-preview legend on either Letter orientation. The map remains north-up at the selected fixed scale; worksheet prompts and source attribution remain. Traces are transient: importing another pack resets them, and pack export contains label edits but does not include trace state. Persistent answers and exercise/instructor output belong to later work.
 
 ## Label editing and pack export
 

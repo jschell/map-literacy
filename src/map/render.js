@@ -7,7 +7,7 @@ const element = (doc, tag, attrs = {}, text = null) => {
 };
 
 /** No imported HTML/styles are executed. Returns a detached SVG. */
-export function renderMap(doc, model, { selectedId = null, headingDeg = null, onSelect = () => {} } = {}) {
+export function renderMap(doc, model, { selectedId = null, headingDeg = null, route = null, onSelect = () => {} } = {}) {
   const clipId = `clip-${crypto.randomUUID()}`;
   const svg = element(doc, 'svg', { viewBox: `0 0 ${model.width} ${model.height}`, class: model.paper ? 'map-svg print-map' : 'map-svg screen-map', role: 'img', 'aria-label': `${model.title}, ${model.variant} map${model.draft ? ', unreviewed draft' : ''}` });
   svg.append(element(doc, 'title', {}, model.title));
@@ -31,8 +31,32 @@ export function renderMap(doc, model, { selectedId = null, headingDeg = null, on
       hit.addEventListener('click', () => onSelect(item.id)); group.append(hit);
     }
   }
+  if (route) {
+    const overlay = element(doc, 'g', { class: 'route-overlay', 'clip-path': `url(#${clipId})`, 'pointer-events': 'none' });
+    for (const edge of route.edges) {
+      const d = edge.shape.map((point, i) => `${i ? 'L' : 'M'}${model.convert(point).join(',')}`).join(' ');
+      overlay.append(element(doc, 'path', { d, class: 'trace-casing', 'stroke-width': model.paper ? 1.8 : 9 }));
+      overlay.append(element(doc, 'path', { d, class: 'trace-line', 'data-edge-id': edge.id, 'stroke-width': model.paper ? .9 : 4, 'stroke-dasharray': model.paper ? '2 1' : '8 4' }));
+      const i = Math.max(1, Math.floor(edge.shape.length / 2)), a = model.convert(edge.shape[i - 1]), b = model.convert(edge.shape[i]);
+      if (Math.hypot(b[0] - a[0], b[1] - a[1]) > (model.paper ? 4 : 16)) {
+        const x = a[0] + (b[0] - a[0]) / 3, y = a[1] + (b[1] - a[1]) / 3, size = model.paper ? 2 : 7;
+        overlay.append(element(doc, 'path', { d: `M${-size},${-size} L0,0 L${-size},${size}`, class: 'trace-arrow', transform: `translate(${x} ${y}) rotate(${Math.atan2(b[1] - a[1], b[0] - a[0]) * 180 / Math.PI})`, 'stroke-width': model.paper ? .7 : 3 }));
+      }
+    }
+    svg.append(overlay);
+    const marker = (coordinate, text) => {
+      const [cx, cy] = model.convert(coordinate), r = model.paper ? 3 : 12;
+      const g = element(doc, 'g', { class: 'trace-marker', 'pointer-events': 'none' });
+      g.append(element(doc, 'circle', { cx, cy, r, fill: 'white', stroke: 'black', 'stroke-width': model.paper ? .3 : 1.5 }));
+      g.append(element(doc, 'text', { x: cx, y: cy, 'text-anchor': 'middle', 'dominant-baseline': 'central', 'font-size': model.paper ? 3 : 13, fill: 'black' }, text));
+      svg.append(g);
+    };
+    marker(route.start, route.edges.length && route.startNodeId === route.endNodeId ? 'S/E' : 'S');
+    if (route.startNodeId !== route.endNodeId) marker(route.end, 'E');
+  }
   for (const item of model.landmarks) group.append(element(doc, 'circle', { cx: item.point[0], cy: item.point[1], r: model.paper ? 1.2 : 5, class: 'landmark' }));
-  for (const l of model.labels) group.append(element(doc, 'text', { x: l.point[0], y: l.point[1], class: 'map-label', 'font-size': l.fontSize,
+  const labelLayer = element(doc, 'g', { 'clip-path': `url(#${clipId})` }); svg.append(labelLayer);
+  for (const l of model.labels) labelLayer.append(element(doc, 'text', { x: l.point[0], y: l.point[1], class: 'map-label', 'font-size': l.fontSize,
     'text-anchor': 'middle', transform: `rotate(${l.rotationDeg} ${l.point[0]} ${l.point[1]})`, 'stroke-width': model.paper ? 0.9 : 4 }, l.text));
   if (headingDeg !== null && Number.isFinite(headingDeg)) {
     const x = model.width / 2, y = model.height / 2, size = model.paper ? 5 : 25;
@@ -49,3 +73,4 @@ export function renderMap(doc, model, { selectedId = null, headingDeg = null, on
   svg.append(element(doc, 'text', { x: bx, y: by + 4 * unit, class: 'scale-label', 'font-size': model.paper ? 3 : 13 }, `${meters} m`));
   return svg;
 }
+

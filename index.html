@@ -24,6 +24,19 @@
     <section id="map-panel" class="map-panel" aria-label="Map viewer"><div id="map"></div></section>
     <p id="attribution" class="note" aria-label="Map sources"></p>
     <section class="inspection"><label>Feature selection<select id="feature"><option value="">No feature selected</option></select></label><p id="selection">Choose a road on the map or use the feature list.</p></section>
+    <section class="route-review" aria-labelledby="trace-title">
+      <h2 id="trace-title">Trace a path</h2>
+      <div class="trace-controls">
+        <label>Trace mode<select id="trace-mode" disabled><option value="drive">Driving</option><option value="walk">Walking</option></select></label>
+        <label>Start graph node<select id="trace-start" disabled><option value="">Choose a start node</option></select></label>
+        <label>Next directed edge<select id="trace-edge" disabled><option value="">Choose a directed edge</option></select></label>
+      </div>
+      <div class="editor-actions"><button id="trace-add" type="button" disabled>Add edge</button><button id="trace-map" type="button" aria-pressed="false" disabled>Trace with map taps</button><button id="trace-back" type="button" disabled>Remove last edge</button><button id="trace-clear" type="button" disabled>Clear trace</button></div>
+      <label class="trace-print"><input id="include-trace" type="checkbox" disabled>Include trace on printed map</label>
+      <p id="trace-status" role="status" aria-live="polite">Select a start graph node to trace a path.</p>
+      <ol tabindex="0" id="trace-steps" aria-label="Trace steps"></ol>
+      <p class="note">This is a path drawn from the loaded graph. Unknown access and incomplete data require review. It does not provide live navigation or turn-by-turn directions. Traces stay in memory and are not included in lesson-pack export.</p>
+    </section>
     <section class="label-editor" aria-labelledby="label-editor-title">
       <h2 id="label-editor-title">Review label placement</h2>
       <label>Authored label<select id="label-choice" disabled><option value="">New label for selected feature</option></select></label>
