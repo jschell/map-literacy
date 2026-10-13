@@ -1,3 +1,4 @@
+import { checkedSettings } from './settings.js';
 import { checkedBundle, checkedPack, canonical, storageError } from './records.js';
 export const BACKUP_LIMITS = Object.freeze({ bytes: 50 * 1024 * 1024, packs: 20, sessions: 100, attempts: 10000 });
 const fail = (message) => { throw storageError('invalid-backup', message); };
@@ -8,7 +9,8 @@ export function checkedBackup(value) {
   if (value.backupVersion !== 1) throw storageError('unsupported-version', 'Backup version is unsupported.');
   if (typeof value.exportedAt !== 'string' || !Number.isFinite(Date.parse(value.exportedAt)) || new Date(value.exportedAt).toISOString() !== value.exportedAt) fail('Backup date is invalid.');
   for (const name of ['packs', 'sessions', 'attempts']) if (!Array.isArray(value[name]) || value[name].length > BACKUP_LIMITS[name]) throw storageError('limit-exceeded', `Backup exceeds its ${name} limit. Export individual sessions instead.`);
-  if (!value.settings || typeof value.settings !== 'object' || Array.isArray(value.settings) || Object.keys(value.settings).length) throw storageError('unsupported-capability', 'Settings backup is not supported by this release.');
+  if (!value.settings || typeof value.settings !== 'object' || Array.isArray(value.settings)) fail('Expected preference record or empty settings object.');
+  const settings = Object.keys(value.settings).length ? checkedSettings(value.settings) : {};
   const packs = value.packs.map(checkedPack), byPack = new Map();
   for (const pack of packs) { const id = key(pack.id, pack.revision); if (byPack.has(id)) fail('Duplicate pack revision.'); byPack.set(id, pack); }
   const sessions = new Map(), attempts = new Map(), bySession = new Map();
@@ -26,7 +28,7 @@ export function checkedBackup(value) {
     if (!pack) fail('Session pack revision is absent.');
     validated.push(checkedBundle({ pack, session, attempts: bySession.get(session.id) }));
   }
-  const result = { backupVersion: 1, exportedAt: value.exportedAt, packs, sessions: validated.map((b) => b.session), attempts: validated.flatMap((b) => b.attempts), settings: {} };
+  const result = { backupVersion: 1, exportedAt: value.exportedAt, packs, sessions: validated.map((b) => b.session), attempts: validated.flatMap((b) => b.attempts), settings };
   if (new TextEncoder().encode(canonical(result)).length > BACKUP_LIMITS.bytes) throw storageError('limit-exceeded', 'Progress backup exceeds 50 MiB. Export individual sessions instead.');
   return result;
 }

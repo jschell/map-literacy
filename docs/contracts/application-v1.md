@@ -145,3 +145,12 @@ Conflict recovery is explicit: Reload latest, discard changes reads the current 
 
 DOM events are emitted for answer-submitted, answer-scored, hint-shown, session-reset, save-completed and save-failed with their defined IDs/results/job/version fields. Save events occur after transaction completion/abort or rejected preflight. Pack lifecycle/settings and cross-tab notification events remain later work. No raw live tracks or learner names are collected.
 
+
+## Implemented view preferences v1
+
+The initial independently versioned record is {singleton:'singleton',settingsVersion:1,version:nonnegative safe integer,values:{labels:labeled/partial/blank,mapRotationDeg:[0,360),printScale:1000/5000/10000,orientation:portrait/landscape}}. It is the currently implemented subset of the earlier settings proposal; units, reducedMotion and showInstructorAnswers remain future UI work. Instructor output always resets to map output on pack import and is not persisted.
+
+storage.loadSettings reads the retained record; recoverSettings supplies visible defaults for unavailable known enum/range values without writing it. Unsupported record shapes/versions stay read-only. saveSettings validates the full record and checks expectedVersion in the same transaction; initial version is 0 and updates increment by one. The preference writer applies latest values immediately, serializes/coalesces writes and retains pending values/lease after failure. Saved means transaction completion. Reload explicitly discards local choices. Stale file/read results do not replace newer choices.
+
+Saved values override pack view defaults; absent settings leave authored print presets in effect. Use pack view defaults is an explicit preference change. Preferences do not modify source content, pack revisions, geographic scoring units/tolerances or instructor-answer output. Dedicated preference files are <=16 KiB UTF-8 JSON; restore uses their values through a new local CAS update. Full backup settings may be {} (legacy/no preferences) or the strict record; different existing preferences fail the full import atomically. Progress-only per-session backups exclude preferences, and the session-file UI explicitly rejects full backups that contain them.
+

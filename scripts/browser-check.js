@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { checkPreferences } from './preferences-browser-check.js';
 import { checkAutosave } from './autosave-browser-check.js';
 import { checkStorage } from './storage-browser-check.js';
 import { createRequire } from 'node:module';
@@ -38,6 +39,8 @@ async function afterInstall(operation) {
   const version = await page.locator('#map').getAttribute('data-load-version');
   await operation();
   await page.waitForFunction((old) => (document.getElementById('map').dataset.loadVersion ?? null) !== old, version);
+  // Fixture scenarios explicitly use their authored view defaults. Persistence is checked separately.
+  await page.locator('#preferences-defaults').click();
 }
 const loadDemo = () => afterInstall(() => page.locator('#demo').click());
 const importReady = (file) => afterInstall(() => page.locator('#import').setInputFiles(file));
@@ -45,6 +48,7 @@ try {
   await page.goto(base);
   const storageChecks = await checkStorage(page);
   const autosaveChecks = await checkAutosave(page, base);
+  const preferenceChecks = await checkPreferences(page, base);
   assert.equal(await page.locator('#map svg').count(), 0);
   await loadDemo();
   await page.locator('#map svg').waitFor();
@@ -457,6 +461,6 @@ try {
   }
   await mobile.close();
   assert.deepEqual(errors, []);
-  console.log(JSON.stringify({ syntheticFeatures: 6, storageChecks, autosaveChecks, memoryLessonSessions: 'passed', sessionBackupControls: 'passed', variantsAndSelection: 'passed', labelEditingAndExport: 'passed', directedTracingAndPrint: 'passed', exerciseSheetsAndPagination: 'passed', boundedSearchAndRenderLimits: 'passed', invalidImportRetainsMap: 'passed', pdfDimensions: physical, mobileOverflow: false, realPack, browserErrors: errors }));
+  console.log(JSON.stringify({ syntheticFeatures: 6, storageChecks, autosaveChecks, preferenceChecks, memoryLessonSessions: 'passed', sessionBackupControls: 'passed', variantsAndSelection: 'passed', labelEditingAndExport: 'passed', directedTracingAndPrint: 'passed', exerciseSheetsAndPagination: 'passed', boundedSearchAndRenderLimits: 'passed', invalidImportRetainsMap: 'passed', pdfDimensions: physical, mobileOverflow: false, realPack, browserErrors: errors }));
 } finally { await browser.close(); server?.kill(); }
 
