@@ -14,6 +14,7 @@ Street lessons cover orientation, roads, landmarks, addresses, return routes and
 - [Next work: persistence and browser release](docs/plans/active/05-persistence-and-browser-release.md)
 - [Setup, saved progress, preferences and data removal](docs/browser-setup.md)
 - [Static packages: Cloudflare and GitHub Pages](docs/static-deployment.md)
+- [Local address lessons: draft design and evidence](docs/address-lessons.md)
 - [Run the map review interface](docs/map-review.md)
 - [Renderer validation evidence](docs/validation/render-evidence.md)
 - [Lesson-pack contract](docs/contracts/lesson-pack-v1.md)
