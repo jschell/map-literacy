@@ -14,7 +14,7 @@ Deliver a recoverable local browser application and documented static-host deplo
 - [x] Add failed-save retry, unavailable-storage memory/export mode and versionchange/blocked-open recovery messages; Saved is shown only after transaction completion. Actual quota/eviction/device and future migration checks remain pending.
 - [x] Document no-build static assets, pinned install/local serve and the implemented external-asset CSP; host publication remains pending.
 - [ ] Select hosting using deployment requirements and cost; include reproducible local and hosted setup instructions.
-- [ ] Run meaningful automated checks and target-browser keyboard/touch/accessibility/render evidence; document remaining physical-print gate.
+- [ ] Run meaningful automated checks and target-browser keyboard/touch/accessibility/render evidence; container Chromium keyboard/semantics/reflow checks pass. Screen-reader, actual target-browser/device and physical-print acceptance remain pending.
 - [x] Document current limitations, backup recovery and manual browser site-data/file removal; no automatic deletion or public release is implied.
 
 ## Acceptance and validation
@@ -56,7 +56,9 @@ Validation: 125 Node tests and real Chromium checks pass, including preference s
 
 Database compatibility follow-up: opening validates the exact version-1 store/key/index structure before returning APIs. Incompatible structures and newer versions report retained data and a compatible-app recovery path. Real Chromium fixtures verify a blocked open canceled before the blocker closes, unsupported upgrade rejection, rollback of destructive queued migration changes, clean retry after partial initialization, and retained records across eight malformed schema variants. Production supports version 1 only; the version-2 rollback fixture does not implement a migration. Validation: 125 Node tests, reproducible fixtures and full Chromium checks pass.
 
-Next action: complete release/browser keyboard and accessibility checks, then select hosting within publication authorization. Actual future migration transformations require their own fixtures. Actual device/print/quota/eviction and real lesson approval remain pending.
+Keyboard/accessibility follow-up: page shortcuts focus map/lesson/trace targets; native labeled controls provide keyboard alternatives to map taps and answer groups reference exercise context. Keyboard lesson actions recover useful focus after saving, without moving focus after newer navigation or a changed session/version. Real Tab/Enter/Home/arrow-key checks complete all four exercises with retry, hints, missing-answer and closed-edge feedback, session/preference downloads and print activation. Browser semantics, visible outlines, 320/640-pixel reflow and forced-colors emulation pass. Validation: 125 Node tests, reproducible fixtures and full Chromium checks. This is not screen-reader, actual zoom/device or WCAG acceptance; see [accessibility evidence and manual gates](../../validation/accessibility.md).
+
+Next action: prepare reproducible static deployment and select hosting within publication authorization. Screen-reader and actual target-browser/device acceptance require manual evidence. Actual future migration transformations require their own fixtures. Physical print/quota/eviction and real lesson approval remain pending.
 
 
 

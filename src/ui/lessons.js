@@ -6,6 +6,20 @@ const get = (id) => document.getElementById(id);
 const messages = { correct: 'Correct.', incorrect: 'Try again.', 'needs-review': 'This answer needs review.', unanswered: 'Enter a valid answer before submitting.' };
 export function createLessons({ getPack, getTrace, installPack, cancelPackLoad }) {
   let controller = null, restoreJob = null, storage = null, storageReady = false, canDiscard = false, listJob = 0, nextPage = null, connecting = null;
+  let pendingFocus = null;
+  // A save may disable the button that a keyboard user just activated. Restore
+  // focus only for that action, and never after the user moves elsewhere.
+  document.addEventListener('focusin', (event) => { if (pendingFocus && event.target !== pendingFocus.origin) pendingFocus = null; });
+  function finishKeyboardAction() {
+    if (!pendingFocus || !storageReady || writer.snapshot().state === 'saving') return;
+    const pending = pendingFocus; pendingFocus = null;
+    const state = controller?.snapshot();
+    if (state?.session.id !== pending.sessionId || state.session.version !== pending.version || ![document.body, pending.origin].includes(document.activeElement)) return;
+    const answerTarget = state.exercise.type === 'heading' ? 'answer-heading' : state.exercise.type === 'endpoint' ? 'answer-lon' : 'trace-start';
+    const last = state.attempts.find((a) => a.id === state.session.answers[state.exercise.id]);
+    const target = state.phase === 'completed' ? 'lesson-export' : state.phase === 'feedback' ? (last?.result.status === 'correct' ? 'lesson-next' : 'lesson-retry') : pending.origin.id === 'lesson-hint' && !get('lesson-hint').disabled ? 'lesson-hint' : answerTarget;
+    get(target).focus();
+  }
   const emit = (name, detail) => document.dispatchEvent(new CustomEvent(name, { detail }));
   const bundle = () => { const { session, attempts } = controller.snapshot(); return { pack: getPack(), session, attempts }; };
   const writer = createAutosave({ storage: { commit: (...args) => storage ? storage.commit(...args) : Promise.reject(Object.assign(new Error('Browser storage is unavailable.'), { code: 'storage-unavailable' })) },
@@ -60,25 +74,27 @@ export function createLessons({ getPack, getTrace, installPack, cancelPackLoad }
     get('lesson-prompt').textContent = active ? `${state.session.index + 1}/${state.session.exerciseOrder.length} · ${e.prompt}` : 'Begin a session to answer reviewed exercises in pack order.';
     get('lesson-revision').textContent = state ? `Pack ${state.session.packId} · revision ${state.session.packRevision} · ${state.attempts.length} attempts · ${state.session.status}` : '';
     get('lesson-route').textContent = e && ['route', 'detour'].includes(e.type) ? `Use “Trace a path” below: start ${e.rubric.startNodeId}, end ${e.rubric.endNodeId}, mode ${e.rubric.mode}. Submit the current trace here.${e.rubric.objective === 'max-distance' ? ` Maximum distance: ${e.rubric.maxDistanceM} m.` : ' Any valid route is accepted.'}${e.scenario ? ` ${e.scenario.label} Closed directed edges: ${e.scenario.closedEdgeIds.join(', ')}.` : ''}` : '';
+    finishKeyboardAction();
   }
-  const run = (action, persist = true) => {
+  const run = (action, persist = true, event) => {
     if (persist && (!storageReady || writer.snapshot().state === 'saving')) { status('Wait for the current save before continuing.'); return; }
     if (persist) cancelPending();
     const before = controller?.snapshot();
     try {
       action(); const after = controller?.snapshot();
+      const focusRequest = event?.detail === 0 && after ? { origin: event.currentTarget, sessionId: after.session.id, version: after.session.version } : null;
       if (persist && after && (!before || before.session.id !== after.session.id || before.session.version !== after.session.version)) {
         if (!before || before.session.id !== after.session.id) writer.bind(bundle());
         for (const attempt of after.attempts.slice(before?.session.id === after.session.id ? before.attempts.length : after.attempts.length)) {
           emit('answer-submitted', { sessionId: after.session.id, exerciseId: attempt.exerciseId, answer: attempt.answer, attemptId: attempt.id }); emit('answer-scored', { attemptId: attempt.id, result: attempt.result });
         }
         for (const id of Object.keys(after.session.hintCounts)) if ((before?.session.hintCounts[id] ?? 0) < after.session.hintCounts[id]) emit('hint-shown', { sessionId: after.session.id, exerciseId: id, hintIndex: after.session.hintCounts[id] - 1 });
-        save();
-      }
+        pendingFocus = focusRequest; save();
+      } else pendingFocus = focusRequest;
     } catch (error) { status(error.message); } refresh();
   };
-  get('lesson-start').addEventListener('click', () => run(() => { guardReplacement(); controller = createLessonSession(getPack()); clearAnswer(); get('lesson-hints').replaceChildren(); status('Session started. Check the save status after accepted actions; unfinished answers stay in memory.'); }));
-  get('lesson-submit').addEventListener('click', () => run(() => {
+  get('lesson-start').addEventListener('click', (event) => run(() => { guardReplacement(); controller = createLessonSession(getPack()); clearAnswer(); get('lesson-hints').replaceChildren(); status('Session started. Check the save status after accepted actions; unfinished answers stay in memory.'); }, true, event));
+  get('lesson-submit').addEventListener('click', (event) => run(() => {
     const e = controller.snapshot().exercise; let answer;
     if (e.type === 'heading') answer = get('answer-heading').value.trim() ? { type: e.type, degrees: Number(get('answer-heading').value) } : null;
     else if (e.type === 'endpoint') answer = get('answer-lon').value.trim() && get('answer-lat').value.trim() ? { type: e.type, coordinate: [Number(get('answer-lon').value), Number(get('answer-lat').value)] } : null;
@@ -89,12 +105,12 @@ export function createLessons({ getPack, getTrace, installPack, cancelPackLoad }
     }
     controller.setAnswer(answer); const score = controller.submit();
     status(`${messages[score.status]} ${score.reasonCode.replaceAll('-', ' ')}. ${Object.entries(score.metrics).map(([key, value]) => `${key}: ${Number(value.toFixed(2))}`).join(' · ')}`);
-  }));
+  }, true, event));
   get('lesson-reset').addEventListener('click', () => run(() => { controller.reset(); emit('session-reset', { sessionId: controller.snapshot().session.id, exerciseId: controller.snapshot().exercise.id }); clearAnswer(); status('Draft answer cleared. Submitted attempts and hints are retained. The review trace is unchanged.'); }));
-  get('lesson-retry').addEventListener('click', () => run(() => { controller.retry(); clearAnswer(); status('Try another answer. Earlier attempts and hints are retained.'); }));
-  get('lesson-next').addEventListener('click', () => run(() => { controller.next(); clearAnswer(); get('lesson-hints').replaceChildren(); status(controller.snapshot().phase === 'completed' ? 'Session completed. Check the save status before closing.' : 'Next exercise. Choose a new trace when needed.'); }));
-  get('lesson-end').addEventListener('click', () => run(() => { controller.end(); clearAnswer(); status('Session ended. Check the save status before closing.'); }));
-  get('lesson-hint').addEventListener('click', () => run(() => { const hint = controller.hint(); if (hint !== null) { const li = document.createElement('li'); li.textContent = hint; get('lesson-hints').append(li); status('Hint shown. Hints are counted separately from correctness.'); } }));
+  get('lesson-retry').addEventListener('click', (event) => run(() => { controller.retry(); clearAnswer(); status('Try another answer. Earlier attempts and hints are retained.'); }, true, event));
+  get('lesson-next').addEventListener('click', (event) => run(() => { controller.next(); clearAnswer(); get('lesson-hints').replaceChildren(); status(controller.snapshot().phase === 'completed' ? 'Session completed. Check the save status before closing.' : 'Next exercise. Choose a new trace when needed.'); }, true, event));
+  get('lesson-end').addEventListener('click', (event) => run(() => { controller.end(); clearAnswer(); status('Session ended. Check the save status before closing.'); }, true, event));
+  get('lesson-hint').addEventListener('click', (event) => run(() => { const hint = controller.hint(); if (hint !== null) { const li = document.createElement('li'); li.textContent = hint; get('lesson-hints').append(li); status('Hint shown. Hints are counted separately from correctness.'); } }, true, event));
   get('lesson-export').addEventListener('click', () => run(() => {
     const { session, attempts } = controller.snapshot();
     const text = serializeBackup({ backupVersion: 1, exportedAt: new Date().toISOString(), packs: [getPack()], sessions: [session], attempts, settings: {} });
