@@ -36,7 +36,7 @@ Validation: 105 Node tests pass and fixture regeneration is exact. Scoring tests
 
 Memory-session follow-up: begin/end, heading and geographic endpoint controls, current directed trace submission, hints, draft reset, retry and next actions are implemented. Reviewed exercises run in deterministic pack order; draft pack/exercises never start scored practice. Session pack content is cloned and revision locked, attempts are retained on retry and duplicate submissions are rejected. Imports/author edits clear the active UI session; invalid import retains it. Memory sessions have a 1,000-attempt bound and are explicitly lost on refresh or beginning another session. Source data and printable exercise rubrics are unchanged.
 
-Validation: 108 Node tests and Chromium browser checks pass. Browser checks complete all four exercise types, valid/invalid detours, retry/hints, empty endpoint input, keyboard input, touch-emulated submission, refresh/import clearing and draft author-edit invalidation. Physical/device/curriculum and durable recovery acceptance are still pending.
+Validation: 109 Node tests and Chromium browser checks pass. Browser checks complete all four exercise types, valid/invalid detours, retry/hints, empty endpoint input, keyboard input, touch-emulated submission, refresh/import clearing and draft author-edit invalidation. Physical/device/curriculum and durable recovery acceptance are still pending.
 
 Next action: review the remaining address-system scope and lesson acceptance gaps, then implement recoverable storage in Plan 05.
 

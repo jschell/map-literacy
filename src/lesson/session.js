@@ -9,7 +9,7 @@ export function createLessonSession(value, { id = () => crypto.randomUUID(), now
   const order = pack.review.status === 'reviewed' ? pack.exercises.filter((e) => e.review === 'reviewed').map((e) => e.id) : [];
   if (!order.length) fail('no-reviewed-exercises', 'No reviewed exercises are available.');
   const startedAt = now();
-  const session = { id: id(), version: 0, packId: pack.id, packRevision: pack.revision, exerciseOrder: order, index: 0, answers: {}, hintCounts: {}, startedAt, updatedAt: startedAt, status: 'active' };
+  const session = { id: id(), version: 0, packId: pack.id, packRevision: pack.revision, exerciseOrder: order, index: 0, answers: Object.create(null), hintCounts: Object.fromEntries(order.map((exerciseId) => [exerciseId, 0])), startedAt, updatedAt: startedAt, status: 'active' };
   const attempts = []; let phase = 'practicing', draft = null;
   const exercise = () => pack.exercises.find((e) => e.id === order[session.index]);
   const active = () => { if (session.status !== 'active') fail('session-ended', 'Start a new session.'); };

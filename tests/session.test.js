@@ -35,3 +35,13 @@ test('draft and empty content cannot start scored sessions; transitions cannot s
   const c = createLessonSession(pack, options()); assert.equal(c.snapshot().exercise.id, 'endpoint');
   assert.throws(() => c.next(), (e) => e.code === 'no-feedback'); c.end(); assert.equal(c.snapshot().phase, 'completed');
 });
+
+test('valid imported IDs cannot collide with object prototype names', () => {
+  const pack = structuredClone(packs.base); pack.exercises[0].id = 'constructor'; pack.exercises[1].id = 'toString';
+  const c = createLessonSession(pack, options());
+  assert.equal(c.hint(), 'North is 0 degrees.');
+  c.setAnswer({ type: 'heading', degrees: 0 }); c.submit(); c.next();
+  c.setAnswer({ type: 'endpoint', coordinate: [0, 0] }); c.submit();
+  assert.equal(Object.hasOwn(c.snapshot().session.answers, 'toString'), true);
+  assert.equal(c.snapshot().attempts[0].hintsUsed, 1);
+});
