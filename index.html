@@ -24,6 +24,27 @@
     <section id="map-panel" class="map-panel" aria-label="Map viewer"><div id="map"></div></section>
     <p id="attribution" class="note" aria-label="Map sources"></p>
     <section class="inspection"><label>Feature selection<select id="feature"><option value="">No feature selected</option></select></label><p id="selection">Choose a road on the map or use the feature list.</p></section>
+    <section class="label-editor" aria-labelledby="label-editor-title">
+      <h2 id="label-editor-title">Review label placement</h2>
+      <label>Authored label<select id="label-choice" disabled><option value="">New label for selected feature</option></select></label>
+      <p id="label-feature">Select a feature to add a label.</p>
+      <form id="label-form">
+        <fieldset id="label-fields" disabled>
+          <legend>Label details</legend>
+          <div class="label-inputs">
+            <label>Text<input id="label-text" maxlength="120" required></label>
+            <label>Longitude<input id="label-lon" type="number" step="any" min="-180" max="180" required></label>
+            <label>Latitude<input id="label-lat" type="number" step="any" min="-70" max="70" required></label>
+            <label>Rotation (degrees)<input id="label-rotation" type="number" step="any" min="-180" max="180" required></label>
+            <label>Priority<input id="label-priority" type="number" min="0" max="100" step="1" required></label>
+            <label>Show in<select id="label-visible"><option value="labeled">Labeled only</option><option value="partial">Labeled and partial</option></select></label>
+          </div>
+          <div class="editor-actions"><button id="place-label" type="button" aria-pressed="false">Place anchor on map</button><button type="submit">Apply label</button><button id="delete-label" type="button" disabled>Remove label</button></div>
+        </fieldset>
+      </form>
+      <div class="editor-actions"><button id="undo-label" type="button" disabled>Undo last label edit</button><button id="export-pack" type="button" disabled>Export lesson pack</button></div>
+      <p id="edit-status" role="status" aria-live="polite" class="note">Edits stay in memory until you export a lesson pack.</p>
+    </section>
     <p class="note">This is a map review tool. Route scoring, learner records and live navigation are not available yet. Draft maps require review.</p>
   </main>
   <section data-orientation="landscape" id="print-sheet" aria-label="Printable map">

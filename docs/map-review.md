@@ -12,7 +12,15 @@ The viewer supports labeled/partial/blank maps, 90-degree page rotation, a true-
 
 Geometry and topology remain separate. Source bridge tags receive white casing; tunnels are dashed; explicit supported one-way tags receive arrows. These are source display symbols, not driving permission. A draft badge remains on unreviewed real content. Synthetic fixture revision 2 explicitly describes EF bridging over GH, directional source ways and midpoint labels.
 
-Manual labels supplied in a pack override automatic name placement. In labeled view all labels are candidates; partial view keeps authored visibleIn=partial labels. When there are no authored labels, a deterministic priority/ID order, name deduplication and alternating subset supply an initial review view. Approximate text-width collision checks are provisional; suppressed labels must be inspected before approving exercises. This UI does not yet edit/save label positions or trace/score routes.
+Manual labels supplied in a pack override automatic name placement. In labeled view all labels are candidates; partial view keeps authored visibleIn=partial labels. When there are no authored labels, a deterministic priority/ID order, name deduplication and alternating subset supply an initial review view. Approximate text-width collision checks are provisional; suppressed labels must be inspected before approving exercises. The authoring controls below edit/export labels; tracing and scoring routes remain pending.
+
+## Label editing and pack export
+
+Select an authored label from the label list, including labels currently suppressed by collision/edge rules. Change text, longitude/latitude, rotation, priority or labeled/partial visibility, then Apply label. To add a label, choose "New label for selected feature" and select a feature on the map or in the native feature list. "Place anchor on map" accepts a click/tap inside the lesson extent and handles screen rotation; coordinate fields provide the keyboard alternative. Placement only fills the form; Apply commits the change. Screen and both paper layouts regenerate from the same geographic label anchor.
+
+Remove label deletes the selected authored label. Undo restores the last label content as another draft revision; it does not reuse an exported revision or reinstate review approval. Every applied edit/removal/undo increments the pack revision and clears pack/exercise review. Original geometry, topology, source metadata and hashes remain intact. Invalid edits leave the prior pack unchanged. The form is a draft authoring tool, not a way to mark geography or exercises reviewed.
+
+Edits live in memory. Export lesson pack downloads validated standalone JSON within the import byte limit; re-import that file to verify/reuse placements. Loading another pack or refreshing loses local edits. No browser persistence or learner-progress backup is available. Source credit remains in the exported pack. Adding the first authored label to an automatically labeled pack switches to the authored label set; removing the last returns to automatic names. Collision suppression still applies after editing: inspect labeled/partial/blank output and both print orientations before approving a lesson.
 
 ## Printing
 

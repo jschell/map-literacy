@@ -52,6 +52,8 @@ An exclusion requires topology.completeness=partial. Exclusion objectIds may ide
 
 Label = {id, featureId, text, anchor:[lon,lat], rotationDeg:finite [-180,180], visibleIn:labeled/partial, priority:integer 0..100}. Labeled mode considers all authored labels; partial mode considers only visibleIn=partial. Blank mode considers none. Without authored labels, the renderer generates a deterministic initial name subset for review; these generated labels are not approval of content. Omit labels for blank view. Duplicate label IDs rejected. Text is literal, <=120 chars.
 
+The local authoring editor applies label additions/updates/removals atomically to a cloned, validated pack. New/changed anchors must lie inside bounds. Each edit increments revision, sets pack review to draft with reviewedAt=null, and sets every exercise review to draft. Undo restores the prior label array as a new draft revision rather than reusing an exported revision. Source metadata/hashes, display geometry and topology stay unchanged. Standalone pack export validates the entire copy and enforces the import byte limit; this is not a progress backup or a persistence transaction.
+
 ## Exercises
 
 Common = {id, type, prompt:text, review:reviewed/draft, sourceIds:ID[], hints:text[0..3], rubric, scenario:null/Scenario}.

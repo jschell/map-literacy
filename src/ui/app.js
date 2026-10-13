@@ -1,8 +1,9 @@
 import { readImport } from '../data/read-pack.js';
 import { createMapModel } from '../map/model.js';
+import { createLabelEditor } from './label-editor.js';
 import { renderMap } from '../map/render.js';
 const get = (id) => document.getElementById(id);
-let pack = null, rotation = 0, selected = null, job = null;
+let pack = null, rotation = 0, selected = null, job = null, currentModel = null;
 const screenModels = new Map(), paperModels = new Map();
 const announce = (text) => { get('status').textContent = text; };
 
@@ -10,7 +11,7 @@ function selectFeature(id) {
   selected = id || null; get('feature').value = id || '';
   const feature = pack?.features.features.find((f) => f.id === id);
   get('selection').textContent = feature ? `${feature.properties.name ?? 'Unnamed feature'} · ${feature.id}. Drawing geometry alone does not establish a permitted driving route.` : 'Choose a road on the map or use the feature list.';
-  updateView();
+  editor.selectedFeature(selected); updateView();
 }
 function updateView() {
   if (!pack) return;
@@ -22,8 +23,8 @@ function updateView() {
   const screenHeight = Math.max(320, Math.min(560, screenWidth * .56));
   const screenKey = `${variant}:${rotation}:${screenWidth}`;
   if (!screenModels.has(screenKey)) screenModels.set(screenKey, createMapModel(pack, { variant, rotationDeg: rotation, screenWidth, screenHeight }));
-  const model = screenModels.get(screenKey);
-  get('map').replaceChildren(renderMap(document, model, { selectedId: selected, headingDeg, onSelect: selectFeature }));
+  const model = screenModels.get(screenKey); currentModel = model;
+  get('map').replaceChildren(renderMap(document, model, { selectedId: selected, headingDeg, onSelect: (id) => { if (!editor.isPlacing()) selectFeature(id); } }));
   let printError = '';
   try {
     const paperKey = `${variant}:${scaleDenominator}:${orientation}`;
@@ -47,7 +48,7 @@ function install(value) {
   get('feature').replaceChildren(new Option('No feature selected', ''));
   get('attribution').textContent = pack.sources.map((s) => `${s.attribution} · ${s.license} · source ${s.sourceAt?.slice(0, 10) ?? 'date unknown'}`).join(' | ');
   for (const f of pack.features.features) get('feature').add(new Option(`${f.properties.name ?? 'Unnamed feature'} (${f.id})`, f.id));
-  get('selection').textContent = 'Choose a road on the map or use the feature list.'; updateView();
+  get('selection').textContent = 'Choose a road on the map or use the feature list.'; editor.installed(); updateView();
 }
 async function load(operation) {
   job?.abort(); const current = new AbortController(); job = current;
@@ -55,6 +56,8 @@ async function load(operation) {
   try { const value = await operation(current.signal); if (job === current && !current.signal.aborted) install(value); }
   catch (error) { if (job === current && !current.signal.aborted) announce(`Map not loaded: ${error.message} ${error.errors?.[0]?.path ?? ''} The previous map is retained.`); }
 }
+const editor = createLabelEditor({ getPack: () => pack, getModel: () => currentModel, applyPack: (value) => { pack = value; screenModels.clear(); paperModels.clear(); updateView(); } });
+
 get('demo').addEventListener('click', () => load(async (signal) => {
   const response = await fetch('tests/fixtures/street-square.json', { signal });
   if (!response.ok) throw new Error('Synthetic map could not be loaded.');
