@@ -21,7 +21,7 @@ Map Literacy is a new implementation repository for street and topographic map l
 
 ## Plans and review
 
-Use docs/plans/{active,queue,complete}. The active implementation plan is 03; Plan 02 returns to the queue for real lesson review and newer-snapshot comparison; roadmap 00 and bootstrap completion record are navigation/reference documents. Maintain dependencies, acceptance criteria, evidence, blockers and next action. Do not mark a plan complete because files exist; verify its outcomes. After an authorized completed step, progress within the task scope without unnecessary confirmation.
+Use docs/plans/{active,queue,complete}. The active implementation plan is 04; Plans 02 and 03 remain queued for real lesson/source review and physical/device acceptance; roadmap 00 and bootstrap completion record are navigation/reference documents. Maintain dependencies, acceptance criteria, evidence, blockers and next action. Do not mark a plan complete because files exist; verify its outcomes. After an authorized completed step, progress within the task scope without unnecessary confirmation.
 
 Use a focused branch and PR; conventional commit messages. Keep changes reviewable but avoid repeated tiny PRs for one unresolved issue. Describe what changed, why and validation. Do not silently merge PRs.
 
