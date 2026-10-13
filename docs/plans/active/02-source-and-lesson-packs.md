@@ -1,15 +1,17 @@
 # Plan 02 — Source and lesson packs
 
-Status: queued.
+Status: active; implementation not started.
 Dependencies: 01.
 
 ## Outcome
 
 Produce validated reproducible packs while retaining topology needed for correct lessons.
 
+Contract baseline: [lesson-pack v1](../../contracts/lesson-pack-v1.md), [application v1](../../contracts/application-v1.md), [fixtures](../../validation/fixtures.md), [acceptance](../../validation/acceptance.md).
+
 ## Work
 
-- [ ] Implement synthetic fixtures and versioned validation from Plan 01.
+- [ ] Implement the normative v1 schema as executable validation and materialize every fixture/expected result from Plan 01; include full valid envelope examples and future-capability rejection.
 - [ ] Build JavaScript bounded OSM fetch/import preparation; review endpoint policy, timeout/retry/cancellation and caching.
 - [ ] Preserve nodes, ways and required relations separately from GeoJSON display features; check boundary completeness and tag coverage.
 - [ ] Record query, extent/buffer, source/fetch times, hashes, transformation versions, licenses and attribution.

@@ -21,3 +21,13 @@ Unresolved before core implementation: pack schema/versioning, learner interacti
 Unresolved before terrain implementation: DEM product, coverage/resolution, horizontal/vertical CRS, meter/foot handling, nodata, resampling, contour interval/generalization, depression styling, north references and source-to-map alignment.
 
 Dependencies are not approved solely because a research link exists. Pin versions, inspect license/maintenance and run the relevant capability check before adoption.
+
+## Plan 01 contract decisions (2026-10-12)
+
+Street-core v1 uses built-in browser APIs and SVG, with no mandatory runtime library for synthetic fixtures. This is an implementation baseline, not a claim that all OSM preparation can avoid libraries. Plan 02 evaluates/pins osmtogeojson or a focused converter only when its actual fixture behavior/license/release are checked. No package was installed during design.
+
+Pack coordinates are longitude/latitude; local spherical azimuthal equidistant supports bounded areas <=5km diagonal and abs(latitude)<=70. Projection/scale tolerances require independent tests. Rubric defaults are 15 degrees/20m, explicitly serialized per exercise and revisable after pilot. Future terrain/directions capabilities fail clearly before writes until Plans 08/07 define their payloads.
+
+Browser target matrix and 4–6 learner pilot protocol are proposed test targets, not available devices or recruited participants. See contracts/validation documents for budgets and ownership. Application code license remains an explicit pre-distribution decision; no implicit license granted by copied research.
+
+Primary browser lifecycle/concurrency references reviewed: https://developer.mozilla.org/en-US/docs/Web/API/IndexedDB_API/Using_IndexedDB and https://developer.mozilla.org/en-US/docs/Web/API/Web_Locks_API . Web Locks are not required; IDB transaction/version checks are authoritative and notifications optional.

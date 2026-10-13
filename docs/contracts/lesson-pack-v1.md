@@ -1,0 +1,83 @@
+# Lesson pack v1
+
+Status: implementation contract for street-core v1; terrain/routing extension payloads remain later-plan contracts. No runtime implementation yet.
+
+## Envelope and primitives
+
+JSON UTF-8 object. Unknown schemaVersion rejected before writes; v1 uses integer 1. Required keys are below; reject unknown structural keys except namespaced extensions. IDs are case-sensitive strings matching ^[a-zA-Z0-9][a-zA-Z0-9:_-]{0,127}$. OSM identities are strings (never JS Number conversions). Revision is a positive safe integer. All numerical inputs finite; dates UTC ISO-8601 strings; null means explicitly unknown, not zero.
+
+| Field | Type/rule |
+|---|---|
+| schemaVersion | integer 1 |
+| id, title, revision | ID; text 1–120 chars; positive integer |
+| module | street or topographic |
+| capabilities | unique list of street-core, terrain-v1, directions-v1 |
+| review | {status: draft/reviewed/rejected, reviewedAt: date/null, note: text <=2000} |
+| bounds | [west,south,east,north], EPSG:4326 longitude/latitude, nonzero extent |
+| sourceBounds | same form; contains bounds |
+| sources | Source[]; nonempty |
+| features | GeoJSON FeatureCollection, feature IDs unique |
+| topology | {nodes: Node[], edges: Edge[], restrictions: Restriction[], completeness: complete/partial, exclusions: Exclusion[]} |
+| labels | Label[] |
+| exercises | Exercise[] |
+| print | PrintPreset |
+| extensions | object; only documented namespaced keys, initially empty |
+
+Reviewed pack requires reviewedAt and a review note describing checked extent/features and exclusions. A reviewed pack can have partial topology, but no scored exercise may use excluded/unresolved parts. Draft content can be previewed with a visible unreviewed indicator; scored practice starts only on reviewed, supported exercises. Rejected content is not offered for practice. Review does not establish current real-world conditions.
+
+Street-core application imports only module=street and capabilities=[street-core]. Future topo/directions capabilities are recognized but rejected with unsupported-capability before persistence. They cannot be silently ignored. This preserves an extension boundary without pretending later modules are implemented.
+
+Limits: 10 MiB file, 10,000 features, 100,000 total coordinate positions, 20,000 nodes, 40,000 directed edges, 5,000 restrictions, 2,000 labels, 200 exercises, nesting depth 32, individual free text 2,000 chars. Check byte size before parse; validate budgets before rendering/writes. Geographic support: abs(latitude)<=70 degrees, no dateline crossing, display diagonal <=5 km; source extent <=10 km diagonal. Exceeding these returns extent-unsupported. These are initial bounded-SVG limits, not geographic-data limitations.
+
+## Sources
+
+Source = {id, kind, url, query, fetchedAt, sourceAt, version, sha256, license, attribution, transforms}.
+kind = osm/synthetic/elevation/routing. url is HTTPS or null for synthetic. query string/null; sourceAt/version nullable when not supplied; sha256 is 64 lowercase hex of exact acquired bytes, not normalized JSON. license/attribution nonempty text. transforms=[{name,version,parameters}] with JSON-only parameters. Derived imports retain source byte hash and transformation lineage; reviewer identity need not be personal.
+
+Synthetic source URL may be null, with generator/recipe in transforms. Do not fabricate upstream version/date. Acquiring a new source or changing any scored/printed content increments pack revision.
+
+## Drawing and topology
+
+Features: Point, LineString, Polygon, MultiLineString or MultiPolygon; coordinates [longitude,latitude], within sourceBounds. properties contain sourceId, role (road/landmark/water/building/trail/contour), name text/null and tags object of text values. SourceId resolves to sources. Terrain roles unsupported in street-core. No imported HTML, scripts, external images or executable styles.
+
+Node = {id, coordinate:[lon,lat], sourceId, sourceObjectId:null/string}.
+Edge = {id, from, to, featureId, sourceId, mode:walk/drive, access:allowed/unknown/blocked, lengthM:positive, shape:[[lon,lat],...]}.
+Each directed edge has explicit mode/access; opposite direction is another edge. Shape begins/ends at node coordinates within 0.1 m validation tolerance. lengthM recomputed geographically with error <= max(0.1m,0.001*computedLength).
+Restriction = {id, edgeSequence: ID[2..16], rule:forbidden/only, mode:walk/drive, sourceId}. A only sequence requires the final edge after the matched prefix; forbidden disallows the complete sequence. Unsupported conditional/via semantics remain raw source with exclusion; do not approximate as ordinary turns.
+Exclusion = {id, objectIds:ID[], reason:text}. Original OSM source records must be retained in the preparation output or a manifest-addressed sidecar before claiming reproducibility; this simplified graph never replaces original relation evidence.
+
+Label = {id, featureId, text, anchor:[lon,lat], rotationDeg:finite [-180,180], visibleIn:labeled/partial, priority:integer 0..100}. Omit labels for blank view. Duplicate label IDs rejected. Text is literal, <=120 chars.
+
+## Exercises
+
+Common = {id, type, prompt:text, review:reviewed/draft, sourceIds:ID[], hints:text[0..3], rubric, scenario:null/Scenario}.
+Scenario = {id, closedEdgeIds:ID[], label:text}; closure is synthetic and applies to the exercise only. No source mutation.
+
+| type | rubric | Answer |
+|---|---|---|
+| heading | {expectedDeg:[0,360), toleranceDeg:(0,45]} | {type:heading, degrees:[0,360)} |
+| endpoint | {expected:[lon,lat], toleranceM:(0,100]} | {type:endpoint, coordinate:[lon,lat]} |
+| route | {startNodeId,endNodeId,mode:walk/drive,objective:any-valid/max-distance,maxDistanceM:null/positive} | {type:route,edgeIds:ID[0..1000]} |
+| detour | same route rubric; scenario required, nonempty closedEdgeIds | {type:detour,edgeIds:ID[0..1000]} |
+
+Defaults supplied by pack author, not silently invented by scorer: heading tolerance 15 degrees, endpoint tolerance 20 m. They are pilot starting values and recorded per exercise; changing them increments revision. Route max-distance requires positive maxDistanceM; any-valid requires null.
+
+Answers/exercise type must agree. Heading error=min(abs(a-b),360-abs(a-b)); boundary inclusive. Endpoint uses geographic great-circle distance with earth radius 6371008.8 m; boundary inclusive.
+
+Routes: resolve edges -> start/end -> adjacency -> mode/access -> restriction sequences -> scenario closures -> objective. Any violation known from complete reviewed content gives incorrect. Unknown access, ambiguous restrictions or excluded geometry gives needs-review, never correct. Empty path valid only for start=end and no positive-distance requirement. Missing required answer gives unanswered. A valid alternative is correct; no shortest-path exact-match scoring. Path search used for fixture verification applies identical turn/sequence state, not nodes alone.
+
+Score result={status:correct/incorrect/needs-review/unanswered, metrics:JSON numeric/null fields, reasonCode:text, rubricVersion:1}. No free-text automatic grading in v1. Hints counted separately; do not change correctness or silently lower score. Manual explanation rubric belongs to pilot, not deterministic status.
+
+## Print preset and geometry
+
+PrintPreset={paper:letter,orientation:landscape,marginMm:10,scaleDenominator:5000/10000,labelMinPt:8,mapRotationDeg:0}. Page 279.4 x 215.9 mm; printable box 259.4 x 195.9 mm. Reserve map box 259.4 x 145 mm, questions box 259.4 x 30 mm and footer 259.4 x 20.9 mm, vertically in that order; additional questions use separate pages. Center the geographic extent in the map box; do not stretch axes independently. If extent/labels cannot fit requested scale, report print-extent-too-large and offer another extent/preset; do not silently rescale.
+
+Street projection: local spherical azimuthal equidistant centered on bounds midpoint, radius 6371008.8 m. Geographic center must be fixed per pack revision; forward/inverse tested with independent known distances and angular cases. Screen x=easting and y=-northing; displayed clockwise rotation is separate. True heading is measured clockwise from true north, not the page top. No magnetic/grid heading lessons in v1. Scale error across declared extent <=0.5%; paper calibration target <=1%. Terrain must supply its own horizontal/vertical CRS contract in Plan 08.
+
+## Example and rejection cases
+
+A complete illustrative street fixture is provided in [fixture specification](../validation/fixtures.md); schema key rules here are normative. No machine-readable schema is claimed yet: Plan 02 implements it and validates fixture files.
+
+Future topographic envelope example: schemaVersion=1, module=topographic, capabilities=[terrain-v1], with elevation source metadata. Future route envelope: module=street, capabilities=[street-core,directions-v1], route provider/version/options and maneuvers in a documented extension. Both are explicit unsupported-capability in street-core, before writes. Plan 07/08 must finish their payloads before support is advertised.
+
+Reject: duplicate IDs, wrong coordinate order/range, missing source reference, nonexistent node/edge, invalid type/rubric pair, missing synthetic closure, unsupplied hash, unknown capability/version, unsupported geometry/extent, nonfinite number, imported limits exceeded. Pack import is all-or-nothing; correctness unknown is not a structural import failure when the pack records exclusions.
