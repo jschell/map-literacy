@@ -24,7 +24,7 @@ Street lessons cover orientation, roads, landmarks, addresses, return routes and
 - [Decisions and open questions](docs/decisions.md)
 - [Original merged idea handoff](https://github.com/jschell/Ideas-for-projects/tree/main/street-map-learning)
 
-The first useful release is a browser application with one reviewed neighborhood pack, synthetic test maps, orientation and route exercises, local progress, JSON backup and printable labeled/partial/blank worksheets. Turn-by-turn preview and simulation follow as a separate phase. Topographic data and lessons have dedicated plans rather than being treated as a street-map style.
+The first useful release is a browser application with one reviewed neighborhood pack, synthetic test maps, orientation and route exercises, local progress, JSON backup and printable US Letter (8.5 x 11 inch) labeled/partial/blank worksheets in portrait or landscape. Other paper sizes are later goals. Turn-by-turn preview and simulation follow as a separate phase. Topographic data and lessons have dedicated plans rather than being treated as a street-map style.
 
 ## Technical direction
 
@@ -41,4 +41,5 @@ This repository now owns implementation planning. The Ideas-for-projects draft r
 ## License
 
 Project code and original documentation are licensed under [MIT](LICENSE). Generated synthetic fixture JSON retains its [CC0-1.0 designation](tests/fixtures/README.md). Third-party map/elevation data and quoted research retain their own licenses and attribution requirements; the MIT license does not relicense them.
+
 

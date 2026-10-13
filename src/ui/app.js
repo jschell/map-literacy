@@ -15,6 +15,8 @@ function selectFeature(id) {
 function updateView() {
   if (!pack) return;
   const variant = get('variant').value, scaleDenominator = Number(get('scale').value);
+  const orientation = get('orientation').value;
+  get('print-sheet').dataset.orientation = orientation;
   const headingDeg = get('heading').value === '' ? null : Number(get('heading').value);
   const screenWidth = Math.max(280, Math.min(2000, Math.round(get('map').clientWidth)));
   const screenHeight = Math.max(320, Math.min(560, screenWidth * .56));
@@ -24,13 +26,13 @@ function updateView() {
   get('map').replaceChildren(renderMap(document, model, { selectedId: selected, headingDeg, onSelect: selectFeature }));
   let printError = '';
   try {
-    const paperKey = `${variant}:${scaleDenominator}`;
-    if (!paperModels.has(paperKey)) paperModels.set(paperKey, createMapModel(pack, { paper: true, variant, scaleDenominator }));
+    const paperKey = `${variant}:${scaleDenominator}:${orientation}`;
+    if (!paperModels.has(paperKey)) paperModels.set(paperKey, createMapModel(pack, { paper: true, variant, scaleDenominator, orientation }));
     const paper = paperModels.get(paperKey);
     get('paper-map').replaceChildren(renderMap(document, paper, { headingDeg }));
     get('print').disabled = false;
     get('paper-title').textContent = `${pack.title} — ${variant}${paper.draft ? ' — UNREVIEWED DRAFT' : ''}`;
-    get('paper-footer').textContent = `North up · 1:${scaleDenominator.toLocaleString()} · Print at 100% / actual size; measure the scale bar. ${pack.sources.map((s) => `${s.attribution} · source ${s.sourceAt?.slice(0, 10) ?? 'date unknown'}`).join(' | ')}`;
+    get('paper-footer').textContent = `Letter ${orientation} · North up · 1:${scaleDenominator.toLocaleString()} · Print at 100% / actual size; measure the scale bar. ${pack.sources.map((s) => `${s.attribution} · source ${s.sourceAt?.slice(0, 10) ?? 'date unknown'}`).join(' | ')}`;
   } catch (error) {
     get('paper-map').replaceChildren(); get('print').disabled = true; printError = error.message;
     get('paper-title').textContent = 'Map cannot be printed at this scale'; get('paper-footer').textContent = printError;
@@ -41,6 +43,7 @@ function install(value) {
   pack = value; selected = null; rotation = 0;
   screenModels.clear(); paperModels.clear();
   get('scale').value = String(pack.print.scaleDenominator);
+  get('orientation').value = pack.print.orientation;
   get('feature').replaceChildren(new Option('No feature selected', ''));
   get('attribution').textContent = pack.sources.map((s) => `${s.attribution} · ${s.license} · source ${s.sourceAt?.slice(0, 10) ?? 'date unknown'}`).join(' | ');
   for (const f of pack.features.features) get('feature').add(new Option(`${f.properties.name ?? 'Unnamed feature'} (${f.id})`, f.id));
@@ -59,7 +62,7 @@ get('demo').addEventListener('click', () => load(async (signal) => {
 }));
 get('import').addEventListener('change', () => { const file = get('import').files[0]; if (file) load((signal) => readImport(file, signal)); get('import').value = ''; });
 get('rotate').addEventListener('click', () => { rotation = (rotation + 90) % 360; updateView(); });
-for (const id of ['variant', 'heading', 'scale']) get(id).addEventListener('change', updateView);
+for (const id of ['variant', 'heading', 'scale', 'orientation']) get(id).addEventListener('change', updateView);
 get('feature').addEventListener('change', () => selectFeature(get('feature').value));
 get('print').addEventListener('click', () => { updateView(); if (!get('print').disabled) window.print(); });
 let lastWidth = 0;
@@ -67,3 +70,4 @@ new ResizeObserver(() => {
   const width = Math.round(get('map').clientWidth);
   if (width !== lastWidth) { lastWidth = width; screenModels.clear(); if (pack) requestAnimationFrame(updateView); }
 }).observe(get('map-panel'));
+

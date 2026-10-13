@@ -7,24 +7,30 @@ const level = (f) => ['motorway', 'trunk', 'primary', 'secondary'].includes(f.pr
   : ['footway', 'path', 'cycleway', 'steps', 'pedestrian'].includes(f.properties.tags.highway) ? 'path' : 'local';
 const overlaps = (a, b) => a[0] < b[2] && a[2] > b[0] && a[1] < b[3] && a[3] > b[1];
 
+export const LETTER_LAYOUTS = Object.freeze({
+  landscape: Object.freeze({ width: 259.4, height: 145 }),
+  portrait: Object.freeze({ width: 195.9, height: 208.5 })
+});
+
 /** Shared model for screen and paper. SVG clipping preserves source geometry. */
-export function createMapModel(pack, { paper = false, variant = 'labeled', rotationDeg = 0, scaleDenominator = pack.print.scaleDenominator, screenWidth = 1000, screenHeight = 560 } = {}) {
+export function createMapModel(pack, { paper = false, variant = 'labeled', rotationDeg = 0, scaleDenominator = pack.print.scaleDenominator, orientation = pack.print.orientation, screenWidth = 1000, screenHeight = 560 } = {}) {
   const validation = validatePack(pack);
   if (!validation.valid) throw Object.assign(new Error('Invalid lesson pack.'), { errors: validation.errors });
   if (!['labeled', 'partial', 'blank'].includes(variant) || !Number.isFinite(rotationDeg)) throw new Error('Invalid view options.');
   if (![1000, 5000, 10000].includes(scaleDenominator)) throw new Error('Unsupported print scale.');
   if (!Number.isFinite(screenWidth) || !Number.isFinite(screenHeight) || screenWidth < 280 || screenWidth > 2000 || screenHeight < 280 || screenHeight > 1000) throw new Error('Unsupported screen dimensions.');
+  if (!Object.hasOwn(LETTER_LAYOUTS, orientation)) throw new Error('Unsupported print orientation.');
   const center = [(pack.bounds[0] + pack.bounds[2]) / 2, (pack.bounds[1] + pack.bounds[3]) / 2];
   const projection = createProjection(center);
   const rotation = paper ? 0 : ((rotationDeg % 360) + 360) % 360;
   const projected = boundsPerimeter(pack.bounds).map((p) => rotateScreen(projection.project(p), rotation));
   const minX = Math.min(...projected.map((p) => p[0])), maxX = Math.max(...projected.map((p) => p[0]));
   const minY = Math.min(...projected.map((p) => p[1])), maxY = Math.max(...projected.map((p) => p[1]));
-  const width = paper ? 259.4 : screenWidth, height = paper ? 145 : screenHeight;
+  const width = paper ? LETTER_LAYOUTS[orientation].width : screenWidth, height = paper ? LETTER_LAYOUTS[orientation].height : screenHeight;
   const padding = paper ? 0 : 40;
   const factor = paper ? 1000 / scaleDenominator : Math.min((width - 2 * padding) / (maxX - minX), (height - 2 * padding) / (maxY - minY));
   if (paper && ((maxX - minX) * factor > width || (maxY - minY) * factor > height)) {
-    throw Object.assign(new Error('The selected extent does not fit this print scale. Choose 1:10,000 or a smaller extent.'), { code: 'print-extent-too-large' });
+    throw Object.assign(new Error('The selected extent does not fit this print scale. Choose another orientation, a larger scale denominator or a smaller extent.'), { code: 'print-extent-too-large' });
   }
   const offsetX = (minX + maxX) / 2, offsetY = (minY + maxY) / 2;
   const convert = (c) => { const [x, y] = rotateScreen(projection.project(c), rotation); return [width / 2 + (x - offsetX) * factor, height / 2 + (y - offsetY) * factor]; };
@@ -73,7 +79,8 @@ export function createMapModel(pack, { paper = false, variant = 'labeled', rotat
     if (box[0] < 0 || box[1] < 0 || box[2] > width || box[3] > height || !boxCorners.every((corner) => insideExtent(invert(corner))) || boxes.some((b) => overlaps(box, b))) { suppressed++; continue; }
     boxes.push(box); names.add(l.text); labels.push({ ...l, point: anchor, rotationDeg: l.rotationDeg + rotation, fontSize });
   }
-  return { width, height, paper, rotationDeg: rotation, scaleDenominator, paths, landmarks, labels, suppressedLabels: suppressed,
+  return { width, height, paper, orientation, rotationDeg: rotation, scaleDenominator, paths, landmarks, labels, suppressedLabels: suppressed,
     projection, convert, invert, metersToUnits: factor, clip: projected.map(([x, y]) => [width / 2 + (x - offsetX) * factor, height / 2 + (y - offsetY) * factor]),
     draft: pack.review.status !== 'reviewed', variant, packId: pack.id, title: pack.title };
 }
+
