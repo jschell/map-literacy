@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "synthetic-square",
   "title": "Synthetic streets and bridge crossing",
-  "revision": 1,
+  "revision": 2,
   "module": "street",
   "capabilities": [
     "street-core"
@@ -32,14 +32,14 @@
       "query": null,
       "fetchedAt": "2026-10-13T00:00:00.000Z",
       "sourceAt": null,
-      "version": "recipe-v1",
-      "sha256": "05c84e46fc2884b850b14844d8ff5cb4a9b716f9c61f3424c416351c8adf4813",
+      "version": "recipe-v2",
+      "sha256": "c37a4618346d64f365b8644a01697617218d4460f89ae50293c8654202e6afea",
       "license": "CC0-1.0",
       "attribution": "Map Literacy synthetic fixture data; no geographic source.",
       "transforms": [
         {
           "name": "generate-fixtures",
-          "version": "1",
+          "version": "2",
           "parameters": {
             "sourceFile": "synthetic-source.json"
           }
@@ -71,7 +71,8 @@
           "role": "road",
           "name": "Road AB",
           "tags": {
-            "synthetic": "yes"
+            "synthetic": "yes",
+            "oneway": "yes"
           }
         }
       },
@@ -96,7 +97,8 @@
           "role": "road",
           "name": "Road BC",
           "tags": {
-            "synthetic": "yes"
+            "synthetic": "yes",
+            "oneway": "yes"
           }
         }
       },
@@ -121,7 +123,8 @@
           "role": "road",
           "name": "Road AD",
           "tags": {
-            "synthetic": "yes"
+            "synthetic": "yes",
+            "oneway": "yes"
           }
         }
       },
@@ -146,7 +149,8 @@
           "role": "road",
           "name": "Road DC",
           "tags": {
-            "synthetic": "yes"
+            "synthetic": "yes",
+            "oneway": "yes"
           }
         }
       },
@@ -171,7 +175,9 @@
           "role": "road",
           "name": "Road EF",
           "tags": {
-            "synthetic": "yes"
+            "synthetic": "yes",
+            "oneway": "yes",
+            "bridge": "yes"
           }
         }
       },
@@ -196,7 +202,8 @@
           "role": "road",
           "name": "Road GH",
           "tags": {
-            "synthetic": "yes"
+            "synthetic": "yes",
+            "oneway": "yes"
           }
         }
       }
@@ -409,11 +416,11 @@
       "featureId": "road:AB",
       "text": "Road AB",
       "anchor": [
-        0,
+        0.0005,
         0
       ],
       "rotationDeg": 0,
-      "visibleIn": "labeled",
+      "visibleIn": "partial",
       "priority": 50
     },
     {
@@ -422,9 +429,9 @@
       "text": "Road BC",
       "anchor": [
         0.001,
-        0
+        0.0005
       ],
-      "rotationDeg": 0,
+      "rotationDeg": -90,
       "visibleIn": "labeled",
       "priority": 50
     },
@@ -434,10 +441,10 @@
       "text": "Road AD",
       "anchor": [
         0,
-        0
+        0.0005
       ],
-      "rotationDeg": 0,
-      "visibleIn": "labeled",
+      "rotationDeg": -90,
+      "visibleIn": "partial",
       "priority": 50
     },
     {
@@ -445,7 +452,7 @@
       "featureId": "road:DC",
       "text": "Road DC",
       "anchor": [
-        0,
+        0.0005,
         0.001
       ],
       "rotationDeg": 0,
@@ -457,11 +464,11 @@
       "featureId": "road:EF",
       "text": "Road EF",
       "anchor": [
-        0.0003,
-        0.0002
+        0.0005,
+        0.0005
       ],
-      "rotationDeg": 0,
-      "visibleIn": "labeled",
+      "rotationDeg": -56.309932474020215,
+      "visibleIn": "partial",
       "priority": 50
     },
     {
@@ -469,10 +476,10 @@
       "featureId": "road:GH",
       "text": "Road GH",
       "anchor": [
-        0.0003,
-        0.0008
+        0.0005,
+        0.0005
       ],
-      "rotationDeg": 0,
+      "rotationDeg": 56.309932474020215,
       "visibleIn": "labeled",
       "priority": 50
     }
@@ -560,7 +567,7 @@
     "paper": "letter",
     "orientation": "landscape",
     "marginMm": 10,
-    "scaleDenominator": 5000,
+    "scaleDenominator": 1000,
     "labelMinPt": 8,
     "mapRotationDeg": 0
   },

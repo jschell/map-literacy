@@ -64,6 +64,6 @@ export const packSchema = object({
   }),
   labels: array(object({ id, featureId: id, text: string(120), anchor: coordinate, rotationDeg: number(-180, 180), visibleIn: enumeration('labeled', 'partial'), priority: number(0, 100, true) }), 2000),
   exercises: array({ type: 'discriminated', key: 'type', choices: exercises }, 200),
-  print: object({ paper: enumeration('letter'), orientation: enumeration('landscape'), marginMm: enumeration(10), scaleDenominator: enumeration(5000, 10000), labelMinPt: enumeration(8), mapRotationDeg: enumeration(0) }),
+  print: object({ paper: enumeration('letter'), orientation: enumeration('landscape'), marginMm: enumeration(10), scaleDenominator: enumeration(1000, 5000, 10000), labelMinPt: enumeration(8), mapRotationDeg: enumeration(0) }),
   extensions: object({}),
 });

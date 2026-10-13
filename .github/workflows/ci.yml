@@ -1,4 +1,4 @@
-name: Data foundation checks
+name: Mapping foundation checks
 on:
   push:
     branches: [main]
@@ -19,3 +19,7 @@ jobs:
       - run: npm test
       - run: npm run fixtures:check
       - run: npm run validate -- tests/fixtures/street-square.json
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: npm run browser:check
+        env:
+          MAP_LITERACY_PORTABLE_CHROMIUM: '1'

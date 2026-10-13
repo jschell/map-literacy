@@ -7,27 +7,30 @@ export function buildFixtures() {
   const coordinates = { A: [0, 0], B: [0.001, 0], C: [0.001, 0.001], D: [0, 0.001],
     E: [0.0003, 0.0002], F: [0.0007, 0.0008], G: [0.0003, 0.0008], H: [0.0007, 0.0002] };
   const links = ['AB', 'BC', 'AD', 'DC', 'EF', 'GH'];
-  const raw = { recipeVersion: 1, coordinates, links, note: 'Synthetic geometry; EF and GH cross without a shared node.' };
+  const raw = { recipeVersion: 2, coordinates, links, onewayWays: links, bridgeWays: ['EF'], note: 'Synthetic geometry; EF bridges over GH without a shared node.' };
   const rawBytes = JSON.stringify(raw, null, 2) + '\n';
   const hash = createHash('sha256').update(rawBytes).digest('hex');
   const base = {
-    schemaVersion: 1, id: 'synthetic-square', title: 'Synthetic streets and bridge crossing', revision: 1,
+    schemaVersion: 1, id: 'synthetic-square', title: 'Synthetic streets and bridge crossing', revision: 2,
     module: 'street', capabilities: ['street-core'],
     review: { status: 'reviewed', reviewedAt: '2026-10-13T00:00:00.000Z', note: 'Synthetic recipe and known answers reviewed; no real roads represented.' },
     bounds: [-0.0001, -0.0001, 0.0011, 0.0011], sourceBounds: [-0.0002, -0.0002, 0.0012, 0.0012],
     sources: [{ id: 'synthetic', kind: 'synthetic', url: null, query: null,
-      fetchedAt: '2026-10-13T00:00:00.000Z', sourceAt: null, version: 'recipe-v1', sha256: hash,
+      fetchedAt: '2026-10-13T00:00:00.000Z', sourceAt: null, version: 'recipe-v2', sha256: hash,
       license: 'CC0-1.0', attribution: 'Map Literacy synthetic fixture data; no geographic source.',
-      transforms: [{ name: 'generate-fixtures', version: '1', parameters: { sourceFile: 'synthetic-source.json' } }] }],
+      transforms: [{ name: 'generate-fixtures', version: '2', parameters: { sourceFile: 'synthetic-source.json' } }] }],
     features: { type: 'FeatureCollection', features: links.map((id) => ({ type: 'Feature', id: `road:${id}`,
       geometry: { type: 'LineString', coordinates: [coordinates[id[0]], coordinates[id[1]]] },
-      properties: { sourceId: 'synthetic', role: 'road', name: `Road ${id}`, tags: { synthetic: 'yes' } } })) },
+      properties: { sourceId: 'synthetic', role: 'road', name: `Road ${id}`, tags: { synthetic: 'yes', oneway: 'yes', ...(id === 'EF' ? { bridge: 'yes' } : {}) } } })) },
     topology: {
       nodes: Object.entries(coordinates).map(([id, coordinate]) => ({ id, coordinate, sourceId: 'synthetic', sourceObjectId: null })),
       edges: links.map((id) => ({ id, from: id[0], to: id[1], featureId: `road:${id}`, sourceId: 'synthetic', mode: 'drive', access: 'allowed', lengthM: lineLengthM([coordinates[id[0]], coordinates[id[1]]]), shape: [coordinates[id[0]], coordinates[id[1]]] })),
       restrictions: [], completeness: 'complete', exclusions: [],
     },
-    labels: links.map((id) => ({ id: `label:${id}`, featureId: `road:${id}`, text: `Road ${id}`, anchor: coordinates[id[0]], rotationDeg: 0, visibleIn: 'labeled', priority: 50 })),
+    labels: links.map((id, index) => ({ id: `label:${id}`, featureId: `road:${id}`, text: `Road ${id}`,
+      anchor: [(coordinates[id[0]][0] + coordinates[id[1]][0]) / 2, (coordinates[id[0]][1] + coordinates[id[1]][1]) / 2],
+      rotationDeg: -Math.atan2(coordinates[id[1]][1] - coordinates[id[0]][1], coordinates[id[1]][0] - coordinates[id[0]][0]) * 180 / Math.PI,
+      visibleIn: index % 2 === 0 ? 'partial' : 'labeled', priority: 50 })),
     exercises: [
       { id: 'heading', type: 'heading', prompt: 'Face true north.', review: 'reviewed', sourceIds: ['synthetic'], hints: ['North is 0 degrees.'], scenario: null, rubric: { expectedDeg: 0, toleranceDeg: 15 } },
       { id: 'endpoint', type: 'endpoint', prompt: 'Locate A.', review: 'reviewed', sourceIds: ['synthetic'], hints: [], scenario: null, rubric: { expected: coordinates.A, toleranceM: 20 } },
@@ -37,7 +40,7 @@ export function buildFixtures() {
         scenario: { id: 'closure', closedEdgeIds: ['BC'], label: 'Synthetic closure, not a real road condition.' },
         rubric: { startNodeId: 'A', endNodeId: 'C', mode: 'drive', objective: 'any-valid', maxDistanceM: null } },
     ],
-    print: { paper: 'letter', orientation: 'landscape', marginMm: 10, scaleDenominator: 5000, labelMinPt: 8, mapRotationDeg: 0 }, extensions: {},
+    print: { paper: 'letter', orientation: 'landscape', marginMm: 10, scaleDenominator: 1000, labelMinPt: 8, mapRotationDeg: 0 }, extensions: {},
   };
   const packs = { base };
   const variant = (name, mutate) => {

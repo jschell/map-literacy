@@ -1,5 +1,5 @@
 {
-  "recipeVersion": 1,
+  "recipeVersion": 2,
   "coordinates": {
     "A": [
       0,
@@ -42,5 +42,16 @@
     "EF",
     "GH"
   ],
-  "note": "Synthetic geometry; EF and GH cross without a shared node."
+  "onewayWays": [
+    "AB",
+    "BC",
+    "AD",
+    "DC",
+    "EF",
+    "GH"
+  ],
+  "bridgeWays": [
+    "EF"
+  ],
+  "note": "Synthetic geometry; EF bridges over GH without a shared node."
 }

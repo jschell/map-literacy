@@ -4,14 +4,16 @@ Learn to understand where you are, which direction you face, how routes connect 
 
 Street lessons cover orientation, roads, landmarks, addresses, return routes and detours. Topographic lessons will add contours, elevation, slope, ridges, valleys and terrain interpretation. Both use shared map, lesson, print and progress components.
 
-**Current state:** executable lesson-pack validation, reproducible synthetic packs and bounded OSM preparation. A live downtown Redmond draft was validated and reproduced from saved source bytes. No reviewed real-neighborhood lesson pack, map interface, routing deployment or learning-effectiveness result exists.
+**Current state:** a vanilla JavaScript map review interface with pack import, rotation, label variants, heading arrows, feature selection and fixed-scale print output. Data validation and OSM preparation are implemented; the Redmond draft renders but remains unreviewed. Route scoring, learner records, reviewed real lessons and routing deployment are not implemented.
 
 ## Start here
 
 - [Scope and first release](docs/product-scope.md)
 - [Architecture proposal](docs/architecture.md)
 - [Plan index and dependencies](docs/plans/README.md)
-- [Next work: source and lesson packs](docs/plans/active/02-source-and-lesson-packs.md)
+- [Next work: SVG and print](docs/plans/active/03-svg-and-print.md)
+- [Run the map review interface](docs/map-review.md)
+- [Renderer validation evidence](docs/validation/render-evidence.md)
 - [Lesson-pack contract](docs/contracts/lesson-pack-v1.md)
 - [Application contract](docs/contracts/application-v1.md)
 - [Validation gates](docs/validation/acceptance.md)
