@@ -2,7 +2,7 @@
 
 ## Purpose and authorization
 
-Map Literacy is a new implementation repository for street and topographic map learning. Design contracts and plans are established; no executable application is included yet. The ideas repository's specs-only rule applies there, not here. Implementation work follows the applicable plan and user task.
+Map Literacy is a new implementation repository for street and topographic map learning. Design contracts and executable data validation are established; no map interface exists yet. The ideas repository's specs-only rule applies there, not here. Implementation work follows the applicable plan and user task.
 
 ## Development principles
 
@@ -28,3 +28,4 @@ Use a focused branch and PR; conventional commit messages. Keep changes reviewab
 Tests should cover projection/scale, topology, scoring, import/export, migration and meaningful route/elevation edge cases. Browser rendering, keyboard/touch and physical print checks require appropriate evidence. Do not write tests that merely repeat implementation structure. Do not claim effectiveness or safer driving from technical tests.
 
 Record unresolved decisions explicitly. No offline availability guarantee, live GPS, accounts, paid providers, mobile app or TinyJS commitment is established.
+

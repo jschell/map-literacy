@@ -1,10 +1,12 @@
 # Lesson pack v1
 
-Status: implementation contract for street-core v1; terrain/routing extension payloads remain later-plan contracts. No runtime implementation yet.
+Status: street-core v1 structural/reference validation implemented. Scoring, rendering and persistence remain later work; terrain/routing payloads remain later-plan contracts.
 
 ## Envelope and primitives
 
 JSON UTF-8 object. Unknown schemaVersion rejected before writes; v1 uses integer 1. Required keys are below; reject unknown structural keys except namespaced extensions. IDs are case-sensitive strings matching ^[a-zA-Z0-9][a-zA-Z0-9:_-]{0,127}$. OSM identities are strings (never JS Number conversions). Revision is a positive safe integer. All numerical inputs finite; dates UTC ISO-8601 strings; null means explicitly unknown, not zero.
+
+Implementation clarification: dates are canonical UTC with millisecond precision (YYYY-MM-DDTHH:mm:ss.sssZ). No extension keys are documented/supported yet, so extensions must be empty. All arbitrary metadata text is bounded to 2,000 characters; JSON traversal is bounded to 1,500,000 values and at most 1,000 reported errors. Ordinary validatePack checks hash format, not upstream source-byte possession. Acquisition verifies byte hashes separately.
 
 | Field | Type/rule |
 |---|---|
@@ -46,6 +48,8 @@ Each directed edge has explicit mode/access; opposite direction is another edge.
 Restriction = {id, edgeSequence: ID[2..16], rule:forbidden/only, mode:walk/drive, sourceId}. A only sequence requires the final edge after the matched prefix; forbidden disallows the complete sequence. Unsupported conditional/via semantics remain raw source with exclusion; do not approximate as ordinary turns.
 Exclusion = {id, objectIds:ID[], reason:text}. Original OSM source records must be retained in the preparation output or a manifest-addressed sidecar before claiming reproducibility; this simplified graph never replaces original relation evidence.
 
+An exclusion requires topology.completeness=partial. Exclusion objectIds may identify unresolved source objects, so they need not resolve to derived graph IDs. Exercise endpoint references still resolve to nodes. Heading exercises do not take closure scenarios. Reviewed-route approval also requires later path/source review; structural validation alone is not proof of a permitted or available route.
+
 Label = {id, featureId, text, anchor:[lon,lat], rotationDeg:finite [-180,180], visibleIn:labeled/partial, priority:integer 0..100}. Omit labels for blank view. Duplicate label IDs rejected. Text is literal, <=120 chars.
 
 ## Exercises
@@ -76,8 +80,9 @@ Street projection: local spherical azimuthal equidistant centered on bounds midp
 
 ## Example and rejection cases
 
-A complete illustrative street fixture is provided in [fixture specification](../validation/fixtures.md); schema key rules here are normative. No machine-readable schema is claimed yet: Plan 02 implements it and validates fixture files.
+A complete machine-readable synthetic street pack is in [street-square.json](../../tests/fixtures/street-square.json). The executable structural descriptor is [pack-schema.js](../../src/data/pack-schema.js); [validate-pack.js](../../src/data/validate-pack.js) adds geometric/reference checks. [Fixture expectations](../../tests/fixtures/expected.json) distinguish current import tests from future lesson/storage behavior. Schema key rules here remain normative.
 
 Future topographic envelope example: schemaVersion=1, module=topographic, capabilities=[terrain-v1], with elevation source metadata. Future route envelope: module=street, capabilities=[street-core,directions-v1], route provider/version/options and maneuvers in a documented extension. Both are explicit unsupported-capability in street-core, before writes. Plan 07/08 must finish their payloads before support is advertised.
 
 Reject: duplicate IDs, wrong coordinate order/range, missing source reference, nonexistent node/edge, invalid type/rubric pair, missing synthetic closure, unsupplied hash, unknown capability/version, unsupported geometry/extent, nonfinite number, imported limits exceeded. Pack import is all-or-nothing; correctness unknown is not a structural import failure when the pack records exclusions.
+
