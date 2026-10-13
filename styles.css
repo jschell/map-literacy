@@ -111,3 +111,6 @@ h2.sheet-block { font-size: 12pt; line-height: 1.4; }
 }
 
 .trace-controls input, .inspection input { width: 100%; min-width: 0; }
+
+[hidden] { display: none !important; }
+#lesson-status, #lesson-route, #lesson-revision { overflow-wrap: anywhere; line-height: 1.5; }

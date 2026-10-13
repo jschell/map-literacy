@@ -1,3 +1,4 @@
+import { createLessons } from './lessons.js';
 import { readImport } from '../data/read-pack.js';
 import { createMapModel } from '../map/model.js';
 import { createSearchSelect } from './search-select.js';
@@ -95,7 +96,7 @@ function install(value) {
 
   get('attribution').textContent = pack.sources.map((s) => `${s.attribution} · ${s.license} · source ${s.sourceAt?.slice(0, 10) ?? 'date unknown'}`).join(' | ');
   featurePicker.set(pack.features.features.map((f) => ({ id: f.id, text: `${f.properties.name ?? 'Unnamed feature'} (${f.id})` })), '', true); featurePicker.enabled(true);
-  get('selection').textContent = 'Choose a road on the map or use the feature list.'; editor.installed(); trace.installed(); updateView();
+  get('selection').textContent = 'Choose a road on the map or use the feature list.'; editor.installed(); trace.installed(); lessons.installed(); updateView();
   get('map').dataset.loadVersion = String(++loadVersion);
 }
 async function load(operation) {
@@ -106,7 +107,8 @@ async function load(operation) {
 }
 const featurePicker = createSearchSelect({ select: get('feature'), filter: get('feature-filter'), summary: get('feature-matches'), placeholder: 'No feature selected' });
 const trace = createRouteTrace({ getPack: () => pack, redraw: updateView });
-const editor = createLabelEditor({ getPack: () => pack, getModel: () => currentModel, applyPack: (value) => { assertRenderable(value); pack = value; screenModels.clear(); paperModels.clear(); printPagesKey = null; screenViewKey = null; paperViewKey = null; screenSelected = null; trace.packChanged(); updateView(); } });
+const lessons = createLessons({ getPack: () => pack, getTrace: () => trace.overlay() });
+const editor = createLabelEditor({ getPack: () => pack, getModel: () => currentModel, applyPack: (value) => { assertRenderable(value); pack = value; screenModels.clear(); paperModels.clear(); printPagesKey = null; screenViewKey = null; paperViewKey = null; screenSelected = null; trace.packChanged(); lessons.packChanged(); updateView(); } });
 
 get('demo').addEventListener('click', () => load(async (signal) => {
   const response = await fetch('tests/fixtures/street-square.json', { signal });
