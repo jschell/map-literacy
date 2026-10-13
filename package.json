@@ -3,11 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "engines": { "node": ">=24 <25" },
+  "engines": {
+    "node": ">=24 <25"
+  },
   "scripts": {
     "test": "node --test",
     "fixtures": "node scripts/generate-fixtures.js",
     "fixtures:check": "node scripts/generate-fixtures.js --check",
     "validate": "node scripts/validate-pack.js"
-  }
+  },
+  "license": "MIT"
 }

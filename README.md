@@ -34,3 +34,6 @@ Read [AGENTS.md](AGENTS.md) and the applicable plan first. Plans live in docs/pl
 
 This repository now owns implementation planning. The Ideas-for-projects draft remains the historical handoff. Creating this repository and its plans does not settle unresolved curriculum, dependency, service or terrain-source choices.
 
+## License
+
+Project code and original documentation are licensed under [MIT](LICENSE). Generated synthetic fixture JSON retains its [CC0-1.0 designation](tests/fixtures/README.md). Third-party map/elevation data and quoted research retain their own licenses and attribution requirements; the MIT license does not relicense them.
