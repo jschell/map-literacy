@@ -12,7 +12,7 @@ Render interactive and monochrome paper variants from shared geographic data. Th
 - [x] Implement calibrated geographic-to-display/paper transforms and extent clipping.
 - [x] Draw road hierarchy, landmarks, water, crossings, selected one-way symbols and SVG interaction layers.
 - [x] Separate labels from geometry; use imported manual placement overrides and deterministic initial collision policy (in-app label editing/export now implemented).
-- [ ] Create labeled/partial/blank views, heading arrows, road selection and route overlays with keyboard/touch equivalents.
+- [x] Create labeled/partial/blank views, heading arrows, road selection and route overlays with native keyboard controls and container touch-emulation evidence; actual target-device validation remains below.
 - [ ] Complete external print CSS and Letter portrait/landscape presets, questions/instructor pages, scale bar, north arrow, source date and attribution. Both orientations now exist in schema/model/UI/CSS with regression coverage; exercise/instructor sheets remain pending.
 - [ ] Measure bounded-pack performance and inspect target-browser PDF output; provide actual-paper calibration procedure.
 
@@ -42,6 +42,8 @@ Letter orientation follow-up: selectable portrait/landscape, pack-default import
 
 Label authoring follow-up: native forms support add/edit/remove, geographic click/tap placement with coordinate alternatives, single-step undo and validated standalone export. Edits/undo increment revisions and clear pack/exercise approval while preserving source hashes, geometry and topology. 77 Node tests and browser checks passed, including download/re-import and rotated placement. Storage remains a later plan.
 
-Remaining: route overlays, exercise-specific and instructor pages, maximum-pack/p95 measurements, actual Safari/Firefox/tablet and physical-print calibration. These are not implied by headless Chromium success. Plan 02 real lesson review and newer-source comparison remain queued, not complete.
+Route-overlay follow-up: explicit graph-node start, walking/driving edge tracing, ordered steps/source distances, known access/sequence restrictions and review warnings are implemented. Screen overlays and opt-in monochrome Letter overlays share geographic transforms; native controls, remove/clear and map taps are available. 83 Node tests and browser checks cover constraints, crossings, rotation, variants, print opt-in and touch emulation. No scoring, detour closure evaluation, directions provider or trace persistence is advertised.
 
-Next action: add route-overlay interactions and exercise-specific sheets; coordinate physical/device checks when available.
+Remaining: exercise-specific and instructor pages, maximum-pack/p95 measurements, actual Safari/Firefox/tablet and physical-print calibration. These are not implied by headless Chromium success. Plan 02 real lesson review and newer-source comparison remain queued, not complete.
+
+Next action: build exercise-specific and separate instructor sheets; coordinate physical/device checks when available.

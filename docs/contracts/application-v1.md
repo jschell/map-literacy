@@ -52,7 +52,7 @@ Settings record is versioned independently from pack; all settings exposed in UI
 | labels | labeled; labeled/partial/blank |
 | mapRotationDeg | number 0; [0,360), normalize interactive steps; stored finite |
 | reducedMotion | system; system/on/off |
-| printScale | integer 5000; 1000/5000/10000 |
+| printScale | integer 5000; 5000/10000 |
 | showInstructorAnswers | boolean false; separate output, never learner worksheet |
 
 Margins, label minimum and paper are fixed v1 preset; not configurable settings. An unavailable stored enum produces validated-default plus visible migration note; never overwrite old settings without transactional migration. Hint limit/answer tolerances belong to reviewed exercises, not preferences.
@@ -81,4 +81,9 @@ Persist each accepted attempt, hint and preference change immediately through se
 
 Core error codes: invalid-import, unsupported-version, unsupported-capability, extent-unsupported, revision-conflict, storage-unavailable, storage-full, migration-blocked, conflict, canceled, no-reviewed-exercises. Show a concise action (choose valid pack, export/retry, close other tabs, reload) and retain prior usable state.
 
-The initial review UI takes the pack print preset on import. Persistent preference resolution belongs to Plan 05; no settings storage is advertised yet.
+
+## Implemented map-review trace boundary
+
+Transient trace={startNodeId,mode:walk/drive,edgeIds:ID[0..1000]}; initially no start or edges. createTraceReview builds indices from a validated pack. inspect resolves directed adjacency, mode, extent, blocked access and forbidden/only sequence history, and returns geometry, endpoint, source distance sum and review warnings. Unknown access, draft review and partial topology remain warnings, not approval. choices keeps known violations disabled with an explanation. No connection is inferred from feature crossings.
+
+Append failure retains the old trace. Native start/mode/edge controls and add/remove/clear actions are the keyboard alternative to map taps. A tap requires one usable outgoing edge on the selected feature; ambiguity remains explicit. Mode/start changes clear edges; pack import resets all trace state. Label changes preserve trace geometry but refresh its draft-review warning. The print overlay is opt-in, monochrome and transformed through the same fixed-scale geographic model. Trace state is excluded from standalone pack export and has no persistent record yet. Scoring, exercise endpoints/objectives/closures, provider directions and durable answers remain later contracts.

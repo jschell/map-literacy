@@ -30,3 +30,11 @@ Physical printer calibration and Safari/Firefox/actual tablet evidence remain pe
 Chromium browser checks exercised native label fields, rejected an out-of-extent anchor while retaining the prior pack, placed an anchor at map center after rotation, edited visibility/rotation/text, downloaded and re-imported the resulting pack, removed/restored/added labels, and applied a label with touch emulation. Source/topology content in the download matched the original. Both Letter PDF and mobile overflow checks still passed with zero browser/CSP errors. Desktop/mobile editor screenshots were visually inspected. Redmond remained a 918-feature draft; no real pack was approved or committed.
 
 This is local draft authoring with explicit file export, not persistent browser storage, learner-progress backup, reviewed curriculum or a full cartographic label solver. Actual tablet/browser and physical printer checks remain pending.
+
+## Directed route-overlay follow-up — 2026-10-12
+
+83 Node tests passed. Trace checks independently cover AB→BC length/endpoints and input immutability, one-way adjacency and mode mismatch, bridge crossing without a graph junction, unknown/blocked access, partial/draft warnings, history-sensitive only/forbidden restrictions (including a three-edge sequence), missing/off-map/overlong traces and both fixed-scale Letter transforms.
+
+Chromium browser checks passed native keyboard edge addition, map-tap tracing with touch emulation, remove/clear, start/mode reset, unknown-access warnings, disabled only-turn choices, screen rotation and blank-label overlay preservation. Print opt-in remained off by default, and importing another pack cleared the trace. Decorative heading graphics no longer intercept road taps. Label editing/export checks and 390px overflow checks still passed with zero browser/CSP errors.
+
+Trace PDFs are single-page Letter: Poppler independently confirmed 612 x 792 point portrait and 792 x 612 point landscape. Rendered pages and the desktop trace UI were visually inspected for dashed trace, direction chevrons, S/E markers, labels and source/preview footer. Physical monochrome calibration and actual Safari/Firefox/tablet checks remain pending. No routing provider, geolocation, correctness score, real-route approval or persistent trace was involved.

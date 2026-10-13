@@ -61,6 +61,64 @@ try {
   assert.equal(await page.locator('#map img, #map script').count(), 0);
   await page.locator('#demo').click();
   await page.waitForFunction(() => document.querySelectorAll('#map .map-label').length > 1);
+  // Directed graph trace: native keyboard controls, map taps, print opt-in and constraints.
+  await page.locator('#trace-start').selectOption('A');
+  await page.locator('#trace-edge').selectOption('AB');
+  await page.locator('#trace-add').focus(); await page.keyboard.press('Enter');
+  await page.locator('#trace-edge').selectOption('BC'); await page.locator('#trace-add').click();
+  assert.equal(await page.locator('#trace-steps li').count(), 2);
+  assert.equal(await page.locator('#map .trace-line').count(), 2);
+  assert.equal(await page.locator('#map .trace-arrow').count(), 2);
+  assert.ok((await page.locator('#trace-status').textContent()).includes('222 m'));
+  assert.equal(await page.locator('#paper-map .trace-line').count(), 0);
+  await page.locator('#include-trace').check();
+  assert.equal(await page.locator('#paper-map .trace-line').count(), 2);
+  const traceGeometry = await page.locator('#map .trace-line').first().getAttribute('d');
+  await page.locator('#rotate').click();
+  assert.notEqual(await page.locator('#map .trace-line').first().getAttribute('d'), traceGeometry);
+  await page.locator('#variant').selectOption('blank');
+  assert.equal(await page.locator('#map .trace-line').count(), 2);
+  assert.equal(await page.locator('#map .map-label').count(), 0);
+  await page.locator('#variant').selectOption('labeled');
+  for (const orientation of ['portrait', 'landscape']) {
+    await page.locator('#orientation').selectOption(orientation);
+    await page.emulateMedia({ media: 'print' });
+    const tracePdf = await page.pdf({ path: new URL(`trace-${orientation}.pdf`, output).pathname, preferCSSPageSize: true, printBackground: true });
+    assert.equal((tracePdf.toString('latin1').match(/\/Type \/Page\b/g) ?? []).length, 1);
+    assert.ok((await page.locator('#paper-footer').textContent()).includes('Trace preview'));
+    await page.emulateMedia({ media: 'screen' });
+  }
+  await page.screenshot({ path: new URL('trace-desktop.png', output).pathname, fullPage: true });
+  await page.locator('#trace-back').click(); assert.equal(await page.locator('#trace-steps li').count(), 1);
+  await page.locator('#trace-clear').click(); assert.equal(await page.locator('#map .trace-line').count(), 0);
+  await page.locator('#trace-start').selectOption('E');
+  await page.locator('#trace-edge').selectOption('EF'); await page.locator('#trace-add').click();
+  await page.locator('#trace-map').click();
+  await page.locator('#map .feature-hit[data-feature-id="road:GH"]').click({ force: true });
+  assert.equal(await page.locator('#trace-steps li').count(), 1);
+  assert.ok((await page.locator('#trace-status').textContent()).includes('visual crossing does not connect'));
+  await page.locator('#trace-map').click();
+  await page.locator('#trace-mode').selectOption('walk');
+  assert.equal(await page.locator('#trace-steps li').count(), 0);
+  assert.equal(await page.locator('#trace-add').isDisabled(), true);
+  const variants = JSON.parse(await readFile(new URL('../tests/fixtures/packs.json', import.meta.url), 'utf8'));
+  for (const name of ['unknown-access', 'only-turn']) {
+    await page.locator('#import').setInputFiles({ name: `${name}.json`, mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(variants[name])) });
+    await page.waitForFunction(() => document.getElementById('trace-start').value === '');
+    await page.locator('#trace-mode').selectOption('drive');
+    await page.locator('#trace-start').selectOption('A');
+    await page.locator('#trace-edge').selectOption('AB'); await page.locator('#trace-add').click();
+    if (name === 'only-turn') assert.equal(await page.locator('#trace-edge option[value="BD"]').evaluate(n => n.disabled), true);
+    await page.locator('#trace-edge').selectOption('BC'); await page.locator('#trace-add').click();
+    if (name === 'unknown-access') {
+      assert.ok((await page.locator('#trace-status').textContent()).includes('access is unknown'));
+      await page.locator('#include-trace').check();
+      assert.ok((await page.locator('#paper-footer').textContent()).includes('needs review'));
+    }
+  }
+  await page.locator('#demo').click();
+  await page.waitForFunction(() => document.getElementById('trace-start').value === '');
+  assert.equal(await page.locator('#map .trace-line').count(), 0);
   // Authoring: keyboard fields, rotated-map placement, atomic failure, undo and download/re-import.
   const fixture = JSON.parse(await readFile(new URL('../tests/fixtures/street-square.json', import.meta.url), 'utf8'));
   const editedId = fixture.labels[0].id;
@@ -175,6 +233,11 @@ try {
   const mobile = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
   await mobile.goto(base); await mobile.locator('#demo').tap(); await mobile.locator('#map svg').waitFor();
   assert.equal(await mobile.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
+  await mobile.locator('#trace-start').selectOption('A');
+  await mobile.locator('#trace-map').tap();
+  await mobile.locator('#map .feature-hit[data-feature-id="road:AB"]').tap({ force: true });
+  assert.equal(await mobile.locator('#trace-steps li').count(), 1);
+  await mobile.locator('#trace-map').tap();
   await mobile.locator('#feature').selectOption('road:AB');
   await mobile.locator('#label-text').fill('Touch label');
   await mobile.getByRole('button', { name: 'Apply label', exact: true }).tap();
@@ -191,6 +254,6 @@ try {
   }
   await mobile.close();
   assert.deepEqual(errors, []);
-  console.log(JSON.stringify({ syntheticFeatures: 6, variantsAndSelection: 'passed', labelEditingAndExport: 'passed', invalidImportRetainsMap: 'passed', pdfDimensions: physical, mobileOverflow: false, realPack, browserErrors: errors }));
+  console.log(JSON.stringify({ syntheticFeatures: 6, variantsAndSelection: 'passed', labelEditingAndExport: 'passed', directedTracingAndPrint: 'passed', invalidImportRetainsMap: 'passed', pdfDimensions: physical, mobileOverflow: false, realPack, browserErrors: errors }));
 } finally { await browser.close(); server?.kill(); }
 

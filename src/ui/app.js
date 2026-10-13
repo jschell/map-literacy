@@ -1,5 +1,6 @@
 import { readImport } from '../data/read-pack.js';
 import { createMapModel } from '../map/model.js';
+import { createRouteTrace } from './route-trace.js';
 import { createLabelEditor } from './label-editor.js';
 import { renderMap } from '../map/render.js';
 const get = (id) => document.getElementById(id);
@@ -24,16 +25,17 @@ function updateView() {
   const screenKey = `${variant}:${rotation}:${screenWidth}`;
   if (!screenModels.has(screenKey)) screenModels.set(screenKey, createMapModel(pack, { variant, rotationDeg: rotation, screenWidth, screenHeight }));
   const model = screenModels.get(screenKey); currentModel = model;
-  get('map').replaceChildren(renderMap(document, model, { selectedId: selected, headingDeg, onSelect: (id) => { if (!editor.isPlacing()) selectFeature(id); } }));
+  get('map').replaceChildren(renderMap(document, model, { selectedId: selected, headingDeg, route: trace.overlay(), onSelect: (id) => { if (!editor.isPlacing()) { if (trace.isTracing()) trace.selectFeature(id); else selectFeature(id); } } }));
+  const printTrace = trace.printOverlay();
   let printError = '';
   try {
     const paperKey = `${variant}:${scaleDenominator}:${orientation}`;
     if (!paperModels.has(paperKey)) paperModels.set(paperKey, createMapModel(pack, { paper: true, variant, scaleDenominator, orientation }));
     const paper = paperModels.get(paperKey);
-    get('paper-map').replaceChildren(renderMap(document, paper, { headingDeg }));
+    get('paper-map').replaceChildren(renderMap(document, paper, { headingDeg, route: printTrace }));
     get('print').disabled = false;
     get('paper-title').textContent = `${pack.title} — ${variant}${paper.draft ? ' — UNREVIEWED DRAFT' : ''}`;
-    get('paper-footer').textContent = `Letter ${orientation} · North up · 1:${scaleDenominator.toLocaleString()} · Print at 100% / actual size; measure the scale bar. ${pack.sources.map((s) => `${s.attribution} · source ${s.sourceAt?.slice(0, 10) ?? 'date unknown'}`).join(' | ')}`;
+    get('paper-footer').textContent = `Letter ${orientation} · ${printTrace ? `Trace preview: ${printTrace.edges.length} steps, ${Math.round(printTrace.lengthM)} m; S start, E end${printTrace.warnings.length ? '; needs review' : ''}; not route approval. ` : ''}North up · 1:${scaleDenominator.toLocaleString()} · Print at 100% / actual size; measure the scale bar. ${pack.sources.map((s) => `${s.attribution} · source ${s.sourceAt?.slice(0, 10) ?? 'date unknown'}`).join(' | ')}`;
   } catch (error) {
     get('paper-map').replaceChildren(); get('print').disabled = true; printError = error.message;
     get('paper-title').textContent = 'Map cannot be printed at this scale'; get('paper-footer').textContent = printError;
@@ -48,7 +50,7 @@ function install(value) {
   get('feature').replaceChildren(new Option('No feature selected', ''));
   get('attribution').textContent = pack.sources.map((s) => `${s.attribution} · ${s.license} · source ${s.sourceAt?.slice(0, 10) ?? 'date unknown'}`).join(' | ');
   for (const f of pack.features.features) get('feature').add(new Option(`${f.properties.name ?? 'Unnamed feature'} (${f.id})`, f.id));
-  get('selection').textContent = 'Choose a road on the map or use the feature list.'; editor.installed(); updateView();
+  get('selection').textContent = 'Choose a road on the map or use the feature list.'; editor.installed(); trace.installed(); updateView();
 }
 async function load(operation) {
   job?.abort(); const current = new AbortController(); job = current;
@@ -56,7 +58,8 @@ async function load(operation) {
   try { const value = await operation(current.signal); if (job === current && !current.signal.aborted) install(value); }
   catch (error) { if (job === current && !current.signal.aborted) announce(`Map not loaded: ${error.message} ${error.errors?.[0]?.path ?? ''} The previous map is retained.`); }
 }
-const editor = createLabelEditor({ getPack: () => pack, getModel: () => currentModel, applyPack: (value) => { pack = value; screenModels.clear(); paperModels.clear(); updateView(); } });
+const trace = createRouteTrace({ getPack: () => pack, redraw: updateView });
+const editor = createLabelEditor({ getPack: () => pack, getModel: () => currentModel, applyPack: (value) => { pack = value; screenModels.clear(); paperModels.clear(); trace.packChanged(); updateView(); } });
 
 get('demo').addEventListener('click', () => load(async (signal) => {
   const response = await fetch('tests/fixtures/street-square.json', { signal });
