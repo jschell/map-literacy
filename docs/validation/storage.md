@@ -17,3 +17,10 @@ UI checks download a real session backup, refresh, restore the original pack and
 
 Settings backup/persistence, saved-session selection, serialized UI saves/retries and concurrent-tab UI recovery remain pending. Existing physical/device/quota/eviction and blocked-upgrade limitations still apply.
 
+
+## Automatic save and recovery follow-up
+
+121 Node tests and real Chromium checks pass. The save writer tests completion-only Saved status, retained leases after failure, single-writer exclusion, explicit copied-session IDs and preflight failure feedback. Browser checks inject a QuotaExceededError into a write transaction, retain the accepted answer, retry successfully and resume it after reload. Startup leaves the map empty until explicit user selection. Two actual tabs compete over one session; the stale writer enters conflict and can save a new session without changing the original. A changed stored version is detected on focus and explicitly reloaded. With IndexedDB unavailable, practice remains in memory and a real session backup download works.
+
+Saved-session headers are paginated at 100 per page; full resume remains validated. Pending/failed changes are guarded before replacement, with explicit file backup available. Existing pack/trace/label/Letter worksheet and touch-emulation regressions pass. These are container Chromium/injected-error checks, not actual device quota, eviction, Safari/Firefox or physical-printer evidence. Settings, future migration fixtures, browser release guidance and deployment selection remain pending.
+

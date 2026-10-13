@@ -83,7 +83,7 @@ function updateView() {
   announce(`${pack.title} · ${pack.review.status === 'reviewed' ? 'Reviewed pack' : 'Unreviewed draft'} · ${pack.features.features.length} features · ${model.labels.length} labels shown${model.suppressedLabels ? `, ${model.suppressedLabels} suppressed to avoid collisions/edges` : ''} · screen rotated ${rotation}°. ${printError}`);
 }
 function install(value) {
-  assertRenderable(value);
+  assertRenderable(value); lessons.guardReplacement();
   pack = value; selected = null; rotation = 0;
   screenModels.clear(); paperModels.clear(); printPagesKey = null; screenViewKey = null; paperViewKey = null; screenSelected = null;
   get('print-exercise').replaceChildren();
@@ -108,7 +108,7 @@ async function load(operation) {
 const featurePicker = createSearchSelect({ select: get('feature'), filter: get('feature-filter'), summary: get('feature-matches'), placeholder: 'No feature selected' });
 const trace = createRouteTrace({ getPack: () => pack, redraw: updateView });
 const lessons = createLessons({ getPack: () => pack, getTrace: () => trace.overlay(), cancelPackLoad: () => { job?.abort(); if (pack) updateView(); else announce('Choose a map or restore a session backup.'); }, installPack: (value) => { job?.abort(); install(value); } });
-const editor = createLabelEditor({ getPack: () => pack, getModel: () => currentModel, applyPack: (value) => { assertRenderable(value); pack = value; screenModels.clear(); paperModels.clear(); printPagesKey = null; screenViewKey = null; paperViewKey = null; screenSelected = null; trace.packChanged(); lessons.packChanged(); updateView(); } });
+const editor = createLabelEditor({ getPack: () => pack, getModel: () => currentModel, applyPack: (value) => { assertRenderable(value); lessons.guardReplacement(); pack = value; screenModels.clear(); paperModels.clear(); printPagesKey = null; screenViewKey = null; paperViewKey = null; screenSelected = null; trace.packChanged(); lessons.packChanged(); updateView(); } });
 
 get('demo').addEventListener('click', () => load(async (signal) => {
   const response = await fetch('tests/fixtures/street-square.json', { signal });
