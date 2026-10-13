@@ -1,0 +1,23 @@
+{
+  "documentVersion": 1,
+  "status": "draft-design-not-a-lesson-pack",
+  "synthetic": true,
+  "context": "unincorporated-king-county-northeast",
+  "markers": [
+    { "id": "A", "description": "North-side marker on NE Example Street, authored even-number block 100–198" },
+    { "id": "B", "description": "South-side marker on NE Example Street, authored odd-number block 101–199" },
+    { "id": "C", "description": "Marker on SE Example Street; outside the supplied NE target street" },
+    { "id": "D", "description": "Authored alternate entrance for the same invented destination as A" }
+  ],
+  "cases": [
+    { "id": "even-side", "address": "120 NE Example Street", "candidates": ["A", "B"], "selected": "A", "expected": "correct", "accepted": ["A"], "note": "Answer is authored under the supplied local rule card, not geocoded." },
+    { "id": "directional", "address": "120 NE Example Street", "candidates": ["A", "C"], "selected": "A", "expected": "correct", "accepted": ["A"], "note": "The NE directional is retained; the SE choice is distinct." },
+    { "id": "rotation", "address": "120 NE Example Street", "candidates": ["A", "B"], "selected": "A", "expected": "correct", "accepted": ["A"], "rotationsDeg": [0, 90, 180, 270], "note": "Geographic side and expected identity remain unchanged." },
+    { "id": "wrong-marker", "address": "120 NE Example Street", "candidates": ["A", "B"], "selected": "B", "expected": "incorrect", "accepted": ["A"], "note": "Future scored use requires reviewed, resolved context and target evidence." },
+    { "id": "missing-answer", "address": "120 NE Example Street", "candidates": ["A", "B"], "selected": null, "expected": "unanswered", "accepted": ["A"], "note": "No accepted attempt for an absent selection." },
+    { "id": "missing-directional", "address": "120 Example Street", "candidates": ["A", "C"], "selected": "A", "expected": "needs-review", "accepted": [], "note": "The missing directional is not supplied from context." },
+    { "id": "other-jurisdiction", "address": "120 NE Example Street", "candidates": ["A", "B"], "selected": "A", "expected": "needs-review", "accepted": [], "jurisdiction": "incorporated-city-unverified", "note": "A postal city label cannot establish county applicability." },
+    { "id": "literal-number", "address": "120A NE Example Street", "candidates": ["A", "B"], "selected": "A", "expected": "correct", "accepted": ["A"], "numberText": "120A", "note": "A is explicitly authored for this invented target; arithmetic does not derive the answer." },
+    { "id": "alternative-entrance", "address": "120 NE Example Street", "candidates": ["A", "B", "D"], "selected": "D", "expected": "correct", "accepted": ["A", "D"], "note": "Prompt must permit either authored reviewed entrance." }
+  ]
+}
