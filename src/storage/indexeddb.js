@@ -2,7 +2,23 @@ import { checkedSettings } from './settings.js';
 import { checkedBackup } from './backup.js';
 import { canonical, checkedBundle, checkedPack, storageError } from './records.js';
 export const DATABASE_VERSION = 1;
-const normalize = (error) => typeof error?.code === 'string' ? error : storageError(error?.name === 'QuotaExceededError' ? 'storage-full' : 'storage-unavailable', error?.message ?? 'Browser storage is unavailable.');
+const normalize = (error) => typeof error?.code === 'string' ? error : error?.name === 'VersionError' ? storageError('unsupported-version', 'Stored database version is newer than this app supports. Use a compatible app; existing data was retained.') : storageError(error?.name === 'QuotaExceededError' ? 'storage-full' : 'storage-unavailable', error?.message ?? 'Browser storage is unavailable.');
+
+function checkSchema(db) {
+  const stores = { packs: ['id', 'revision'], sessions: 'id', attempts: 'id', settings: 'singleton', meta: 'name' };
+  if (db.version !== DATABASE_VERSION) throw storageError('unsupported-version', 'Stored database version is unsupported. Use a compatible app; existing data was retained.');
+  if (db.objectStoreNames.length !== Object.keys(stores).length || Object.keys(stores).some((name) => !db.objectStoreNames.contains(name))) throw storageError('invalid-schema', 'Stored database structure is incompatible. Existing data was retained; use a compatible app or restore a backup in a separate browser profile.');
+  const tx = db.transaction(Object.keys(stores), 'readonly');
+  for (const [name, keyPath] of Object.entries(stores)) {
+    const store = tx.objectStore(name);
+    if (canonical(store.keyPath) !== canonical(keyPath) || store.autoIncrement || store.indexNames.length !== (name === 'attempts' ? 1 : 0)) throw storageError('invalid-schema', 'Stored database keys or indexes are incompatible. Existing data was retained.');
+    if (name === 'attempts') {
+      if (!store.indexNames.contains('sessionId')) throw storageError('invalid-schema', 'Stored attempt index is missing. Existing data was retained.');
+      const index = store.index('sessionId');
+      if (index.keyPath !== 'sessionId' || index.unique || index.multiEntry) throw storageError('invalid-schema', 'Stored attempt index is incompatible. Existing data was retained.');
+    }
+  }
+}
 
 /** No UI side effects. A successful write resolves only on transaction completion. */
 export function openStorage({ factory = globalThis.indexedDB, name = 'map-literacy', signal, onBlocked = () => {}, onVersionChange = () => {} } = {}) {
@@ -15,10 +31,11 @@ export function openStorage({ factory = globalThis.indexedDB, name = 'map-litera
     signal?.addEventListener('abort', cancel, { once: true });
     try { request = factory.open(name, DATABASE_VERSION); } catch (error) { clean(); reject(normalize(error)); return; }
     request.onblocked = () => { if (!canceled) onBlocked({ code: 'migration-blocked', message: 'Close other tabs using this database to continue.' }); };
-    request.onupgradeneeded = () => {
+    request.onupgradeneeded = (event) => {
       if (canceled) { request.transaction.abort(); return; }
       const db = request.result;
       try {
+        if (event.oldVersion !== 0 || db.version !== DATABASE_VERSION) throw storageError('unsupported-version', 'No migration is implemented for this database version. Existing data was retained.');
         // Version 1 creates stores atomically. Later versions need explicit upgrade migrations.
         db.createObjectStore('packs', { keyPath: ['id', 'revision'] });
         db.createObjectStore('sessions', { keyPath: 'id' });
@@ -31,6 +48,7 @@ export function openStorage({ factory = globalThis.indexedDB, name = 'map-litera
     request.onsuccess = () => {
       clean(); const db = request.result;
       if (canceled) { db.close(); return; }
+      try { checkSchema(db); } catch (error) { db.close(); reject(normalize(error)); return; }
       let closed = false;
       const close = () => { closed = true; db.close(); };
       db.onversionchange = () => { close(); onVersionChange({ code: 'reload-needed', message: 'Database version changed. Reload this page.' }); };

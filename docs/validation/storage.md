@@ -1,6 +1,6 @@
 # Transactional storage evidence
 
-The version-1 adapter is tested independently of the learner UI. Learner sessions remain memory only with explicit backup download/restore; this document does not claim automatic progress recovery or a released storage experience.
+The version-1 adapter and learner UI support saved progress/preferences and explicit backup recovery. The chronological follow-ups below describe evidence added after the foundation slice; this is not a released browser/device acceptance claim.
 
 Run `npm test`, `npm run fixtures:check` and `npm run browser:check`. Browser checks use real Chromium IndexedDB in a unique disposable test database; cleanup deletes only that test database. Application recovery never deletes a database.
 
@@ -29,5 +29,13 @@ Saved-session headers are paginated at 100 per page; full resume remains validat
 
 125 Node tests and Chromium checks pass. Pure tests verify immediate/latest choices, serialized CAS versions, retry retention, visible enum defaults and unsupported-version read-only recovery. Browser checks persist labels/rotation/print scale/orientation across reload, download/restore preference files, reject a competing tab's write, explicitly reload saved choices and retain an invalid stored enum while showing its default. Full backup includes preferences and a preference conflict rolls back newly queued records. Lesson/source/map/Letter/touch checks still pass.
 
-Preferences are display-only and independent of score/rubric revisions. Session files are progress-only; view preference files are separate. The full storage API supports preference records in its version-1 backup envelope. Actual browser/device, quota/eviction, blocked/future migration and physical-print evidence remains pending. See [setup and removal guidance](../browser-setup.md).
+Preferences are display-only and independent of score/rubric revisions. Session files are progress-only; view preference files are separate. The full storage API supports preference records in its version-1 backup envelope. Actual browser/device, quota/eviction and physical-print evidence remains pending. See [setup and removal guidance](../browser-setup.md).
+
+## Database compatibility and upgrade follow-up
+
+125 Node tests, reproducible fixtures and Chromium browser checks pass. Every database open now checks the version, exact store set, key paths, auto-increment flags and attempt index before returning storage APIs. Missing/extra stores, wrong keys and missing/wrong/unique/multi-entry indexes fail explicitly without rewriting records. A newer database version reports that a compatible app is required. Memory practice and file downloads remain available through the existing unavailable-storage UI.
+
+Real IndexedDB fixtures hold an older connection open, observe the blocked callback, cancel the pending open and then release the blocker. The queued upgrade aborts and all existing records survive. An injected unsupported upgrade is rejected before changes. A failing future-migration fixture queues store creation/deletion and clears packs/sessions/attempts, then aborts after a clear request succeeds; reopening version 1 verifies the original schema and complete backup are identical. An injected partial first initialization aborts and a clean retry commits/loads successfully. Eight malformed schemas retain sentinel data after rejection. Newer-version rejection also retains committed progress.
+
+The production adapter still implements version 1 only. The destructive version-2 fixture tests IndexedDB rollback, not a supported migration. Any actual future migration needs its own transformation and preservation fixtures before release. Blocked checks run against real connections in container Chromium; they do not establish Safari/Firefox or actual-device acceptance. Recovery never deletes a database; test cleanup removes only uniquely named fixture databases.
 

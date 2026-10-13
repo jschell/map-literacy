@@ -113,7 +113,12 @@ export async function checkStorage(page) {
       await new Promise((resolve, reject) => { upgrade.onsuccess = resolve; upgrade.onerror = () => reject(upgrade.error); });
       assert(changed, 'versionchange notification'); upgrade.result.close();
       await rejects(() => second.loadSession(answer.session.id), 'storage-unavailable');
-      await rejects(() => openStorage({ name }), 'storage-unavailable');
+      await rejects(() => openStorage({ name }), 'unsupported-version');
+      const futureRead = indexedDB.open(name, 2);
+      await new Promise((resolve, reject) => { futureRead.onsuccess = resolve; futureRead.onerror = () => reject(futureRead.error); });
+      const retainedSession = futureRead.result.transaction('sessions').objectStore('sessions').get(answer.session.id);
+      await new Promise((resolve, reject) => { retainedSession.onsuccess = resolve; retainedSession.onerror = () => reject(retainedSession.error); });
+      assert(retainedSession.result.status === 'completed', 'unsupported future version retains progress'); futureRead.result.close();
       return { backupRoundtrip: 'passed', backupRollback: 'passed', transactions: 'passed', conflicts: 'passed', abortRollback: 'passed', versionChange: 'passed' };
     } finally {
       first?.close(); second?.close(); restored?.close();
