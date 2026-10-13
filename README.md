@@ -1,10 +1,10 @@
 # Map Literacy
 
-Learn to understand where you are, which direction you face, how routes connect and how terrain shapes travel. Map Literacy is being planned as a vanilla JavaScript application combining stationary interactive exercises, ordinary black-and-white printed maps and real-world observation.
+Learn to understand where you are, which direction you face, how routes connect and how terrain shapes travel. Map Literacy is a vanilla JavaScript application in development combining stationary interactive exercises, ordinary black-and-white printed maps and real-world observation.
 
 Street lessons cover orientation, roads, landmarks, addresses, return routes and detours. Topographic lessons will add contours, elevation, slope, ridges, valleys and terrain interpretation. Both use shared map, lesson, print and progress components.
 
-**Current state:** a vanilla JavaScript map review interface with pack import, rotation, label variants, heading arrows, feature selection and fixed-scale print output. Data validation and OSM preparation are implemented; the Redmond draft renders but remains unreviewed. Reviewed street lessons now support heading, endpoint, route and detour scoring in revision-locked sessions, with hints, retries and multiple valid routes. Accepted progress saves in this browser with explicit saved-session resume, failed-save retry and conflict recovery. Session backup download/restore preserves committed attempts and hints; unfinished answers remain memory only. Reviewed real lessons, saved preferences and routing deployment remain pending.
+**Current state:** a vanilla JavaScript map review interface with pack import, rotation, label variants, heading arrows, feature selection and fixed-scale print output. Data validation and OSM preparation are implemented; the Redmond draft renders but remains unreviewed. Reviewed street lessons now support heading, endpoint, route and detour scoring in revision-locked sessions, with hints, retries and multiple valid routes. Accepted progress saves in this browser with explicit saved-session resume, failed-save retry and conflict recovery. Session backup download/restore preserves committed attempts and hints; unfinished answers remain memory only. Labels, screen rotation, print scale and Letter orientation now save independently. Reviewed real lessons and routing deployment remain pending.
 
 ## Start here
 
@@ -12,6 +12,7 @@ Street lessons cover orientation, roads, landmarks, addresses, return routes and
 - [Architecture proposal](docs/architecture.md)
 - [Plan index and dependencies](docs/plans/README.md)
 - [Next work: persistence and browser release](docs/plans/active/05-persistence-and-browser-release.md)
+- [Setup, saved progress, preferences and data removal](docs/browser-setup.md)
 - [Run the map review interface](docs/map-review.md)
 - [Renderer validation evidence](docs/validation/render-evidence.md)
 - [Lesson-pack contract](docs/contracts/lesson-pack-v1.md)
@@ -41,11 +42,4 @@ This repository now owns implementation planning. The Ideas-for-projects draft r
 ## License
 
 Project code and original documentation are licensed under [MIT](LICENSE). Generated synthetic fixture JSON retains its [CC0-1.0 designation](tests/fixtures/README.md). Third-party map/elevation data and quoted research retain their own licenses and attribution requirements; the MIT license does not relicense them.
-
-
-
-
-The transactional IndexedDB adapter is implemented and tested independently. Learner controls automatically save accepted progress, resume explicitly selected saved sessions and retain failed writes in memory for retry/export. Keep downloaded backups against browser data loss; unfinished answers and review traces are not saved. See [storage evidence](docs/validation/storage.md).
-
-
 

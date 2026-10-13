@@ -24,7 +24,7 @@ test('bad references, duplicate IDs, scores and revisions cannot enter backup st
 });
 test('backup capabilities, counts, encoding and cancellation fail explicitly', async () => {
   const value = example(); value.backupVersion = 2; assert.throws(() => checkedBackup(value), (e) => e.code === 'unsupported-version');
-  value.backupVersion = 1; value.settings = { units: 'metric' }; assert.throws(() => checkedBackup(value), (e) => e.code === 'unsupported-capability');
+  value.backupVersion = 1; value.settings = { units: 'metric' }; assert.throws(() => checkedBackup(value), (e) => e.code === 'invalid-settings');
   value.settings = {}; value.sessions = Array(101).fill(value.sessions[0]); assert.throws(() => checkedBackup(value), (e) => e.code === 'limit-exceeded');
   class OversizedBlob extends Blob { get size() { return 50 * 1024 * 1024 + 1; } arrayBuffer() { throw new Error('Must not read oversized input'); } }
   await assert.rejects(readBackup(new OversizedBlob()), (e) => e.code === 'limit-exceeded');

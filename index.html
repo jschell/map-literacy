@@ -22,6 +22,10 @@
       <label>Exercise<select id="print-exercise" disabled><option value="">No exercises loaded</option></select></label>
       <button id="print" type="button" disabled>Print map</button>
     </section>
+    <section class="controls" aria-label="Saved view preferences">
+      <button id="preferences-defaults" type="button" disabled>Use pack view defaults</button><button id="preferences-retry" type="button" disabled>Retry view preference save</button><button id="preferences-reload" type="button" disabled>Reload saved view preferences</button><button id="preferences-export" type="button" disabled>Download view preferences</button><label class="file-control">Restore view preferences<input id="preferences-import" type="file" accept=".json,application/json"></label>
+    </section><p id="preferences-status" role="status" aria-live="polite">Loading view preferences…</p>
+    <p class="note">View preferences cover labels, screen rotation, print scale and Letter orientation. Pack defaults apply until preferences are chosen. Session backup files preserve progress separately.</p>
     <p class="note">Worksheets add question and source-credit pages after the map. Learner output omits answer arrows and your review trace. Print instructor guides separately.</p>
     <p id="status" role="status" aria-live="polite">Load the synthetic map or import a validated lesson pack. No location is selected automatically.</p>
     <section id="map-panel" class="map-panel" aria-label="Map viewer"><div id="map"></div></section>

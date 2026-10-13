@@ -109,6 +109,7 @@ export function createLessons({ getPack, getTrace, installPack, cancelPackLoad }
     try {
       const backup = await readBackup(file, current.signal);
       if (restoreJob !== current || current.signal.aborted) return;
+      if (Object.keys(backup.settings).length) throw new Error('This file includes view preferences. Restore a progress-only session backup here.');
       if (backup.sessions.length !== 1 || backup.packs.length !== 1) throw new Error('Restore requires a per-session backup containing exactly one session and its pack revision.');
       const session = backup.sessions[0], pack = backup.packs.find((p) => p.id === session.packId && p.revision === session.packRevision);
       const next = resumeLessonSession({ pack, session, attempts: backup.attempts });

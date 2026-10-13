@@ -1,3 +1,4 @@
+import { checkedSettings } from './settings.js';
 import { checkedBackup } from './backup.js';
 import { canonical, checkedBundle, checkedPack, storageError } from './records.js';
 export const DATABASE_VERSION = 1;
@@ -99,7 +100,8 @@ export function openStorage({ factory = globalThis.indexedDB, name = 'map-litera
         },
         importBackup(value, { signal } = {}) {
           let backup; try { backup = checkedBackup(value); } catch (e) { return Promise.reject(e); }
-          return transaction(['packs', 'sessions', 'attempts', 'meta'], 'readwrite', ({ tx, read, abort, result }) => {
+          return transaction(['packs', 'sessions', 'attempts', 'meta', 'settings'], 'readwrite', ({ tx, read, abort, result }) => {
+            if (Object.keys(backup.settings).length) { const store = tx.objectStore('settings'); read(store.get('singleton'), (old) => { if (old && canonical(old) !== canonical(backup.settings)) { abort(storageError('conflict', 'Backup preferences conflict with existing preferences.')); return; } if (!old) store.add(backup.settings); }); }
             for (const [name, records] of [['packs', backup.packs], ['sessions', backup.sessions], ['attempts', backup.attempts]]) {
               const store = tx.objectStore(name);
               for (const record of records) read(store.get(name === 'packs' ? [record.id, record.revision] : record.id), (old) => {
@@ -127,7 +129,7 @@ export function openStorage({ factory = globalThis.indexedDB, name = 'map-litera
             const records = {}, orders = new Map(); let remaining = 4, orderRemaining = 0;
             function finish() {
               if (remaining || orderRemaining) return;
-              if (records.settings.length) throw storageError('unsupported-capability', 'Settings backup is not supported by this release.');
+              const settings = records.settings.length ? checkedSettings(records.settings[0]) : {};
               const attempts = new Map(records.attempts.map((a) => [a.id, a])), ordered = [];
               for (const session of records.sessions) {
                 const order = orders.get(session.id);
@@ -135,7 +137,7 @@ export function openStorage({ factory = globalThis.indexedDB, name = 'map-litera
                 for (const id of order.ids) { if (!attempts.has(id) || attempts.get(id).sessionId !== session.id) throw storageError('invalid-record', 'Stored attempt reference is invalid.'); ordered.push(attempts.get(id)); }
               }
               if (ordered.length !== records.attempts.length) throw storageError('invalid-record', 'Stored attempts are not fully referenced.');
-              result({ backupVersion: 1, exportedAt, packs: records.packs, sessions: records.sessions, attempts: ordered, settings: {} });
+              result({ backupVersion: 1, exportedAt, packs: records.packs, sessions: records.sessions, attempts: ordered, settings });
             }
             for (const [name, count] of [['packs', 21], ['sessions', 101], ['attempts', 10001], ['settings', 1]]) read(tx.objectStore(name).getAll(undefined, count), (values) => {
               if (name !== 'settings' && values.length === count) throw storageError('limit-exceeded', `Too many ${name} for a full backup. Export individual sessions instead.`);
@@ -147,6 +149,19 @@ export function openStorage({ factory = globalThis.indexedDB, name = 'map-litera
               finish();
             });
           }, signal).then(checkedBackup);
+        },
+        loadSettings({ signal } = {}) {
+          return transaction(['settings'], 'readonly', ({ tx, read, result }) => { read(tx.objectStore('settings').get('singleton'), (record) => result(record ?? null)); }, signal);
+        },
+        saveSettings(value, { expectedVersion = null, signal } = {}) {
+          let record; try { record = checkedSettings(value); } catch (e) { return Promise.reject(e); }
+          return transaction(['settings'], 'readwrite', ({ tx, read, abort, result }) => {
+            const store = tx.objectStore('settings'); read(store.get('singleton'), (old) => {
+              if ((old ? old.version : null) !== expectedVersion || (old && record.version !== old.version + 1) || (!old && record.version !== 0)) { abort(storageError('conflict', 'Preferences changed in another tab. Reload saved preferences before saving.')); return; }
+              if (old && old.settingsVersion !== 1) { abort(storageError('unsupported-version', 'Stored preference version is unsupported.')); return; }
+              store.put(record); result({ version: record.version });
+            });
+          }, signal);
         },
         listSessions({ afterId, signal } = {}) {
           return transaction(['sessions'], 'readonly', ({ tx, read, result }) => {

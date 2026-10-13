@@ -1,6 +1,6 @@
 # Plan 05 — Persistence and browser release
 
-Status: active; automatic progress saves, saved-session resume, backups and conflict recovery implemented; settings/release acceptance remain pending.
+Status: active; saved progress/preferences, backup recovery and setup guidance implemented; release acceptance remains pending.
 Dependencies: implemented scoring/session slice of 04; address-system and external acceptance remain queued.
 
 ## Outcome
@@ -12,10 +12,10 @@ Deliver a recoverable local browser application and documented static-host deplo
 - [x] Implement version-1 IndexedDB initialization/transactions and explicit multi-tab conflict behavior; future schema migration fixtures remain pending.
 - [x] Implement pack/progress JSON backup APIs with validation and atomic conflict rules, plus explicit single-session UI download/restore and backup guidance.
 - [x] Add failed-save retry, unavailable-storage memory/export mode and versionchange/blocked-open recovery messages; Saved is shown only after transaction completion. Actual quota/eviction/device and future migration checks remain pending.
-- [ ] Provide static build/serve workflow, pinned dependencies, external assets and reviewed CSP.
+- [x] Document no-build static assets, pinned install/local serve and the implemented external-asset CSP; host publication remains pending.
 - [ ] Select hosting using deployment requirements and cost; include reproducible local and hosted setup instructions.
 - [ ] Run meaningful automated checks and target-browser keyboard/touch/accessibility/render evidence; document remaining physical-print gate.
-- [ ] Publish first-release known limitations and data/progress removal instructions.
+- [x] Document current limitations, backup recovery and manual browser site-data/file removal; no automatic deletion or public release is implied.
 
 ## Acceptance and validation
 
@@ -48,7 +48,14 @@ Conflicts never use last-writer overwrite: reload latest explicitly discards mem
 
 Validation: 121 Node tests and real Chromium browser checks pass. Checks cover commit-only Saved timing, retained lease/retry after injected quota failure, rejected concurrent snapshots, saved-session resume after reload with no automatic map selection, competing real tabs, fork without overwrite, explicit latest-version reload and backup download with IndexedDB unavailable. Existing fixture, map, Letter-print and touch-emulation checks pass.
 
-Next action: implement persisted settings and release-facing browser/setup/data-removal guidance; keep future migration fixtures, actual device/print/quota/eviction evidence and hosting selection pending.
+Preference follow-up: versioned labels/rotation/print-scale/Letter-orientation records save with transaction leases independently of lesson scoring. Rapid changes apply immediately and serialize/coalesce to the latest value. Failed writes retain memory choices for retry/download; explicit reload resolves conflicts. Invalid known values use visible defaults without rewriting storage; unknown record versions remain read-only. Preference JSON files and full progress-backup preference records are supported; progress-only session files stay separate. Full backup preference conflicts roll back the entire import.
+
+Setup/recovery guidance now documents consistent browser origins/profiles, local installation, static asset/CSP requirements, saved-progress/prefs recovery, no automatic location selection, manual site-data removal and pending browser/device/print/release evidence. No host was published.
+
+Validation: 125 Node tests and real Chromium checks pass, including preference serialization/retry, reload/file restore, competing tabs, retained invalid stored values and atomic full-backup preference conflicts. Existing lesson, source, map, print and touch-emulation checks remain covered.
+
+Next action: complete future migration fixtures and release/browser accessibility checks, then select hosting within publication authorization. Actual device/print/quota/eviction and real lesson approval remain pending.
+
 
 
 

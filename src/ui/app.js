@@ -1,3 +1,4 @@
+import { createPreferences } from './preferences.js';
 import { createLessons } from './lessons.js';
 import { readImport } from '../data/read-pack.js';
 import { createMapModel } from '../map/model.js';
@@ -96,7 +97,7 @@ function install(value) {
 
   get('attribution').textContent = pack.sources.map((s) => `${s.attribution} · ${s.license} · source ${s.sourceAt?.slice(0, 10) ?? 'date unknown'}`).join(' | ');
   featurePicker.set(pack.features.features.map((f) => ({ id: f.id, text: `${f.properties.name ?? 'Unnamed feature'} (${f.id})` })), '', true); featurePicker.enabled(true);
-  get('selection').textContent = 'Choose a road on the map or use the feature list.'; editor.installed(); trace.installed(); lessons.installed(); updateView();
+  get('selection').textContent = 'Choose a road on the map or use the feature list.'; editor.installed(); trace.installed(); lessons.installed(); preferences.installed(); updateView();
   get('map').dataset.loadVersion = String(++loadVersion);
 }
 async function load(operation) {
@@ -110,14 +111,21 @@ const trace = createRouteTrace({ getPack: () => pack, redraw: updateView });
 const lessons = createLessons({ getPack: () => pack, getTrace: () => trace.overlay(), cancelPackLoad: () => { job?.abort(); if (pack) updateView(); else announce('Choose a map or restore a session backup.'); }, installPack: (value) => { job?.abort(); install(value); } });
 const editor = createLabelEditor({ getPack: () => pack, getModel: () => currentModel, applyPack: (value) => { assertRenderable(value); lessons.guardReplacement(); pack = value; screenModels.clear(); paperModels.clear(); printPagesKey = null; screenViewKey = null; paperViewKey = null; screenSelected = null; trace.packChanged(); lessons.packChanged(); updateView(); } });
 
+const preferences = createPreferences({
+  readView: () => ({ labels: get('variant').value, mapRotationDeg: rotation, printScale: Number(get('scale').value), orientation: get('orientation').value }),
+  applyView: (values) => { get('variant').value = values.labels; rotation = values.mapRotationDeg; get('scale').value = String(values.printScale); get('orientation').value = values.orientation; updateView(); },
+  packDefaults: () => ({ labels: 'labeled', mapRotationDeg: 0, printScale: pack?.print.scaleDenominator ?? 5000, orientation: pack?.print.orientation ?? 'landscape' })
+});
+
 get('demo').addEventListener('click', () => load(async (signal) => {
   const response = await fetch('tests/fixtures/street-square.json', { signal });
   if (!response.ok) throw new Error('Synthetic map could not be loaded.');
   return readImport(await response.blob(), signal);
 }));
 get('import').addEventListener('change', () => { const file = get('import').files[0]; if (file) load((signal) => readImport(file, signal)); get('import').value = ''; });
-get('rotate').addEventListener('click', () => { rotation = (rotation + 90) % 360; updateView(); });
-for (const id of ['variant', 'heading', 'scale', 'orientation', 'print-output', 'print-exercise']) get(id).addEventListener('change', updateView);
+get('rotate').addEventListener('click', () => { rotation = (rotation + 90) % 360; preferences.changed(); });
+for (const id of ['variant', 'scale', 'orientation']) get(id).addEventListener('change', () => preferences.changed());
+for (const id of ['heading', 'print-output', 'print-exercise']) get(id).addEventListener('change', updateView);
 get('feature').addEventListener('change', () => selectFeature(get('feature').value));
 get('print').addEventListener('click', () => { updateView(); if (!get('print').disabled) window.print(); });
 let lastWidth = 0;

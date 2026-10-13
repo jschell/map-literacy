@@ -24,3 +24,10 @@ Settings backup/persistence, saved-session selection, serialized UI saves/retrie
 
 Saved-session headers are paginated at 100 per page; full resume remains validated. Pending/failed changes are guarded before replacement, with explicit file backup available. Existing pack/trace/label/Letter worksheet and touch-emulation regressions pass. These are container Chromium/injected-error checks, not actual device quota, eviction, Safari/Firefox or physical-printer evidence. Settings, future migration fixtures, browser release guidance and deployment selection remain pending.
 
+
+## View preference follow-up
+
+125 Node tests and Chromium checks pass. Pure tests verify immediate/latest choices, serialized CAS versions, retry retention, visible enum defaults and unsupported-version read-only recovery. Browser checks persist labels/rotation/print scale/orientation across reload, download/restore preference files, reject a competing tab's write, explicitly reload saved choices and retain an invalid stored enum while showing its default. Full backup includes preferences and a preference conflict rolls back newly queued records. Lesson/source/map/Letter/touch checks still pass.
+
+Preferences are display-only and independent of score/rubric revisions. Session files are progress-only; view preference files are separate. The full storage API supports preference records in its version-1 backup envelope. Actual browser/device, quota/eviction, blocked/future migration and physical-print evidence remains pending. See [setup and removal guidance](../browser-setup.md).
+

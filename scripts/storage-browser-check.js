@@ -93,6 +93,19 @@ export async function checkStorage(page) {
       const canceled = new AbortController(); canceled.abort();
       await rejects(() => restored.importBackup(backup, { signal: canceled.signal }), 'canceled');
       restored.close();
+      restored = await openStorage({ name: restoredName });
+      const preferences = { singleton: 'singleton', settingsVersion: 1, version: 0, values: { labels: 'partial', mapRotationDeg: 90, printScale: 5000, orientation: 'portrait' } };
+      await first.saveSettings(preferences);
+      const fullPreferencesBackup = await first.exportBackup();
+      await restored.importBackup(fullPreferencesBackup);
+      assert(canonical(await restored.loadSettings()) === canonical(preferences), 'full backup preserves preferences');
+      const changedPreferences = structuredClone(preferences); changedPreferences.version = 1; changedPreferences.values.labels = 'blank';
+      await restored.saveSettings(changedPreferences, { expectedVersion: 0 });
+      const prefConflict = structuredClone(fullPreferencesBackup); const extraPack = structuredClone(pack); extraPack.revision += 4; prefConflict.packs.push(extraPack);
+      await rejects(() => restored.importBackup(prefConflict), 'conflict');
+      assert(await restored.loadPack(extraPack.id, extraPack.revision) === null, 'preference conflict rolls back full backup');
+      assert((await restored.loadSettings()).values.labels === 'blank', 'preference conflict retains current choices');
+      restored.close();
       // Verify versionchange closes our connection and reports reload-needed.
       let changed = false;
       second = await openStorage({ name, onVersionChange: () => { changed = true; } }); first.close();
