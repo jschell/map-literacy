@@ -36,6 +36,7 @@ input[type=file] { max-width: 240px; }
 .inspection label { width: min(380px, 100%); min-width: 0; }
 .inspection select { width: 100%; max-width: 380px; }
 .note { font-size: 13px; color: #626e67; line-height: 1.6; }
+#attribution { overflow-wrap: anywhere; }
 #print-sheet { display: none; }
 .print-map { width: 259.4mm; height: 145mm; }
 @page { size: Letter landscape; margin: 10mm; }

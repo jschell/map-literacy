@@ -42,6 +42,7 @@ function install(value) {
   screenModels.clear(); paperModels.clear();
   get('scale').value = String(pack.print.scaleDenominator);
   get('feature').replaceChildren(new Option('No feature selected', ''));
+  get('attribution').textContent = pack.sources.map((s) => `${s.attribution} · ${s.license} · source ${s.sourceAt?.slice(0, 10) ?? 'date unknown'}`).join(' | ');
   for (const f of pack.features.features) get('feature').add(new Option(`${f.properties.name ?? 'Unnamed feature'} (${f.id})`, f.id));
   get('selection').textContent = 'Choose a road on the map or use the feature list.'; updateView();
 }

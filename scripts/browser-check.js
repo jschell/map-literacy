@@ -35,6 +35,7 @@ try {
   await page.getByRole('button', { name: 'Load synthetic map' }).click();
   await page.locator('#map svg').waitFor();
   assert.equal(await page.locator('#map .feature').count(), 6);
+  assert.ok((await page.locator('#attribution').textContent()).includes('CC0-1.0'));
   const geometry = await page.locator('#map .feature').evaluateAll((nodes) => nodes.map((n) => n.getAttribute('d')));
   await page.locator('#variant').selectOption('blank');
   assert.equal(await page.locator('#map .map-label').count(), 0);
