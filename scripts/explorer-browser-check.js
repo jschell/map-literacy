@@ -1,5 +1,13 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
+import { inflateSync } from 'node:zlib';
+// Inspect content operators from the pinned Chromium output, not arbitrary PDFs.
+function assertVectorMapInk(pdf) {
+  const streams = [...pdf.toString('latin1').matchAll(/stream\r?\n([\s\S]*?)\r?\nendstream/g)].flatMap((match) => {
+    try { return [inflateSync(Buffer.from(match[1], 'latin1')).toString('latin1')]; } catch { return []; }
+  });
+  assert.ok(streams.some((stream) => (stream.match(/^[-\d.]+ [-\d.]+ l$/gm) ?? []).length >= 10 && (stream.match(/^BT$/gm) ?? []).length >= 6), 'PDF must contain street drawing paths and map text, not just browser chrome');
+}
 import { geographicFixture } from './geographic-fixture.js';
 const tileImage = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVR4nGMwONAAAAKUAXE89+72AAAAAElFTkSuQmCC', 'base64');
 export async function mockTiles(surface) {
@@ -62,13 +70,21 @@ export async function checkExplorer(page, base) {
       const tail = document.createElement('section'); tail.id = 'print-flow-sentinel'; tail.style.height = '800mm'; tail.style.page = 'letter-landscape'; document.body.append(tail);
     });
     await page.emulateMedia({ media: 'print' });
-    assert.equal(await page.locator('#geographic-print').evaluate((node) => getComputedStyle(node).position), 'fixed');
-    assert.equal(await page.evaluate(() => getComputedStyle(document.documentElement).height), '0px');
+    assert.equal(await page.locator('#geographic-print').evaluate((node) => getComputedStyle(node).position), 'static');
+    assert.ok(await page.locator('#geographic-print').evaluate((node) => node.getBoundingClientRect().height) > 300, 'print document has real flow content');
+    assert.ok(await page.evaluate(() => document.body.getBoundingClientRect().height) > 300, 'body contains the map instead of a zero-height fixed-only layer');
     assert.equal(await page.locator('#print-flow-sentinel').evaluate((node) => getComputedStyle(node).display), 'none');
     const pdf = await page.pdf({ path: new URL(`../artifacts/browser/geographic-${orientation}.pdf`, import.meta.url).pathname, preferCSSPageSize: true, printBackground: true, displayHeaderFooter: true, headerTemplate: '<span>Browser header</span>', footerTemplate: '<span>Browser footer</span>' });
     const boxes = [...pdf.toString('latin1').matchAll(/\/MediaBox\s*\[0 0 ([\d.]+) ([\d.]+)\]/g)];
     assert.equal(boxes.length, 1); assert.deepEqual(boxes[0].slice(1).map(Number), orientation === 'portrait' ? [612, 792] : [792, 612]);
     assert.equal(/\/Subtype\s*\/Image/.test(pdf.toString('latin1')), false, 'streets and names remain vector');
+    assertVectorMapInk(pdf);
+    if (orientation === 'landscape') {
+      await page.locator('#geographic-print').evaluate((node) => { node.style.display = 'none'; });
+      const empty = await page.pdf({ preferCSSPageSize: true, displayHeaderFooter: true, headerTemplate: '<span>Browser header</span>', footerTemplate: '<span>Browser footer</span>' });
+      assert.throws(() => assertVectorMapInk(empty), /PDF must contain street/);
+      await page.locator('#geographic-print').evaluate((node) => node.style.removeProperty('display'));
+    }
     await page.evaluate(() => document.getElementById('print-flow-sentinel').remove());
     await page.emulateMedia({ media: null });
   }

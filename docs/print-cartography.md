@@ -71,8 +71,15 @@ A low-volume Overpass prototype endpoint is selected and reviewed; sustainable l
 
 ## Safari blank-sheet and label-layout revision
 
-A later device PDF confirmed sharp B&W vectors and attribution entirely on page one, followed by a blank page bearing only Safari chrome. The print document now uses one root/body page context and a fixed geographic layer, hides all other body content, and removes grid/fixed-height trailing space. The physical map extent is retained. This removes flow/page-context triggers; actual iOS PDF acceptance remains separate from Chromium checks.
+A later device PDF confirmed sharp B&W vectors and attribution entirely on page one, followed by a blank page bearing only Safari chrome. The superseded PR-34 print document used one root/body page context and a fixed geographic layer, hides all other body content, and removes grid/fixed-height trailing space. The physical map extent is retained. That attempt failed the next iOS device reprint; see the blank-output regression below.
 
 Street display names use explicit common English abbreviations; full names and source IDs remain in SVG/source exports. Labels follow sufficiently long nearly straight runs, with shared-node identity required to continue across same-name ways. They sit beside road lines and avoid central junctions and other labels. Short/curved streets can use horizontal callouts with fine, noncrossing leaders; crowded names remain omitted and counted. North/scale furniture has opaque white backing. Point-label boxes scale with their actual font size. Unnamed service context remains visible but is de-emphasized and cannot suppress named-street labels. These display links are not a reviewed routing graph.
 
 A bounded manual default-area source probe succeeded, followed by local replay for visual QA; no automated requests went to public providers and no live extract or user imagery/location was committed. WebKit download was available, but its required host libraries could not be installed in this runtime. Consequently this revision does not claim a WebKit or actual Safari print pass.
+
+
+### Safari blank-output regression (2026-10-14)
+
+The post-PR-34 device PDF contains one blank page with Safari chrome and no map or attribution. The fixed print layer inside zero-height root/body elements failed on the affected device; a one-page count alone was insufficient acceptance evidence. That layout is superseded: the geographic layer now participates in normal block flow, with automatic root/body heights, a single inherited page context, hidden unrelated content and an unfragmented map/credit block. Existing map dimensions, label placement and synchronous native print remain unchanged.
+
+The browser regression requires positive map/body flow height and checks generated PDF content streams for street paths and map text, in addition to page count, Letter orientation and absence of raster images. A deliberately hidden map with browser headers/footers must fail that content check. Local Chromium evidence does not establish Safari behavior; affected-device printing remains required after deployment.
