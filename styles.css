@@ -147,3 +147,19 @@ h2.sheet-block { font-size: 12pt; line-height: 1.4; }
   #geographic-print[data-orientation=landscape] { page: letter-landscape; width: 259.4mm; height: 195.9mm; }
   #geographic-print[data-orientation=portrait] { page: letter-portrait; width: 195.9mm; height: 259.4mm; }
 }
+
+#explorer-vector { position: absolute; inset: 0; pointer-events: none; }
+#explorer-vector svg { display: block; width: 100%; height: 100%; }
+#explorer-frame-label { top: auto; bottom: -22px; white-space: nowrap; font-size: 11px; background: white; }
+#geographic-paper-tiles { position: static; width: 100%; height: 100%; transform: none; }
+#geographic-paper-tiles svg { display: block; width: 100%; height: 100%; }
+.map-option { display: flex; align-items: center; gap: .5rem; }
+.explorer .map-option input { width: 20px; }
+#explorer-street-status { overflow-wrap: anywhere; }
+
+#geographic-print-status:empty { display: none; }
+
+#explorer-vector { overflow: hidden; background: white; }
+#explorer-vector:empty { background: transparent; }
+
+#explorer-frame { border: 0; outline: 2px solid #174737; }

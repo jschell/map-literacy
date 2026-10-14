@@ -36,7 +36,7 @@ Clearing browser storage does not remove downloaded JSON files or original impor
 No frontend compilation is needed. npm run release:build copies an explicit asset set into dist/site for Cloudflare/static hosts and dist/pages for GitHub Pages, with a deterministic local hash manifest. See [packaging and hosted setup](static-deployment.md). Both retain MIT code licensing and the synthetic fixture's CC0 notice. Exclude raw data, artifacts, node_modules, .git and local configuration. Serve correct HTML/CSS/JavaScript/JSON MIME types over HTTPS. Header-capable hosts use the same response CSP as the local server:
 
 ```text
-default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' https://tile.openstreetmap.org; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
+default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' https://tile.openstreetmap.org; connect-src 'self' https://overpass-api.de; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
 ```
 
 Also serve X-Content-Type-Options: nosniff. There are no runtime CDNs or inline scripts/styles. Cloudflare Workers Static Assets is the preferred full-header target; GitHub Pages has a prepared meta-CSP variant with explicitly weaker response-header coverage. Neither is published here. Network access is required to load app assets; no guaranteed offline mode or synchronization is provided.
@@ -54,4 +54,7 @@ Also serve X-Content-Type-Options: nosniff. There are no runtime CDNs or inline 
 | Public static host | Cloudflare preferred; GitHub Pages alternative prepared; neither published or externally verified |
 
 Run npm test, npm run fixtures:check and npm run browser:check for automated checks. See [keyboard/accessibility evidence](validation/accessibility.md), [storage evidence](validation/storage.md), [map/print usage](map-review.md) and [physical checks](validation/physical-print-check.md). Real lesson/curriculum review remains separate from technical correctness.
+
+
+Geographic maps now default to B&W vectors with street-name controls and automatic bounded source loading. The print button becomes ready after source geometry is available; no lesson/session is required. Geographic appearance/names/markings are per-view choices, while Letter orientation retains saved settings. See [geographic source, controls and limits](geographic-browsing.md). Public-source availability is best effort, not offline or production availability.
 

@@ -2,9 +2,9 @@
 
 ## Problem and priority
 
-The geographic browser currently prints a crop of public raster tiles enlarged to Letter paper. This made basic printing available without a pack, but does not satisfy the product: the Safari example had approximately 29 pixels per inch, no B&W choice, and insufficient readable street names. Native print invocation and one-page output are transport checks; they do not establish a useful teaching map.
+The geographic browser initially printed a crop of public raster tiles enlarged to Letter paper. This made basic printing available without a pack, but does not satisfy the product: the Safari example had approximately 29 pixels per inch, no B&W choice, and insufficient readable street names. Native print invocation and one-page output are transport checks; they do not establish a useful teaching map.
 
-This is the next implementation slice within active plan 05, ahead of pilot expansion. The existing SVG renderer and bounded OSM preparation code are reusable foundations. These requirements are not claims of implemented features.
+This correction is part of active plan 05, ahead of pilot expansion. The existing SVG renderer and bounded OSM preparation code are reusable foundations. The implementation/remaining-acceptance section below records current status.
 
 ## User flow and defaults
 
@@ -61,3 +61,9 @@ Topographic layers remain a later extension with separate elevation/contour meta
 5. Validate target-device output and actual-size monochrome paper before proceeding to pilot expansion.
 
 Source strategy, context-layer coverage and whether existing preference records need a new version are implementation decisions still to resolve. Basic print must remain usable during this work; do not replace it with a reviewed-pack gate.
+
+## Implemented slice and remaining acceptance
+
+The geographic data/print adapter, automatic bounded prototype source acquisition, fixed paper extent, B&W/color and name controls, physical vector print, north/scale, source/SVG export and optional markings/heading are now implemented. The native print call stays synchronous. Preview names use a larger screen minimum; their placement/coverage can differ from the paper layout while extent, style, source and label mode remain shared. See geographic-browsing.md for concrete resource limits, source-class exclusions, policy evidence and validation.
+
+A low-volume Overpass prototype endpoint is selected and reviewed; sustainable larger-scale hosting is not resolved. Landmark/context coverage is intentionally limited to the named acquisition classes. Geographic view choices are memory-only; the existing saved Letter orientation remains shared without a database/schema change. Automated and manual API-shape evidence does not close actual Safari/physical-paper acceptance or curriculum/route correctness. The plan therefore remains a reference for those remaining gates, not a claim of full completion.
