@@ -38,7 +38,7 @@ test('acquisition retains exact raw source bytes and hash, query, date and attri
 });
 
 test('dense names remain minimum-size and non-overlapping with explicit suppression', () => {
-  const v = view(), features = Array.from({ length: 80 }, (_, i) => ({ id: `way:${i + 1}`, role: 'road', name: `Neighborhood Road ${i}`, tags: { highway: 'residential' }, geometry: [v.inverse([-10, 3 + i * 2]), v.inverse([v.width + 10, 3 + i * 2])] }));
+  const v = view(), features = Array.from({ length: 80 }, (_, i) => ({ id: `way:${i + 1}`, role: 'road', name: `Neighborhood Road ${i}`, tags: { highway: 'residential' }, geometry: [v.inverse([-10, 3 + i * (v.height - 6) / 79]), v.inverse([v.width + 10, 3 + i * (v.height - 6) / 79])] }));
   const model = geographicModel(features, v);
   assert.ok(model.labels.length > 0 && model.suppressed > 0);
   assert.equal(model.labels.length + model.suppressed, 80);

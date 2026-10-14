@@ -4,7 +4,8 @@ import { unproject } from './explorer.js';
 
 export function geographicView(centerPixels, zoom, orientation) {
   const center = unproject(...centerPixels, zoom), projection = createProjection(center);
-  const sheetWidth = orientation === 'portrait' ? 195.9 : 259.4, sheetHeight = orientation === 'portrait' ? 259.4 : 195.9;
+  // 15 mm margins plus 24 mm vertical reserve for browser print headers/footers.
+  const sheetWidth = orientation === 'portrait' ? 185.9 : 249.4, sheetHeight = orientation === 'portrait' ? 225.4 : 161.9;
   const ratio = orientation === 'portrait' ? 8.5 / 11 : 11 / 8.5;
   const width = Math.min(sheetWidth, (sheetHeight - 10) * ratio), height = width / ratio;
   const worldWidth = orientation === 'portrait' ? 640 * ratio : 640, worldHeight = worldWidth / ratio;
