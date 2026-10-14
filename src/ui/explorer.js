@@ -90,10 +90,13 @@ export function createExplorer() {
     crop.style.transform = `scale(${mapWidth * 96 / 25.4 / frame.width})`;
     const tiles = visibleTiles(printCenter, printZoom, width, height);
     const copies = [];
+    let ready = true;
     for (const tile of tiles) {
       if (tile.x + 256 <= (width - frame.width) / 2 || tile.x >= (width + frame.width) / 2 ||
           tile.y + 256 <= (height - frame.height) / 2 || tile.y >= (height + frame.height) / 2) continue;
-      const image = images.get(tile.key)?.cloneNode();
+      const original = images.get(tile.key);
+      if (!original || !original.complete || original.naturalWidth === 0) ready = false;
+      const image = original?.cloneNode();
       if (!image) continue;
       image.style.left = `${tile.x - (width - frame.width) / 2}px`;
       image.style.top = `${tile.y - (height - frame.height) / 2}px`;
@@ -103,21 +106,19 @@ export function createExplorer() {
     const [lon, lat] = unproject(...printCenter, printZoom);
     get('geographic-paper-credit').textContent = `© OpenStreetMap contributors · openstreetmap.org/copyright · ${lat.toFixed(5)}, ${lon.toFixed(5)} · Zoom ${printZoom}`;
     output.dataset.center = `${lat.toFixed(5)},${lon.toFixed(5)}`;
+    return ready && copies.length > 0;
   }
-  let printing = false;
-  get('explorer-print').onclick = async () => {
-    if (printing) return;
-    printing = true; get('explorer-print').disabled = true;
-    let timeout;
-    try {
-      settle(); preparePrint();
-      const ready = Promise.all([...get('geographic-paper-tiles').children].map((image) => image.decode()));
-      await Promise.race([ready, new Promise((_, reject) => { timeout = setTimeout(() => reject(new Error('timeout')), 10000); })]);
-      document.body.dataset.printTarget = 'geographic';
-      window.print();
-    } catch {
-      get('explorer-status').textContent = 'Map tiles could not finish loading for print. Retry map tiles, then Print this map.';
-    } finally { clearTimeout(timeout); printing = false; get('explorer-print').disabled = false; }
+  get('explorer-print').onclick = () => {
+    // Keep the native print call in the user's click. Do not await hidden image decode.
+    settle();
+    if (!preparePrint()) {
+      get('explorer-status').textContent = 'Map tiles are still loading or unavailable. Wait for the map or retry map tiles, then print.';
+      return;
+    }
+    document.body.dataset.printTarget = 'geographic';
+    get('explorer-status').textContent = 'Opening the browser print dialog…';
+    try { window.print(); }
+    catch { get('explorer-status').textContent = 'The browser could not open printing. Use its Print command for this map.'; }
   };
   window.addEventListener('beforeprint', () => {
     if (document.body.dataset.printTarget === 'lesson' || document.body.dataset.printTarget === 'geographic') return;
@@ -125,7 +126,10 @@ export function createExplorer() {
       document.body.dataset.printTarget = 'geographic'; preparePrint();
     }
   });
-  window.addEventListener('afterprint', () => { delete document.body.dataset.printTarget; });
+  window.addEventListener('afterprint', () => {
+    delete document.body.dataset.printTarget;
+    get('explorer-status').textContent = 'Print dialog closed. Drag to browse or print again.';
+  });
   get('explorer-in').onclick = () => changeZoom(1);
   get('explorer-out').onclick = () => changeZoom(-1);
   get('explorer-world').onclick = () => { zoom = 2; center = project(0, 0, zoom); settle(); };

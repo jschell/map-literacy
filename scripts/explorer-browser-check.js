@@ -28,6 +28,18 @@ export async function checkExplorer(page, base) {
   // Direct print works from startup, without a lesson pack or session.
   await page.evaluate(() => { window.originalGeographicPrint = window.print; window.geographicPrintCalls = 0; window.print = () => { window.geographicPrintCalls++; }; });
   const startupUrls = new Set(requests);
+  await page.evaluate(() => {
+    window.originalMapDecode = HTMLImageElement.prototype.decode;
+    HTMLImageElement.prototype.decode = () => new Promise(() => {});
+    window.directClickPrintChecks = [];
+    const button = document.getElementById('explorer-print');
+    button.addEventListener('click', () => { window.printClickRunning = true; }, { capture: true });
+    button.addEventListener('click', () => { window.printClickRunning = false; });
+    window.print = () => {
+      window.geographicPrintCalls++;
+      window.directClickPrintChecks.push(window.printClickRunning === true);
+    };
+  });
   for (const orientation of ['landscape', 'portrait']) {
     await page.locator('#orientation').selectOption(orientation);
     const calls = await page.evaluate(() => window.geographicPrintCalls);
@@ -46,7 +58,8 @@ export async function checkExplorer(page, base) {
     assert.ok(requests.every((url) => startupUrls.has(url)), 'printing does not request a different area or zoom');
   }
   await page.locator('#orientation').selectOption('landscape');
-  await page.evaluate(() => { window.print = window.originalGeographicPrint; delete document.body.dataset.printTarget; });
+  assert.deepEqual(await page.evaluate(() => window.directClickPrintChecks), [true, true], 'print runs synchronously during each click despite unresolved image.decode');
+  await page.evaluate(() => { HTMLImageElement.prototype.decode = window.originalMapDecode; window.print = window.originalGeographicPrint; delete document.body.dataset.printTarget; });
   await page.locator('#explorer-location').fill('47.674, -122.122');
   await page.locator('#explorer-jump button').click();
   assert.match(await page.locator('#explorer-position').textContent(), /47.67400, -122.12200.*Zoom 15/);
@@ -102,7 +115,7 @@ export async function checkExplorer(page, base) {
   await page.evaluate(() => { window.print = () => { window.geographicPrintCalls++; }; });
   const failedCalls = await page.evaluate(() => window.geographicPrintCalls);
   await page.locator('#explorer-print').click();
-  await page.waitForFunction(() => document.getElementById('explorer-status').textContent.startsWith('Map tiles could not finish loading for print'));
+  await page.waitForFunction(() => document.getElementById('explorer-status').textContent.startsWith('Map tiles are still loading or unavailable'));
   assert.equal(await page.evaluate(() => window.geographicPrintCalls), failedCalls, 'failed imagery must not open a blank print');
   await page.evaluate(() => { window.print = window.originalGeographicPrint; });
   failTiles = false; await page.locator('#explorer-retry').click();
