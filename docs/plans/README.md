@@ -19,3 +19,5 @@ Plans are work packages with evidence-based completion, not claims that an appli
 Topographic data research can occur earlier without blocking street delivery. No dependency on routing is required for contour-reading lessons. Plan 09 is optional; live navigation remains separate future scope.
 
 
+
+Next implementation slice within active plan 05: [geographic print cartography](../print-cartography.md). Basic raster printing is available but fails the B&W, readable-street-name and paper-quality goals. Complete that correction before expanding the learning pilot.
