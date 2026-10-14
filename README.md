@@ -6,6 +6,8 @@ Street lessons cover orientation, roads, landmarks, addresses, return routes and
 
 **Current state:** a vanilla JavaScript geographic browser opening on a Redmond example at zoom 15, with direct map printing and a Letter portrait/landscape print area, mouse/touch panning, zoom and coordinate/OpenStreetMap-link jumps, alongside a map review interface with pack import, rotation, label variants, heading arrows, feature selection and fixed-scale print output. Data validation and OSM preparation are implemented; the Redmond draft renders but remains unreviewed. Reviewed street lessons now support heading, endpoint, route and detour scoring in revision-locked sessions, with hints, retries and multiple valid routes. Accepted progress saves in this browser with explicit saved-session resume, failed-save retry and conflict recovery. Session backup download/restore preserves committed attempts and hints; unfinished answers remain memory only. Labels, screen rotation, print scale and Letter orientation now save independently. Reviewed real lessons and routing deployment remain pending.
 
+Geographic printing is currently a color-raster prototype. It does not yet meet the intended B&W, street-label control or print-clarity requirements. The [print cartography correction](docs/print-cartography.md) defines the next work.
+
 ## Start here
 
 - [Browse real areas: controls and provider limits](docs/geographic-browsing.md)

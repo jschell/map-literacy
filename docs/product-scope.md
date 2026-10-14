@@ -10,7 +10,8 @@ Planning defaults: browser first, shared lesson packs, SVG teaching maps, local 
 
 ## First useful release
 
-- Explicitly select/import a pack; no inferred home location.
+- Open a usable geographic map and print the selected area without importing a pack or beginning a lesson; no inferred device/home location.
+- Default B&W cartography, readable source street names, independent label controls and print resolution/layout independent of screen size.
 - One reviewed real neighborhood and synthetic maps with known answers.
 - Orientation/heading, endpoint location, connectivity/route tracing and detour exercises.
 - Labeled, partial and blank map variants with consistent extent.
@@ -19,6 +20,8 @@ Planning defaults: browser first, shared lesson packs, SVG teaching maps, local 
 - Resume after refresh, recover from malformed import and show incomplete/unreviewed content clearly.
 
 Route-preview and simulation are subsequent capabilities. Address-system lessons require locally documented patterns. Topographic lessons need elevation/contour data and a separate correctness model.
+
+The current geographic raster print is not acceptance of these requirements. The next work is the [print cartography correction](print-cartography.md); reviewed packs add exercises and worksheets without blocking basic map use.
 
 ## Learning progression
 
