@@ -1,3 +1,4 @@
+import { createExplorer } from './explorer.js';
 import { createPreferences } from './preferences.js';
 import { createLessons } from './lessons.js';
 import { readImport } from '../data/read-pack.js';
@@ -139,3 +140,5 @@ new ResizeObserver(() => {
   }
 }).observe(get('map-panel'));
 
+
+createExplorer();

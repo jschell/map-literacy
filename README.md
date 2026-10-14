@@ -4,10 +4,11 @@ Learn to understand where you are, which direction you face, how routes connect 
 
 Street lessons cover orientation, roads, landmarks, addresses, return routes and detours. Topographic lessons will add contours, elevation, slope, ridges, valleys and terrain interpretation. Both use shared map, lesson, print and progress components.
 
-**Current state:** a vanilla JavaScript map review interface with pack import, rotation, label variants, heading arrows, feature selection and fixed-scale print output. Data validation and OSM preparation are implemented; the Redmond draft renders but remains unreviewed. Reviewed street lessons now support heading, endpoint, route and detour scoring in revision-locked sessions, with hints, retries and multiple valid routes. Accepted progress saves in this browser with explicit saved-session resume, failed-save retry and conflict recovery. Session backup download/restore preserves committed attempts and hints; unfinished answers remain memory only. Labels, screen rotation, print scale and Letter orientation now save independently. Reviewed real lessons and routing deployment remain pending.
+**Current state:** a vanilla JavaScript geographic browser with mouse/touch panning, zoom and coordinate/OpenStreetMap-link jumps, alongside a map review interface with pack import, rotation, label variants, heading arrows, feature selection and fixed-scale print output. Data validation and OSM preparation are implemented; the Redmond draft renders but remains unreviewed. Reviewed street lessons now support heading, endpoint, route and detour scoring in revision-locked sessions, with hints, retries and multiple valid routes. Accepted progress saves in this browser with explicit saved-session resume, failed-save retry and conflict recovery. Session backup download/restore preserves committed attempts and hints; unfinished answers remain memory only. Labels, screen rotation, print scale and Letter orientation now save independently. Reviewed real lessons and routing deployment remain pending.
 
 ## Start here
 
+- [Browse real areas: controls and provider limits](docs/geographic-browsing.md)
 - [Scope and first release](docs/product-scope.md)
 - [Architecture proposal](docs/architecture.md)
 - [Plan index and dependencies](docs/plans/README.md)
