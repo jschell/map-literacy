@@ -76,8 +76,26 @@ export async function checkExplorer(page, base) {
   assert.equal(await page.locator('#explorer-vector svg').getAttribute('viewBox'), beforeResize);
   assert.equal(await page.locator('#explorer-vector svg').getAttribute('data-scale'), scale);
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
-  await page.waitForFunction(() => [...document.querySelectorAll('#explorer-vector [data-street-label]:not([data-street-label=""])')].every((node) => Number(node.getAttribute('font-size')) * node.ownerSVGElement.getBoundingClientRect().width / node.ownerSVGElement.viewBox.baseVal.width >= 11.9));
-  assert.ok(await page.locator('#explorer-vector [data-street-label]:not([data-street-label=""])').evaluateAll((nodes) => nodes.every((node) => { const svg = node.ownerSVGElement; const scale = svg.getBoundingClientRect().width / svg.viewBox.baseVal.width; return Number(node.getAttribute('font-size')) * scale >= 11.9; })), 'phone street labels stay readable');
+  const readablePreview = () => page.waitForFunction(() => {
+    const svg = document.querySelector('#explorer-vector svg');
+    if (!svg || Math.abs(Number(svg.dataset.previewWidth) - svg.getBoundingClientRect().width) > .05) return false;
+    const labels = [...svg.querySelectorAll('[data-street-label]:not([data-street-label=""])')];
+    return labels.length > 0 && labels.every((node) => Number(node.getAttribute('font-size')) * svg.getBoundingClientRect().width / svg.viewBox.baseVal.width >= 11.9);
+  });
+  await readablePreview();
+  // A frame-only resize must update typography without relying on a viewport resize.
+  await page.evaluate(() => {
+    const frame = document.getElementById('explorer-frame'), box = document.querySelector('#explorer-vector svg').viewBox.baseVal;
+    frame.style.width = '223.5px'; frame.style.height = `${223.5 * box.height / box.width}px`;
+  });
+  await readablePreview();
+  assert.equal(Number(await page.locator('#explorer-vector svg').getAttribute('data-preview-width')), 223.5);
+  // Check convergence after repeated responsive and fractional-width frame changes.
+  for (const width of [641, 375, 321, 320]) {
+    await page.setViewportSize({ width, height: 900 }); await readablePreview();
+    assert.equal(await page.locator('#explorer-vector svg').getAttribute('viewBox'), beforeResize);
+    assert.equal(await page.locator('#explorer-vector svg').getAttribute('data-scale'), scale);
+  }
   await page.locator('.explorer').screenshot({ path: new URL('../artifacts/browser/geographic-mobile.png', import.meta.url).pathname });
   await page.setViewportSize(viewport); await ready();
   await page.locator('summary').filter({ hasText: 'Practice markings' }).click();
