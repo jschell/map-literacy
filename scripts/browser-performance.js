@@ -1,3 +1,4 @@
+import { mockTiles } from './explorer-browser-check.js';
 import assert from 'node:assert/strict';
 import { createRequire } from 'node:module';
 import { mkdir, writeFile } from 'node:fs/promises';
@@ -21,6 +22,7 @@ try {
   browser = await chromium.launch({ headless: true, ...(process.env.MAP_LITERACY_BROWSER_EXECUTABLE ? { executablePath: process.env.MAP_LITERACY_BROWSER_EXECUTABLE, ...(portable ? { args: portable.args } : {}) } : portable ? { executablePath: await portable.executablePath(), args: portable.args } : {}) });
   report.environment.browser = browser.version();
   const page = await browser.newPage({ viewport: { width: 1280, height: 1000 } });
+  await mockTiles(page);
   const errors = []; page.on('pageerror', (e) => errors.push(e.message)); page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); });
   const client = await page.context().newCDPSession(page);
   for (const profile of ['neighborhood', 'display-ceiling', 'graph-ceiling']) {

@@ -1,24 +1,35 @@
-import { project, unproject, parseLocation, visibleTiles, wrap } from '../map/explorer.js';
+import { project, unproject, parseLocation, visibleTiles, wrap, DEFAULT_VIEW, pageFrame } from '../map/explorer.js';
 
-/** Explicitly enabled geographic preview; never installs or modifies a lesson pack. */
+/** Default geographic preview; never installs or modifies a lesson pack. */
 export function createExplorer() {
   const get = (id) => document.getElementById(id);
   const viewport = get('explorer-map'), layer = get('explorer-tiles');
-  let active = false, zoom = 2, center = project(0, 0, zoom), timer, generation = 0;
+  let active = true, zoom = DEFAULT_VIEW.zoom, center = project(DEFAULT_VIEW.lon, DEFAULT_VIEW.lat, zoom), timer, generation = 0;
   const images = new Map(), pointers = new Map();
   const size = () => [viewport.clientWidth, viewport.clientHeight];
   function normalize() {
     const world = 256 * 2 ** zoom;
     center = [wrap(center[0], world), Math.max(0, Math.min(world, center[1]))];
   }
+  function updateFrame() {
+    if (viewport.clientWidth === 0 || viewport.clientHeight === 0) return;
+    const orientation = get('orientation').value;
+    const frame = pageFrame(...size(), orientation);
+    const outline = get('explorer-frame');
+    outline.style.width = `${frame.width}px`; outline.style.height = `${frame.height}px`;
+    outline.dataset.orientation = orientation;
+    get('explorer-frame-label').textContent = `US Letter · ${orientation} · page-shape guide`;
+  }
   function describe() {
+    updateFrame();
     const [lon, lat] = unproject(...center, zoom);
     get('explorer-position').textContent = `Center: ${lat.toFixed(5)}, ${lon.toFixed(5)} · Zoom ${zoom}`;
     get('explorer-link').href = `https://www.openstreetmap.org/#map=${zoom}/${lat.toFixed(5)}/${lon.toFixed(5)}`;
     get('explorer-out').disabled = zoom === 2; get('explorer-in').disabled = zoom === 19;
   }
   function paint() {
-    if (!active) return;
+    // Print hides the geographic preview; do not request tiles for a hidden viewport.
+    if (!active || viewport.clientWidth === 0 || viewport.clientHeight === 0 || matchMedia('print').matches) return;
     clearTimeout(timer); normalize(); describe();
     layer.style.transform = '';
     const current = ++generation, [width, height] = size();
@@ -61,13 +72,6 @@ export function createExplorer() {
       (center[1] + y - viewport.clientHeight / 2) * factor - y + viewport.clientHeight / 2];
     zoom = next; settle();
   }
-  function enable() {
-    if (!active) {
-      active = true; viewport.hidden = false; get('explorer-navigation').hidden = false;
-      get('explorer-enable').hidden = true; paint();
-    }
-  }
-  get('explorer-enable').onclick = () => { enable(); viewport.focus(); };
   get('explorer-in').onclick = () => changeZoom(1);
   get('explorer-out').onclick = () => changeZoom(-1);
   get('explorer-world').onclick = () => { zoom = 2; center = project(0, 0, zoom); settle(); };
@@ -76,7 +80,7 @@ export function createExplorer() {
     event.preventDefault();
     try {
       const place = parseLocation(get('explorer-location').value);
-      zoom = place.zoom; center = project(place.lon, place.lat, zoom); enable(); settle(); viewport.focus();
+      zoom = place.zoom; center = project(place.lon, place.lat, zoom); settle(); viewport.focus();
     } catch (error) { get('explorer-status').textContent = error.message; get('explorer-location').focus(); }
   };
   get('explorer-place').oninput = () => {
@@ -117,4 +121,6 @@ export function createExplorer() {
   const release = (event) => { pointers.delete(event.pointerId); settle(); };
   viewport.onpointerup = release; viewport.onpointercancel = release;
   new ResizeObserver(() => { if (active) settle(); }).observe(viewport);
+  paint();
+  return { updateFrame };
 }

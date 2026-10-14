@@ -1,4 +1,4 @@
-import { checkExplorer } from './explorer-browser-check.js';
+import { checkExplorer, mockTiles } from './explorer-browser-check.js';
 import assert from 'node:assert/strict';
 import { checkPreferences } from './preferences-browser-check.js';
 import { checkAutosave } from './autosave-browser-check.js';
@@ -34,6 +34,7 @@ try { browser = await chromium.launch({ headless: true,
     : portable ? { executablePath: await portable.executablePath(), args: portable.args } : {}) }); }
 catch (error) { server?.kill(); throw error; }
 const desktopContext = await browser.newContext({ viewport: { width: 1280, height: 1000 } });
+await mockTiles(desktopContext);
 const page = await desktopContext.newPage();
 const errors = [];
 page.on('pageerror', (e) => errors.push(e.message));
@@ -440,6 +441,7 @@ try {
   }
   const pagesPackageChecks = process.env.MAP_LITERACY_RELEASE_CHECK === '1' ? await checkPagesPackage(page) : null;
   const mobile = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
+  await mockTiles(mobile);
   await mobile.goto(base); await mobile.locator('#demo').tap(); await mobile.locator('#map svg').waitFor();
   await mobile.locator('#lesson-start').tap(); await mobile.locator('#answer-heading').fill('0');
   await mobile.locator('#lesson-submit').tap();

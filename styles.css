@@ -132,3 +132,6 @@ h2.sheet-block { font-size: 12pt; line-height: 1.4; }
 .tile-attribution { position: absolute; right: 0; bottom: 0; background: white; color: #174737; padding: .5rem; font-size: 12px; min-height: 44px; display: flex; align-items: center; }
 .map-action { display: inline-flex; align-items: center; min-height: 44px; padding: .5rem; color: #174737; max-width: 100%; overflow-wrap: anywhere; }
 [hidden] { display: none !important; }
+
+#explorer-frame { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); border: 2px solid #174737; outline: 1px solid white; box-shadow: 0 0 0 1500px rgb(32 45 43 / 25%); pointer-events: none; }
+#explorer-frame-label { position: absolute; top: 6px; left: 6px; right: 6px; padding: 4px; background: white; color: #174737; font-size: 12px; }

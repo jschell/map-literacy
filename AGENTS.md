@@ -14,7 +14,7 @@ Map Literacy is a new implementation repository for street and topographic map l
 - Preserve OSM identity, required relation members, provenance, attribution and data versions. Missing tags do not prove access or permission.
 - Terrain inputs require resolution, coordinate reference system, vertical reference/units and nodata handling. Do not treat shaded map imagery as elevation data.
 - Interactive learning is stationary. No active-driving quiz; live navigation is deferred.
-- Do not collect household addresses, live tracks or learner names by default. No automatic location selection.
+- Do not collect household addresses, live tracks or learner names by default. Use the documented example view on startup; do not infer or request the user's location.
 - Public APIs and demo servers have separate policies; do not make them a production dependency without review. Never commit secrets.
 - Source data and large derived packs belong outside git unless a small licensed fixture is deliberately reviewed. Synthetic fixtures are preferred for deterministic tests.
 - Existing historical source notes are evidence of review, not proof of current compatibility.

@@ -1,4 +1,11 @@
 // Web Mercator is for geographic browsing only; lesson/print models retain their projection.
+export const DEFAULT_VIEW = Object.freeze({ lat: 47.674, lon: -122.122, zoom: 15 });
+export function pageFrame(width, height, orientation) {
+  const ratio = orientation === 'portrait' ? 8.5 / 11 : 11 / 8.5;
+  const availableWidth = Math.max(0, width - 48), availableHeight = Math.max(0, height - 80);
+  const frameWidth = Math.min(availableWidth, availableHeight * ratio);
+  return { width: frameWidth, height: frameWidth / ratio };
+}
 export const TILE_SIZE = 256;
 export const MAX_LATITUDE = 85.0511287798066;
 export const TILE_ORIGIN = 'https://tile.openstreetmap.org';

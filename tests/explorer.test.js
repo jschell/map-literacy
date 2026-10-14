@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { project, unproject, parseLocation, visibleTiles, MAX_LATITUDE } from '../src/map/explorer.js';
+import { project, unproject, parseLocation, visibleTiles, MAX_LATITUDE, pageFrame } from '../src/map/explorer.js';
 
 test('geographic locations round trip at world and street zoom', () => {
   for (const zoom of [2, 15, 19]) for (const [lon, lat] of [[0, 0], [-122.122, 47.674], [179.99, -80]]) {
@@ -24,5 +24,15 @@ test('visible tiles cover viewport without offscreen prefetch and wrap across da
   }
   for (const lat of [-MAX_LATITUDE, MAX_LATITUDE]) for (const tile of visibleTiles(project(0, lat, 2), 2, width, height)) {
     const y = Number(tile.url.split('/').at(-1).replace('.png', '')); assert.ok(y >= 0 && y < 4);
+  }
+});
+
+test('Letter guide fits desktop and phone viewports with the selected paper shape', () => {
+  for (const [width, height] of [[1200, 540], [284, 540], [640, 320]]) {
+    for (const orientation of ['portrait', 'landscape']) {
+      const frame = pageFrame(width, height, orientation);
+      assert.ok(frame.width <= width - 48 && frame.height <= height - 80 + 1e-8);
+      assert.ok(Math.abs(frame.width / frame.height - (orientation === 'portrait' ? 8.5 / 11 : 11 / 8.5)) < 1e-8);
+    }
   }
 });

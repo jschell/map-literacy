@@ -1,18 +1,35 @@
 import assert from 'node:assert/strict';
 
+const tileImage = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aWQAAAABJRU5ErkJggg==', 'base64');
+export async function mockTiles(surface) {
+  await surface.route('https://tile.openstreetmap.org/**', (route) => route.fulfill({ contentType: 'image/png', body: tileImage }));
+}
+
 export async function checkExplorer(page, base) {
   const requests = [];
   let failTiles = false;
   // Never request the public tile service from automated browser tests.
   await page.route('https://tile.openstreetmap.org/**', async (route) => {
     requests.push(route.request().url());
-    await route.fulfill({ contentType: 'image/png', body: failTiles ? Buffer.from('invalid image') : Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aWQAAAABJRU5ErkJggg==', 'base64') });
+    await route.fulfill({ contentType: 'image/png', body: failTiles ? Buffer.from('invalid image') : tileImage });
   });
   await page.goto(base);
-  assert.equal(requests.length, 0);
-  await page.locator('#explorer-enable').click();
+  assert.equal(await page.locator('#explorer-map').isVisible(), true);
+  await page.waitForFunction(() => document.getElementById('explorer-position').textContent.includes('Zoom 15'));
+  assert.match(await page.locator('#explorer-position').textContent(), /47.67400, -122.12200/);
+  const landscape = await page.locator('#explorer-frame').boundingBox();
+  assert.ok(Math.abs(landscape.width / landscape.height - 11 / 8.5) < 0.01);
+  await page.locator('#orientation').selectOption('portrait');
+  const portrait = await page.locator('#explorer-frame').boundingBox();
+  assert.ok(Math.abs(portrait.width / portrait.height - 8.5 / 11) < 0.01);
+  await page.locator('#orientation').selectOption('landscape');
   await page.waitForFunction(() => [...document.querySelectorAll('#explorer-tiles img')].every((img) => img.complete && img.naturalWidth > 0));
   assert.ok(requests.length > 0 && requests.length <= 28);
+  const beforePrint = requests.length;
+  await page.emulateMedia({ media: 'print' });
+  await page.waitForTimeout(100);
+  assert.equal(requests.length, beforePrint, 'hidden print preview must not fetch geographic tiles');
+  await page.emulateMedia({ media: null });
   await page.locator('#explorer-location').fill('47.674, -122.122');
   await page.locator('#explorer-jump button').click();
   assert.match(await page.locator('#explorer-position').textContent(), /47.67400, -122.12200.*Zoom 15/);
@@ -67,7 +84,15 @@ export async function checkExplorer(page, base) {
   await page.locator('.explorer').screenshot({ path: new URL('../artifacts/browser/geographic-mobile.png', import.meta.url).pathname });
   await page.setViewportSize(viewport);
   assert.match(await page.locator('#explorer-position').textContent(), /0.00000, 0.00000.*Zoom 2/);
-  await page.reload(); assert.equal(await page.locator('#explorer-map').isHidden(), true);
+  await page.locator('#orientation').selectOption('portrait');
+  await page.waitForFunction(() => document.getElementById('preferences-status').textContent.includes('saved in this browser'));
+  await page.reload(); assert.equal(await page.locator('#explorer-map').isVisible(), true);
+  await page.waitForFunction(() => document.getElementById('explorer-position').textContent.includes('Zoom 15'));
+  await page.waitForFunction(() => document.getElementById('explorer-frame').dataset.orientation === 'portrait');
+  const restoredFrame = await page.locator('#explorer-frame').boundingBox();
+  assert.ok(Math.abs(restoredFrame.width / restoredFrame.height - 8.5 / 11) < 0.01);
+  await page.locator('#orientation').selectOption('landscape');
+  await page.waitForFunction(() => document.getElementById('preferences-status').textContent.includes('saved in this browser'));
   await page.unroute('https://tile.openstreetmap.org/**');
-  return { mockedTiles: requests.length, geographicNavigation: true, lessonUnchanged: true };
+  return { mockedTiles: requests.length, geographicNavigation: true, lessonUnchanged: true, defaultView: true, letterFrame: true };
 }
