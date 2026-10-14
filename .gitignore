@@ -11,4 +11,5 @@ coverage/
 data/raw/
 data/derived/
 artifacts/
+pilot-data/
 .DS_Store

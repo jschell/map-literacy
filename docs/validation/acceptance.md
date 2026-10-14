@@ -1,6 +1,6 @@
 # Validation and acceptance matrix
 
-Initial budgets and pilot parameters are engineering proposals; record measured revisions. No test/device/print/pilot passes exist yet.
+Initial budgets and pilot parameters are engineering proposals; record measured revisions. Automated pack/scoring/storage, Chromium keyboard/touch-emulation and PDF evidence exists; actual device, physical-print and participant-pilot acceptance remains pending. See [accessibility evidence](accessibility.md), [storage evidence](storage.md) and the [pilot kit](../learning-pilot.md).
 
 | Gate | Evidence and pass rule | Execution owner/plan |
 |---|---|---|
@@ -16,9 +16,11 @@ Initial budgets and pilot parameters are engineering proposals; record measured 
 | Terrain | Units/CRS/nodata, known hill/valley/profile, map alignment | Implementer/reviewer / 08 |
 | Learning | Protocol below, complete anonymized results including failures | User/instructor coordinator / 06 |
 
-Browser matrix: latest stable Chrome and Firefox desktop, latest stable Safari on macOS, and Safari on a touch iPad. Record exact OS/browser/hardware at execution; no presumed version numbers or claimed compatibility. Aim to test an older user-available tablet as a performance stress case; exact device pending. Dev-machine performance is provisional until physical tablet runs. Unsupported capability shows an actionable message. Browser automation is useful but cannot replace physical touch/paper/pilot evidence.
+Proposed target browser matrix: latest stable Chrome and Firefox desktop, latest stable Safari on macOS, and Safari on a touch iPad. Record exact OS/browser/hardware at execution; no presumed version numbers or claimed compatibility. Aim to test an older user-available tablet as a performance stress case; exact device pending. Dev-machine performance is provisional until physical tablet runs. Unsupported capability shows an actionable message. Browser automation is useful but cannot replace physical touch/paper/pilot evidence.
 
 ## Exploratory pilot protocol
+
+The original proposal below is retained as planning history. The [version-1 pilot kit](../learning-pilot.md) now specifies five sets, exact capture fields, comparison eligibility, denominators and ordered gates; use that protocol for preparation/reporting. No observations or recruited participants exist.
 
 Proposed scope: 4–6 voluntary learners who can independently read short street labels; exact ages/recruitment pending coordinator. Obtain guardian permission/learner assent where applicable; no automatic invitations/contact. Use local pseudonymous IDs; export no names, home addresses, tracks or audio. User coordinator controls participation; no one has been recruited.
 

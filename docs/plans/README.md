@@ -11,7 +11,7 @@ Plans are work packages with evidence-based completion, not claims that an appli
 | [03 SVG and print](queue/03-svg-and-print.md) | Queue: physical/device acceptance pending | 01; implemented 02 slice | Readable interactive/printed variants |
 | [04 Street lessons](queue/04-street-lessons.md) | Queue: core scoring/sessions implemented; address design prepared; curriculum/device acceptance pending | Implemented 02–03 slices | Deterministic exercises and rubric |
 | [05 Persistence and browser release](active/05-persistence-and-browser-release.md) | Active: recovery, preferences, keyboard checks and static packages implemented; hosted/device acceptance pending | Implemented 04 slice | Recoverable local app and static deployment |
-| [06 Learning pilot](queue/06-learning-pilot.md) | Queue | 05 | Exploratory usefulness/transfer evidence |
+| [06 Learning pilot](queue/06-learning-pilot.md) | Queue: protocol/reporting kit prepared; reviewed packs and participants pending | 05 | Exploratory usefulness/transfer evidence |
 | [07 Directions and simulation](queue/07-directions-and-simulation.md) | Queue | 05; 06 findings inform scope | Reviewed maneuvers and stationary playback |
 | [08 Topographic learning](queue/08-topographic-learning.md) | Queue | 01–05 shared core | Terrain layers and contour lessons |
 | [09 Delivery extensions](queue/09-delivery-extensions.md) | Queue | 05; demonstrated need | TinyJS/sync/scale decisions |
