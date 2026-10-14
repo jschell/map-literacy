@@ -8,9 +8,25 @@ export function createExplorer() {
   const viewport = get('explorer-map'), layer = get('explorer-tiles');
   let active = true, zoom = DEFAULT_VIEW.zoom, center = project(DEFAULT_VIEW.lon, DEFAULT_VIEW.lat, zoom), timer, generation = 0, lastView;
   const images = new Map(), pointers = new Map();
-  const streets = createGeographicStreets(get);
+  const streets = createGeographicStreets(get, () => updatePrintAvailability());
   let displayScale = 1, marking = '', pointerStart = null, dragged = false;
   const size = () => [viewport.clientWidth, viewport.clientHeight];
+  function tileSnapshot() {
+    if (!lastView || lastView.zoom !== zoom || lastView.orientation !== get('orientation').value || lastView.center.some((value, i) => value !== center[i])) return null;
+    const view = geographicView(center, zoom, lastView.orientation);
+    const tiles = visibleTiles(center, zoom, view.worldWidth, view.worldHeight);
+    if (!tiles.length || !tiles.every((tile) => { const image = images.get(tile.key); return image?.complete && image.naturalWidth > 0; })) return null;
+    return { view, tiles };
+  }
+  function currentVector() {
+    const view = streets.view(), focus = unproject(...center, zoom);
+    return streets.ready() && view.zoom === zoom && view.orientation === get('orientation').value && view.center.every((value, i) => Math.abs(value - focus[i]) <= 1e-9);
+  }
+  function updatePrintAvailability() {
+    const vector = currentVector(), tiles = tileSnapshot();
+    get('explorer-print').disabled = !vector && !tiles;
+    get('explorer-print-status').textContent = vector ? 'Ready to print the vector street map.' : tiles ? 'Ready to print the visible tile map. Vector street data is not ready; tile names are fixed and practice markings are unavailable.' : 'Print is waiting for map tiles or vector streets for this view.';
+  }
   function normalize() {
     const world = 256 * 2 ** zoom;
     center = [wrap(center[0], world), Math.max(0, Math.min(world, center[1]))];
@@ -55,10 +71,12 @@ export function createExplorer() {
       img.style.left = `${tile.x}px`; img.style.top = `${tile.y}px`;
       img.onload = img.onerror = () => {
         if (current !== generation) return;
+        updatePrintAvailability();
         const failed = [...images.values()].some((image) => image.complete && image.naturalWidth === 0);
         get('explorer-status').textContent = failed ? 'Some map tiles could not load. Check your connection, then Retry map tiles.' : 'Drag to browse. Zoom for street detail.';
       };
     }
+    updatePrintAvailability();
     const loaded = [...images.values()].every((image) => image.complete && image.naturalWidth > 0);
     const failed = [...images.values()].some((image) => image.complete && image.naturalWidth === 0);
     get('explorer-status').textContent = failed ? 'Some map tiles could not load. Check your connection, then Retry map tiles.' : loaded ? 'Drag to browse. Zoom for street detail.' : 'Loading visible map tiles…';
@@ -67,6 +85,7 @@ export function createExplorer() {
     if (!active) return;
     center[0] += dx / displayScale; center[1] += dy / displayScale;
     get('explorer-print').disabled = true;
+    get('explorer-print-status').textContent = 'Move the map to choose an area; printing is ready when the new view loads.';
     // Immediate visual drag; only request the settled visible view, without prefetch.
     const transform = layer.dataset.offset ? JSON.parse(layer.dataset.offset) : [0, 0];
     transform[0] -= dx; transform[1] -= dy;
@@ -94,9 +113,10 @@ export function createExplorer() {
     const snapshot = streets.snapshot();
     const focus = unproject(...center, zoom);
     if (!snapshot || snapshot.model.view.zoom !== zoom || snapshot.model.view.orientation !== get('orientation').value || snapshot.model.view.center.some((value, i) => Math.abs(value - focus[i]) > 1e-9)) {
-      get('geographic-paper-tiles').replaceChildren(); return false;
+      return prepareTilePrint();
     }
     get('geographic-print-status').textContent = '';
+    delete get('geographic-paper-tiles').dataset.rendering;
     const { view } = snapshot.model;
     get('geographic-print').dataset.orientation = view.orientation;
     get('geographic-print').dataset.center = `${view.center[1].toFixed(5)},${view.center[0].toFixed(5)}`;
@@ -105,6 +125,29 @@ export function createExplorer() {
     get('geographic-paper-tiles').replaceChildren(snapshot.svg);
     const coverage = `${snapshot.model.labels.length}/${snapshot.model.availableNames} street names`;
     get('geographic-paper-credit').textContent = `© OpenStreetMap contributors · openstreetmap.org/copyright · ${coverage} · ${snapshot.provenance.sourceAt ? 'Data ' + snapshot.provenance.sourceAt.slice(0, 10) : 'Fetched ' + snapshot.provenance.fetchedAt.slice(0, 10)} · source ${snapshot.provenance.sha256.slice(0, 12)}`;
+    return true;
+  }
+  function prepareTilePrint() {
+    const snapshot = tileSnapshot();
+    get('geographic-paper-tiles').replaceChildren();
+    if (!snapshot) return false;
+    const { view, tiles } = snapshot, holder = get('geographic-paper-tiles');
+    holder.dataset.rendering = 'tiles';
+    holder.dataset.appearance = get('explorer-appearance').value;
+    get('geographic-print').dataset.orientation = view.orientation;
+    get('geographic-print').dataset.center = `${view.center[1].toFixed(5)},${view.center[0].toFixed(5)}`;
+    get('geographic-paper-map').style.width = `${view.width}mm`;
+    get('geographic-paper-map').style.height = `${view.height}mm`;
+    for (const tile of tiles) {
+      const image = images.get(tile.key).cloneNode();
+      image.style.left = `${tile.x / view.worldWidth * view.width}mm`;
+      image.style.top = `${tile.y / view.worldHeight * view.height}mm`;
+      image.style.width = `${256 / view.worldWidth * view.width}mm`;
+      image.style.height = `${256 / view.worldHeight * view.height}mm`;
+      holder.append(image);
+    }
+    get('geographic-print-status').textContent = '';
+    get('geographic-paper-credit').textContent = '© OpenStreetMap contributors · openstreetmap.org/copyright · Tile map: fixed names; no practice markings. Vector street data unavailable.';
     return true;
   }
   get('explorer-print').onclick = () => {

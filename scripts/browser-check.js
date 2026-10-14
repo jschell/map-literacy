@@ -36,9 +36,14 @@ catch (error) { server?.kill(); throw error; }
 const desktopContext = await browser.newContext({ viewport: { width: 1280, height: 1000 } });
 await mockTiles(desktopContext);
 const page = await desktopContext.newPage();
-const errors = [];
+const errors = [], sourceRejectionMessages = [];
 page.on('pageerror', (e) => errors.push(e.message));
-page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); });
+page.on('console', (m) => {
+  if (m.type() !== 'error') return;
+  // The geographic failure test deliberately serves HTTP 406; account for every such response.
+  if (m.location().url.startsWith('https://overpass-api.de/') && m.text() === 'Failed to load resource: the server responded with a status of 406 (Not Acceptable)') sourceRejectionMessages.push(m.text());
+  else errors.push(m.text());
+});
 async function afterInstall(operation) {
   await page.waitForFunction(() => !document.getElementById('save-status')?.textContent.startsWith('Saving'));
   const version = await page.locator('#map').getAttribute('data-load-version');
@@ -470,6 +475,7 @@ try {
     await mobile.screenshot({ path: new URL('real-mobile.png', output).pathname, fullPage: true });
   }
   await mobile.close();
+  assert.equal(sourceRejectionMessages.length, geographicChecks.sourceRejections);
   assert.deepEqual(errors, []);
   console.log(JSON.stringify({ geographicChecks, syntheticFeatures: 6, pagesPackageChecks, storageChecks, autosaveChecks, preferenceChecks, accessibilityChecks, memoryLessonSessions: 'passed', sessionBackupControls: 'passed', variantsAndSelection: 'passed', labelEditingAndExport: 'passed', directedTracingAndPrint: 'passed', exerciseSheetsAndPagination: 'passed', boundedSearchAndRenderLimits: 'passed', invalidImportRetainsMap: 'passed', pdfDimensions: physical, mobileOverflow: false, realPack, browserErrors: errors }));
 } finally { await browser.close(); server?.kill(); }
