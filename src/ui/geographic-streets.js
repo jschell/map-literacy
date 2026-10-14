@@ -5,6 +5,7 @@ const contains = (outer, inner) => outer[0] <= inner[0] && outer[1] <= inner[1] 
 export function createGeographicStreets(get, onChange = () => {}) {
   let view, source, currentKey, timer, controller, version = 0, nextRequest = 0, model, svg, previewWidth;
   const cache = [], annotations = [];
+  const frameWidth = () => get('explorer-frame').getBoundingClientRect().width;
   const metrics = document.createElement('canvas').getContext('2d'); if (metrics) metrics.font = '8.5pt Arial';
   const measureText = (name) => metrics ? metrics.measureText(name).width * 25.4 / 96 : name.length * (8.5 * 25.4 / 72) * .53;
   const status = (text) => { get('explorer-street-status').textContent = text; onChange(); };
@@ -12,11 +13,12 @@ export function createGeographicStreets(get, onChange = () => {}) {
     if (!source || !view) return;
     model = geographicModel(source.features, view, { labels: get('explorer-labels').value, landmarks: get('explorer-landmarks').checked, measureText });
     svg = renderGeographic(document, model, { appearance: get('explorer-appearance').value, annotations, heading: get('explorer-heading').value === '' ? null : Number(get('explorer-heading').value) });
-    previewWidth = get('explorer-frame').clientWidth;
+    previewWidth = frameWidth();
     const minimumTextSize = 12 * view.width / Math.max(1, previewWidth);
     const fontSize = Math.max(8.5 * 25.4 / 72, minimumTextSize);
     const previewModel = geographicModel(source.features, view, { labels: get('explorer-labels').value, landmarks: get('explorer-landmarks').checked, fontSize, measureText: (name) => measureText(name) * fontSize / (8.5 * 25.4 / 72) });
     const preview = renderGeographic(document, previewModel, { appearance: get('explorer-appearance').value, annotations, heading: get('explorer-heading').value === '' ? null : Number(get('explorer-heading').value), minimumTextSize });
+    preview.dataset.previewWidth = String(previewWidth);
     get('explorer-vector').replaceChildren(preview);
     get('explorer-svg').disabled = false; get('explorer-source').disabled = false;
     status(`Print: ${model.labels.length}/${model.availableNames} street names · Preview: ${previewModel.labels.length} · ${model.unnamed} unnamed source roads/paths.${model.suppressed ? ` ${model.suppressed} names did not fit; zoom in for more room.` : ''} North up · 1:${Math.round(view.scaleDenominator).toLocaleString()}.`);
@@ -41,7 +43,7 @@ export function createGeographicStreets(get, onChange = () => {}) {
   function update(next, { retry = false } = {}) {
     const key = JSON.stringify([next.center, next.zoom, next.orientation]);
     view = next;
-    if (key === currentKey && !retry) { if (source && svg) { if (previewWidth !== get('explorer-frame').clientWidth) render(); else onChange(); } return; }
+    if (key === currentKey && !retry) { if (source && svg) { if (previewWidth !== frameWidth()) render(); else onChange(); } return; }
     currentKey = key; svg = null; model = null; version++; controller?.abort(); clearTimeout(timer);
     source = cache.find((entry) => contains(entry.provenance.bounds, view.bounds));
     if (source) { render(); return; }
@@ -50,6 +52,12 @@ export function createGeographicStreets(get, onChange = () => {}) {
     status('Loading street geometry and names…');
     timer = setTimeout(() => request(version), 650);
   }
+  // The frame can resize after the viewport callback as responsive layout settles.
+  // Observe its actual fractional width so label sizing follows the rendered SVG.
+  new ResizeObserver(() => {
+    const width = frameWidth();
+    if (source && view && width > 0 && width !== previewWidth) render();
+  }).observe(get('explorer-frame'));
   for (const id of ['explorer-appearance', 'explorer-labels', 'explorer-landmarks', 'explorer-heading']) get(id).addEventListener('change', render);
   const download = (content, type, name) => {
     const url = URL.createObjectURL(new Blob([content], { type })), link = document.createElement('a'); link.href = url; link.download = name; link.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
