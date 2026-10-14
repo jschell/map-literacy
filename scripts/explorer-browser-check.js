@@ -76,20 +76,36 @@ export async function checkExplorer(page, base) {
   assert.equal(await page.locator('#explorer-vector svg').getAttribute('viewBox'), beforeResize);
   assert.equal(await page.locator('#explorer-vector svg').getAttribute('data-scale'), scale);
   assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
-  const readablePreview = () => page.waitForFunction(() => {
+  const readablePreview = (expectedWidth) => page.waitForFunction((expectedWidth) => {
     const svg = document.querySelector('#explorer-vector svg');
-    if (!svg || Math.abs(Number(svg.dataset.previewWidth) - svg.getBoundingClientRect().width) > .05) return false;
+    if (!svg) return false;
+    const width = svg.getBoundingClientRect().width;
+    if (expectedWidth !== undefined && Math.abs(width - expectedWidth) > .05) return false;
+    const renderedWidth = Number(svg.dataset.previewWidth);
+    if (!Number.isFinite(renderedWidth) || Math.abs(renderedWidth - width) > .05) return false;
     const labels = [...svg.querySelectorAll('[data-street-label]:not([data-street-label=""])')];
-    return labels.length > 0 && labels.every((node) => Number(node.getAttribute('font-size')) * svg.getBoundingClientRect().width / svg.viewBox.baseVal.width >= 11.9);
-  });
+    return labels.length > 0 && labels.every((node) => Number(node.getAttribute('font-size')) * width / svg.viewBox.baseVal.width >= 11.9);
+  }, expectedWidth);
   await readablePreview();
-  // A frame-only resize must update typography without relying on a viewport resize.
-  await page.evaluate(() => {
-    const frame = document.getElementById('explorer-frame'), box = document.querySelector('#explorer-vector svg').viewBox.baseVal;
-    frame.style.width = '223.5px'; frame.style.height = `${223.5 * box.height / box.width}px`;
-  });
-  await readablePreview();
-  assert.equal(Number(await page.locator('#explorer-vector svg').getAttribute('data-preview-width')), 223.5);
+  // Isolate frame-only sizing from the explorer's legitimate inline layout updates.
+  // CSSOM keeps CSP intact; !important owns these test dimensions until cleanup.
+  for (const width of [231.5, 227.25, 223.5]) {
+    const rule = await page.evaluate((width) => {
+      const frame = document.getElementById('explorer-frame'), box = document.querySelector('#explorer-vector svg').viewBox.baseVal;
+      const sheet = document.styleSheets[0];
+      const index = sheet.insertRule(`#explorer-frame { width: ${width}px !important; height: ${width * box.height / box.width}px !important; }`, sheet.cssRules.length);
+      // Reproduce a late app layout write that previously overwrote the test width.
+      const previous = { width: frame.style.width, height: frame.style.height };
+      requestAnimationFrame(() => { frame.style.width = previous.width; frame.style.height = previous.height; });
+      return index;
+    }, width);
+    try {
+      await readablePreview(width);
+      assert.equal(await page.locator('#explorer-vector svg').getAttribute('viewBox'), beforeResize);
+      assert.equal(await page.locator('#explorer-vector svg').getAttribute('data-scale'), scale);
+    } finally { await page.evaluate((rule) => document.styleSheets[0].deleteRule(rule), rule); }
+    await readablePreview();
+  }
   // Check convergence after repeated responsive and fractional-width frame changes.
   for (const width of [641, 375, 321, 320]) {
     await page.setViewportSize({ width, height: 900 }); await readablePreview();
