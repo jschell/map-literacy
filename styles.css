@@ -135,3 +135,15 @@ h2.sheet-block { font-size: 12pt; line-height: 1.4; }
 
 #explorer-frame { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); border: 2px solid #174737; outline: 1px solid white; box-shadow: 0 0 0 1500px rgb(32 45 43 / 25%); pointer-events: none; }
 #explorer-frame-label { position: absolute; top: 6px; left: 6px; right: 6px; padding: 4px; background: white; color: #174737; font-size: 12px; }
+
+#geographic-print { display: none; }
+#geographic-paper-map { position: relative; overflow: hidden; margin: 0 auto; background: #dce4e1; }
+#geographic-paper-tiles { position: absolute; top: 0; left: 0; transform-origin: top left; }
+#geographic-paper-tiles img { position: absolute; width: 256px; height: 256px; max-width: none; }
+#geographic-paper-credit { padding-top: 2mm; font-size: 8pt; line-height: 1.2; }
+@media print {
+  body[data-print-target=geographic] #print-sheet, body[data-print-target=geographic] #exercise-pages { display: none !important; }
+  body[data-print-target=geographic] #geographic-print { display: block; break-inside: avoid; }
+  #geographic-print[data-orientation=landscape] { page: letter-landscape; width: 259.4mm; height: 195.9mm; }
+  #geographic-print[data-orientation=portrait] { page: letter-portrait; width: 195.9mm; height: 259.4mm; }
+}

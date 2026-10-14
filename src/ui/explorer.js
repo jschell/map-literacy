@@ -4,7 +4,7 @@ import { project, unproject, parseLocation, visibleTiles, wrap, DEFAULT_VIEW, pa
 export function createExplorer() {
   const get = (id) => document.getElementById(id);
   const viewport = get('explorer-map'), layer = get('explorer-tiles');
-  let active = true, zoom = DEFAULT_VIEW.zoom, center = project(DEFAULT_VIEW.lon, DEFAULT_VIEW.lat, zoom), timer, generation = 0;
+  let active = true, zoom = DEFAULT_VIEW.zoom, center = project(DEFAULT_VIEW.lon, DEFAULT_VIEW.lat, zoom), timer, generation = 0, lastView;
   const images = new Map(), pointers = new Map();
   const size = () => [viewport.clientWidth, viewport.clientHeight];
   function normalize() {
@@ -15,10 +15,11 @@ export function createExplorer() {
     if (viewport.clientWidth === 0 || viewport.clientHeight === 0) return;
     const orientation = get('orientation').value;
     const frame = pageFrame(...size(), orientation);
+    lastView = { orientation, frame, width: viewport.clientWidth, height: viewport.clientHeight, center: [...center], zoom };
     const outline = get('explorer-frame');
     outline.style.width = `${frame.width}px`; outline.style.height = `${frame.height}px`;
     outline.dataset.orientation = orientation;
-    get('explorer-frame-label').textContent = `US Letter · ${orientation} · page-shape guide`;
+    get('explorer-frame-label').textContent = `US Letter · ${orientation} · print area`;
   }
   function describe() {
     updateFrame();
@@ -72,6 +73,59 @@ export function createExplorer() {
       (center[1] + y - viewport.clientHeight / 2) * factor - y + viewport.clientHeight / 2];
     zoom = next; settle();
   }
+  function preparePrint() {
+    // beforeprint may run after print CSS hides the viewer: retain its last visible geometry.
+    updateFrame();
+    if (!lastView) return;
+    const { orientation, frame, width, height, center: printCenter, zoom: printZoom } = lastView;
+    const output = get('geographic-print'), crop = get('geographic-paper-tiles');
+    output.dataset.orientation = orientation;
+    const sheetWidth = orientation === 'portrait' ? 195.9 : 259.4;
+    const sheetHeight = orientation === 'portrait' ? 259.4 : 195.9;
+    const ratio = frame.width / frame.height;
+    const mapWidth = Math.min(sheetWidth, (sheetHeight - 10) * ratio), mapHeight = mapWidth / ratio;
+    get('geographic-paper-map').style.width = `${mapWidth}mm`;
+    get('geographic-paper-map').style.height = `${mapHeight}mm`;
+    crop.style.width = `${frame.width}px`; crop.style.height = `${frame.height}px`;
+    crop.style.transform = `scale(${mapWidth * 96 / 25.4 / frame.width})`;
+    const tiles = visibleTiles(printCenter, printZoom, width, height);
+    const copies = [];
+    for (const tile of tiles) {
+      if (tile.x + 256 <= (width - frame.width) / 2 || tile.x >= (width + frame.width) / 2 ||
+          tile.y + 256 <= (height - frame.height) / 2 || tile.y >= (height + frame.height) / 2) continue;
+      const image = images.get(tile.key)?.cloneNode();
+      if (!image) continue;
+      image.style.left = `${tile.x - (width - frame.width) / 2}px`;
+      image.style.top = `${tile.y - (height - frame.height) / 2}px`;
+      copies.push(image);
+    }
+    crop.replaceChildren(...copies);
+    const [lon, lat] = unproject(...printCenter, printZoom);
+    get('geographic-paper-credit').textContent = `© OpenStreetMap contributors · openstreetmap.org/copyright · ${lat.toFixed(5)}, ${lon.toFixed(5)} · Zoom ${printZoom}`;
+    output.dataset.center = `${lat.toFixed(5)},${lon.toFixed(5)}`;
+  }
+  let printing = false;
+  get('explorer-print').onclick = async () => {
+    if (printing) return;
+    printing = true; get('explorer-print').disabled = true;
+    let timeout;
+    try {
+      settle(); preparePrint();
+      const ready = Promise.all([...get('geographic-paper-tiles').children].map((image) => image.decode()));
+      await Promise.race([ready, new Promise((_, reject) => { timeout = setTimeout(() => reject(new Error('timeout')), 10000); })]);
+      document.body.dataset.printTarget = 'geographic';
+      window.print();
+    } catch {
+      get('explorer-status').textContent = 'Map tiles could not finish loading for print. Retry map tiles, then Print this map.';
+    } finally { clearTimeout(timeout); printing = false; get('explorer-print').disabled = false; }
+  };
+  window.addEventListener('beforeprint', () => {
+    if (document.body.dataset.printTarget === 'lesson' || document.body.dataset.printTarget === 'geographic') return;
+    if (!get('map').querySelector('svg')) {
+      document.body.dataset.printTarget = 'geographic'; preparePrint();
+    }
+  });
+  window.addEventListener('afterprint', () => { delete document.body.dataset.printTarget; });
   get('explorer-in').onclick = () => changeZoom(1);
   get('explorer-out').onclick = () => changeZoom(-1);
   get('explorer-world').onclick = () => { zoom = 2; center = project(0, 0, zoom); settle(); };

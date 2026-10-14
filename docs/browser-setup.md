@@ -11,7 +11,7 @@ npm run dev
 
 Open `http://127.0.0.1:4173`. The server binds loopback and serves only the app assets and synthetic fixture. `MAP_LITERACY_PORT` can select another port, but changing protocol, hostname or port selects a different browser storage area. Use a consistent address/profile to find saved progress. Do not open index.html directly from the filesystem.
 
-Load the synthetic map or import a validated pack. The geographic preview opens at a documented Redmond example (zoom 15), with a Letter page-shape guide following the saved portrait/landscape setting. No device location is requested and no lesson pack or saved session is selected automatically. Begin lesson session offers reviewed exercises only; real Redmond content remains an unreviewed draft. Practice while stationary.
+For a basic map, pan/zoom and choose Print this map. No lesson pack or session is required. Load the synthetic map or import a validated pack when you want lessons, labels or worksheets. The geographic preview opens at a documented Redmond example (zoom 15), with a Letter page-shape guide following the saved portrait/landscape setting. No device location is requested and no lesson pack or saved session is selected automatically. Begin lesson session offers reviewed exercises only; real Redmond content remains an unreviewed draft. Practice while stationary.
 
 ## Progress and view preferences
 

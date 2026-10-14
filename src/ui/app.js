@@ -130,7 +130,7 @@ get('rotate').addEventListener('click', () => { rotation = (rotation + 90) % 360
 for (const id of ['variant', 'scale', 'orientation']) get(id).addEventListener('change', () => preferences.changed());
 for (const id of ['heading', 'print-output', 'print-exercise']) get(id).addEventListener('change', updateView);
 get('feature').addEventListener('change', () => selectFeature(get('feature').value));
-get('print').addEventListener('click', () => { updateView(); if (!get('print').disabled) window.print(); });
+get('print').addEventListener('click', () => { updateView(); if (!get('print').disabled) { document.body.dataset.printTarget = 'lesson'; window.print(); } });
 let lastWidth = 0;
 new ResizeObserver(() => {
   const width = Math.round(get('map').clientWidth);

@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 
-const tileImage = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aWQAAAABJRU5ErkJggg==', 'base64');
+const tileImage = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAIAAAD8GO2jAAAAQklEQVR4nGMsmNnEQArICQogST0TSarJAKMWjFowasGoBaMWUAMw3nl9iSQNF+6zk6R+6AfRqAWjFoxaMGrBiLAAAJnTByem9lJlAAAAAElFTkSuQmCC', 'base64');
 export async function mockTiles(surface) {
   await surface.route('https://tile.openstreetmap.org/**', (route) => route.fulfill({ contentType: 'image/png', body: tileImage }));
 }
@@ -25,11 +25,28 @@ export async function checkExplorer(page, base) {
   await page.locator('#orientation').selectOption('landscape');
   await page.waitForFunction(() => [...document.querySelectorAll('#explorer-tiles img')].every((img) => img.complete && img.naturalWidth > 0));
   assert.ok(requests.length > 0 && requests.length <= 28);
-  const beforePrint = requests.length;
-  await page.emulateMedia({ media: 'print' });
-  await page.waitForTimeout(100);
-  assert.equal(requests.length, beforePrint, 'hidden print preview must not fetch geographic tiles');
-  await page.emulateMedia({ media: null });
+  // Direct print works from startup, without a lesson pack or session.
+  await page.evaluate(() => { window.originalGeographicPrint = window.print; window.geographicPrintCalls = 0; window.print = () => { window.geographicPrintCalls++; }; });
+  const startupUrls = new Set(requests);
+  for (const orientation of ['landscape', 'portrait']) {
+    await page.locator('#orientation').selectOption(orientation);
+    const calls = await page.evaluate(() => window.geographicPrintCalls);
+    await page.locator('#explorer-print').click();
+    await page.waitForFunction((previous) => window.geographicPrintCalls > previous, calls);
+    assert.equal(await page.locator('#map svg').count(), 0);
+    assert.equal(await page.locator('#geographic-print').getAttribute('data-center'), '47.67400,-122.12200');
+    assert.equal(await page.locator('#geographic-print').getAttribute('data-orientation'), orientation);
+    assert.ok(await page.locator('#geographic-paper-tiles img').count() > 0);
+    assert.match(await page.locator('#geographic-paper-credit').textContent(), /OpenStreetMap contributors/);
+    const pdf = await page.pdf({ path: new URL(`../artifacts/browser/geographic-${orientation}.pdf`, import.meta.url).pathname, preferCSSPageSize: true, printBackground: true });
+    const boxes = [...pdf.toString('latin1').matchAll(/\/MediaBox\s*\[0 0 ([\d.]+) ([\d.]+)\]/g)];
+    assert.equal(boxes.length, 1, 'basic map prints on one page');
+    assert.match(pdf.toString('latin1'), /\/Subtype\s*\/Image/, 'printed output includes map imagery');
+    assert.deepEqual(boxes[0].slice(1).map(Number), orientation === 'portrait' ? [612, 792] : [792, 612]);
+    assert.ok(requests.every((url) => startupUrls.has(url)), 'printing does not request a different area or zoom');
+  }
+  await page.locator('#orientation').selectOption('landscape');
+  await page.evaluate(() => { window.print = window.originalGeographicPrint; delete document.body.dataset.printTarget; });
   await page.locator('#explorer-location').fill('47.674, -122.122');
   await page.locator('#explorer-jump button').click();
   assert.match(await page.locator('#explorer-position').textContent(), /47.67400, -122.12200.*Zoom 15/);
@@ -71,10 +88,23 @@ export async function checkExplorer(page, base) {
     map.setPointerCapture = original;
   });
   assert.match(await page.locator('#explorer-position').textContent(), /Zoom 15/);
+  await page.evaluate(() => { window.print = () => { window.geographicPrintCalls++; }; });
+  const movedCenter = (await page.locator('#explorer-position').textContent()).match(/Center: ([^·]+)/)[1].trim().replace(', ', ',');
+  const movedCalls = await page.evaluate(() => window.geographicPrintCalls);
+  await page.locator('#explorer-print').click();
+  await page.waitForFunction((old) => window.geographicPrintCalls > old, movedCalls);
+  assert.equal(await page.locator('#geographic-print').getAttribute('data-center'), movedCenter);
+  await page.evaluate(() => { window.print = window.originalGeographicPrint; delete document.body.dataset.printTarget; });
   failTiles = true;
   await page.locator('#explorer-location').fill('https://www.openstreetmap.org/#map=19/70/100');
   await page.locator('#explorer-jump button').click();
   await page.waitForFunction(() => document.getElementById('explorer-status').textContent.startsWith('Some map tiles'));
+  await page.evaluate(() => { window.print = () => { window.geographicPrintCalls++; }; });
+  const failedCalls = await page.evaluate(() => window.geographicPrintCalls);
+  await page.locator('#explorer-print').click();
+  await page.waitForFunction(() => document.getElementById('explorer-status').textContent.startsWith('Map tiles could not finish loading for print'));
+  assert.equal(await page.evaluate(() => window.geographicPrintCalls), failedCalls, 'failed imagery must not open a blank print');
+  await page.evaluate(() => { window.print = window.originalGeographicPrint; });
   failTiles = false; await page.locator('#explorer-retry').click();
   await page.waitForFunction(() => [...document.querySelectorAll('#explorer-tiles img')].every((img) => img.complete && img.naturalWidth > 0));
   await page.locator('#explorer-world').click();
@@ -89,10 +119,14 @@ export async function checkExplorer(page, base) {
   await page.reload(); assert.equal(await page.locator('#explorer-map').isVisible(), true);
   await page.waitForFunction(() => document.getElementById('explorer-position').textContent.includes('Zoom 15'));
   await page.waitForFunction(() => document.getElementById('explorer-frame').dataset.orientation === 'portrait');
+  await page.waitForFunction(() => [...document.querySelectorAll('#explorer-tiles img')].every((image) => image.complete && image.naturalWidth > 0));
+  const shortcutPdf = await page.pdf({ preferCSSPageSize: true, printBackground: true });
+  assert.match(shortcutPdf.toString('latin1'), /\/Subtype\s*\/Image/, 'normal print shortcut on startup includes map imagery');
+  assert.match(shortcutPdf.toString('latin1'), /\/MediaBox\s*\[0 0 612 792\]/);
   const restoredFrame = await page.locator('#explorer-frame').boundingBox();
   assert.ok(Math.abs(restoredFrame.width / restoredFrame.height - 8.5 / 11) < 0.01);
   await page.locator('#orientation').selectOption('landscape');
   await page.waitForFunction(() => document.getElementById('preferences-status').textContent.includes('saved in this browser'));
   await page.unroute('https://tile.openstreetmap.org/**');
-  return { mockedTiles: requests.length, geographicNavigation: true, lessonUnchanged: true, defaultView: true, letterFrame: true };
+  return { mockedTiles: requests.length, geographicNavigation: true, lessonUnchanged: true, defaultView: true, letterFrame: true, directPrint: true };
 }
