@@ -1,3 +1,4 @@
+import { createExplorer } from './explorer.js';
 import { createPreferences } from './preferences.js';
 import { createLessons } from './lessons.js';
 import { readImport } from '../data/read-pack.js';
@@ -9,6 +10,7 @@ import { createLabelEditor } from './label-editor.js';
 import { createExercisePrint } from '../print/exercise.js';
 import { paginateExercise } from '../print/pages.js';
 import { renderMap, updateMapLabels } from '../map/render.js';
+let explorer = null;
 const get = (id) => document.getElementById(id);
 let pack = null, rotation = 0, selected = null, job = null, currentModel = null, loadVersion = 0;
 let printPagesKey = null, screenViewKey = null, paperViewKey = null, screenSelected = null, screenVariant = null, paperVariant = null;
@@ -28,6 +30,7 @@ function selectFeature(id) {
   editor.selectedFeature(selected); updateView();
 }
 function updateView() {
+  explorer?.updateFrame();
   if (!pack) return;
   const variant = get('variant').value, scaleDenominator = Number(get('scale').value);
   const orientation = get('orientation').value;
@@ -139,3 +142,5 @@ new ResizeObserver(() => {
   }
 }).observe(get('map-panel'));
 
+
+explorer = createExplorer();

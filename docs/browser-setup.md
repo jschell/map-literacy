@@ -11,7 +11,7 @@ npm run dev
 
 Open `http://127.0.0.1:4173`. The server binds loopback and serves only the app assets and synthetic fixture. `MAP_LITERACY_PORT` can select another port, but changing protocol, hostname or port selects a different browser storage area. Use a consistent address/profile to find saved progress. Do not open index.html directly from the filesystem.
 
-Load the synthetic map or import a validated pack. No location or saved session is selected automatically. Begin lesson session offers reviewed exercises only; real Redmond content remains an unreviewed draft. Practice while stationary.
+Load the synthetic map or import a validated pack. The geographic preview opens at a documented Redmond example (zoom 15), with a Letter page-shape guide following the saved portrait/landscape setting. No device location is requested and no lesson pack or saved session is selected automatically. Begin lesson session offers reviewed exercises only; real Redmond content remains an unreviewed draft. Practice while stationary.
 
 ## Progress and view preferences
 
@@ -36,7 +36,7 @@ Clearing browser storage does not remove downloaded JSON files or original impor
 No frontend compilation is needed. npm run release:build copies an explicit asset set into dist/site for Cloudflare/static hosts and dist/pages for GitHub Pages, with a deterministic local hash manifest. See [packaging and hosted setup](static-deployment.md). Both retain MIT code licensing and the synthetic fixture's CC0 notice. Exclude raw data, artifacts, node_modules, .git and local configuration. Serve correct HTML/CSS/JavaScript/JSON MIME types over HTTPS. Header-capable hosts use the same response CSP as the local server:
 
 ```text
-default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
+default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' https://tile.openstreetmap.org; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
 ```
 
 Also serve X-Content-Type-Options: nosniff. There are no runtime CDNs or inline scripts/styles. Cloudflare Workers Static Assets is the preferred full-header target; GitHub Pages has a prepared meta-CSP variant with explicitly weaker response-header coverage. Neither is published here. Network access is required to load app assets; no guaranteed offline mode or synchronization is provided.

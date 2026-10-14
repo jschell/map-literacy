@@ -67,3 +67,11 @@ Next action: hosted validation requires explicit publication authorization/accou
 
 
 
+
+Geographic usability follow-up (2026-10-14): hosted-demo feedback identified that a fixed pack viewer cannot browse to a desired area. The authorized scope now includes a separate vanilla-JavaScript geographic preview with explicit tile-service activation, mouse/touch/keyboard panning, anchored zoom, coordinate/OSM-permalink jumps and an external place-search link. It leaves pack/session/Letter output unchanged. Provider/CSP review and limits are recorded in docs/geographic-browsing.md. Integrated search and turning the selected area into a reviewed lesson pack remain next usability milestones, not implemented capabilities.
+
+Validation: 142 Node tests, fixture reproduction and the full packaged Chromium suite pass, including mocked tile navigation/failure recovery, 320-pixel enabled-map reflow and GitHub Pages project-prefix/meta-CSP checks. Existing lesson/progress/Letter checks pass. No hosted publication, actual touch-hardware or real provider availability success is claimed.
+
+Startup and print-shape correction: the user requested an immediately visible default map and zoom, with movable focus and orientation from settings. The geographic browser now starts on the documented Redmond example at zoom 15; no device location is requested. A centered Letter page-shape guide follows the shared orientation value, including loaded/saved/restored preferences, before any pack is loaded. This supersedes the previous explicit tile-activation step. The guide indicates page aspect only, not exact print scale or a generated lesson for the browsed area. Automated browser contexts intercept startup tiles as well as navigation.
+
+Correction validation: 143 Node tests and packaged Chromium checks pass for default startup, both page aspect ratios, saved-orientation reload, navigation and existing Letter output. Location search is placed below the map so the map/settings appear first.

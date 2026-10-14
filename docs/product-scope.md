@@ -33,3 +33,6 @@ Additional paper sizes (including A4, Legal and larger sheets), live GPS navigat
 ## Release gates
 
 Contract/schema definition; geographically reviewed packs; reproducible automated checks; target-browser interaction evidence; print-to-PDF inspection and actual-size monochrome paper checks for both Letter orientations; backup/recovery; documented limitations. Learning usefulness is a separate exploratory pilot gate, with transfer/retention results and no unsupported efficacy claim.
+
+Geographic browsing is a usability prerequisite added after hosted-demo feedback: open the default Redmond example at zoom 15, use a Letter orientation guide, pan/zoom to an area, or jump by coordinates/OpenStreetMap link. It does not infer device location or replace a pack/session. Reviewed lesson creation from the selected area, integrated geocoding and terrain previews remain follow-up work; see [geographic browsing](geographic-browsing.md).
+

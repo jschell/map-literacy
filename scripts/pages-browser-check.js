@@ -1,3 +1,4 @@
+import { checkExplorer } from './explorer-browser-check.js';
 import assert from 'node:assert/strict';
 import { once } from 'node:events';
 import { fileURLToPath } from 'node:url';
@@ -17,6 +18,7 @@ export async function checkPagesPackage(page) {
     const response = await preview.goto(base);
     assert.equal(response.headers()['content-security-policy'], undefined);
     assert.equal(await preview.locator('meta[http-equiv="Content-Security-Policy"]').getAttribute('content'), META_CSP);
+    const geographicChecks = await checkExplorer(preview, base);
     await preview.locator('#demo').click(); await preview.locator('#map svg').waitFor();
     assert.equal(await preview.locator('#map .feature').count(), 6);
     await preview.locator('#lesson-start').click();
@@ -37,7 +39,7 @@ export async function checkPagesPackage(page) {
     assert.equal(await preview.locator('#orientation').inputValue(), 'portrait');
     const pdf = await preview.pdf({ preferCSSPageSize: true, printBackground: true });
     assert.ok(/\/MediaBox\s*\[0 0 612 792\]/.test(pdf.toString('latin1')));
-    assert.ok(requests.every((url) => url.startsWith(base) || new URL(url).pathname === '/favicon.ico'), 'app assets stay under the project prefix');
+    assert.ok(requests.every((url) => url.startsWith(base) || url.startsWith('https://tile.openstreetmap.org/') || new URL(url).pathname === '/favicon.ico'), 'app assets stay under the project prefix');
     await preview.evaluate(() => {
       window.pagesViolations = [];
       document.addEventListener('securitypolicyviolation', (event) => window.pagesViolations.push(event.effectiveDirective));
@@ -46,7 +48,7 @@ export async function checkPagesPackage(page) {
     await preview.waitForFunction(() => window.pagesViolations.some((directive) => directive.startsWith('script-src')));
     assert.equal(await preview.evaluate(() => window.inlinePagesScriptRan === true), false);
     assert.deepEqual(errors, []);
-    return { projectPath: '/map-literacy/', metaCspBlocksInline: 'passed', reloadAndPreferences: 'passed', backup: 'passed', portraitPdf: 'passed' };
+    return { geographicChecks, projectPath: '/map-literacy/', metaCspBlocksInline: 'passed', reloadAndPreferences: 'passed', backup: 'passed', portraitPdf: 'passed' };
   } finally {
     await preview.close(); await new Promise((resolve) => server.close(resolve));
   }
