@@ -15,14 +15,14 @@
       <h2 id="explorer-title">Explore a place</h2>
       <p>Pan and zoom to choose an area. Map imagery loads from OpenStreetMap.</p>
       <div id="explorer-navigation">
-        <div class="controls"><label>Letter orientation<select id="orientation"><option value="landscape">Landscape (11 × 8.5 in)</option><option value="portrait">Portrait (8.5 × 11 in)</option></select></label><button id="explorer-in" type="button">Zoom in</button><button id="explorer-out" type="button">Zoom out</button><button id="explorer-world" type="button">World view</button><button id="explorer-retry" type="button">Retry map tiles</button><a id="explorer-link" class="map-action" href="https://www.openstreetmap.org/" target="_blank" rel="noopener">Open this view on OpenStreetMap ↗</a></div>
+        <div class="controls"><label>Letter orientation<select id="orientation"><option value="landscape">Landscape (11 × 8.5 in)</option><option value="portrait">Portrait (8.5 × 11 in)</option></select></label><button id="explorer-print" type="button">Print this map</button><button id="explorer-in" type="button">Zoom in</button><button id="explorer-out" type="button">Zoom out</button><button id="explorer-world" type="button">World view</button><button id="explorer-retry" type="button">Retry map tiles</button><a id="explorer-link" class="map-action" href="https://www.openstreetmap.org/" target="_blank" rel="noopener">Open this view on OpenStreetMap ↗</a></div>
       </div>
       <div id="explorer-map" class="geographic-map" tabindex="0" role="region" aria-label="Geographic map. Arrow keys pan; plus and minus zoom." aria-describedby="explorer-help"><div id="explorer-tiles" aria-hidden="true"></div><div id="explorer-frame" aria-hidden="true"><span id="explorer-frame-label"></span></div><span class="map-center" aria-hidden="true">+</span><a class="tile-attribution" href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap contributors</a></div>
       <p id="explorer-position" class="note"></p><p id="explorer-status" role="status" aria-live="polite">Loading the default Redmond example at zoom 15. No device location is used.</p>
         <form id="explorer-jump" class="controls"><label>Latitude, longitude or OpenStreetMap map link<input id="explorer-location" type="text" maxlength="500" placeholder="47.674, -122.122" required></label><button type="submit">Go to location</button></form>
         <div class="controls"><label>Place name<input id="explorer-place" type="search" maxlength="160" placeholder="City, neighborhood or landmark"></label><a id="explorer-search" class="map-action" href="https://www.openstreetmap.org/search" target="_blank" rel="noopener">Find place on OpenStreetMap ↗</a></div>
         <p class="note">Place search opens OpenStreetMap in another tab. Find your area there, copy its map URL, and paste it above to view it here.</p>
-      <p id="explorer-help" class="note">Drag with a mouse or finger; pinch to zoom. Focus the map to use the mouse wheel, arrow keys, or +/−. Move the map beneath the page-shape guide to choose a focus area. The guide follows Letter orientation; it does not show a fixed print scale or generate a lesson pack. Browsing does not change your loaded lesson, saved progress or printed worksheet. Custom lessons for a browsed area still require a prepared, reviewed pack.</p>
+      <p id="explorer-help" class="note">Drag with a mouse or finger; pinch to zoom. Focus the map to use the mouse wheel, arrow keys, or +/−. Move the map beneath the print area to choose a focus area. Print this map prints the outlined area in the selected Letter orientation. Browsing does not change your loaded lesson, saved progress or printed worksheet. Custom lessons for a browsed area still require a prepared, reviewed pack.</p>
     </section>
     <h2>Lesson map and print</h2>
     <section class="controls" aria-label="Map controls">
@@ -100,6 +100,10 @@
     </section>
     <p class="note">Reviewed street exercises save progress in this browser. Download backups against browser data loss. Live navigation is not available. Draft maps require review.</p>
   </main>
+  <section id="geographic-print" aria-label="Printable geographic map">
+    <div id="geographic-paper-map"><div id="geographic-paper-tiles"></div></div>
+    <footer id="geographic-paper-credit"></footer>
+  </section>
   <section data-orientation="landscape" id="print-sheet" aria-label="Printable map">
     <div id="paper-map"></div>
     <div class="worksheet"><strong id="paper-title"></strong><p id="paper-summary">Mark a route, indicate your heading and explain how the roads connect.</p></div>

@@ -36,3 +36,5 @@ Contract/schema definition; geographically reviewed packs; reproducible automate
 
 Geographic browsing is a usability prerequisite added after hosted-demo feedback: open the default Redmond example at zoom 15, use a Letter orientation guide, pan/zoom to an area, or jump by coordinates/OpenStreetMap link. It does not infer device location or replace a pack/session. Reviewed lesson creation from the selected area, integrated geocoding and terrain previews remain follow-up work; see [geographic browsing](geographic-browsing.md).
 
+
+Basic map viewing and printing must not depend on a lesson pack. Print this map prints the current geographic frame directly in the selected Letter orientation. Reviewed packs add learning activities, customized labels and worksheets; they are additive.
