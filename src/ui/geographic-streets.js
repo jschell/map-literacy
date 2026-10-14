@@ -2,12 +2,12 @@ import { acquireGeographicSource, geographicQuery } from '../data/geographic-sou
 import { geographicModel } from '../map/geographic.js';
 import { renderGeographic } from '../map/geographic-render.js';
 const contains = (outer, inner) => outer[0] <= inner[0] && outer[1] <= inner[1] && outer[2] >= inner[2] && outer[3] >= inner[3];
-export function createGeographicStreets(get) {
+export function createGeographicStreets(get, onChange = () => {}) {
   let view, source, currentKey, timer, controller, version = 0, nextRequest = 0, model, svg, previewWidth;
   const cache = [], annotations = [];
   const metrics = document.createElement('canvas').getContext('2d'); if (metrics) metrics.font = '8.5pt Arial';
   const measureText = (name) => metrics ? metrics.measureText(name).width * 25.4 / 96 : name.length * (8.5 * 25.4 / 72) * .53;
-  const status = (text) => { get('explorer-street-status').textContent = text; };
+  const status = (text) => { get('explorer-street-status').textContent = text; onChange(); };
   function render() {
     if (!source || !view) return;
     model = geographicModel(source.features, view, { labels: get('explorer-labels').value, landmarks: get('explorer-landmarks').checked, measureText });
@@ -17,7 +17,7 @@ export function createGeographicStreets(get) {
     const fontSize = Math.max(8.5 * 25.4 / 72, minimumTextSize);
     const previewModel = geographicModel(source.features, view, { labels: get('explorer-labels').value, landmarks: get('explorer-landmarks').checked, fontSize, measureText: (name) => measureText(name) * fontSize / (8.5 * 25.4 / 72) });
     const preview = renderGeographic(document, previewModel, { appearance: get('explorer-appearance').value, annotations, heading: get('explorer-heading').value === '' ? null : Number(get('explorer-heading').value), minimumTextSize });
-    get('explorer-vector').replaceChildren(preview); get('explorer-print').disabled = false;
+    get('explorer-vector').replaceChildren(preview);
     get('explorer-svg').disabled = false; get('explorer-source').disabled = false;
     status(`Print: ${model.labels.length}/${model.availableNames} street names · Preview: ${previewModel.labels.length} · ${model.unnamed} unnamed source roads/paths.${model.suppressed ? ` ${model.suppressed} names did not fit; zoom in for more room.` : ''} North up · 1:${Math.round(view.scaleDenominator).toLocaleString()}.`);
   }
@@ -35,18 +35,18 @@ export function createGeographicStreets(get) {
     } catch (error) {
       if (token !== version) return;
       if (error.retryMs) nextRequest = Math.max(nextRequest, Date.now() + error.retryMs);
-      status(active.signal.aborted ? 'Street source timed out. Retry map.' : error.message);
+      status(active.signal.aborted ? 'Street source timed out. Retry map.' : `${error.message} Basic map printing remains available when map tiles are loaded.`);
     } finally { clearTimeout(timeout); if (controller === active) controller = null; }
   }
   function update(next, { retry = false } = {}) {
     const key = JSON.stringify([next.center, next.zoom, next.orientation]);
     view = next;
-    if (key === currentKey && !retry) { if (source && svg) { if (previewWidth !== get('explorer-frame').clientWidth) render(); else get('explorer-print').disabled = false; } return; }
-    currentKey = key; version++; controller?.abort(); clearTimeout(timer);
+    if (key === currentKey && !retry) { if (source && svg) { if (previewWidth !== get('explorer-frame').clientWidth) render(); else onChange(); } return; }
+    currentKey = key; svg = null; model = null; version++; controller?.abort(); clearTimeout(timer);
     source = cache.find((entry) => contains(entry.provenance.bounds, view.bounds));
     if (source) { render(); return; }
-    get('explorer-vector').replaceChildren(); get('geographic-paper-tiles').replaceChildren(); get('explorer-print').disabled = true; get('explorer-svg').disabled = true; get('explorer-source').disabled = true;
-    try { geographicQuery(view.bounds); } catch (error) { status(error.message); return; }
+    get('explorer-vector').replaceChildren(); get('geographic-paper-tiles').replaceChildren(); get('explorer-svg').disabled = true; get('explorer-source').disabled = true;
+    try { geographicQuery(view.bounds); } catch (error) { status(`${error.message} Basic map printing remains available when map tiles are loaded.`); return; }
     status('Loading street geometry and names…');
     timer = setTimeout(() => request(version), 650);
   }
@@ -81,6 +81,6 @@ export function createGeographicStreets(get) {
       if (kind !== 'route') { const index = annotations.findIndex((a) => a.kind === kind); if (index !== -1) annotations.splice(index, 1); }
       annotations.push({ coordinate, kind }); render();
     },
-    invalidate() { currentKey = null; version++; controller?.abort(); clearTimeout(timer); source = null; svg = null; get('explorer-vector').replaceChildren(); get('geographic-paper-tiles').replaceChildren(); get('explorer-print').disabled = true; get('explorer-svg').disabled = true; get('explorer-source').disabled = true; }
+    invalidate() { currentKey = null; version++; controller?.abort(); clearTimeout(timer); source = null; svg = null; get('explorer-vector').replaceChildren(); get('geographic-paper-tiles').replaceChildren(); get('explorer-svg').disabled = true; get('explorer-source').disabled = true; onChange(); }
   };
 }
