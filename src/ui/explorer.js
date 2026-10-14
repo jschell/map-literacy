@@ -66,7 +66,7 @@ export function createExplorer() {
       let img = images.get(tile.key);
       if (!img) {
         img = document.createElement('img'); img.alt = ''; img.draggable = false;
-        images.set(tile.key, img); layer.append(img); img.src = tile.url;
+        images.set(tile.key, img); layer.append(img); img.crossOrigin = 'anonymous'; img.src = tile.url;
       }
       img.style.left = `${tile.x}px`; img.style.top = `${tile.y}px`;
       img.onload = img.onerror = () => {
@@ -139,7 +139,20 @@ export function createExplorer() {
     get('geographic-paper-map').style.width = `${view.width}mm`;
     get('geographic-paper-map').style.height = `${view.height}mm`;
     for (const tile of tiles) {
-      const image = images.get(tile.key).cloneNode();
+      const loaded = images.get(tile.key);
+      let image;
+      if (get('explorer-appearance').value === 'bw') {
+        image = document.createElement('canvas'); image.width = 256; image.height = 256;
+        const context = image.getContext('2d');
+        if (!context) throw new Error('This browser cannot prepare B&W map tiles. Choose Color or retry the vector map.');
+        context.drawImage(loaded, 0, 0, 256, 256);
+        const pixels = context.getImageData(0, 0, 256, 256);
+        for (let i = 0; i < pixels.data.length; i += 4) {
+          const gray = Math.round(.2126 * pixels.data[i] + .7152 * pixels.data[i + 1] + .0722 * pixels.data[i + 2]);
+          pixels.data[i] = pixels.data[i + 1] = pixels.data[i + 2] = gray;
+        }
+        context.putImageData(pixels, 0, 0);
+      } else image = loaded.cloneNode();
       image.style.left = `${tile.x / view.worldWidth * view.width}mm`;
       image.style.top = `${tile.y / view.worldHeight * view.height}mm`;
       image.style.width = `${256 / view.worldWidth * view.width}mm`;
@@ -152,7 +165,10 @@ export function createExplorer() {
   }
   get('explorer-print').onclick = () => {
     // Keep the native print call in the user's click. Do not await hidden image decode.
-    if (!preparePrint()) {
+    let prepared;
+    try { prepared = preparePrint(); }
+    catch { get('geographic-paper-tiles').replaceChildren(); get('explorer-status').textContent = 'B&W map tiles could not be prepared. Choose Color or retry the vector map.'; return; }
+    if (!prepared) {
       get('explorer-status').textContent = 'Street data is still loading or unavailable. Retry map when ready.';
       return;
     }

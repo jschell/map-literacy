@@ -1,14 +1,14 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { geographicFixture } from './geographic-fixture.js';
-const tileImage = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aWQAAAABJRU5ErkJggg==', 'base64');
+const tileImage = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVR4nGMwONAAAAKUAXE89+72AAAAAElFTkSuQmCC', 'base64');
 export async function mockTiles(surface) {
-  await surface.route('https://tile.openstreetmap.org/**', (route) => route.fulfill({ contentType: 'image/png', body: tileImage }));
+  await surface.route('https://tile.openstreetmap.org/**', (route) => route.fulfill({ headers: { 'access-control-allow-origin': '*' }, contentType: 'image/png', body: tileImage }));
   await surface.route('https://overpass-api.de/**', (route) => route.fulfill({ contentType: 'application/json', body: JSON.stringify(geographicFixture(new URLSearchParams(route.request().postData()).get('data'))) }));
 }
 export async function checkExplorer(page, base) {
   const requests = [], sourceRequests = []; let failSource = false, failTiles = false, releaseInitial, sourceRejections = 0; const initialSource = new Promise((resolve) => { releaseInitial = resolve; });
-  await page.route('https://tile.openstreetmap.org/**', (route) => { requests.push(route.request().url()); return route.fulfill({ contentType: 'image/png', body: failTiles ? Buffer.from('invalid tile') : tileImage }); });
+  await page.route('https://tile.openstreetmap.org/**', (route) => { requests.push(route.request().url()); return route.fulfill({ headers: { 'access-control-allow-origin': '*' }, contentType: 'image/png', body: failTiles ? Buffer.from('invalid tile') : tileImage }); });
   await page.route('https://overpass-api.de/**', (route) => {
     const query = new URLSearchParams(route.request().postData()).get('data'); sourceRequests.push(query);
     if (failSource === 'http') sourceRejections++;
@@ -19,11 +19,21 @@ export async function checkExplorer(page, base) {
   // Slow or blocked street data must not block printing an already visible map.
   await page.waitForFunction(() => !document.getElementById('explorer-print').disabled);
   assert.match(await page.locator('#explorer-print-status').textContent(), /visible tile map/);
-  await page.evaluate(() => { window.print = () => { window.basicPrintCalls = (window.basicPrintCalls ?? 0) + 1; }; });
+  await page.evaluate(() => {
+    window.basicPrintChecks = [];
+    document.getElementById('explorer-print').addEventListener('click', () => { window.basicClick = true; }, { capture: true });
+    document.getElementById('explorer-print').addEventListener('click', () => { window.basicClick = false; });
+    window.print = () => { window.basicPrintCalls = (window.basicPrintCalls ?? 0) + 1; window.basicPrintChecks.push(window.basicClick); };
+  });
   await page.locator('#explorer-print').click();
   assert.equal(await page.evaluate(() => window.basicPrintCalls), 1);
-  assert.ok(await page.locator('#geographic-paper-tiles img').count());
+  assert.deepEqual(await page.evaluate(() => window.basicPrintChecks), [true], 'pixel conversion preserves synchronous native printing');
+  assert.ok(await page.locator('#geographic-paper-tiles canvas, #geographic-paper-tiles img').count());
   assert.equal(await page.locator('#geographic-paper-tiles').getAttribute('data-appearance'), 'bw');
+  assert.ok(await page.locator('#geographic-paper-tiles canvas').evaluateAll((canvases) => canvases.length > 0 && canvases.every((canvas) => {
+    const pixel = canvas.getContext('2d').getImageData(128, 128, 1, 1).data;
+    return pixel[0] === pixel[1] && pixel[1] === pixel[2] && pixel[0] > 0 && pixel[0] < 255 && pixel[3] === 255;
+  })), 'B&W is encoded in actual tile pixels, independent of CSS print filters');
   assert.match(await page.locator('#geographic-paper-credit').textContent(), /Tile map: fixed names/);
   await page.evaluate(() => { delete document.body.dataset.printTarget; });
   releaseInitial(); await ready();
@@ -44,9 +54,9 @@ export async function checkExplorer(page, base) {
     const previous = await page.evaluate(() => window.mapPrintCalls);
     await page.locator('#explorer-print').click();
     assert.equal(await page.evaluate(() => window.mapPrintCalls), previous + 1);
-    assert.equal(await page.locator('#geographic-paper-tiles img').count(), 0, 'map output contains no raster imagery');
+    assert.equal(await page.locator('#geographic-paper-tiles canvas, #geographic-paper-tiles img').count(), 0, 'map output contains no raster imagery');
     assert.ok(await page.locator('#geographic-paper-tiles svg path[data-source-id]').count() >= 5);
-    const pdf = await page.pdf({ path: new URL(`../artifacts/browser/geographic-${orientation}.pdf`, import.meta.url).pathname, preferCSSPageSize: true, printBackground: true });
+    const pdf = await page.pdf({ path: new URL(`../artifacts/browser/geographic-${orientation}.pdf`, import.meta.url).pathname, preferCSSPageSize: true, printBackground: true, displayHeaderFooter: true, headerTemplate: '<span>Browser header</span>', footerTemplate: '<span>Browser footer</span>' });
     const boxes = [...pdf.toString('latin1').matchAll(/\/MediaBox\s*\[0 0 ([\d.]+) ([\d.]+)\]/g)];
     assert.equal(boxes.length, 1); assert.deepEqual(boxes[0].slice(1).map(Number), orientation === 'portrait' ? [612, 792] : [792, 612]);
     assert.equal(/\/Subtype\s*\/Image/.test(pdf.toString('latin1')), false, 'streets and names remain vector');
@@ -93,10 +103,21 @@ export async function checkExplorer(page, base) {
     await page.waitForFunction(() => !document.getElementById('explorer-print').disabled);
     await page.locator('#explorer-print').click();
     assert.equal(await page.locator('#geographic-print').getAttribute('data-orientation'), orientation);
-    const pdf = await page.pdf({ preferCSSPageSize: true, printBackground: true });
+    const pdf = await page.pdf({ path: new URL(`../artifacts/browser/tile-${orientation}.pdf`, import.meta.url).pathname, preferCSSPageSize: true, printBackground: true, displayHeaderFooter: true, headerTemplate: '<span>Browser header</span>', footerTemplate: '<span>Browser footer</span>' });
     const boxes = [...pdf.toString('latin1').matchAll(/\/MediaBox\s*\[0 0 ([\d.]+) ([\d.]+)\]/g)];
     assert.equal(boxes.length, 1); assert.deepEqual(boxes[0].slice(1).map(Number), orientation === 'portrait' ? [612, 792] : [792, 612]);
+    // Reduced printable area simulates browser chrome/default printer margins rather than an ideal full sheet.
+    const rule = await page.evaluate((orientation) => {
+      const sheet = document.styleSheets[0];
+      return sheet.insertRule(`@page geographic-${orientation} { size: Letter ${orientation}; margin: 24mm; }`, sheet.cssRules.length);
+    }, orientation);
+    const insetPdf = await page.pdf({ preferCSSPageSize: true, printBackground: true, displayHeaderFooter: true, headerTemplate: '<span>Browser header</span>', footerTemplate: '<span>Browser footer</span>' });
+    assert.equal([...insetPdf.toString('latin1').matchAll(/\/MediaBox\s*\[/g)].length, 1, 'map and attribution fit with browser chrome and larger margins');
+    await page.evaluate((rule) => document.styleSheets[0].deleteRule(rule), rule);
   }
+  await page.locator('#explorer-appearance').selectOption('color'); await page.locator('#explorer-print').click();
+  assert.ok(await page.locator('#geographic-paper-tiles img').count()); assert.equal(await page.locator('#geographic-paper-tiles canvas').count(), 0);
+  await page.locator('#explorer-appearance').selectOption('bw');
   failSource = false; await page.locator('#explorer-retry').click(); await ready();
   failSource = true; failTiles = true;
   await page.locator('#explorer-location').fill('https://www.openstreetmap.org/#map=17/55/10'); await page.locator('#explorer-jump button').click();
@@ -105,7 +126,7 @@ export async function checkExplorer(page, base) {
   failSource = false; failTiles = false; await page.locator('#explorer-retry').click(); await ready();
   await page.locator('#explorer-world').click(); await page.waitForFunction(() => document.getElementById('explorer-street-status').textContent.includes('Zoom in'));
   await page.waitForFunction(() => !document.getElementById('explorer-print').disabled);
-  await page.locator('#explorer-print').click(); assert.ok(await page.locator('#geographic-paper-tiles img').count());
+  await page.locator('#explorer-print').click(); assert.ok(await page.locator('#geographic-paper-tiles canvas, #geographic-paper-tiles img').count());
   await page.reload(); await ready(); assert.match(await page.locator('#explorer-position').textContent(), /Zoom 15/);
   assert.equal(await page.locator('#explorer-vector svg').getAttribute('viewBox'), initial);
   await page.unroute('https://tile.openstreetmap.org/**'); await page.unroute('https://overpass-api.de/**');
