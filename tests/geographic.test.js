@@ -2,7 +2,7 @@ import test from 'node:test';
 import { createHash } from 'node:crypto';
 import assert from 'node:assert/strict';
 import { project } from '../src/map/explorer.js';
-import { geographicView, geographicModel, clipSegment } from '../src/map/geographic.js';
+import { geographicView, geographicModel, clipSegment, streetLabel } from '../src/map/geographic.js';
 import { geographicQuery, parseGeographicSource, acquireGeographicSource } from '../src/data/geographic-source.js';
 import { geographicFixture } from '../scripts/geographic-fixture.js';
 const view = (orientation = 'landscape') => geographicView(project(-122.122, 47.674, 15), 15, orientation);
@@ -61,4 +61,45 @@ test('HTTP-date provider cooldown is respected without an automatic retry', asyn
   let calls = 0;
   await assert.rejects(acquireGeographicSource(view().bounds, { fetchImpl: async () => { calls++; return new Response('busy', { status: 503, headers: { 'retry-after': date } }); } }), (error) => error.retryMs > 80000);
   assert.equal(calls, 1);
+});
+
+
+test('street labels abbreviate English tokens while retaining full source names', () => {
+  assert.equal(streetLabel('Northeast 132nd Street'), 'NE 132nd St');
+  assert.equal(streetLabel('184th Avenue Northeast'), '184th Ave NE');
+  assert.equal(streetLabel('Rue du café'), 'Rue du café');
+  assert.equal(streetLabel('constructor __proto__ Avenue'), 'constructor __proto__ Ave');
+  const v = view(), features = parseGeographicSource(geographicFixture(geographicQuery(v.bounds))), model = geographicModel(features, v);
+  for (const label of model.labels) {
+    assert.equal(label.sourceName, features.find((f) => f.id === label.featureId).name);
+    if (label.placement === 'road') assert.ok(label.baselineLength >= label.textWidth + 2);
+    else assert.equal(label.leader.length, 2);
+  }
+});
+test('short road fragments and sharp bends cannot carry overlong labels', () => {
+  const v = view();
+  const road = (id, points, name = 'A Very Long Neighborhood Road') => ({ id, role: 'road', name, tags: { highway: 'residential' }, geometry: points.map(v.inverse) });
+  const tiny = geographicModel([road('way:1', [[40, 50], [42, 50]])], v);
+  assert.equal(tiny.labels[0].placement, 'callout'); assert.deepEqual(tiny.labels[0].leader[0].map(Math.round), [41, 50]);
+  const straight = geographicModel([road('way:2', Array.from({ length: 21 }, (_, i) => [10 + i * 8, 70]), 'Northeast 132nd Street')], v);
+  assert.equal(straight.labels.length, 1); assert.equal(straight.labels[0].text, 'NE 132nd St');
+  const bent = geographicModel([road('way:3', [[60, 60], [65, 60], [65, 65]])], v);
+  assert.equal(bent.labels.length, 1); assert.equal(bent.labels[0].placement, 'callout');
+});
+test('label placement avoids crossing road junctions and reserved legend boxes', () => {
+  const v = view(), road = (id, name, points) => ({ id, role: 'road', name, tags: { highway: 'residential' }, geometry: points.map(v.inverse) });
+  const model = geographicModel([road('way:1', 'Long Street', [[10, 70], [v.width - 10, 70]]), road('way:2', null, [[v.width / 2, 10], [v.width / 2, v.height - 10]])], v);
+  assert.equal(model.labels.length, 1);
+  const label = model.labels[0]; assert.ok(Math.abs(label.x - v.width / 2) > Math.max(4, label.fontSize * 1.5) / 2);
+  for (const region of model.furniture) assert.equal(label.box[0] < region[2] && label.box[2] > region[0] && label.box[1] < region[3] && label.box[3] > region[1], false);
+});
+
+
+test('same-name runs join source-shared nodes but never join distinct grade-separated nodes', () => {
+  const v = view(), road = (id, points, nodeIds) => ({ id, role: 'road', name: 'Long Street', nodeIds, tags: { highway: 'residential' }, geometry: points.map(v.inverse) });
+  const parts = [road('way:1', [[10, 70], [50, 70]], [1, 2]), road('way:2', [[50, 70], [90, 70]], [2, 3])];
+  const joined = geographicModel(parts, v, { measureText: () => 60 });
+  assert.equal(joined.labels.length, 1); assert.deepEqual(joined.labels[0].sourceIds, ['way:1', 'way:2']);
+  parts[1].nodeIds = [20, 3];
+  const separated = geographicModel(parts, v, { measureText: () => 60 }); assert.equal(separated.labels.length, 1); assert.equal(separated.labels[0].placement, 'callout'); 
 });

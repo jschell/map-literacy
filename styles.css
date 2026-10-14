@@ -144,10 +144,17 @@ h2.sheet-block { font-size: 12pt; line-height: 1.4; }
 #geographic-paper-tiles img, #geographic-paper-tiles canvas { position: absolute; width: 256px; height: 256px; max-width: none; }
 #geographic-paper-credit { height: 10mm; overflow-wrap: anywhere; padding-top: 2mm; font-size: 8pt; line-height: 1.2; }
 @media print {
-  body[data-print-target=geographic] #print-sheet, body[data-print-target=geographic] #exercise-pages { display: none !important; }
-  body[data-print-target=geographic] #geographic-print { display: grid; grid-template-rows: minmax(0, 1fr) 10mm; break-inside: avoid; margin: 0; padding: 0; max-width: 100%; }
-  #geographic-print[data-orientation=landscape] { page: geographic-landscape; width: 249.4mm; height: 161.9mm; }
-  #geographic-print[data-orientation=portrait] { page: geographic-portrait; width: 185.9mm; height: 225.4mm; }
+  /* One page context for the whole document; no named-page transition after the map. */
+  html:has(> body[data-print-target=geographic]) { height: 0; min-height: 0; margin: 0; padding: 0; overflow: visible; }
+  html:has(> body[data-print-target=geographic][data-print-orientation=landscape]) { page: geographic-landscape; }
+  html:has(> body[data-print-target=geographic][data-print-orientation=portrait]) { page: geographic-portrait; }
+  body[data-print-target=geographic] { height: 0; min-height: 0; margin: 0; padding: 0; page: inherit; }
+  body[data-print-target=geographic] > :not(#geographic-print) { display: none !important; }
+  body[data-print-target=geographic] #geographic-print {
+    display: block; position: fixed; top: 0; left: 0; right: 0;
+    height: auto; margin: 0; padding: 0; page: inherit;
+  }
+  body[data-print-target=geographic] #geographic-paper-credit { height: auto; }
 }
 
 #explorer-vector { position: absolute; inset: 0; pointer-events: none; }

@@ -39,8 +39,10 @@ export async function checkExplorer(page, base) {
   releaseInitial(); await ready();
   assert.equal(await page.locator('#map svg').count(), 0, 'no lesson pack is required');
   assert.equal(await page.locator('#explorer-appearance').inputValue(), 'bw');
+  assert.equal(await page.locator('#explorer-vector [data-source-name="First Avenue"]').textContent(), 'First Ave');
+  assert.equal(await page.locator('#explorer-vector [data-map-furniture]').count(), 2);
   assert.equal(await page.locator('#explorer-vector svg [data-street-label]:not([data-street-label=""])').count(), 4);
-  assert.match(await page.locator('#explorer-street-status').textContent(), /1 unnamed source roads/);
+  assert.match(await page.locator('#explorer-street-status').textContent(), /1 unnamed road\/path sections/);
   const initial = await page.locator('#explorer-vector svg').getAttribute('viewBox');
   await page.evaluate(() => {
     window.nativeMapPrint = window.print; window.originalMapDecode = HTMLImageElement.prototype.decode;
@@ -56,10 +58,19 @@ export async function checkExplorer(page, base) {
     assert.equal(await page.evaluate(() => window.mapPrintCalls), previous + 1);
     assert.equal(await page.locator('#geographic-paper-tiles canvas, #geographic-paper-tiles img').count(), 0, 'map output contains no raster imagery');
     assert.ok(await page.locator('#geographic-paper-tiles svg path[data-source-id]').count() >= 5);
+    await page.evaluate(() => {
+      const tail = document.createElement('section'); tail.id = 'print-flow-sentinel'; tail.style.height = '800mm'; tail.style.page = 'letter-landscape'; document.body.append(tail);
+    });
+    await page.emulateMedia({ media: 'print' });
+    assert.equal(await page.locator('#geographic-print').evaluate((node) => getComputedStyle(node).position), 'fixed');
+    assert.equal(await page.evaluate(() => getComputedStyle(document.documentElement).height), '0px');
+    assert.equal(await page.locator('#print-flow-sentinel').evaluate((node) => getComputedStyle(node).display), 'none');
     const pdf = await page.pdf({ path: new URL(`../artifacts/browser/geographic-${orientation}.pdf`, import.meta.url).pathname, preferCSSPageSize: true, printBackground: true, displayHeaderFooter: true, headerTemplate: '<span>Browser header</span>', footerTemplate: '<span>Browser footer</span>' });
     const boxes = [...pdf.toString('latin1').matchAll(/\/MediaBox\s*\[0 0 ([\d.]+) ([\d.]+)\]/g)];
     assert.equal(boxes.length, 1); assert.deepEqual(boxes[0].slice(1).map(Number), orientation === 'portrait' ? [612, 792] : [792, 612]);
     assert.equal(/\/Subtype\s*\/Image/.test(pdf.toString('latin1')), false, 'streets and names remain vector');
+    await page.evaluate(() => document.getElementById('print-flow-sentinel').remove());
+    await page.emulateMedia({ media: null });
   }
   assert.deepEqual(await page.evaluate(() => window.printChecks), [true, true]);
   await page.evaluate(() => { window.print = window.nativeMapPrint; HTMLImageElement.prototype.decode = window.originalMapDecode; delete document.body.dataset.printTarget; });
@@ -117,8 +128,8 @@ export async function checkExplorer(page, base) {
   await page.locator('summary').filter({ hasText: 'Practice markings' }).click();
   await page.locator('#explorer-mark-start').click(); await page.locator('#explorer-map').focus(); await page.keyboard.press('Enter');
   await page.locator('#explorer-heading').selectOption('90'); assert.equal(await page.locator('#explorer-vector [data-heading]').getAttribute('data-heading'), '90');
-  const downloadEvent = page.waitForEvent('download'); await page.locator('#explorer-svg').click(); const exportedSvg = await readFile(await (await downloadEvent).path(), 'utf8'); assert.ok(exportedSvg.includes('OpenStreetMap contributors') && exportedSvg.includes('ODbL-1.0'));
-  const sourceEvent = page.waitForEvent('download'); await page.locator('#explorer-source').click(); assert.ok(await (await sourceEvent).path());
+  const downloadEvent = page.waitForEvent('download'); await page.locator('#explorer-svg').click(); const exportedSvg = await readFile(await (await downloadEvent).path(), 'utf8'); assert.ok(exportedSvg.includes('OpenStreetMap contributors') && exportedSvg.includes('ODbL-1.0')); assert.ok(exportedSvg.includes('data-source-name="First Avenue"')); 
+  const sourceEvent = page.waitForEvent('download'); await page.locator('#explorer-source').click(); const sourceFile = await (await sourceEvent).path(); assert.ok(sourceFile); const sourceExport = JSON.parse(await readFile(sourceFile, 'utf8')); assert.equal(sourceExport.view.labelStyle, 'abbreviated-with-callouts-v1'); assert.ok(sourceExport.features.some((f) => f.name === 'First Avenue')); 
   const beforePan = await page.locator('#explorer-position').textContent(); await page.locator('#explorer-map').focus(); await page.keyboard.press('ArrowRight'); await ready();
   assert.notEqual(await page.locator('#explorer-position').textContent(), beforePan);
   const box = await page.locator('#explorer-map').boundingBox(); await page.mouse.move(box.x + 100, box.y + 200); await page.mouse.down(); await page.mouse.move(box.x + 160, box.y + 240); await page.mouse.up(); await ready();
