@@ -14,6 +14,7 @@
     "osm:prepare": "node scripts/prepare-osm.js",
     "osm:compare": "node scripts/compare-osm.js",
     "dev": "node scripts/dev-server.js",
+    "pilot:summary": "node scripts/summarize-pilot.js",
     "release:build": "node scripts/release.js build",
     "release:preview": "node scripts/release.js preview",
     "browser:release": "node scripts/release.js browser",

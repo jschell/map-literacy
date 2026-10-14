@@ -1,6 +1,6 @@
 # Plan 06 — Learning pilot
 
-Status: queued.
+Status: queued; protocol/capture/reporting kit prepared, reviewed materials and actual participation pending.
 Dependencies: 05; protocol defined in 01.
 
 ## Outcome
@@ -9,7 +9,7 @@ Assess whether the lessons help users understand maps beyond memorizing one work
 
 ## Work
 
-- [ ] Finalize small exploratory pilot and permission/privacy approach using Plan 01 rubric.
+- [x] Finalize small exploratory protocol, permission/privacy approach, blank capture template and bounded summary tool using Plan 01 rubric; no recruitment or results are implied.
 - [ ] Compare ordinary map study/worksheets with equivalent exposure and distinct map sets.
 - [ ] Record familiarity, position/heading accuracy, route validity, hints and explanation quality.
 - [ ] Include delayed assessment and unfamiliar map transfer.
@@ -29,4 +29,8 @@ Recruitment and real-world participation require user coordination; do not fabri
 
 ## Execution record
 
-No implementation completed. Record commits/PRs, test commands/results, manual evidence and remaining blockers here. Move to complete only when acceptance is supported. Next action: Finalize small exploratory pilot and permission/privacy approach using Plan 01 rubric.
+Prepared the [pilot kit](../../learning-pilot.md), blank observation template and Node summary tool. Five distinct sets separate baseline, two counterbalanced training conditions, immediate unfamiliar transfer and delayed transfer. Exposure/follow-up windows, first-response denominators, coached/missing data handling and factual/ambiguity/interface/continuation gates are explicit before data collection. The crossover design cannot establish treatment superiority; permission/equivalence flags remain coordinator assertions.
+
+Validation: invented software-test observations verify blank/no-result behavior, missing/late follow-up, actual zero versus null metrics, explicit denominators, revision gates, invalid/duplicate records, unequal exposure and small-cohort limits. No participant results are stored in the repository. The current four-exercise demo is not the required five-set/eight-item material.
+
+Next action: prepare/review five equivalent synthetic packs and matched Letter sheets before recruitment; coordinate permissions, devices and observations when available. Material approval and all learning/transfer/retention acceptance remain pending. A reporting-tool test pass does not authorize expanding lesson types.
