@@ -39,7 +39,7 @@ export async function checkPagesPackage(page) {
     assert.equal(await preview.locator('#orientation').inputValue(), 'portrait');
     const pdf = await preview.pdf({ preferCSSPageSize: true, printBackground: true });
     assert.ok(/\/MediaBox\s*\[0 0 612 792\]/.test(pdf.toString('latin1')));
-    assert.ok(requests.every((url) => url.startsWith(base) || url.startsWith('https://tile.openstreetmap.org/') || url.startsWith('https://overpass-api.de/') || new URL(url).pathname === '/favicon.ico'), 'app assets stay under the project prefix');
+    assert.ok(requests.every((url) => url.startsWith(base) || url.startsWith('https://tile.openstreetmap.org/') || url.startsWith('https://basemap.nationalmap.gov/') || url.startsWith('https://overpass-api.de/') || new URL(url).pathname === '/favicon.ico'), 'app assets stay under the project prefix');
     await preview.evaluate(() => {
       window.pagesViolations = [];
       document.addEventListener('securitypolicyviolation', (event) => window.pagesViolations.push(event.effectiveDirective));

@@ -1,3 +1,4 @@
+import { tileURL } from './basemaps.js';
 // Web Mercator is for geographic browsing only; lesson/print models retain their projection.
 export const DEFAULT_VIEW = Object.freeze({ lat: 47.674, lon: -122.122, zoom: 15 });
 export function pageFrame(width, height, orientation) {
@@ -36,12 +37,12 @@ export function parseLocation(text) {
   if (!values.every(Number.isFinite) || Math.abs(lat) > MAX_LATITUDE || Math.abs(lon) > 180 || zoom < 2 || zoom > 19) throw new Error('Use latitude within ±85.0511°, longitude within ±180°, and zoom 2–19.');
   return { lat, lon, zoom };
 }
-export function visibleTiles(center, zoom, width, height) {
+export function visibleTiles(center, zoom, width, height, kind = 'street') {
   const n = 2 ** zoom, left = center[0] - width / 2, top = center[1] - height / 2;
   const tiles = [];
   for (let y = Math.max(0, Math.floor(top / TILE_SIZE)); y <= Math.min(n - 1, Math.floor((top + height - 1) / TILE_SIZE)); y++) {
     for (let x = Math.floor(left / TILE_SIZE); x <= Math.floor((left + width - 1) / TILE_SIZE); x++) {
-      tiles.push({ key: `${zoom}/${x}/${y}`, url: `${TILE_ORIGIN}/${zoom}/${wrap(x, n)}/${y}.png`, x: x * TILE_SIZE - left, y: y * TILE_SIZE - top });
+      tiles.push({ key: `${kind}/${zoom}/${x}/${y}`, url: tileURL(kind, zoom, wrap(x, n), y), x: x * TILE_SIZE - left, y: y * TILE_SIZE - top });
     }
   }
   return tiles;

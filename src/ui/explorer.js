@@ -1,3 +1,4 @@
+import { BASEMAPS, USGS_ACKNOWLEDGMENT, rasterFurniture } from '../map/basemaps.js';
 import { geographicView } from '../map/geographic.js';
 import { createGeographicStreets } from './geographic-streets.js';
 import { project, unproject, parseLocation, visibleTiles, wrap, DEFAULT_VIEW, pageFrame } from '../map/explorer.js';
@@ -6,6 +7,7 @@ import { project, unproject, parseLocation, visibleTiles, wrap, DEFAULT_VIEW, pa
 export function createExplorer() {
   const get = (id) => document.getElementById(id);
   const viewport = get('explorer-map'), layer = get('explorer-tiles');
+  let basemap = 'street';
   let active = true, zoom = DEFAULT_VIEW.zoom, center = project(DEFAULT_VIEW.lon, DEFAULT_VIEW.lat, zoom), timer, generation = 0, lastView;
   const images = new Map(), pointers = new Map();
   const streets = createGeographicStreets(get, () => updatePrintAvailability());
@@ -14,16 +16,21 @@ export function createExplorer() {
   function tileSnapshot() {
     if (!lastView || lastView.zoom !== zoom || lastView.orientation !== get('orientation').value || lastView.center.some((value, i) => value !== center[i])) return null;
     const view = geographicView(center, zoom, lastView.orientation);
-    const tiles = visibleTiles(center, zoom, view.worldWidth, view.worldHeight);
+    const tiles = visibleTiles(center, zoom, view.worldWidth, view.worldHeight, basemap);
     if (!tiles.length || !tiles.every((tile) => { const image = images.get(tile.key); return image?.complete && image.naturalWidth > 0; })) return null;
     return { view, tiles };
   }
   function currentVector() {
     const view = streets.view(), focus = unproject(...center, zoom);
-    return streets.ready() && view.zoom === zoom && view.orientation === get('orientation').value && view.center.every((value, i) => Math.abs(value - focus[i]) <= 1e-9);
+    return basemap === 'street' && streets.ready() && view.zoom === zoom && view.orientation === get('orientation').value && view.center.every((value, i) => Math.abs(value - focus[i]) <= 1e-9);
   }
   function updatePrintAvailability() {
     const vector = currentVector(), tiles = tileSnapshot();
+    if (basemap === 'topo') {
+      get('explorer-print').disabled = !tiles;
+      get('explorer-print-status').textContent = tiles ? 'Ready to print the USGS topographic map. Raster contours and labels are fixed.' : 'Print is waiting for USGS topographic tiles for this view.';
+      return;
+    }
     get('explorer-print').disabled = !vector && !tiles;
     get('explorer-print-status').textContent = vector ? 'Ready to print the vector street map.' : tiles ? 'Ready to print the visible tile map. Vector street data is not ready; tile names are fixed and practice markings are unavailable.' : 'Print is waiting for map tiles or vector streets for this view.';
   }
@@ -43,7 +50,7 @@ export function createExplorer() {
     try {
       const streetView = geographicView(center, zoom, orientation);
       displayScale = get('explorer-frame').clientWidth / streetView.worldWidth;
-      if (sourceUpdate) streets.update(streetView);
+      if (sourceUpdate && basemap === 'street') streets.update(streetView);
     } catch (error) { streets.invalidate(); get('explorer-street-status').textContent = error.message; }
   }
   function describe({ sourceUpdate = true } = {}) {
@@ -51,16 +58,17 @@ export function createExplorer() {
     const [lon, lat] = unproject(...center, zoom);
     get('explorer-position').textContent = `Center: ${lat.toFixed(5)}, ${lon.toFixed(5)} · Zoom ${zoom}`;
     get('explorer-link').href = `https://www.openstreetmap.org/#map=${zoom}/${lat.toFixed(5)}/${lon.toFixed(5)}`;
-    get('explorer-out').disabled = zoom === 2; get('explorer-in').disabled = zoom === 19;
+    get('explorer-out').disabled = zoom === 2; get('explorer-in').disabled = zoom === BASEMAPS[basemap].maxZoom;
   }
   function paint() {
     // Print hides the geographic preview; do not request tiles for a hidden viewport.
     if (!active || viewport.clientWidth === 0 || viewport.clientHeight === 0 || matchMedia('print').matches) return;
     clearTimeout(timer); normalize(); describe();
+    layer.dataset.basemap = basemap; layer.dataset.appearance = get('explorer-appearance').value;
     layer.style.transformOrigin = '0 0';
     layer.style.transform = `scale(${displayScale})`;
     const current = ++generation, [width, height] = size();
-    const tiles = visibleTiles(center, zoom, width / displayScale, height / displayScale), keys = new Set(tiles.map((tile) => tile.key));
+    const tiles = visibleTiles(center, zoom, width / displayScale, height / displayScale, basemap), keys = new Set(tiles.map((tile) => tile.key));
     for (const [key, img] of images) if (!keys.has(key)) { img.remove(); images.delete(key); }
     for (const tile of tiles) {
       let img = images.get(tile.key);
@@ -73,13 +81,13 @@ export function createExplorer() {
         if (current !== generation) return;
         updatePrintAvailability();
         const failed = [...images.values()].some((image) => image.complete && image.naturalWidth === 0);
-        get('explorer-status').textContent = failed ? 'Some map tiles could not load. Check your connection, then Retry map tiles.' : 'Drag to browse. Zoom for street detail.';
+        get('explorer-status').textContent = failed ? 'Some map tiles could not load. Check your connection, then Retry map tiles.' : (basemap === 'topo' ? 'USGS Topo: drag to browse; zoom for contour detail.' : 'Drag to browse. Zoom for street detail.');
       };
     }
     updatePrintAvailability();
     const loaded = [...images.values()].every((image) => image.complete && image.naturalWidth > 0);
     const failed = [...images.values()].some((image) => image.complete && image.naturalWidth === 0);
-    get('explorer-status').textContent = failed ? 'Some map tiles could not load. Check your connection, then Retry map tiles.' : loaded ? 'Drag to browse. Zoom for street detail.' : 'Loading visible map tiles…';
+    get('explorer-status').textContent = failed ? 'Some map tiles could not load. Check your connection, then Retry map tiles.' : loaded ? (basemap === 'topo' ? 'USGS Topo: drag to browse; zoom for contour detail.' : 'Drag to browse. Zoom for street detail.') : 'Loading visible map tiles…';
   }
   function move(dx, dy) {
     if (!active) return;
@@ -102,7 +110,7 @@ export function createExplorer() {
   }
   function changeZoom(delta, x = viewport.clientWidth / 2, y = viewport.clientHeight / 2) {
     if (!active) return;
-    const next = Math.max(2, Math.min(19, zoom + delta));
+    const next = Math.max(2, Math.min(BASEMAPS[basemap].maxZoom, zoom + delta));
     if (next === zoom) return;
     const factor = 2 ** (next - zoom);
     center = [(center[0] + (x - viewport.clientWidth / 2) / displayScale) * factor - (x - viewport.clientWidth / 2) / displayScale,
@@ -110,7 +118,7 @@ export function createExplorer() {
     zoom = next; settle();
   }
   function preparePrint() {
-    const snapshot = streets.snapshot();
+    const snapshot = basemap === 'street' ? streets.snapshot() : null;
     const focus = unproject(...center, zoom);
     if (!snapshot || snapshot.model.view.zoom !== zoom || snapshot.model.view.orientation !== get('orientation').value || snapshot.model.view.center.some((value, i) => Math.abs(value - focus[i]) > 1e-9)) {
       return prepareTilePrint();
@@ -134,6 +142,7 @@ export function createExplorer() {
     if (!snapshot) return false;
     const { view, tiles } = snapshot, holder = get('geographic-paper-tiles');
     holder.dataset.rendering = 'tiles';
+    holder.dataset.basemap = basemap;
     holder.dataset.appearance = get('explorer-appearance').value;
     get('geographic-print').dataset.orientation = view.orientation;
     document.body.dataset.printOrientation = view.orientation;
@@ -162,7 +171,8 @@ export function createExplorer() {
       holder.append(image);
     }
     get('geographic-print-status').textContent = '';
-    get('geographic-paper-credit').textContent = '© OpenStreetMap contributors · openstreetmap.org/copyright · Tile map: fixed names; no practice markings. Vector street data unavailable.';
+    if (basemap === 'topo') holder.append(rasterFurniture(document, view));
+    get('geographic-paper-credit').textContent = basemap === 'topo' ? `${USGS_ACKNOWLEDGMENT} USGS Topo · raster contours; units as labeled · approximate center scale 1:${Math.round(view.scaleDenominator).toLocaleString()} · viewed ${new Date().toISOString().slice(0, 10)}.` : '© OpenStreetMap contributors · openstreetmap.org/copyright · Tile map: fixed names; no practice markings. Vector street data unavailable.';
     return true;
   }
   get('explorer-print').onclick = () => {
@@ -171,7 +181,7 @@ export function createExplorer() {
     try { prepared = preparePrint(); }
     catch { get('geographic-paper-tiles').replaceChildren(); get('explorer-status').textContent = 'B&W map tiles could not be prepared. Choose Color or retry the vector map.'; return; }
     if (!prepared) {
-      get('explorer-status').textContent = 'Street data is still loading or unavailable. Retry map when ready.';
+      get('explorer-status').textContent = 'The current map is still loading or unavailable. Retry map when ready.';
       return;
     }
     document.body.dataset.printTarget = 'geographic';
@@ -185,7 +195,7 @@ export function createExplorer() {
       document.body.dataset.printTarget = 'geographic';
       get('geographic-print').dataset.orientation = get('orientation').value;
       document.body.dataset.printOrientation = get('orientation').value;
-      if (!preparePrint()) get('geographic-print-status').textContent = 'Street data is not ready for this area. Close printing and retry the map.';
+      if (!preparePrint()) get('geographic-print-status').textContent = 'The current map is not ready for this area. Close printing and retry the map.';
     }
   });
   window.addEventListener('afterprint', () => {
@@ -196,12 +206,12 @@ export function createExplorer() {
   get('explorer-in').onclick = () => changeZoom(1);
   get('explorer-out').onclick = () => changeZoom(-1);
   get('explorer-world').onclick = () => { zoom = 2; center = project(0, 0, zoom); settle(); };
-  get('explorer-retry').onclick = () => { images.clear(); layer.replaceChildren(); settle(); try { streets.update(geographicView(center, zoom, get('orientation').value), { retry: true }); } catch {} };
+  get('explorer-retry').onclick = () => { images.clear(); layer.replaceChildren(); settle(); try { if (basemap === 'street') streets.update(geographicView(center, zoom, get('orientation').value), { retry: true }); } catch {} };
   get('explorer-jump').onsubmit = (event) => {
     event.preventDefault();
     try {
       const place = parseLocation(get('explorer-location').value);
-      zoom = place.zoom; center = project(place.lon, place.lat, zoom); settle(); viewport.focus();
+      zoom = Math.min(place.zoom, BASEMAPS[basemap].maxZoom); center = project(place.lon, place.lat, zoom); settle(); viewport.focus();
     } catch (error) { get('explorer-status').textContent = error.message; get('explorer-location').focus(); }
   };
   get('explorer-place').oninput = () => {
@@ -249,13 +259,30 @@ export function createExplorer() {
     for (const value of ['start', 'end', 'route']) get(`explorer-mark-${value}`).setAttribute('aria-pressed', String(marking === value));
   };
   viewport.addEventListener('click', (event) => {
-    if (!marking || dragged || !streets.ready() || event.target.closest('a')) return;
+    if (basemap !== 'street' || !marking || dragged || !streets.ready() || event.target.closest('a')) return;
     settle();
     const frame = get('explorer-vector').getBoundingClientRect(), view = streets.view();
     const x = event.clientX - frame.left, y = event.clientY - frame.top;
     if (x < 0 || y < 0 || x > frame.width || y > frame.height) return;
     streets.annotate(view.inverse([x / frame.width * view.width, y / frame.height * view.height]), marking);
   });
+  get('explorer-appearance').addEventListener('change', () => { layer.dataset.appearance = get('explorer-appearance').value; });
+  get('explorer-basemap').onchange = () => {
+    const focus = unproject(...center, zoom);
+    basemap = get('explorer-basemap').value;
+    zoom = Math.min(zoom, BASEMAPS[basemap].maxZoom); center = project(...focus, zoom);
+    generation++; images.clear(); layer.replaceChildren(); streets.invalidate();
+    delete layer.dataset.offset;
+    const topo = basemap === 'topo';
+    get('explorer-topo-help').hidden = !topo;
+    get('explorer-street-status').hidden = topo;
+    get('explorer-vector').hidden = topo;
+    for (const id of ['explorer-labels', 'explorer-landmarks', 'explorer-heading', 'explorer-mark-start', 'explorer-mark-end', 'explorer-mark-route', 'explorer-clear']) get(id).disabled = topo;
+    const credit = BASEMAPS[basemap]; get('explorer-credit').textContent = credit.credit; get('explorer-credit').href = credit.href;
+    settle();
+  };
   paint();
-  return { updateFrame };
+  // Orientation/preferences can change the geographic extent without resizing the viewport.
+  // Refresh tile coverage and readiness, not just the outline.
+  return { updateFrame: settle };
 }

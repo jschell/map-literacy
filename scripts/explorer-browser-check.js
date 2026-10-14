@@ -11,6 +11,7 @@ function assertVectorMapInk(pdf) {
 import { geographicFixture } from './geographic-fixture.js';
 const tileImage = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVR4nGMwONAAAAKUAXE89+72AAAAAElFTkSuQmCC', 'base64');
 export async function mockTiles(surface) {
+  await surface.route('https://basemap.nationalmap.gov/**', (route) => route.fulfill({ headers: { 'access-control-allow-origin': '*' }, contentType: 'image/png', body: tileImage }));
   await surface.route('https://tile.openstreetmap.org/**', (route) => route.fulfill({ headers: { 'access-control-allow-origin': '*' }, contentType: 'image/png', body: tileImage }));
   await surface.route('https://overpass-api.de/**', (route) => route.fulfill({ contentType: 'application/json', body: JSON.stringify(geographicFixture(new URLSearchParams(route.request().postData()).get('data'))) }));
 }
@@ -190,6 +191,51 @@ export async function checkExplorer(page, base) {
   await page.locator('#explorer-print').click(); assert.ok(await page.locator('#geographic-paper-tiles canvas, #geographic-paper-tiles img').count());
   await page.reload(); await ready(); assert.match(await page.locator('#explorer-position').textContent(), /Zoom 15/);
   assert.equal(await page.locator('#explorer-vector svg').getAttribute('viewBox'), initial);
+  // Topo must never print a stale street SVG or make street-source requests.
+  await page.evaluate(() => { window.topoOriginalPrint = window.print; window.print = () => {}; });
+  let failTopo = false; const topoRequests = [];
+  await page.route('https://basemap.nationalmap.gov/**', (route) => { topoRequests.push(route.request().url()); return route.fulfill({ headers: { 'access-control-allow-origin': '*' }, contentType: 'image/png', body: failTopo ? Buffer.from('invalid topo') : tileImage }); });
+  await page.locator('#explorer-basemap').selectOption('topo');
+  await page.waitForFunction(() => !document.getElementById('explorer-print').disabled);
+  const topoSourceRequests = sourceRequests.length;
+  assert.equal(await page.locator('#explorer-vector svg').count(), 0);
+  assert.equal(await page.locator('#explorer-svg').isDisabled(), true);
+  assert.equal(await page.locator('#explorer-labels').isDisabled(), true);
+  assert.match(await page.locator('#explorer-credit').textContent(), /USGS/);
+  for (const orientation of ['portrait', 'landscape']) {
+    await page.locator('#orientation').selectOption(orientation);
+    await page.waitForFunction(() => !document.getElementById('explorer-print').disabled);
+    await page.locator('#explorer-print').click();
+    assert.equal(await page.locator('#geographic-paper-tiles').getAttribute('data-basemap'), 'topo', JSON.stringify(await page.evaluate(() => ({status:document.getElementById('explorer-status').textContent, target:document.body.dataset.printTarget, map:document.getElementById('explorer-basemap').value, ready:document.getElementById('explorer-print-status').textContent}))));
+    assert.equal(await page.locator('#geographic-paper-tiles svg:not([data-raster-furniture])').count(), 0);
+    assert.ok(await page.locator('#geographic-paper-tiles canvas').evaluateAll((canvases) => canvases.length > 0 && canvases.every((canvas) => { const p = canvas.getContext('2d').getImageData(128, 128, 1, 1).data; return p[0] === p[1] && p[1] === p[2] && p[3] === 255; })));
+    assert.match(await page.locator('#geographic-paper-credit').textContent(), /U.S. Geological Survey/);
+    const pdf = await page.pdf({ path: new URL(`../artifacts/browser/topo-${orientation}.pdf`, import.meta.url).pathname, preferCSSPageSize: true, printBackground: true, displayHeaderFooter: true, headerTemplate: '<span>Header</span>', footerTemplate: '<span>Footer</span>' });
+    const boxes = [...pdf.toString('latin1').matchAll(/\/MediaBox\s*\[0 0 ([\d.]+) ([\d.]+)\]/g)];
+    assert.equal(boxes.length, 1); assert.deepEqual(boxes[0].slice(1).map(Number), orientation === 'portrait' ? [612, 792] : [792, 612]);
+    assert.match(pdf.toString('latin1'), /\/Subtype\s*\/Image/, 'topographic raster is embedded');
+  }
+  await page.locator('#explorer-appearance').selectOption('color'); await page.locator('#explorer-print').click();
+  assert.ok(await page.locator('#geographic-paper-tiles img').count());
+  await page.locator('#explorer-appearance').selectOption('bw');
+  await page.locator('#explorer-location').fill('https://www.openstreetmap.org/#map=19/47.674/-122.122'); await page.locator('#explorer-jump button').click();
+  await page.waitForFunction(() => !document.getElementById('explorer-print').disabled);
+  assert.match(await page.locator('#explorer-position').textContent(), /Zoom 16/);
+  assert.equal(await page.locator('#explorer-in').isDisabled(), true);
+  assert.equal(sourceRequests.length, topoSourceRequests);
+  assert.ok(topoRequests.every((url) => /\/tile\/(15|16)\/\d+\/\d+$/.test(url)));
+  failTopo = true; await page.locator('#explorer-location').fill('https://www.openstreetmap.org/#map=16/47.5/-122'); await page.locator('#explorer-jump button').click();
+  await page.waitForFunction(() => document.getElementById('explorer-status').textContent.includes('Some map tiles'));
+  assert.equal(await page.locator('#explorer-print').isDisabled(), true);
+  failTopo = false; await page.locator('#explorer-retry').click();
+  await page.waitForFunction(() => !document.getElementById('explorer-print').disabled);
+  await page.locator('#explorer-basemap').selectOption('street'); await ready();
+  assert.equal(await page.locator('#explorer-labels').isDisabled(), false);
+  assert.match(await page.locator('#explorer-credit').textContent(), /OpenStreetMap/);
+  await page.locator('#explorer-print').click();
+  assert.ok(await page.locator('#geographic-paper-tiles svg path[data-source-id]').count());
+  await page.evaluate(() => { window.print = window.topoOriginalPrint; delete window.topoOriginalPrint; delete document.body.dataset.printTarget; delete document.body.dataset.printOrientation; });
+  await page.unroute('https://basemap.nationalmap.gov/**');
   await page.unroute('https://tile.openstreetmap.org/**'); await page.unroute('https://overpass-api.de/**');
-  return { vectorPrint: true, sourceIndependentPrint: true, sourceRejections, printWithoutLesson: true, nativeClick: true, monochromeAndLabels: true, viewportIndependent: true, sourceRequests: sourceRequests.length };
+  return { topographicPrint: true, vectorPrint: true, sourceIndependentPrint: true, sourceRejections, printWithoutLesson: true, nativeClick: true, monochromeAndLabels: true, viewportIndependent: true, sourceRequests: sourceRequests.length };
 }

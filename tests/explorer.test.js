@@ -36,3 +36,13 @@ test('Letter guide fits desktop and phone viewports with the selected paper shap
     }
   }
 });
+
+test('USGS topo uses Web Mercator row/column addressing with isolated cache keys', async () => {
+  const { tileURL } = await import('../src/map/basemaps.js');
+  assert.equal(tileURL('topo', 15, 5268, 11434), 'https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/tile/15/11434/5268');
+  const center = project(-122.122, 47.674, 15);
+  const street = visibleTiles(center, 15, 640, 490), topo = visibleTiles(center, 15, 640, 490, 'topo');
+  assert.deepEqual(topo.map(({x,y}) => [x,y]), street.map(({x,y}) => [x,y]));
+  assert.ok(topo.every((tile) => !street.some((s) => s.key === tile.key)));
+  for (const args of [['topo', 17, 0, 0], ['topo', 16, 0, 65536], ['__proto__', 2, 0, 0], ['topo', 2, .5, 0]]) assert.throws(() => tileURL(...args));
+});
