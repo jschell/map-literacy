@@ -33,7 +33,7 @@ Reviewed 2026-10-13. Cloudflare Workers Static Assets is the preferred target wh
 | Option | Current baseline cost | Fit and limits |
 |---|---|---|
 | Cloudflare Workers Static Assets | Static requests and asset storage have no additional charge; no paid plan is required for this asset-only package | _headers can apply CSP/nosniff. Cloudflare recommends Workers for new projects. No Worker script, database, functions, domain purchase or runtime package is needed. |
-| GitHub Pages | Available for this public repository on GitHub Free | Static HTML/CSS/JS, HTTPS and a project URL. Prepared Actions template publishes only dist/pages. Meta CSP protects resources but does not meet the complete response-header requirement. |
+| GitHub Pages | Available for this public repository on GitHub Free | Static HTML/CSS/JS, HTTPS and a project URL. Manual Actions workflow publishes only dist/pages. Meta CSP protects resources but does not meet the complete response-header requirement. |
 
 GitHub Pages documentation provides a static publishing workflow, but no supported project-level custom-response-header mechanism was identified. Cloudflare's _headers file is not a GitHub Pages configuration. The Pages HTML policy retains self-only script/style/image/connect rules, object blocking and base/form restrictions, while omitting frame-ancestors because browsers do not support it in a meta element. It does not set nosniff or cache response headers. Do not report Pages as passing those response-header gates; use Cloudflare or another configured header-capable host when they are required. A meta policy applies after the element is parsed, so the generator inserts it before styles/scripts.
 
@@ -53,15 +53,15 @@ The final command publishes; do not run it as part of ordinary validation. These
 
 ## Prepared GitHub Pages setup
 
-The deployment template is [deploy/github-pages.workflow.yml](../deploy/github-pages.workflow.yml), outside .github/workflows so merging it cannot publish anything. After publication is authorized:
+The manually triggered workflow is [.github/workflows/pages.yml](../.github/workflows/pages.yml). It is installed for Pages preparation; merging code does not publish anything. When ready to publish the synthetic demo:
 
-1. Copy the template into .github/workflows/pages.yml in a reviewed PR. It runs manually on main; pushes/merges do not trigger publication.
+1. Merge the Pages preparation PR. The workflow runs manually on main; pushes/merges do not trigger publication.
 2. In repository Settings → Pages, choose GitHub Actions as the publishing source. Confirm environment/branch protection rules for github-pages.
 3. Run Publish reviewed static demo from Actions on main. It validates the fixture and tests both packages before uploading only dist/pages. The deploy job receives pages/id-token write permissions; the build job has read permissions.
 4. Use the URL returned by deployment. For the default project URL it should be https://jschell.github.io/map-literacy/; availability is not claimed until deployment succeeds. Keep the trailing slash so relative asset paths resolve correctly.
 5. Repeat hosted MIME, meta CSP, import, save/reload, backup, keyboard and Letter checks. Record the response-header limitations above separately from successful application behavior.
 
-This is an optional preparation path, not an enabled workflow or a live Pages site. A static synthetic demo does not establish a supported learner/browser release.
+The publishing workflow is prepared, but repository Pages setup and a manual deployment run are still required. This does not establish a live Pages site. A static synthetic demo does not establish a supported learner/browser release.
 
 ## Sources
 
