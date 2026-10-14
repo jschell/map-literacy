@@ -119,6 +119,7 @@ export function createExplorer() {
     delete get('geographic-paper-tiles').dataset.rendering;
     const { view } = snapshot.model;
     get('geographic-print').dataset.orientation = view.orientation;
+    document.body.dataset.printOrientation = view.orientation;
     get('geographic-print').dataset.center = `${view.center[1].toFixed(5)},${view.center[0].toFixed(5)}`;
     get('geographic-paper-map').style.width = `${view.width}mm`;
     get('geographic-paper-map').style.height = `${view.height}mm`;
@@ -135,6 +136,7 @@ export function createExplorer() {
     holder.dataset.rendering = 'tiles';
     holder.dataset.appearance = get('explorer-appearance').value;
     get('geographic-print').dataset.orientation = view.orientation;
+    document.body.dataset.printOrientation = view.orientation;
     get('geographic-print').dataset.center = `${view.center[1].toFixed(5)},${view.center[0].toFixed(5)}`;
     get('geographic-paper-map').style.width = `${view.width}mm`;
     get('geographic-paper-map').style.height = `${view.height}mm`;
@@ -178,15 +180,17 @@ export function createExplorer() {
     catch { get('explorer-status').textContent = 'The browser could not open printing. Use its Print command for this map.'; }
   };
   window.addEventListener('beforeprint', () => {
-    if (document.body.dataset.printTarget === 'lesson' || document.body.dataset.printTarget === 'geographic') return;
-    if (!get('map').querySelector('svg')) {
+    if (document.body.dataset.printTarget === 'lesson') return;
+    if (document.body.dataset.printTarget === 'geographic' || !get('map').querySelector('svg')) {
       document.body.dataset.printTarget = 'geographic';
       get('geographic-print').dataset.orientation = get('orientation').value;
+      document.body.dataset.printOrientation = get('orientation').value;
       if (!preparePrint()) get('geographic-print-status').textContent = 'Street data is not ready for this area. Close printing and retry the map.';
     }
   });
   window.addEventListener('afterprint', () => {
     delete document.body.dataset.printTarget;
+    delete document.body.dataset.printOrientation;
     get('explorer-status').textContent = 'Print dialog closed. Drag to browse or print again.';
   });
   get('explorer-in').onclick = () => changeZoom(1);

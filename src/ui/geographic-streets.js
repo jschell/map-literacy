@@ -21,7 +21,7 @@ export function createGeographicStreets(get, onChange = () => {}) {
     preview.dataset.previewWidth = String(previewWidth);
     get('explorer-vector').replaceChildren(preview);
     get('explorer-svg').disabled = false; get('explorer-source').disabled = false;
-    status(`Print: ${model.labels.length}/${model.availableNames} street names · Preview: ${previewModel.labels.length} · ${model.unnamed} unnamed source roads/paths.${model.suppressed ? ` ${model.suppressed} names did not fit; zoom in for more room.` : ''} North up · 1:${Math.round(view.scaleDenominator).toLocaleString()}.`);
+    status(`Print: ${model.labels.length}/${model.availableNames} street names · Preview: ${previewModel.labels.length} · ${model.unnamed} unnamed road/path sections.${model.suppressed ? ` ${model.suppressed} names did not fit; zoom in for more room.` : ''} North up · 1:${Math.round(view.scaleDenominator).toLocaleString()}.`);
   }
   async function request(token) {
     if (token !== version) return;
@@ -73,7 +73,7 @@ export function createGeographicStreets(get, onChange = () => {}) {
     credit.textContent = '© OpenStreetMap contributors · openstreetmap.org/copyright';
     exported.append(metadata, copy, credit); download(new XMLSerializer().serializeToString(exported), 'image/svg+xml', 'street-map.svg');
   };
-  get('explorer-source').onclick = () => { if (source) download(JSON.stringify({ format: 'map-literacy-geographic-source-v1', ...source, view: { center: view.center, zoom: view.zoom, orientation: view.orientation, appearance: get('explorer-appearance').value, labels: get('explorer-labels').value, landmarkNames: get('explorer-landmarks').checked, heading: get('explorer-heading').value === '' ? null : Number(get('explorer-heading').value) }, annotations }, null, 2), 'application/json', 'street-map-source.json'); };
+  get('explorer-source').onclick = () => { if (source) download(JSON.stringify({ format: 'map-literacy-geographic-source-v1', ...source, view: { center: view.center, zoom: view.zoom, orientation: view.orientation, appearance: get('explorer-appearance').value, labels: get('explorer-labels').value, labelStyle: 'abbreviated-with-callouts-v1', landmarkNames: get('explorer-landmarks').checked, heading: get('explorer-heading').value === '' ? null : Number(get('explorer-heading').value) }, annotations }, null, 2), 'application/json', 'street-map-source.json'); };
   get('explorer-clear').onclick = () => { annotations.length = 0; render(); };
   return {
     update,
