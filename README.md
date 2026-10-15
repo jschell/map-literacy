@@ -8,8 +8,11 @@ Street lessons cover orientation, roads, landmarks, addresses, return routes and
 
 Geographic printing now uses source-backed vector roads and street names, with B&W/color and labeled/partial/blank controls, physical-size type, north/scale, and optional practice markings. Basic map printing remains available from loaded map tiles while vector data is loading or unavailable; this fallback has fixed tile names and no practice markings. B&W applies to either output. Basic map use does not require a lesson pack. Street data loads from a bounded, cached Overpass prototype; provider/device/physical-paper acceptance and broader rollout remain separate gates. See [print cartography and remaining acceptance](docs/print-cartography.md).
 
+Choose **Topographic — USGS (US)** in the map-type selector to browse source contours and print the current area in B&W or color on Letter paper. This first topo mode uses raster imagery; editable contours, elevation queries and terrain lessons are future work. See [topographic browsing and source details](docs/topographic-browsing.md).
+
 ## Start here
 
+- [Topo maps: contours, B&W print and source limits](docs/topographic-browsing.md)
 - [Browse real areas: controls and provider limits](docs/geographic-browsing.md)
 - [Scope and first release](docs/product-scope.md)
 - [Architecture proposal](docs/architecture.md)

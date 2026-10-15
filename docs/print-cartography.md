@@ -83,3 +83,6 @@ A bounded manual default-area source probe succeeded, followed by local replay f
 The post-PR-34 device PDF contains one blank page with Safari chrome and no map or attribution. The fixed print layer inside zero-height root/body elements failed on the affected device; a one-page count alone was insufficient acceptance evidence. That layout is superseded: the geographic layer now participates in normal block flow, with automatic root/body heights, a single inherited page context, hidden unrelated content and an unfragmented map/credit block. Existing map dimensions, label placement and synchronous native print remain unchanged.
 
 The browser regression requires positive map/body flow height and checks generated PDF content streams for street paths and map text, in addition to page count, Letter orientation and absence of raster images. A deliberately hidden map with browser headers/footers must fail that content check. Local Chromium evidence does not establish Safari behavior; affected-device printing remains required after deployment.
+
+
+USGS topo raster viewing/printing is now available as an optional map type, with B&W pixel conversion and the same Letter workflow. Editable contour cartography and terrain exercises remain future Plan 08 work; see [topographic browsing](topographic-browsing.md).

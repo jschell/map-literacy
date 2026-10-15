@@ -10,8 +10,7 @@ Planning defaults: browser first, shared lesson packs, SVG teaching maps, local 
 
 ## First useful release
 
-- Open a usable geographic map and print the selected area without importing a pack or beginning a lesson; no inferred device/home location.
-- Default B&W cartography, readable source street names, independent label controls and print resolution/layout independent of screen size.
+- Explicitly select/import a pack; no inferred home location.
 - One reviewed real neighborhood and synthetic maps with known answers.
 - Orientation/heading, endpoint location, connectivity/route tracing and detour exercises.
 - Labeled, partial and blank map variants with consistent extent.
@@ -20,8 +19,6 @@ Planning defaults: browser first, shared lesson packs, SVG teaching maps, local 
 - Resume after refresh, recover from malformed import and show incomplete/unreviewed content clearly.
 
 Route-preview and simulation are subsequent capabilities. Address-system lessons require locally documented patterns. Topographic lessons need elevation/contour data and a separate correctness model.
-
-The current geographic raster print is not acceptance of these requirements. The next work is the [print cartography correction](print-cartography.md); reviewed packs add exercises and worksheets without blocking basic map use.
 
 ## Learning progression
 
@@ -37,7 +34,9 @@ Additional paper sizes (including A4, Legal and larger sheets), live GPS navigat
 
 Contract/schema definition; geographically reviewed packs; reproducible automated checks; target-browser interaction evidence; print-to-PDF inspection and actual-size monochrome paper checks for both Letter orientations; backup/recovery; documented limitations. Learning usefulness is a separate exploratory pilot gate, with transfer/retention results and no unsupported efficacy claim.
 
-Geographic browsing is a usability prerequisite added after hosted-demo feedback: open the default Redmond example at zoom 15, use a Letter orientation guide, pan/zoom to an area, or jump by coordinates/OpenStreetMap link. It does not infer device location or replace a pack/session. Reviewed lesson creation from the selected area, integrated geocoding and terrain previews remain follow-up work; see [geographic browsing](geographic-browsing.md).
+Geographic browsing is a usability prerequisite added after hosted-demo feedback: open the default Redmond example at zoom 15, use a Letter orientation guide, pan/zoom to an area, or jump by coordinates/OpenStreetMap link. It does not infer device location or replace a pack/session. Reviewed lesson creation from the selected area, integrated geocoding and numerical terrain data remain follow-up work; see [geographic browsing](geographic-browsing.md).
 
 
 Basic map viewing and printing must not depend on a lesson pack. Print this map prints the current geographic frame directly in the selected Letter orientation. Reviewed packs add learning activities, customized labels and worksheets; they are additive.
+
+USGS Topo raster browsing and direct Letter B&W/color printing are implemented separately from street lesson packs. This supplies source-drawn contours and shaded relief; numerical terrain/contour lessons remain pending. See [topographic browsing](topographic-browsing.md).

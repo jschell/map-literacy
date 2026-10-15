@@ -1,6 +1,6 @@
 # Plan 08 — Topographic data and learning
 
-Status: queued.
+Status: printable USGS raster preview implemented; elevation/contour lesson pipeline queued.
 Dependencies: 01–05 shared foundation; source research may start earlier.
 
 ## Outcome
@@ -8,6 +8,8 @@ Dependencies: 01–05 shared foundation; source research may start earlier.
 Add terrain interpretation to the shared pack/renderer/lesson system without equating a hillshade with elevation.
 
 ## Work
+
+- [ ] Add a terrain-focused view: contours/elevation labels and water with sparse major roads/trails; optional light relief, no building/label clutter. Verify separate USGS contour/transportation service exports, scale/units/alignment and B&W readability (see ../../topographic-browsing.md).
 
 - [ ] Select one bounded terrain area and synthetic elevation fixtures; compare USGS 3DEP products for US coverage/resolution/license/access.
 - [ ] Define raster/contour schema: horizontal CRS, vertical reference, units, resolution, origin/grid orientation, nodata, source/version and uncertainty.
@@ -34,4 +36,9 @@ OSM is not a complete DEM source. USGS candidate is US-specific; global sources 
 
 ## Execution record
 
-No implementation completed. Record commits/PRs, test commands/results, manual evidence and remaining blockers here. Move to complete only when acceptance is supported. Next action: Select one bounded terrain area and synthetic elevation fixtures; compare USGS 3DEP products for US coverage/resolution/license/access.
+2026-10-14: user requested topographic viewing and B&W Letter printing after street printing worked on Safari. The first slice uses the official USGS Topo cached raster service, with provider separation, north/approximate center scale, exact USGS acknowledgment, B&W pixel conversion and color output. No DEM, numerical elevation queries, editable contours or terrain lesson support is advertised. USGS tiles include their own cartography and cannot support blank/partial names or independent hillshade controls. See ../../topographic-browsing.md for current source review and boundaries.
+
+Remaining work above is still open. Next action after device print review: select a bounded 3DEP product and define the versioned terrain schema, then implement synthetic grid/contour validation. Keep street-core import rejecting unsupported terrain packs until that contract is implemented.
+
+
+First-slice verification: 155 Node tests and complete packaged Chromium browser checks pass, including both topo paper orientations, grayscale pixels, provider switch/zoom/failure recovery and street regression checks. Real default USGS imagery was replayed and visually checked in a one-page B&W landscape PDF. Safari topo and physical-paper checks remain pending.

@@ -175,3 +175,7 @@ h2.sheet-block { font-size: 12pt; line-height: 1.4; }
 
 #geographic-paper-tiles[data-rendering=tiles] { position: relative; overflow: hidden; }
 
+
+#geographic-paper-tiles svg[data-raster-furniture] { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+
+#explorer-tiles[data-basemap=topo][data-appearance=bw] { filter: grayscale(1); }
