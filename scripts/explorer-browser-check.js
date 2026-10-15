@@ -15,6 +15,22 @@ export async function mockTiles(surface) {
   await surface.route('https://tile.openstreetmap.org/**', (route) => route.fulfill({ headers: { 'access-control-allow-origin': '*' }, contentType: 'image/png', body: tileImage }));
   await surface.route('https://overpass-api.de/**', (route) => route.fulfill({ contentType: 'application/json', body: JSON.stringify(geographicFixture(new URLSearchParams(route.request().postData()).get('data'))) }));
 }
+async function checkPdfDownload(page, orientation, kind) {
+  // Simulate a browser keeping native paper portrait: exported MediaBox must still match the choice.
+  const rule = await page.evaluate(() => { const sheet = document.styleSheets[0]; return sheet.insertRule('@page geographic-landscape { size: Letter portrait; }', sheet.cssRules.length); });
+  try {
+    const downloading = page.waitForEvent('download');
+    await page.locator('#explorer-pdf').click();
+    const download = await downloading, output = new URL(`../artifacts/browser/download-${kind}-${orientation}.pdf`, import.meta.url).pathname;
+    await download.saveAs(output);
+    const pdf = await readFile(output), text = pdf.toString('latin1');
+    assert.equal((text.match(/\/Type \/Page\b/g) ?? []).length, 1);
+    assert.ok(text.includes(`/MediaBox [0 0 ${orientation === 'landscape' ? '792 612' : '612 792'}]`));
+    assert.ok(text.includes('/DCTDecode'));
+    assert.ok(Number(text.match(/\/DCTDecode \/Length (\d+)/)[1]) > 10000, 'page image contains more than an empty page');
+    assert.equal(await page.locator('#explorer-pdf-link').isVisible(), true);
+  } finally { await page.evaluate((rule) => document.styleSheets[0].deleteRule(rule), rule); }
+}
 export async function checkExplorer(page, base) {
   const requests = [], sourceRequests = []; let failSource = false, failTiles = false, releaseInitial, sourceRejections = 0; const initialSource = new Promise((resolve) => { releaseInitial = resolve; });
   await page.route('https://tile.openstreetmap.org/**', (route) => { requests.push(route.request().url()); return route.fulfill({ headers: { 'access-control-allow-origin': '*' }, contentType: 'image/png', body: failTiles ? Buffer.from('invalid tile') : tileImage }); });
@@ -88,6 +104,7 @@ export async function checkExplorer(page, base) {
     }
     await page.evaluate(() => document.getElementById('print-flow-sentinel').remove());
     await page.emulateMedia({ media: null });
+    await checkPdfDownload(page, orientation, 'street');
   }
   assert.deepEqual(await page.evaluate(() => window.printChecks), [true, true]);
   await page.evaluate(() => { window.print = window.nativeMapPrint; HTMLImageElement.prototype.decode = window.originalMapDecode; delete document.body.dataset.printTarget; });
@@ -214,9 +231,11 @@ export async function checkExplorer(page, base) {
     const boxes = [...pdf.toString('latin1').matchAll(/\/MediaBox\s*\[0 0 ([\d.]+) ([\d.]+)\]/g)];
     assert.equal(boxes.length, 1); assert.deepEqual(boxes[0].slice(1).map(Number), orientation === 'portrait' ? [612, 792] : [792, 612]);
     assert.match(pdf.toString('latin1'), /\/Subtype\s*\/Image/, 'topographic raster is embedded');
+    await checkPdfDownload(page, orientation, 'topo');
   }
   await page.locator('#explorer-appearance').selectOption('color'); await page.locator('#explorer-print').click();
   assert.ok(await page.locator('#geographic-paper-tiles img').count());
+  await checkPdfDownload(page, 'landscape', 'topo-color');
   await page.locator('#explorer-appearance').selectOption('bw');
   await page.locator('#explorer-location').fill('https://www.openstreetmap.org/#map=19/47.674/-122.122'); await page.locator('#explorer-jump button').click();
   await page.waitForFunction(() => !document.getElementById('explorer-print').disabled);
@@ -237,5 +256,5 @@ export async function checkExplorer(page, base) {
   await page.evaluate(() => { window.print = window.topoOriginalPrint; delete window.topoOriginalPrint; delete document.body.dataset.printTarget; delete document.body.dataset.printOrientation; });
   await page.unroute('https://basemap.nationalmap.gov/**');
   await page.unroute('https://tile.openstreetmap.org/**'); await page.unroute('https://overpass-api.de/**');
-  return { topographicPrint: true, vectorPrint: true, sourceIndependentPrint: true, sourceRejections, printWithoutLesson: true, nativeClick: true, monochromeAndLabels: true, viewportIndependent: true, sourceRequests: sourceRequests.length };
+  return { exactLetterPdf: true, topographicPrint: true, vectorPrint: true, sourceIndependentPrint: true, sourceRejections, printWithoutLesson: true, nativeClick: true, monochromeAndLabels: true, viewportIndependent: true, sourceRequests: sourceRequests.length };
 }
