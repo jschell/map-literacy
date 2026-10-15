@@ -91,3 +91,6 @@ USGS topo raster viewing/printing is now available as an optional map type, with
 ### Explicit Letter PDF orientation
 
 A later Safari topo sample had visible map/credit on one page but its actual MediaBox remained portrait despite landscape selection. Native @page orientation is not treated as reliable device control. Geographic Download Letter PDF now writes an exact one-page portrait/landscape MediaBox, using a 200 dpi raster snapshot of the same prepared map and attribution. Native vector printing remains available; downloaded street text/geometry is rasterized. See [PDF output](pdf-output.md) for fidelity, limits and acceptance.
+
+
+PDF page-fill follow-up: the first exact-page download retained the smaller native-print map box and browser-header/footer reserve. Download-only layout now fits the same extent/aspect ratio inside 8 mm margins plus measured 8 pt attribution lines. Raster positions, vector snapshot and scale furniture enlarge together; the generated topo numeric scale is divided by that enlargement. Native print dimensions remain unchanged. Page utilization is verified from decoded topo-fixture JPEG pixels as well as layout geometry.
