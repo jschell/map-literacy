@@ -1,3 +1,4 @@
+import { monochrome } from '../print/monochrome.js';
 import { geographicPdf } from '../export/geographic-pdf.js';
 import { BASEMAPS, USGS_ACKNOWLEDGMENT, rasterFurniture } from '../map/basemaps.js';
 import { geographicView } from '../map/geographic.js';
@@ -67,6 +68,7 @@ export function createExplorer() {
     if (!active || viewport.clientWidth === 0 || viewport.clientHeight === 0 || matchMedia('print').matches) return;
     clearTimeout(timer); normalize(); describe();
     layer.dataset.basemap = basemap; layer.dataset.appearance = get('explorer-appearance').value;
+    get('explorer-topo-contrast-wrap').hidden = basemap !== 'topo' || get('explorer-appearance').value !== 'bw';
     layer.style.transformOrigin = '0 0';
     layer.style.transform = `scale(${displayScale})`;
     const current = ++generation, [width, height] = size();
@@ -160,10 +162,7 @@ export function createExplorer() {
         if (!context) throw new Error('This browser cannot prepare B&W map tiles. Choose Color or retry the vector map.');
         context.drawImage(loaded, 0, 0, 256, 256);
         const pixels = context.getImageData(0, 0, 256, 256);
-        for (let i = 0; i < pixels.data.length; i += 4) {
-          const gray = Math.round(.2126 * pixels.data[i] + .7152 * pixels.data[i + 1] + .0722 * pixels.data[i + 2]);
-          pixels.data[i] = pixels.data[i + 1] = pixels.data[i + 2] = gray;
-        }
+        monochrome(pixels.data, basemap === 'topo' ? get('explorer-topo-contrast').value : 'standard');
         context.putImageData(pixels, 0, 0);
       } else image = loaded.cloneNode();
       image.style.left = `${tile.x / view.worldWidth * view.width}mm`;
@@ -185,11 +184,11 @@ export function createExplorer() {
     try {
       if (!preparePrint()) throw new Error('The current map is not ready. Retry PDF download.');
       const view = geographicView([...center], zoom, get('orientation').value);
-      const bytes = await geographicPdf(document, { view, children: [...get('geographic-paper-tiles').children], credit: get('geographic-paper-credit').textContent });
+      const bytes = await geographicPdf(document, { view, children: [...get('geographic-paper-tiles').children], credit: get('geographic-paper-credit').textContent, appearance: get('explorer-appearance').value });
       if (pdfUrl) URL.revokeObjectURL(pdfUrl);
       pdfUrl = URL.createObjectURL(new Blob([bytes], { type: 'application/pdf' }));
       link.href = pdfUrl; link.download = `map-literacy-${view.orientation}-${new Date().toISOString().replace(/[:.]/g, '-')}.pdf`; link.hidden = false;
-      get('explorer-pdf-status').textContent = `PDF ready: US Letter ${view.orientation}. Save the generated snapshot below, then print it at actual size. Map and text are rendered at 200 dpi; source tile detail is unchanged.`;
+      get('explorer-pdf-status').textContent = `PDF ready: US Letter ${view.orientation}. Save the generated snapshot below, then print it at actual size. Map and text use lossless 200 dpi output; source tile detail is unchanged.`;
       link.click();
     } catch (error) { get('explorer-pdf-status').textContent = error.message || 'PDF could not be prepared. Retry PDF download.'; }
     finally { makingPdf = false; get('explorer-pdf').removeAttribute('aria-busy'); }
@@ -285,7 +284,7 @@ export function createExplorer() {
     if (x < 0 || y < 0 || x > frame.width || y > frame.height) return;
     streets.annotate(view.inverse([x / frame.width * view.width, y / frame.height * view.height]), marking);
   });
-  get('explorer-appearance').addEventListener('change', () => { layer.dataset.appearance = get('explorer-appearance').value; });
+  get('explorer-appearance').addEventListener('change', () => { layer.dataset.appearance = get('explorer-appearance').value; get('explorer-topo-contrast-wrap').hidden = basemap !== 'topo' || get('explorer-appearance').value !== 'bw'; });
   get('explorer-basemap').onchange = () => {
     const focus = unproject(...center, zoom);
     basemap = get('explorer-basemap').value;

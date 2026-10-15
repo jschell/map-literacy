@@ -181,3 +181,5 @@ h2.sheet-block { font-size: 12pt; line-height: 1.4; }
 #explorer-tiles[data-basemap=topo][data-appearance=bw] { filter: grayscale(1); }
 
 #explorer-pdf-link[hidden] { display: none; }
+
+#explorer-topo-contrast-wrap[hidden] { display: none; }

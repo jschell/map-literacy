@@ -42,3 +42,6 @@ Remaining work above is still open. Next action after device print review: selec
 
 
 First-slice verification: 155 Node tests and complete packaged Chromium browser checks pass, including both topo paper orientations, grayscale pixels, provider switch/zoom/failure recovery and street regression checks. Real default USGS imagery was replayed and visually checked in a one-page B&W landscape PDF. Safari topo and physical-paper checks remain pending.
+
+
+B&W fidelity follow-up (2026-10-15): the user accepted physical page fit and requested sharper B&W output. Implemented a selectable stronger-midtones topo print curve and lossless grayscale/RGB PDF samples, preserving Letter geometry and native street vectors. Automated quality gates measure a known synthetic contour fixture: at least 25% nominal contrast gain, all 11 thin-line sample centers retained and zero PDF compression sample error. See [quality method and measured limits](../../print-quality.md). Raster source resolution, baked-in shading and separate contour-first services remain unchanged; actual paper comparison of this treatment remains pending.
