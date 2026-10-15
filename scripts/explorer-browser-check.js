@@ -22,6 +22,7 @@ async function checkPdfDownload(page, orientation, kind) {
     const downloading = page.waitForEvent('download');
     await page.locator('#explorer-pdf').click();
     const download = await downloading, output = new URL(`../artifacts/browser/download-${kind}-${orientation}.pdf`, import.meta.url).pathname;
+    assert.match(download.suggestedFilename(), /^map-literacy-(landscape|portrait)-\d{4}-\d{2}-\d{2}T[\d-]+Z\.pdf$/);
     await download.saveAs(output);
     const pdf = await readFile(output), text = pdf.toString('latin1');
     assert.equal((text.match(/\/Type \/Page\b/g) ?? []).length, 1);

@@ -188,7 +188,7 @@ export function createExplorer() {
       const bytes = await geographicPdf(document, { view, children: [...get('geographic-paper-tiles').children], credit: get('geographic-paper-credit').textContent });
       if (pdfUrl) URL.revokeObjectURL(pdfUrl);
       pdfUrl = URL.createObjectURL(new Blob([bytes], { type: 'application/pdf' }));
-      link.href = pdfUrl; link.download = `map-literacy-${view.orientation}.pdf`; link.hidden = false;
+      link.href = pdfUrl; link.download = `map-literacy-${view.orientation}-${new Date().toISOString().replace(/[:.]/g, '-')}.pdf`; link.hidden = false;
       get('explorer-pdf-status').textContent = `PDF ready: US Letter ${view.orientation}. Save the generated snapshot below, then print it at actual size. Map and text are rendered at 200 dpi; source tile detail is unchanged.`;
       link.click();
     } catch (error) { get('explorer-pdf-status').textContent = error.message || 'PDF could not be prepared. Retry PDF download.'; }

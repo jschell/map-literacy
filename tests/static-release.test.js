@@ -84,3 +84,23 @@ test('GitHub Pages preview resolves only the selected project prefix without add
   assert.equal((await fetch(base + '/map-literacy/src/ui/app.js')).status, 200);
   assert.equal((await fetch(base + '/src/ui/app.js')).status, 404);
 });
+
+test('changing a leaf module invalidates cached root, importer, leaf and stylesheet URLs', async (t) => {
+  const root = await fixture(t);
+  await writeFile(join(root, 'index.html'), '<head>\n  <meta charset="utf-8">\n<link rel="stylesheet" href="styles.css"><script type="module" src="src/ui/app.js"></script></head>');
+  await writeFile(join(root, 'src/ui/app.js'), "import { value } from './leaf.js'; export const loaded = value;");
+  await writeFile(join(root, 'src/ui/leaf.js'), "export const value = 'old';");
+  await buildStatic(root);
+  const firstHtml = await readFile(join(root, 'dist/pages/index.html'), 'utf8'), firstApp = await readFile(join(root, 'dist/pages/src/ui/app.js'), 'utf8');
+  const oldVersion = firstHtml.match(/app\.js\?v=([a-f0-9]{16})/)[1];
+  assert.ok(firstApp.includes(`./leaf.js?v=${oldVersion}`));
+  assert.ok(firstHtml.includes(`styles.css?v=${oldVersion}`));
+  assert.equal(await readFile(join(root, 'src/ui/app.js'), 'utf8'), "import { value } from './leaf.js'; export const loaded = value;");
+  await writeFile(join(root, 'src/ui/leaf.js'), "export const value = 'new';");
+  await buildStatic(root); await verifyStatic(root);
+  const nextHtml = await readFile(join(root, 'dist/pages/index.html'), 'utf8'), nextApp = await readFile(join(root, 'dist/pages/src/ui/app.js'), 'utf8');
+  const newVersion = nextHtml.match(/app\.js\?v=([a-f0-9]{16})/)[1];
+  assert.notEqual(newVersion, oldVersion);
+  assert.ok(nextApp.includes(`./leaf.js?v=${newVersion}`));
+  assert.ok(nextHtml.includes(`styles.css?v=${newVersion}`));
+});

@@ -132,3 +132,5 @@ The browser regression requires positive map/body flow height and checks generat
 
 
 PDF download device follow-up: a user-supplied file confirms one actual landscape Letter sheet but has excess whitespace from retaining native-print browser reserves. Fit downloaded maps proportionally to the available page with 8 mm margins and measured attribution. Keep extent/aspect ratio, rescale the generated topo scale statement, and verify actual decoded PDF image occupancy. Native print remains unchanged; physical-size and iOS follow-up remain acceptance checks.
+
+2026-10-14 stale-output follow-up: two submitted files had exactly the same bytes and the older 197 × 152 mm map footprint. PR 38 was merged/deployed and a direct hosted exporter request showed the new layout import, with a 600-second HTTP cache lifetime. Do not infer another layout failure from this old file. Version the full current static module graph and stylesheet per release, and timestamp generated download names. Keep browser reload/snapshot semantics explicit; page-fill/device acceptance still needs a genuinely regenerated file.
