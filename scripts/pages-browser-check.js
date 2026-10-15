@@ -18,7 +18,11 @@ export async function checkPagesPackage(page) {
     const response = await preview.goto(base);
     assert.equal(response.headers()['content-security-policy'], undefined);
     assert.equal(await preview.locator('meta[http-equiv="Content-Security-Policy"]').getAttribute('content'), META_CSP);
+    const version = new URL(await preview.locator('script[type=module]').getAttribute('src'), base).searchParams.get('v');
+    assert.match(version, /^[a-f0-9]{16}$/);
     const geographicChecks = await checkExplorer(preview, base);
+    const modules = requests.filter((url) => url.startsWith(base) && new URL(url).pathname.endsWith('.js'));
+    assert.ok(modules.length > 10 && modules.every((url) => new URL(url).searchParams.get('v') === version), 'all module imports use one release fingerprint');
     await preview.locator('#demo').click(); await preview.locator('#map svg').waitFor();
     assert.equal(await preview.locator('#map .feature').count(), 6);
     await preview.locator('#lesson-start').click();

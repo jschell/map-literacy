@@ -37,6 +37,17 @@ export async function buildStatic(root) {
     assets.set(path, await regular(root, path));
   }
   assets.set('_headers', Buffer.from(HOST_HEADERS)); assets.set('NOTICE.txt', Buffer.from(notice));
+  // Version the entire module graph: changing a leaf must also invalidate unchanged importers.
+  const version = sha256(Buffer.from(JSON.stringify([...assets].sort(([a], [b]) => a < b ? -1 : 1).map(([path, bytes]) => [path, sha256(bytes)])))).slice(0, 16);
+  for (const [path, bytes] of assets) {
+    if (path.startsWith('src/') && path.endsWith('.js')) {
+      const source = bytes.toString().replace(/(\bfrom\s*|\bimport\s*)(['"])(\.\.?\/[a-zA-Z0-9_./-]+\.js)\2/g, (_, prefix, quote, target) => `${prefix}${quote}${target}?v=${version}${quote}`);
+      assets.set(path, Buffer.from(source));
+    }
+  }
+  assets.set('index.html', Buffer.from(assets.get('index.html').toString()
+    .replace('src="src/ui/app.js"', `src="src/ui/app.js?v=${version}"`)
+    .replace('href="styles.css"', `href="styles.css?v=${version}"`)));
   const pages = new Map(assets); pages.delete('_headers'); pages.set('.nojekyll', Buffer.from(''));
   const html = pages.get('index.html').toString();
   if (!html.includes('  <meta charset="utf-8">')) throw new Error('Cannot insert Pages CSP before assets.');
