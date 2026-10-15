@@ -41,3 +41,9 @@ Execution evidence (2026-10-14): 155 Node tests pass; the complete packaged Chro
 
 
 Orientation follow-up: the affected Safari device produced a visible one-page topo map, but selected landscape still yielded a portrait physical page. This confirms map visibility for that sample, not orientation/physical topo acceptance. Use Download Letter PDF for an explicit landscape/portrait file; see [PDF output](pdf-output.md).
+
+## B&W contrast and export fidelity
+
+With Topographic and B&W selected, **Topo print contrast** offers **Stronger lines** (default) and **Standard grayscale**. The choice affects prepared print/PDF output; the browsing preview stays standard grayscale. Stronger lines applies a monotonic pointwise tone curve, deepening midtones while preserving pale values 235–255. It does not use a threshold, create contours, remove baked-in shading or increase spatial resolution. Other midtone features also darken. Color output and street styling are unchanged.
+
+PDF download now embeds lossless grayscale/RGB samples rather than recompressing the page as JPEG. Source compression artifacts remain. [Quality checks](print-quality.md) quantify contrast, thin-line retention and added compression error; synthetic success does not certify real contour/label or physical printer legibility. The user accepted the previous page fit on paper; physical comparison of this new contrast remains pending.

@@ -1,8 +1,11 @@
 const encode = (text) => new TextEncoder().encode(text);
-/** One RGB JPEG page. All PDF syntax is generated here; no user strings enter it. */
-export function imagePdf(jpeg, pixelWidth, pixelHeight, orientation) {
-  if (!(jpeg instanceof Uint8Array) || jpeg.length < 4 || jpeg.length > 20 * 1024 * 1024 || jpeg[0] !== 255 || jpeg[1] !== 216 || jpeg.at(-2) !== 255 || jpeg.at(-1) !== 217) throw new Error('Invalid PDF page image.');
+/** One fixed image page. All PDF syntax is generated here; no user strings enter it. */
+export function imagePdf(payload, pixelWidth, pixelHeight, orientation, { encoding = 'jpeg', grayscale = false } = {}) {
   if (![pixelWidth, pixelHeight].every((n) => Number.isInteger(n) && n > 0 && n <= 4000) || !['portrait', 'landscape'].includes(orientation)) throw new Error('Invalid PDF page dimensions.');
+  if (!(payload instanceof Uint8Array) || !payload.length || payload.length > 20 * 1024 * 1024 || !['jpeg', 'flate', 'raw'].includes(encoding) || typeof grayscale !== 'boolean') throw new Error('Invalid PDF page image.');
+  if (encoding === 'jpeg' && (grayscale || payload.length < 4 || payload[0] !== 255 || payload[1] !== 216 || payload.at(-2) !== 255 || payload.at(-1) !== 217)) throw new Error('Invalid JPEG page image.');
+  if (encoding === 'raw' && payload.length !== pixelWidth * pixelHeight * (grayscale ? 1 : 3)) throw new Error('Invalid raw image length.');
+  const colorSpace = grayscale ? '/DeviceGray' : '/DeviceRGB', filter = encoding === 'jpeg' ? '/Filter /DCTDecode ' : encoding === 'flate' ? '/Filter /FlateDecode ' : '';
   const [width, height] = orientation === 'landscape' ? [792, 612] : [612, 792];
   const chunks = [], offsets = [0]; let length = 0;
   const append = (value) => { const bytes = typeof value === 'string' ? encode(value) : value; chunks.push(bytes); length += bytes.length; };
@@ -12,8 +15,8 @@ export function imagePdf(jpeg, pixelWidth, pixelHeight, orientation) {
   object(2, '<< /Type /Pages /Kids [3 0 R] /Count 1 >>');
   object(3, `<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${width} ${height}] /Resources << /XObject << /Im0 4 0 R >> >> /Contents 5 0 R >>`);
   offsets[4] = length;
-  append(`4 0 obj\n<< /Type /XObject /Subtype /Image /Width ${pixelWidth} /Height ${pixelHeight} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${jpeg.length} >>\nstream\n`);
-  append(jpeg); append('\nendstream\nendobj\n');
+  append(`4 0 obj\n<< /Type /XObject /Subtype /Image /Width ${pixelWidth} /Height ${pixelHeight} /ColorSpace ${colorSpace} /BitsPerComponent 8 ${filter}/Length ${payload.length} >>\nstream\n`);
+  append(payload); append('\nendstream\nendobj\n');
   const drawing = `q\n${width} 0 0 ${height} 0 0 cm\n/Im0 Do\nQ\n`;
   object(5, `<< /Length ${encode(drawing).length} >>\nstream\n${drawing}endstream`);
   const xref = length;

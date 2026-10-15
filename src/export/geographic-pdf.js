@@ -1,3 +1,4 @@
+import { losslessPixels } from './lossless-pixels.js';
 import { pdfPageLayout, pdfScaleCredit } from './pdf-layout.js';
 import { imagePdf } from './image-pdf.js';
 
@@ -15,7 +16,7 @@ async function svgImage(text) {
   } catch (error) { URL.revokeObjectURL(url); throw error; }
 }
 /** Frozen prepared map -> raster PDF with a physical Letter MediaBox, independent of print CSS. */
-export async function geographicPdf(document, { view, children, credit }) {
+export async function geographicPdf(document, { view, children, credit, appearance = 'color' }) {
   const dpi = 200, units = dpi / 25.4;
   const initial = pdfPageLayout(view, 1);
   const canvas = document.createElement('canvas'); canvas.width = Math.round(initial.sheetWidth * units); canvas.height = Math.round(initial.sheetHeight * units);
@@ -71,7 +72,7 @@ export async function geographicPdf(document, { view, children, credit }) {
   ctx.restore();
   ctx.fillStyle = 'black'; ctx.font = `${8 * dpi / 72}px Arial`; ctx.textBaseline = 'top';
   for (const [i, line] of lines.entries()) ctx.fillText(line, layout.margin * units, (layout.footerY + i * layout.lineHeight) * units);
-  const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/jpeg', .95));
-  if (!blob) throw new Error('PDF page image could not be encoded.');
-  return imagePdf(new Uint8Array(await blob.arrayBuffer()), canvas.width, canvas.height, view.orientation);
+  const samples = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
+  const encoded = await losslessPixels(samples, canvas.width, canvas.height, { grayscale: appearance === 'bw' });
+  return imagePdf(encoded.bytes, canvas.width, canvas.height, view.orientation, encoded);
 }

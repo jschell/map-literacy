@@ -27,23 +27,21 @@ async function checkPdfDownload(page, orientation, kind) {
     const pdf = await readFile(output), text = pdf.toString('latin1');
     assert.equal((text.match(/\/Type \/Page\b/g) ?? []).length, 1);
     assert.ok(text.includes(`/MediaBox [0 0 ${orientation === 'landscape' ? '792 612' : '612 792'}]`));
-    assert.ok(text.includes('/DCTDecode'));
-    assert.ok(Number(text.match(/\/DCTDecode \/Length (\d+)/)[1]) > 10000, 'page image contains more than an empty page');
+    assert.equal(text.includes('/DCTDecode'), false, 'export adds no JPEG compression');
+    const grayscale = (await page.locator('#explorer-appearance').inputValue()) === 'bw';
+    assert.ok(text.includes(grayscale ? '/DeviceGray' : '/DeviceRGB'));
+    const start = pdf.indexOf(Buffer.from('stream\n')) + 7;
+    const length = Number(text.match(/\/BitsPerComponent 8 (?:\/Filter \/FlateDecode )?\/Length (\d+)/)[1]);
+    const encoded = pdf.subarray(start, start + length), raw = text.includes('/FlateDecode') ? inflateSync(encoded) : encoded;
+    const size = text.match(/\/Subtype \/Image \/Width (\d+) \/Height (\d+)/), width = Number(size[1]), height = Number(size[2]), channels = grayscale ? 1 : 3;
+    assert.equal(raw.length, width * height * channels);
     if (kind.startsWith('topo')) {
-      const start = pdf.indexOf(Buffer.from('stream\n')) + 7, length = Number(text.match(/\/DCTDecode \/Length (\d+)/)[1]);
-      const filled = await page.evaluate(async (base64) => {
-        const bytes = Uint8Array.from(atob(base64), (c) => c.charCodeAt(0));
-        const url = URL.createObjectURL(new Blob([bytes], { type: 'image/jpeg' })), img = new Image();
-        try {
-          await new Promise((resolve, reject) => { img.onload = resolve; img.onerror = reject; img.src = url; });
-          const canvas = document.createElement('canvas'); canvas.width = img.naturalWidth; canvas.height = img.naturalHeight;
-          const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0);
-          const pixels = ctx.getImageData(Math.floor(canvas.width / 2), 0, 1, canvas.height).data;
-          let dark = 0; for (let y = 0; y < canvas.height; y++) if ((pixels[y * 4] + pixels[y * 4 + 1] + pixels[y * 4 + 2]) / 3 < 220) dark++;
-          return dark / canvas.height;
-        } finally { URL.revokeObjectURL(url); }
-      }, pdf.subarray(start, start + length).toString('base64'));
-      assert.ok(filled > .84, 'topo fixture occupies the page height instead of the old browser reserve');
+      let dark = 0;
+      for (let y = 0; y < height; y++) {
+        const i = (y * width + Math.floor(width / 2)) * channels;
+        if ((grayscale ? raw[i] : (raw[i] + raw[i + 1] + raw[i + 2]) / 3) < 220) dark++;
+      }
+      assert.ok(dark / height > .84, 'topo fixture occupies the page height instead of the old browser reserve');
     }
     assert.equal(await page.locator('#explorer-pdf-link').isVisible(), true);
   } finally { await page.evaluate((rule) => document.styleSheets[0].deleteRule(rule), rule); }
@@ -250,7 +248,14 @@ export async function checkExplorer(page, base) {
     assert.match(pdf.toString('latin1'), /\/Subtype\s*\/Image/, 'topographic raster is embedded');
     await checkPdfDownload(page, orientation, 'topo');
   }
+  assert.equal(await page.locator('#explorer-topo-contrast-wrap').isVisible(), true);
+  await page.locator('#explorer-topo-contrast').selectOption('standard'); await page.locator('#explorer-print').click();
+  const standardGray = await page.locator('#geographic-paper-tiles canvas').first().evaluate((c) => c.getContext('2d').getImageData(128, 128, 1, 1).data[0]);
+  await page.locator('#explorer-topo-contrast').selectOption('print'); await page.locator('#explorer-print').click();
+  const printGray = await page.locator('#geographic-paper-tiles canvas').first().evaluate((c) => c.getContext('2d').getImageData(128, 128, 1, 1).data[0]);
+  assert.ok(printGray <= standardGray - 10, 'stronger-lines print deepens the fixture midtone');
   await page.locator('#explorer-appearance').selectOption('color'); await page.locator('#explorer-print').click();
+  assert.equal(await page.locator('#explorer-topo-contrast-wrap').isVisible(), false);
   assert.ok(await page.locator('#geographic-paper-tiles img').count());
   await checkPdfDownload(page, 'landscape', 'topo-color');
   await page.locator('#explorer-appearance').selectOption('bw');
