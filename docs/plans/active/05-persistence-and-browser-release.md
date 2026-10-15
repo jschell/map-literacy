@@ -129,3 +129,6 @@ The browser regression requires positive map/body flow height and checks generat
 
 
 2026-10-14 orientation follow-up: Safari topo output contained the map and attribution on one page but retained a portrait MediaBox for landscape selection. Add a separate geographic Download Letter PDF path with explicit page dimensions; preserve synchronous native Print. Exact-page PDFs use a bounded 200 dpi raster snapshot, with street vector fidelity retained through native print/SVG. Host/Pages CSP permit self-generated blob SVG images. Track actual iOS file download/open/print and physical scale separately; see ../../pdf-output.md.
+
+
+PDF download device follow-up: a user-supplied file confirms one actual landscape Letter sheet but has excess whitespace from retaining native-print browser reserves. Fit downloaded maps proportionally to the available page with 8 mm margins and measured attribution. Keep extent/aspect ratio, rescale the generated topo scale statement, and verify actual decoded PDF image occupancy. Native print remains unchanged; physical-size and iOS follow-up remain acceptance checks.

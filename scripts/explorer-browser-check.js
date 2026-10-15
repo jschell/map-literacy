@@ -28,6 +28,22 @@ async function checkPdfDownload(page, orientation, kind) {
     assert.ok(text.includes(`/MediaBox [0 0 ${orientation === 'landscape' ? '792 612' : '612 792'}]`));
     assert.ok(text.includes('/DCTDecode'));
     assert.ok(Number(text.match(/\/DCTDecode \/Length (\d+)/)[1]) > 10000, 'page image contains more than an empty page');
+    if (kind.startsWith('topo')) {
+      const start = pdf.indexOf(Buffer.from('stream\n')) + 7, length = Number(text.match(/\/DCTDecode \/Length (\d+)/)[1]);
+      const filled = await page.evaluate(async (base64) => {
+        const bytes = Uint8Array.from(atob(base64), (c) => c.charCodeAt(0));
+        const url = URL.createObjectURL(new Blob([bytes], { type: 'image/jpeg' })), img = new Image();
+        try {
+          await new Promise((resolve, reject) => { img.onload = resolve; img.onerror = reject; img.src = url; });
+          const canvas = document.createElement('canvas'); canvas.width = img.naturalWidth; canvas.height = img.naturalHeight;
+          const ctx = canvas.getContext('2d'); ctx.drawImage(img, 0, 0);
+          const pixels = ctx.getImageData(Math.floor(canvas.width / 2), 0, 1, canvas.height).data;
+          let dark = 0; for (let y = 0; y < canvas.height; y++) if ((pixels[y * 4] + pixels[y * 4 + 1] + pixels[y * 4 + 2]) / 3 < 220) dark++;
+          return dark / canvas.height;
+        } finally { URL.revokeObjectURL(url); }
+      }, pdf.subarray(start, start + length).toString('base64'));
+      assert.ok(filled > .84, 'topo fixture occupies the page height instead of the old browser reserve');
+    }
     assert.equal(await page.locator('#explorer-pdf-link').isVisible(), true);
   } finally { await page.evaluate((rule) => document.styleSheets[0].deleteRule(rule), rule); }
 }
