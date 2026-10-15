@@ -1,6 +1,6 @@
 # Plan 08 — Topographic data and learning
 
-Status: printable USGS raster preview implemented; elevation/contour lesson pipeline queued.
+Status: printable USGS composite and terrain-focused reference views implemented; verified terrain metadata and elevation/contour lesson pipeline queued.
 Dependencies: 01–05 shared foundation; source research may start earlier.
 
 ## Outcome
@@ -9,7 +9,8 @@ Add terrain interpretation to the shared pack/renderer/lesson system without equ
 
 ## Work
 
-- [ ] Add a terrain-focused view: contours/elevation labels and water with sparse major roads/trails; optional light relief, no building/label clutter. Verify separate USGS contour/transportation service exports, scale/units/alignment and B&W readability (see ../../topographic-browsing.md).
+- [x] Add a terrain-focused reference view: contours/elevation labels and water with sparse highways/trails; optional light relief, no building/label clutter. Shared export grid/alignment and B&W output verified in automated/sampled rendering checks (see ../../terrain-view.md).
+- [ ] Verify per-extent contour units/intervals and representative physical/Safari readability; current view explicitly marks units/interval unverified and does not support terrain lesson answers.
 
 - [ ] Select one bounded terrain area and synthetic elevation fixtures; compare USGS 3DEP products for US coverage/resolution/license/access.
 - [ ] Define raster/contour schema: horizontal CRS, vertical reference, units, resolution, origin/grid orientation, nodata, source/version and uncertainty.
@@ -38,10 +39,13 @@ OSM is not a complete DEM source. USGS candidate is US-specific; global sources 
 
 2026-10-14: user requested topographic viewing and B&W Letter printing after street printing worked on Safari. The first slice uses the official USGS Topo cached raster service, with provider separation, north/approximate center scale, exact USGS acknowledgment, B&W pixel conversion and color output. No DEM, numerical elevation queries, editable contours or terrain lesson support is advertised. USGS tiles include their own cartography and cannot support blank/partial names or independent hillshade controls. See ../../topographic-browsing.md for current source review and boundaries.
 
-Remaining work above is still open. Next action after device print review: select a bounded 3DEP product and define the versioned terrain schema, then implement synthetic grid/contour validation. Keep street-core import rejecting unsupported terrain packs until that contract is implemented.
+Next action after terrain-reference device review: verify per-extent source contour metadata, select a bounded 3DEP product and define the versioned terrain schema, then implement synthetic grid/contour validation. Keep street-core import rejecting unsupported terrain packs until that contract is implemented.
 
 
 First-slice verification: 155 Node tests and complete packaged Chromium browser checks pass, including both topo paper orientations, grayscale pixels, provider switch/zoom/failure recovery and street regression checks. Real default USGS imagery was replayed and visually checked in a one-page B&W landscape PDF. Safari topo and physical-paper checks remain pending.
 
 
 B&W fidelity follow-up (2026-10-15): the user accepted physical page fit and requested sharper B&W output. Implemented a selectable stronger-midtones topo print curve and lossless grayscale/RGB PDF samples, preserving Letter geometry and native street vectors. Automated quality gates measure a known synthetic contour fixture: at least 25% nominal contrast gain, all 11 thin-line sample centers retained and zero PDF compression sample error. See [quality method and measured limits](../../print-quality.md). Raster source resolution, baked-in shading and separate contour-first services remain unchanged; actual paper comparison of this treatment remains pending.
+
+
+2026-10-15: user confirmed the PR-40 B&W workflow usable after merge/deployment. Added Terrain — contours + roads (US), with 1980 × 1530 / 1530 × 1980 shared EPSG:3857 source grids, bounded current-frame PNG requests, optional 18% hillshade and incomplete/stale-layer print blocking. This is a cartographic reference composition, not the DEM/lesson pipeline. Source unit/interval queries and paper/Safari review remain open; see ../../terrain-view.md for evidence and limits.

@@ -1,3 +1,4 @@
+import { checkTerrain } from './terrain-browser-check.js';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { inflateSync } from 'node:zlib';
@@ -270,6 +271,7 @@ export async function checkExplorer(page, base) {
   assert.equal(await page.locator('#explorer-print').isDisabled(), true);
   failTopo = false; await page.locator('#explorer-retry').click();
   await page.waitForFunction(() => !document.getElementById('explorer-print').disabled);
+  const terrainChecks = await checkTerrain(page, checkPdfDownload);
   await page.locator('#explorer-basemap').selectOption('street'); await ready();
   assert.equal(await page.locator('#explorer-labels').isDisabled(), false);
   assert.match(await page.locator('#explorer-credit').textContent(), /OpenStreetMap/);
@@ -278,5 +280,5 @@ export async function checkExplorer(page, base) {
   await page.evaluate(() => { window.print = window.topoOriginalPrint; delete window.topoOriginalPrint; delete document.body.dataset.printTarget; delete document.body.dataset.printOrientation; });
   await page.unroute('https://basemap.nationalmap.gov/**');
   await page.unroute('https://tile.openstreetmap.org/**'); await page.unroute('https://overpass-api.de/**');
-  return { exactLetterPdf: true, topographicPrint: true, vectorPrint: true, sourceIndependentPrint: true, sourceRejections, printWithoutLesson: true, nativeClick: true, monochromeAndLabels: true, viewportIndependent: true, sourceRequests: sourceRequests.length };
+  return { terrainChecks, exactLetterPdf: true, topographicPrint: true, vectorPrint: true, sourceIndependentPrint: true, sourceRejections, printWithoutLesson: true, nativeClick: true, monochromeAndLabels: true, viewportIndependent: true, sourceRequests: sourceRequests.length };
 }

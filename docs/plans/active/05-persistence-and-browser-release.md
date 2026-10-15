@@ -1,19 +1,19 @@
 # Plan 05 — Persistence and browser release
 
-Status: active; saved progress/preferences, backup recovery and setup guidance implemented; release acceptance remains pending.
+Status: active for remaining accessibility/browser-matrix acceptance; GitHub Pages is deployed and the user confirmed the B&W print workflow usable after PR 40 (2026-10-15). Recovery, preferences, backup and setup guidance are implemented.
 Dependencies: implemented scoring/session slice of 04; address-system and external acceptance remain queued.
 
 ## Outcome
 
-Deliver a recoverable local browser application and documented static-host deployment.
+Deliver a recoverable local browser application and documented static-host deployment. GitHub Pages publication and a usable B&W print workflow are confirmed; broader device/accessibility acceptance remains separate.
 
 ## Work
 
 - [x] Implement version-1 IndexedDB initialization/transactions, schema compatibility checks and explicit multi-tab conflict behavior; blocked/canceled/failed upgrade fixtures pass. Actual future migration transformations need version-specific fixtures.
 - [x] Implement pack/progress JSON backup APIs with validation and atomic conflict rules, plus explicit single-session UI download/restore and backup guidance.
 - [x] Add failed-save retry, unavailable-storage memory/export mode and versionchange/blocked-open recovery messages; Saved is shown only after transaction completion. Actual quota/eviction/device and future migration checks remain pending.
-- [x] Document no-build static assets, pinned install/local serve and the implemented external-asset CSP; host publication remains pending.
-- [x] Select hosting using deployment requirements and cost; reproducible local packages/preview and hosted setup prepared. Cloudflare Workers Static Assets is preferred for full headers; GitHub Pages is a prepared meta-CSP alternative. Publication/provider validation remain pending.
+- [x] Document no-build static assets, pinned install/local serve and the implemented external-asset CSP; GitHub Pages publication is confirmed by the user.
+- [x] Select hosting using deployment requirements and cost; reproducible local packages/preview and hosted setup prepared. GitHub Pages is the deployed initial host with meta CSP. Cloudflare Workers Static Assets remains an optional full-header alternative.
 - [ ] Run meaningful automated checks and target-browser keyboard/touch/accessibility/render evidence; container Chromium keyboard/semantics/reflow checks pass. Screen-reader, actual target-browser/device and physical-print acceptance remain pending.
 - [x] Document current limitations, backup recovery and manual browser site-data/file removal; no automatic deletion or public release is implied.
 
@@ -26,7 +26,7 @@ Deliver a recoverable local browser application and documented static-host deplo
 
 ## Risks and boundaries
 
-No accounts or sync are required. Deployment choice is open; this plan does not authorize public hosting publication by itself.
+No accounts or sync are required. GitHub Pages has been published by the user; optional hosting changes remain separate work.
 
 ## Execution record
 
@@ -62,7 +62,7 @@ Static deployment follow-up: deterministic asset-only packages include app modul
 
 Pages preparation follow-up: the user requested GitHub Pages preparation after merging PR 23. The pinned manual workflow is now installed at .github/workflows/pages.yml and the redundant dormant template is removed. It validates the fixture, runs tests and uploads only dist/pages before deployment. Only workflow_dispatch on main can publish; merging/pushing does not deploy. Repository Settings → Pages must select GitHub Actions, then a manual run and hosted/device checks remain pending. No hosted success is claimed.
 
-Next action: hosted validation requires explicit publication authorization/account access and must preserve each provider's evidence/limitations. Screen-reader and actual target-browser/device acceptance require manual evidence. Actual future migration transformations require their own fixtures. Physical print/quota/eviction and real lesson approval remain pending. Plan 05 remains active until these acceptance decisions are resolved.
+Current next action: reconcile release acceptance with the deployed/usable workflow, retain pending screen-reader and broader browser/device checks, and resume reviewed learning materials when appropriate. Future migrations and actual device quota/eviction need their own evidence; real lesson approval remains separate. Historical execution entries below describe their original stage and are superseded by later entries.
 
 
 
@@ -137,3 +137,6 @@ PDF download device follow-up: a user-supplied file confirms one actual landscap
 
 
 B&W fidelity follow-up (2026-10-15): the user accepted physical page fit and requested sharper B&W output. Implemented a selectable stronger-midtones topo print curve and lossless grayscale/RGB PDF samples, preserving Letter geometry and native street vectors. Automated quality gates measure a known synthetic contour fixture: at least 25% nominal contrast gain, all 11 thin-line sample centers retained and zero PDF compression sample error. See [quality method and measured limits](../../print-quality.md). Raster source resolution, baked-in shading and separate contour-first services remain unchanged; actual paper comparison of this treatment remains pending.
+
+
+2026-10-15 acceptance update: the user reports PR 40 merged/deployed and usable. Record that confirmation for the existing B&W print workflow without treating it as all-browser/accessibility or learning acceptance. The next implemented slice adds the optional terrain-focused composition; its own physical/Safari review is still pending. See [terrain view](../../terrain-view.md).
