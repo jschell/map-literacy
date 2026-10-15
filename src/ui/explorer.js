@@ -1,3 +1,4 @@
+import { geographicPdf } from '../export/geographic-pdf.js';
 import { BASEMAPS, USGS_ACKNOWLEDGMENT, rasterFurniture } from '../map/basemaps.js';
 import { geographicView } from '../map/geographic.js';
 import { createGeographicStreets } from './geographic-streets.js';
@@ -27,10 +28,11 @@ export function createExplorer() {
   function updatePrintAvailability() {
     const vector = currentVector(), tiles = tileSnapshot();
     if (basemap === 'topo') {
-      get('explorer-print').disabled = !tiles;
+      get('explorer-print').disabled = !tiles; get('explorer-pdf').disabled = !tiles;
       get('explorer-print-status').textContent = tiles ? 'Ready to print the USGS topographic map. Raster contours and labels are fixed.' : 'Print is waiting for USGS topographic tiles for this view.';
       return;
     }
+    get('explorer-pdf').disabled = !vector && !tiles;
     get('explorer-print').disabled = !vector && !tiles;
     get('explorer-print-status').textContent = vector ? 'Ready to print the vector street map.' : tiles ? 'Ready to print the visible tile map. Vector street data is not ready; tile names are fixed and practice markings are unavailable.' : 'Print is waiting for map tiles or vector streets for this view.';
   }
@@ -92,7 +94,7 @@ export function createExplorer() {
   function move(dx, dy) {
     if (!active) return;
     center[0] += dx / displayScale; center[1] += dy / displayScale;
-    get('explorer-print').disabled = true;
+    get('explorer-print').disabled = true; get('explorer-pdf').disabled = true;
     get('explorer-print-status').textContent = 'Move the map to choose an area; printing is ready when the new view loads.';
     // Immediate visual drag; only request the settled visible view, without prefetch.
     const transform = layer.dataset.offset ? JSON.parse(layer.dataset.offset) : [0, 0];
@@ -175,6 +177,23 @@ export function createExplorer() {
     get('geographic-paper-credit').textContent = basemap === 'topo' ? `${USGS_ACKNOWLEDGMENT} USGS Topo · raster contours; units as labeled · approximate center scale 1:${Math.round(view.scaleDenominator).toLocaleString()} · viewed ${new Date().toISOString().slice(0, 10)}.` : '© OpenStreetMap contributors · openstreetmap.org/copyright · Tile map: fixed names; no practice markings. Vector street data unavailable.';
     return true;
   }
+  let pdfUrl, makingPdf = false;
+  get('explorer-pdf').onclick = async () => {
+    if (makingPdf) return;
+    makingPdf = true; get('explorer-pdf').setAttribute('aria-busy', 'true');
+    const link = get('explorer-pdf-link'); link.hidden = true;
+    try {
+      if (!preparePrint()) throw new Error('The current map is not ready. Retry PDF download.');
+      const view = geographicView([...center], zoom, get('orientation').value);
+      const bytes = await geographicPdf(document, { view, children: [...get('geographic-paper-tiles').children], credit: get('geographic-paper-credit').textContent });
+      if (pdfUrl) URL.revokeObjectURL(pdfUrl);
+      pdfUrl = URL.createObjectURL(new Blob([bytes], { type: 'application/pdf' }));
+      link.href = pdfUrl; link.download = `map-literacy-${view.orientation}.pdf`; link.hidden = false;
+      get('explorer-pdf-status').textContent = `PDF ready: US Letter ${view.orientation}. Save the generated snapshot below, then print it at actual size. Map and text are rendered at 200 dpi; source tile detail is unchanged.`;
+      link.click();
+    } catch (error) { get('explorer-pdf-status').textContent = error.message || 'PDF could not be prepared. Retry PDF download.'; }
+    finally { makingPdf = false; get('explorer-pdf').removeAttribute('aria-busy'); }
+  };
   get('explorer-print').onclick = () => {
     // Keep the native print call in the user's click. Do not await hidden image decode.
     let prepared;

@@ -126,3 +126,6 @@ The browser regression requires positive map/body flow height and checks generat
 
 
 2026-10-14 device follow-up: after PR 35 the user supplied a single-page Safari street PDF with visible map, attribution, north and scale, reporting improvement. This supports the affected street-print regression fix for that sample; broader physical/device acceptance is still open. The next authorized slice adds optional USGS Topo raster browsing/printing, documented in [topographic browsing](../../topographic-browsing.md) and Plan 08. Topographic device acceptance is separate from the successful street sample.
+
+
+2026-10-14 orientation follow-up: Safari topo output contained the map and attribution on one page but retained a portrait MediaBox for landscape selection. Add a separate geographic Download Letter PDF path with explicit page dimensions; preserve synchronous native Print. Exact-page PDFs use a bounded 200 dpi raster snapshot, with street vector fidelity retained through native print/SVG. Host/Pages CSP permit self-generated blob SVG images. Track actual iOS file download/open/print and physical scale separately; see ../../pdf-output.md.

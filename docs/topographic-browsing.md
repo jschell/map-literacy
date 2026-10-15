@@ -38,3 +38,6 @@ Official separate services reviewed on 2026-10-14:
 Implementation acceptance: verify export/query/CORS behavior, bounded data/image sizes, source scales and co-registration; keep contour units/intervals explicit; verify a mountainous area and B&W physical print; disable printing if any required current-extent layer is missing. Separate services are researched, not implemented in this first raster mode. Building that composition does not require enabling numerical terrain scoring or live navigation.
 
 Execution evidence (2026-10-14): 155 Node tests pass; the complete packaged Chromium release suite passes for host-header and Pages-meta CSP. Both topo Letter orientations embed raster output on one page; actual grayscale pixels and street-mode restoration pass. The real 12-tile default sample was replayed locally and its one-page B&W landscape PDF rendered and visually inspected. Contour contrast/label sharpness is limited by source raster styling; device/physical acceptance remains open.
+
+
+Orientation follow-up: the affected Safari device produced a visible one-page topo map, but selected landscape still yielded a portrait physical page. This confirms map visibility for that sample, not orientation/physical topo acceptance. Use Download Letter PDF for an explicit landscape/portrait file; see [PDF output](pdf-output.md).
