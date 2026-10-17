@@ -68,3 +68,11 @@ export const packSchema = object({
   extensions: object({}),
 });
 
+
+// A new envelope keeps version-1 street readers rejecting this capability.
+export const terrainPackSchema = object({
+  ...packSchema.fields, schemaVersion: enumeration(2), module: enumeration('topographic'),
+  capabilities: array(enumeration('terrain-contours-v1'),1,1),
+  exercises: array(object({...commonExercise,type:enumeration('contour-elevation'),rubric:object({featureId:id,referenceFeatureId:id,toleranceM:number(0,.1)})}),200),
+  terrain: json
+});

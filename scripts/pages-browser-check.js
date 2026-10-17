@@ -43,6 +43,12 @@ export async function checkPagesPackage(page) {
     assert.equal(await preview.locator('#orientation').inputValue(), 'portrait');
     const pdf = await preview.pdf({ preferCSSPageSize: true, printBackground: true });
     assert.ok(/\/MediaBox\s*\[0 0 612 792\]/.test(pdf.toString('latin1')));
+    await preview.emulateMedia({media:'screen'});
+    await preview.locator('#terrain-demo').click();
+    await preview.waitForFunction(()=>document.getElementById('status').textContent.includes('Synthetic hill'));
+    await preview.locator('#lesson-start').click();await saved();
+    await preview.locator('#answer-elevation').fill('85');await preview.locator('#lesson-submit').click();await saved();
+    assert.match(await preview.locator('#lesson-status').textContent(),/^Correct/);
     assert.ok(requests.every((url) => url.startsWith(base) || url.startsWith(`blob:${new URL(base).origin}/`) || url.startsWith('https://tile.openstreetmap.org/') || url.startsWith('https://basemap.nationalmap.gov/') || url.startsWith('https://overpass-api.de/') || url.startsWith('https://carto.nationalmap.gov/') || url.startsWith('https://elevation.nationalmap.gov/') || new URL(url).pathname === '/favicon.ico'), 'app assets stay under the project prefix');
     await preview.evaluate(() => {
       window.pagesViolations = [];
@@ -52,7 +58,7 @@ export async function checkPagesPackage(page) {
     await preview.waitForFunction(() => window.pagesViolations.some((directive) => directive.startsWith('script-src')));
     assert.equal(await preview.evaluate(() => window.inlinePagesScriptRan === true), false);
     assert.deepEqual(errors, []);
-    return { geographicChecks, projectPath: '/map-literacy/', metaCspBlocksInline: 'passed', reloadAndPreferences: 'passed', backup: 'passed', portraitPdf: 'passed' };
+    return { geographicChecks, projectPath: '/map-literacy/', terrainLesson: 'passed', metaCspBlocksInline: 'passed', reloadAndPreferences: 'passed', backup: 'passed', portraitPdf: 'passed' };
   } finally {
     await preview.close(); await new Promise((resolve) => server.close(resolve));
   }

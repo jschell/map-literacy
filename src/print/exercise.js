@@ -1,3 +1,4 @@
+import { contourLevel, terrainExerciseAnnotations } from '../terrain/lesson-pack.js';
 import { validatePack } from '../data/validate-pack.js';
 
 /** Printable teaching content, deliberately separate from scoring and transient traces. */
@@ -28,6 +29,11 @@ export function createExercisePrint(pack, exerciseId, audience) {
       markers.push({ coordinate: rubric.expected, text: 'X' });
       add(`Expected endpoint (longitude, latitude): ${rubric.expected.join(', ')}. X marks the answer on the instructor map. Accept geographic distance up to ${rubric.toleranceM} m (inclusive).`, 'answer');
     } else add('Mark the endpoint on the map and explain how you located it.');
+  } else if (exercise.type === 'contour-elevation') {
+    const annotations = terrainExerciseAnnotations(pack,exercise,instructor); markers.push(...annotations.markers);
+    add(`Synthetic terrain; elevations use a synthetic zero reference. Contour interval: ${pack.terrain.intervalM} m.`);
+    if(instructor) add(`Expected contour A elevation: ${contourLevel(pack,rubric.featureId)} m. Accept numeric error up to ${rubric.toleranceM} m (inclusive).`, 'answer');
+    else add('Write the elevation of contour A in metres and explain how you counted from the labeled reference contour.');
   } else {
     const nodes = new Map(pack.topology.nodes.map((n) => [n.id, n]));
     markers.push({ coordinate: nodes.get(rubric.startNodeId).coordinate, text: 'S' });
@@ -67,6 +73,6 @@ export function createExercisePrint(pack, exerciseId, audience) {
   const inside = ([lon, lat]) => lon >= pack.bounds[0] && lon <= pack.bounds[2] && lat >= pack.bounds[1] && lat <= pack.bounds[3];
   if ((exercise.type === 'endpoint' && !inside(rubric.expected)) || !markers.every((m) => inside(m.coordinate)) || !closedEdges.every((e) => e.shape.every(inside))) throw new Error('Exercise endpoints or closures leave this print extent; choose a suitable lesson extent.');
   return { kind, exerciseId, audience, draft, blocks, annotations: { markers, closedEdges }, headingDeg,
-    title: `${kind} — ${exercise.type}${draft ? ' — UNREVIEWED DRAFT' : ''}`,
-    summary: `${exercise.type} · Questions${instructor ? ' and answer criteria' : ''} and source credits follow the map.` };
+    title: `${kind} — ${exercise.type === 'contour-elevation' ? 'Contour elevation' : exercise.type}${draft ? ' — UNREVIEWED DRAFT' : ''}`,
+    summary: exercise.type === 'contour-elevation' ? `Synthetic terrain; elevation increases toward the center. Contour interval: ${pack.terrain.intervalM} m. Questions${instructor ? ' and answer criteria' : ''} and source credits follow the map.` : `${exercise.type} · Questions${instructor ? ' and answer criteria' : ''} and source credits follow the map.` };
 }

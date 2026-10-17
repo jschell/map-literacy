@@ -83,8 +83,10 @@ export function renderMap(doc, model, { selectedId = null, headingDeg = null, ro
     }
     for (const marker of annotations.markers) {
       const [cx, cy] = model.convert(marker.coordinate);
-      marks.append(element(doc, 'circle', { cx, cy, r: 3, fill: 'white', stroke: 'black', 'stroke-width': .3 }));
-      marks.append(element(doc, 'text', { x: cx, y: cy, class: 'exercise-mark', 'text-anchor': 'middle', 'dominant-baseline': 'central', 'font-size': 3, fill: 'black' }, marker.text));
+      const font = model.paper ? 3 : 13, radius = model.paper ? 3 : 13;
+      if(marker.text.length>3) { const width=marker.text.length*font*.62+font; marks.append(element(doc,'rect',{x:cx-width/2,y:cy-radius,width,height:radius*2,fill:'white',stroke:'black','stroke-width':model.paper ? .3 : 1})); }
+      else marks.append(element(doc, 'circle', { cx, cy, r: radius, fill: 'white', stroke: 'black', 'stroke-width': model.paper ? .3 : 1 }));
+      marks.append(element(doc, 'text', { x: cx, y: cy, class: 'exercise-mark', 'text-anchor': 'middle', 'dominant-baseline': 'central', 'font-size': font, fill: 'black' }, marker.text));
     }
   }
   const unit = model.paper ? 1 : 4, x = model.width - 10 * unit, y = 10 * unit;

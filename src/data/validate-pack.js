@@ -1,5 +1,6 @@
+import { validateTerrainPack } from '../terrain/lesson-pack.js';
 import { distanceM, lineLengthM } from '../geo/distance.js';
-import { PACK_LIMITS, packSchema } from './pack-schema.js';
+import { PACK_LIMITS, packSchema, terrainPackSchema } from './pack-schema.js';
 
 const plain = (v) => v !== null && typeof v === 'object' && !Array.isArray(v)
   && (Object.getPrototypeOf(v) === Object.prototype || Object.getPrototypeOf(v) === null);
@@ -36,9 +37,10 @@ export function validatePack(value) {
   checkJSON(value, '$', 0);
   if (errors.length) return result();
   if (!plain(value)) { add('$', 'invalid-import', 'Expected a pack object.'); return result(); }
-  if (value.schemaVersion !== 1) { add('$.schemaVersion', 'unsupported-version', 'Only schemaVersion 1 is supported.'); return result(); }
-  if (value.module === 'topographic' || (Array.isArray(value.capabilities)
-    && value.capabilities.some((c) => c === 'terrain-v1' || c === 'directions-v1'))) {
+  const terrainVersion = value.schemaVersion === 2 && value.module === 'topographic' && Array.isArray(value.capabilities) && value.capabilities.length === 1 && value.capabilities[0] === 'terrain-contours-v1';
+  if (value.schemaVersion !== 1 && !terrainVersion) { add('$.schemaVersion', 'unsupported-version', 'Unsupported pack version/capability; street v1 and synthetic contour v2 are supported.'); return result(); }
+  if (!terrainVersion && (value.module === 'topographic' || (Array.isArray(value.capabilities)
+    && value.capabilities.some((c) => c === 'terrain-v1' || c === 'directions-v1')))) {
     add('$.capabilities', 'unsupported-capability', 'Only street-core is implemented.'); return result();
   }
   const shape = (schema, v, path) => {
@@ -81,9 +83,10 @@ export function validatePack(value) {
       default: throw new Error('Invalid schema descriptor');
     }
   };
-  shape(packSchema, value, '$');
+  shape(terrainVersion ? terrainPackSchema : packSchema, value, '$');
   if (errors.length) return result();
   const p = value;
+  if (terrainVersion) { try { validateTerrainPack(p); } catch (error) { add('$.terrain','invalid-import',error.message); return result(); } }
   if (p.topology.completeness === 'complete' && p.topology.exclusions.length > 0) add('$.topology.completeness', 'invalid-import', 'Excluded content must be marked partial.');
   for (const [key, max] of [['bounds', 5000], ['sourceBounds', 10000]]) {
     const b = p[key];
@@ -91,7 +94,7 @@ export function validatePack(value) {
       || distanceM(b.slice(0, 2), b.slice(2)) > max) add(`$.${key}`, 'extent-unsupported', 'Invalid or unsupported extent.');
   }
   if (!inside(p.bounds.slice(0, 2), p.sourceBounds) || !inside(p.bounds.slice(2), p.sourceBounds)) add('$.bounds', 'invalid-import', 'Display bounds must be inside source bounds.');
-  if (new Set(p.capabilities).size !== p.capabilities.length || p.capabilities.length !== 1 || p.capabilities[0] !== 'street-core') add('$.capabilities', 'invalid-import', 'Expected unique street-core capability.');
+  if (!terrainVersion && (new Set(p.capabilities).size !== p.capabilities.length || p.capabilities.length !== 1 || p.capabilities[0] !== 'street-core')) add('$.capabilities', 'invalid-import', 'Expected unique street-core capability.');
   if (p.review.status === 'reviewed' && (p.review.reviewedAt === null || !p.review.note.trim())) add('$.review', 'invalid-import', 'Reviewed content needs review date and note.');
   const index = (items, path) => {
     const map = new Map();
@@ -115,7 +118,7 @@ export function validatePack(value) {
   p.features.features.forEach((f, i) => {
     const path = `$.features.features[${i}]`;
     ref(sources, f.properties.sourceId, `${path}.properties.sourceId`);
-    if (f.properties.role === 'contour') add(`${path}.properties.role`, 'unsupported-capability', 'Contours require terrain support.');
+    if (!terrainVersion && f.properties.role === 'contour') add(`${path}.properties.role`, 'unsupported-capability', 'Contours require terrain support.');
     const walk = (c, loc) => { if (typeof c[0] === 'number') point(c, loc); else c.forEach((v, j) => walk(v, `${loc}[${j}]`)); };
     walk(f.geometry.coordinates, `${path}.geometry.coordinates`);
     const rings = f.geometry.type === 'Polygon' ? f.geometry.coordinates : f.geometry.type === 'MultiPolygon' ? f.geometry.coordinates.flat() : [];

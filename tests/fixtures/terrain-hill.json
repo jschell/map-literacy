@@ -1,0 +1,367 @@
+{
+  "schemaVersion": 2,
+  "id": "synthetic-terrain-hill",
+  "title": "Synthetic hill — contour elevations",
+  "revision": 1,
+  "module": "topographic",
+  "capabilities": [
+    "terrain-contours-v1"
+  ],
+  "review": {
+    "status": "reviewed",
+    "reviewedAt": "2026-10-17T00:00:00.000Z",
+    "note": "Analytic synthetic hill and 80/85/90 m contours checked against the source equation. Technical fixture review, not learning-effectiveness evidence."
+  },
+  "bounds": [
+    -0.00026979610912290054,
+    -0.0004496601818606074,
+    0.00026979610912290054,
+    0.0004496601818606074
+  ],
+  "sourceBounds": [
+    -0.00027979610912290056,
+    -0.00045966018186060744,
+    0.00027979610912290056,
+    0.00045966018186060744
+  ],
+  "sources": [
+    {
+      "id": "hill",
+      "kind": "synthetic",
+      "url": null,
+      "query": null,
+      "fetchedAt": "2026-10-16T00:00:00.000Z",
+      "sourceAt": null,
+      "version": "recipe-v1",
+      "sha256": "202d008891b0ae70d3f4ef6b93582c1a8c7320174617e117245eb45f369e4cb8",
+      "license": "CC0-1.0",
+      "attribution": "Invented Map Literacy terrain fixtures; no geographic source.",
+      "transforms": [
+        {
+          "name": "generate-analytic-grid",
+          "version": "1",
+          "parameters": {
+            "recipeFile": "terrain-recipe.json",
+            "case": "hill"
+          }
+        }
+      ]
+    }
+  ],
+  "features": {
+    "type": "FeatureCollection",
+    "features": [
+      {
+        "type": "Feature",
+        "id": "contour-1",
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -0.0001798640727449076,
+              0
+            ],
+            [
+              -0.00008993203637274922,
+              -0.00017986407274483374
+            ],
+            [
+              0,
+              -0.0003597281454898152
+            ],
+            [
+              0.00008993203637274922,
+              -0.00017986407274483374
+            ],
+            [
+              0.0001798640727449076,
+              0
+            ],
+            [
+              0.00008993203637274922,
+              0.00017986407274483374
+            ],
+            [
+              0,
+              0.0003597281454898152
+            ],
+            [
+              -0.00008993203637274922,
+              0.00017986407274483374
+            ],
+            [
+              -0.0001798640727449076,
+              0
+            ]
+          ]
+        },
+        "properties": {
+          "sourceId": "hill",
+          "role": "contour",
+          "name": "Contour 1",
+          "tags": {}
+        }
+      },
+      {
+        "type": "Feature",
+        "id": "contour-2",
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -0.00013489805455868073,
+              0
+            ],
+            [
+              -0.00008993203637252766,
+              -0.00008993203637241687
+            ],
+            [
+              -0.00004496601818637461,
+              -0.00017986407274488917
+            ],
+            [
+              0,
+              -0.0002697961091173614
+            ],
+            [
+              0.00004496601818637461,
+              -0.00017986407274488917
+            ],
+            [
+              0.00008993203637252766,
+              -0.00008993203637241687
+            ],
+            [
+              0.00013489805455868073,
+              0
+            ],
+            [
+              0.00008993203637252766,
+              0.00008993203637241687
+            ],
+            [
+              0.00004496601818637461,
+              0.00017986407274488917
+            ],
+            [
+              0,
+              0.0002697961091173614
+            ],
+            [
+              -0.00004496601818637461,
+              0.00017986407274488917
+            ],
+            [
+              -0.00008993203637252766,
+              0.00008993203637241687
+            ],
+            [
+              -0.00013489805455868073,
+              0
+            ]
+          ]
+        },
+        "properties": {
+          "sourceId": "hill",
+          "role": "contour",
+          "name": "Contour 2",
+          "tags": {}
+        }
+      },
+      {
+        "type": "Feature",
+        "id": "contour-3",
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -0.00008993203637245379,
+              0
+            ],
+            [
+              0,
+              -0.0001798640727449076
+            ],
+            [
+              0.00008993203637245379,
+              0
+            ],
+            [
+              0,
+              0.0001798640727449076
+            ],
+            [
+              -0.00008993203637245379,
+              0
+            ]
+          ]
+        },
+        "properties": {
+          "sourceId": "hill",
+          "role": "contour",
+          "name": "Contour 3",
+          "tags": {}
+        }
+      }
+    ]
+  },
+  "topology": {
+    "nodes": [],
+    "edges": [],
+    "restrictions": [],
+    "completeness": "complete",
+    "exclusions": []
+  },
+  "labels": [],
+  "exercises": [
+    {
+      "id": "elevation-1",
+      "type": "contour-elevation",
+      "review": "reviewed",
+      "sourceIds": [
+        "hill"
+      ],
+      "scenario": null,
+      "prompt": "This is a synthetic hill: elevation increases toward its center. Each inner contour rises 5 m from the labeled reference. What is the elevation of contour A, in metres?",
+      "hints": [
+        "Start with the labeled reference elevation.",
+        "Count the contour intervals toward A; elevations increase toward the hill center."
+      ],
+      "rubric": {
+        "featureId": "contour-2",
+        "referenceFeatureId": "contour-1",
+        "toleranceM": 0.01
+      }
+    },
+    {
+      "id": "elevation-2",
+      "type": "contour-elevation",
+      "review": "reviewed",
+      "sourceIds": [
+        "hill"
+      ],
+      "scenario": null,
+      "prompt": "This is a synthetic hill: elevation increases toward its center. Each inner contour rises 5 m from the labeled reference. What is the elevation of contour A, in metres?",
+      "hints": [
+        "Start with the labeled reference elevation.",
+        "Count the contour intervals toward A; elevations increase toward the hill center."
+      ],
+      "rubric": {
+        "featureId": "contour-3",
+        "referenceFeatureId": "contour-2",
+        "toleranceM": 0.01
+      }
+    }
+  ],
+  "print": {
+    "paper": "letter",
+    "orientation": "portrait",
+    "marginMm": 10,
+    "scaleDenominator": 1000,
+    "labelMinPt": 8,
+    "mapRotationDeg": 0
+  },
+  "extensions": {},
+  "terrain": {
+    "format": "synthetic-contours-v1",
+    "grid": {
+      "format": "map-literacy-elevation-grid-v1",
+      "id": "hill",
+      "width": 5,
+      "height": 5,
+      "horizontal": {
+        "crs": "LOCAL_METRIC",
+        "units": "m",
+        "axisOrder": "easting,northing",
+        "origin": [
+          1000,
+          2000
+        ],
+        "step": [
+          10,
+          -20
+        ],
+        "registration": "sample-center"
+      },
+      "vertical": {
+        "units": "m",
+        "reference": "synthetic-zero",
+        "nodata": null,
+        "uncertaintyM": 0
+      },
+      "source": {
+        "kind": "synthetic",
+        "productId": "analytic-grids",
+        "version": "recipe-v1",
+        "acquiredAt": "2026-10-16T00:00:00.000Z",
+        "url": null,
+        "sha256": "202d008891b0ae70d3f4ef6b93582c1a8c7320174617e117245eb45f369e4cb8",
+        "license": "CC0-1.0",
+        "attribution": "Invented Map Literacy terrain fixtures; no geographic source.",
+        "transforms": [
+          {
+            "operation": "generate-analytic-grid",
+            "version": "1",
+            "parameters": {
+              "recipeFile": "terrain-recipe.json",
+              "case": "hill"
+            }
+          }
+        ]
+      },
+      "samples": [
+        60,
+        70,
+        80,
+        70,
+        60,
+        70,
+        80,
+        90,
+        80,
+        70,
+        80,
+        90,
+        100,
+        90,
+        80,
+        70,
+        80,
+        90,
+        80,
+        70,
+        60,
+        70,
+        80,
+        70,
+        60
+      ]
+    },
+    "frame": {
+      "center": [
+        0,
+        0
+      ],
+      "origin": [
+        1020,
+        1960
+      ]
+    },
+    "intervalM": 5,
+    "contours": [
+      {
+        "featureId": "contour-1",
+        "levelM": 80
+      },
+      {
+        "featureId": "contour-2",
+        "levelM": 85
+      },
+      {
+        "featureId": "contour-3",
+        "levelM": 90
+      }
+    ]
+  }
+}

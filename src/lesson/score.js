@@ -1,3 +1,4 @@
+import { contourLevel } from '../terrain/lesson-pack.js';
 import { validatePack } from '../data/validate-pack.js';
 import { distanceM } from '../geo/distance.js';
 import { createTraceReview } from '../route/trace.js';
@@ -30,6 +31,12 @@ export function scoreAnswer(pack, exerciseId, answer) {
     // Nanometre rounding allowance only; the authored tolerance is not expanded for display rounding.
     const within = endpointErrorM <= rubric.toleranceM + 1e-9;
     return decide(within, within ? 'within-tolerance' : 'outside-tolerance', { endpointErrorM });
+  }
+  if (exercise.type === 'contour-elevation') {
+    if (!finite(answer.elevationM)) return result('unanswered','invalid-answer');
+    const elevationErrorM = Math.abs(answer.elevationM - contourLevel(pack,rubric.featureId));
+    const within = elevationErrorM <= rubric.toleranceM + 1e-9;
+    return decide(within,within?'within-tolerance':'outside-tolerance',{elevationErrorM});
   }
   const ids = answer.edgeIds;
   if (!Array.isArray(ids) || ids.length > 1000 || !ids.every((id) => typeof id === 'string')) return result('unanswered', 'invalid-answer');

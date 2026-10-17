@@ -13,9 +13,9 @@ export function createLabelEditor({ getPack, getModel, applyPack }) {
     if (!pack) return;
     const label = pack.labels.find((l) => l.id === labelId);
     const feature = pack.features.features.find((f) => f.id === (label?.featureId ?? featureId));
-    get('label-fields').disabled = !feature;
+    get('label-fields').disabled = !feature || pack.module === 'topographic';
     get('delete-label').disabled = !label;
-    get('label-feature').textContent = feature ? `${feature.properties.name ?? 'Unnamed feature'} (${feature.id})` : 'Select a feature to add a label.';
+    get('label-feature').textContent = pack.module === 'topographic' ? 'Reference and target labels are supplied by the contour exercise.' : feature ? `${feature.properties.name ?? 'Unnamed feature'} (${feature.id})` : 'Select a feature to add a label.';
     const anchor = label?.anchor ?? [(pack.bounds[0] + pack.bounds[2]) / 2, (pack.bounds[1] + pack.bounds[3]) / 2];
     get('label-text').value = label?.text ?? feature?.properties.name ?? '';
     get('label-lon').value = anchor[0]; get('label-lat').value = anchor[1];
@@ -29,7 +29,7 @@ export function createLabelEditor({ getPack, getModel, applyPack }) {
     const options = document.createDocumentFragment(); options.append(new Option('New label for selected feature', ''));
     for (const label of pack?.labels ?? []) options.append(new Option(`${label.text} (${label.id})`, label.id));
     get('label-choice').replaceChildren(options);
-    get('label-choice').value = labelId ?? ''; get('label-choice').disabled = !pack;
+    get('label-choice').value = labelId ?? ''; get('label-choice').disabled = !pack || pack.module === 'topographic';
     get('export-pack').disabled = !pack; get('undo-label').disabled = !previous;
     fill();
   }

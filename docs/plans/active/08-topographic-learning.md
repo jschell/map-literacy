@@ -1,6 +1,6 @@
 # Plan 08 — Topographic data and learning
 
-Status: active for terrain lesson-pack integration and geographic display/print alignment; exact-endpoint contour stitching with explicit branch review is implemented; printable USGS composite and terrain-focused reference views implemented; source-reported contour metadata and standalone elevation-grid foundation implemented; bounded real DEM preparation and standalone contour segments implemented; contour integration and terrain lessons queued.
+Status: active. The first synthetic contour lesson v2 capability supports import, numeric scoring, saved recovery and learner/instructor print. Reference cartography, bounded DEM preparation, connected contours and geographic draft overlays are implemented. Broader terrain instruction, real-source/answer review and device/paper acceptance remain open.
 Dependencies: 01–05 shared foundation; source research may start earlier.
 
 ## Outcome
@@ -19,7 +19,8 @@ Add terrain interpretation to the shared pack/renderer/lesson system without equ
 - [x] Define standalone contour-segment output and verify actual benchmark raster normalization (PR 45); see ../../contracts/contour-segments-v1.md and ../../elevation-preparation.md.
 - [x] Stitch/deduplicate exact segment endpoints into deterministic open chains/closed rings, with explicit junction review and synthetic topology tests; see ../../contracts/contour-lines-v1.md.
 - [x] Audit real benchmark connected edges/elevation consistency and boundary endpoints; preserve numerical evidence without approving terrain answers.
-- [ ] Finalize terrain lesson-pack integration and independent terrain-answer review; draft geographic sidecars are display artifacts.
+- [x] Deliver the first synthetic contour lesson-pack v2 capability across validation, UI import/demo, derived numeric scoring, sessions, IndexedDB/backup and learner/instructor print.
+- [ ] Independently review real terrain answers and integrate real geographic sidecars; their draft display status is not lesson approval.
 - [x] Select the initial bounded preparation path: optional offline Rasterio/PyProj plus standalone JavaScript contour segments (PR 45). Browser GeoTIFF reading and alternative contour libraries remain optional future decisions if a concrete workload needs them; connected contour review is still pending.
 - [x] Specify and independently check the bounded benchmark raster reprojection/georeferencing using exact inverse nearest-center sampling into EPSG:26910.
 - [x] Convert the benchmark connected geometry into an explicit WGS84 display reference and verify shared screen/paper transforms with known coincident road/contour coordinates; retain the selected 4 m operation accuracy. See ../../contracts/geographic-contours-v1.md.
@@ -27,7 +28,8 @@ Add terrain interpretation to the shared pack/renderer/lesson system without equ
 - [x] Bound pinned benchmark input bytes, metadata, read window, output sample count and standalone contour processing/output counts; see ../../../tools/elevation/README.md.
 - [ ] Measure preparation/interactive time and actual-device memory; evaluate Web Workers only for a selected interactive workload. Current count limits do not establish latency or memory acceptance.
 - [ ] Render index/intermediate contours, elevation labels, depression symbols where supported, legend and optional hillshade; make B&W readable.
-- [ ] Implement contour interval/elevation, relative slope, ridge/valley and route-profile exercises with known answers.
+- [x] Implement the first contour interval/elevation reading exercises with analytic synthetic answers, explicit uphill direction and reference/target markers.
+- [ ] Implement relative slope, ridge/valley and route-profile exercises with reviewed known answers.
 - [ ] Add true/grid/magnetic north distinctions where taught; require source/date for declination rather than treating them as equal.
 - [ ] Verify alignment with roads/trails, units/nodata, profiles and matching printed variants; run unfamiliar-terrain pilot extension.
 
@@ -51,7 +53,7 @@ OSM is not a complete DEM source. USGS candidate is US-specific; global sources 
 
 Tracking reconciliation through PR 45: standalone contour output, verified raster normalization and benchmark/count limits are delivered. Geographic integration, connected topology, runtime/device budgets and terrain lesson answers are deliberately separate open tasks. The current reference-map UI does not expose numerical DEM answers.
 
-Next action: finalize the terrain pack envelope and first contour-elevation exercise contract, then implement pack/storage/scoring/paper support together. Review real road/trail tie points and terrain answers separately; retain unsupported-capability rejection until those consumers exist. Keep street-core import rejecting unsupported terrain packs until that contract is implemented.
+Next action: broaden reviewed synthetic terrain instruction beyond the initial contour-reading demo, complete contour cartography/ambiguity review, and evaluate the device/paper workflow. Real road/trail tie points and real terrain answers remain independent gates; keep real terrain-v1/draft sidecar payloads unsupported. Keep street-core import rejecting unsupported terrain packs until that contract is implemented.
 
 
 First-slice verification: 155 Node tests and complete packaged Chromium browser checks pass, including both topo paper orientations, grayscale pixels, provider switch/zoom/failure recovery and street regression checks. Real default USGS imagery was replayed and visually checked in a one-page B&W landscape PDF. Safari topo and physical-paper checks remain pending.
@@ -84,3 +86,7 @@ Validation: 188 Node tests pass, fixtures reproduce exactly, the synthetic stree
 Added a bounded Node/Python geographic sidecar preparer, explicit EPSG:1188 4 m display operation, draft artifact validation and optional shared screen/paper SVG overlay. Source grid/provenance and NAVD88/unknown vertical uncertainty are retained; no vertical conversion or routing inference occurs. The programmatic overlay is not a menu/upload feature or supported terrain pack. Synthetic road/contour coordinates coincide through 90-degree rotation and both Letter layouts; real road/trail source alignment remains pending. See [geographic contract and integration gates](../../contracts/geographic-contours-v1.md) and [benchmark evidence](../../sources/3dep-contour-alignment.json).
 
 Validation for this slice: 192 Node tests and six Python preparation tests pass; fixtures reproduce exactly. Complete packaged Chromium site/Pages checks pass with zero browser errors, including draft contour rendering/clipping, existing geographic printing, lesson/storage recovery and accessibility regressions. Real benchmark overlays validate and render through a rotated screen and both fixed-scale Letter models; the portrait SVG preview was visually inspected. No Safari/device/paper or curriculum approval is implied.
+
+Synthetic contour teaching follow-up (2026-10-17): introduced schemaVersion 2 with terrain-contours-v1 while preserving street v1 and older unsupported-capability/version fixtures. The small analytic hill pack regenerates its exact geometry from the embedded synthetic grid; schema/import validation rejects source/level/geometry drift and ambiguous junctions. Two elevation questions derive answers from mapped contours with explicit 5 m interval and uphill direction. A Load contour lesson control, numeric metre input, common saved-session/hint/retry/fork recovery and separate learner/instructor Letter output are implemented together. No real DEM is presented as reviewed teaching content. See [v2 contract](../../contracts/terrain-lessons-v2.md).
+
+Validation for the synthetic lesson slice: all 196 Node tests pass; deterministic fixtures reproduce and the v2 demo validates. The full packaged Chromium suite passes with zero browser errors, including numeric/keyboard practice, actual save/reload, conflict-safe backup restore, invalid-import retention, four learner/instructor Letter documents and narrow reflow. The GitHub Pages project-prefix/meta-CSP check also loads and scores the contour lesson. Representative PDF map/question pages and the narrow-screen map were visually inspected; learner output omits the target answer. All 152 local Markdown links resolve. Actual target-device/paper and learning-pilot acceptance remain open.

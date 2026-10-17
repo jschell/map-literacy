@@ -61,8 +61,8 @@ export function createRouteTrace({ getPack, redraw }) {
     installed() {
       review = createTraceReview(getPack()); state = null; toggle(false);
       startPicker.set(review.starts.map((node) => ({ id: node.id, text: `${node.id} · ${node.coordinate.map((v) => v.toFixed(5)).join(', ')}` })), '', true);
-      startPicker.enabled(true);
-      get('trace-start').disabled = false; get('trace-mode').disabled = false; get('include-trace').checked = false;
+      startPicker.enabled(getPack().module !== 'topographic');
+      get('trace-start').disabled = getPack().module === 'topographic'; get('trace-mode').disabled = getPack().module === 'topographic'; get('include-trace').checked = false;
       refresh();
     },
     packChanged() { review = createTraceReview(getPack()); refresh(); }

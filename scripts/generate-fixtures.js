@@ -1,3 +1,4 @@
+import { buildTerrainLessonFixture } from './terrain-lesson-fixture.js';
 import { buildTerrainFixtures } from './terrain-fixtures.js';
 import { createHash } from 'node:crypto';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
@@ -83,7 +84,7 @@ export function buildFixtures() {
       { id: 'rollback', expected: 'No partial backup import', implementedIn: '05' },
     ],
   };
-  return { ...buildTerrainFixtures(), 'synthetic-source.json': rawBytes, 'street-square.json': JSON.stringify(base, null, 2) + '\n', 'packs.json': JSON.stringify(packs, null, 2) + '\n', 'expected.json': JSON.stringify(expected, null, 2) + '\n' };
+  return { 'terrain-hill.json': JSON.stringify(buildTerrainLessonFixture(),null,2)+'\n', ...buildTerrainFixtures(), 'synthetic-source.json': rawBytes, 'street-square.json': JSON.stringify(base, null, 2) + '\n', 'packs.json': JSON.stringify(packs, null, 2) + '\n', 'expected.json': JSON.stringify(expected, null, 2) + '\n' };
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
