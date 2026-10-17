@@ -21,7 +21,8 @@ For a saved file with the selected physical Letter orientation, use **Download L
 - [Scope and first release](docs/product-scope.md)
 - [Architecture proposal](docs/architecture.md)
 - [Plan index and dependencies](docs/plans/README.md)
-- [Next work: persistence and browser release](docs/plans/active/05-persistence-and-browser-release.md)
+- [Current implementation: topographic data and learning](docs/plans/active/08-topographic-learning.md)
+- [Remaining browser/release acceptance](docs/plans/queue/05-persistence-and-browser-release.md)
 - [Setup, saved progress, preferences and data removal](docs/browser-setup.md)
 - [Static packages: Cloudflare and GitHub Pages](docs/static-deployment.md)
 - [Local address lessons: draft design and evidence](docs/address-lessons.md)
@@ -55,4 +56,5 @@ This repository now owns implementation planning. The Ideas-for-projects draft r
 ## License
 
 Project code and original documentation are licensed under [MIT](LICENSE). Generated synthetic fixture JSON retains its [CC0-1.0 designation](tests/fixtures/README.md). Third-party map/elevation data and quoted research retain their own licenses and attribution requirements; the MIT license does not relicense them.
+
 

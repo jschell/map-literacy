@@ -1,6 +1,6 @@
 # Plan 03 — SVG rendering and print
 
-Status: queued for external validation; initial projection, map review UI and fixed-scale print renderer implemented.
+Status: queued for remaining device/paper acceptance. Pack rendering/worksheets and later geographic vector, tile and exact-Letter PDF output are implemented. User feedback confirms visible Safari street output and usable page fit/B&W printing for reported samples; both-orientation worksheet calibration and the broader device matrix remain open.
 Dependencies: 01 and the implemented acquisition/validation slice of 02; real lesson approval remains in 02.
 
 ## Outcome
@@ -50,6 +50,9 @@ Performance follow-up: reproducible neighborhood/display/graph stress profiles a
 
 Initial budget follow-up: enforced neighborhood rendering limits (1,000 features/10,000 display coordinates/200 authored labels) and bounded searchable native selectors are implemented. Larger schema-valid files retain their preparation support; browser rejection preserves the previous map/trace. A new 20-sample report records graph import around 2.1s and 218 DOM nodes, with remaining latency outliers explicit. See [budget evidence](../../validation/render-budget.md).
 
+Reconciliation through PR 45: PRs 25–40 added geographic printing independent of lesson packs, source-backed vector streets, Safari invocation/flow corrections, explicit PDF orientation/page fill, cache-version handling and measured B&W output. The user confirmed physical page fit and the PR-40 B&W workflow usable. This supports that reported workflow, not numerical scale calibration, all worksheets or later Terrain composition acceptance. See [scoped print observations](../../validation/physical-print-check.md).
+
 Remaining: actual-device acceptance of the provisional performance budget/pack sizing, actual Safari/Firefox/tablet and physical-print calibration. These are not implied by headless Chromium success. Plan 02 real lesson review and newer-source comparison remain queued, not complete.
 
 Next action: validate practical pack sizing on the chosen device matrix and complete physical geometry/label acceptance; coordinate physical/device checks when available.
+

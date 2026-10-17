@@ -1,6 +1,6 @@
 # Plan 08 — Topographic data and learning
 
-Status: printable USGS composite and terrain-focused reference views implemented; source-reported contour metadata and standalone elevation-grid foundation implemented; bounded real DEM preparation and standalone contour segments implemented; contour integration and terrain lessons queued.
+Status: active for connected contour topology, terrain lesson-pack integration and geographic display/print alignment; printable USGS composite and terrain-focused reference views implemented; source-reported contour metadata and standalone elevation-grid foundation implemented; bounded real DEM preparation and standalone contour segments implemented; contour integration and terrain lessons queued.
 Dependencies: 01–05 shared foundation; source research may start earlier.
 
 ## Outcome
@@ -16,10 +16,13 @@ Add terrain interpretation to the shared pack/renderer/lesson system without equ
 - [x] Select a bounded candidate area, compare 3DEP products and implement seven synthetic elevation fixtures; see ../../elevation-preparation.md.
 - [x] Acquire, verify and prepare the bounded benchmark DEM with actual source/metadata hashes and all-sample comparison; see ../../elevation-preparation.md.
 - [x] Define and test a standalone normalized elevation-grid contract with CRS, units/reference, sample centers, nodata, provenance and uncertainty; see ../../contracts/elevation-grid-v1.md.
-- [ ] Define contour output/lesson-pack integration and verify actual raster normalization.
-- [ ] Start with reviewed precomputed contours if it reduces risk; evaluate geotiff.js for DEM reading and d3-contour for marching-squares contour derivation.
-- [ ] Specify raster reprojection/georeferencing and contour conversion to geographic coordinates; d3-contour output alone is grid-space geometry.
-- [ ] Bound raster memory/bytes and processing time; evaluate Web Workers and selected preparation tooling.
+- [x] Define standalone contour-segment output and verify actual benchmark raster normalization (PR 45); see ../../contracts/contour-segments-v1.md and ../../elevation-preparation.md.
+- [ ] Stitch/deduplicate segments, review connected contour topology and define terrain lesson-pack integration; standalone segments are not supported lesson packs.
+- [x] Select the initial bounded preparation path: optional offline Rasterio/PyProj plus standalone JavaScript contour segments (PR 45). Browser GeoTIFF reading and alternative contour libraries remain optional future decisions if a concrete workload needs them; connected contour review is still pending.
+- [x] Specify and independently check the bounded benchmark raster reprojection/georeferencing using exact inverse nearest-center sampling into EPSG:26910.
+- [ ] Convert connected contour geometry to the display/pack geographic reference and verify road/trail alignment; grid-space geometry alone is insufficient.
+- [x] Bound pinned benchmark input bytes, metadata, read window, output sample count and standalone contour processing/output counts; see ../../../tools/elevation/README.md.
+- [ ] Measure preparation/interactive time and actual-device memory; evaluate Web Workers only for a selected interactive workload. Current count limits do not establish latency or memory acceptance.
 - [ ] Render index/intermediate contours, elevation labels, depression symbols where supported, legend and optional hillshade; make B&W readable.
 - [ ] Implement contour interval/elevation, relative slope, ridge/valley and route-profile exercises with known answers.
 - [ ] Add true/grid/magnetic north distinctions where taught; require source/date for declination rather than treating them as equal.
@@ -43,6 +46,8 @@ OSM is not a complete DEM source. USGS candidate is US-specific; global sources 
 
 2026-10-14: user requested topographic viewing and B&W Letter printing after street printing worked on Safari. The first slice uses the official USGS Topo cached raster service, with provider separation, north/approximate center scale, exact USGS acknowledgment, B&W pixel conversion and color output. No DEM, numerical elevation queries, editable contours or terrain lesson support is advertised. USGS tiles include their own cartography and cannot support blank/partial names or independent hillshade controls. See ../../topographic-browsing.md for current source review and boundaries.
 
+Tracking reconciliation through PR 45: standalone contour output, verified raster normalization and benchmark/count limits are delivered. Geographic integration, connected topology, runtime/device budgets and terrain lesson answers are deliberately separate open tasks. The current reference-map UI does not expose numerical DEM answers.
+
 Next action: stitch/deduplicate and review contour topology, define terrain lesson-pack integration, and verify geographic display/print alignment before enabling terrain lessons. Keep street-core import rejecting unsupported terrain packs until that contract is implemented.
 
 
@@ -65,3 +70,4 @@ B&W fidelity follow-up (2026-10-15): the user accepted physical page fit and req
 
 
 2026-10-17 benchmark preparation and contour derivation: verified TIFF/XML hashes and tile-specific NAD83/NAVD88 metre metadata. Offline exact inverse nearest-center sampling produces a 233 × 338 EPSG:26910 grid. All 78,754 elevations agree with independent GDAL-transform/source-index checks; coordinate round trips stay below 1e-6 m. Added bounded unsmoothed JavaScript contour segments with analytic plane/hill/valley/saddle/nodata tests; 178 Node tests and two synthetic Python preparation tests pass. Raw/normalized real grids remain outside git. Terrain service probe returned all three PNGs with CORS, without reproducing the earlier browser failure. Contour topology, lessons and device acceptance remain open.
+

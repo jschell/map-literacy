@@ -26,4 +26,5 @@ Record browser/OS/device and assistive-technology versions, date, scenario, obse
 | Device touch and contrast | Inspect actual touch targets, focus/selection visibility and text contrast in normal/high-contrast modes on target devices. Emulation is partial evidence only. | Pending |
 | Print | Verify physical monochrome Letter maps and worksheet readability in both orientations using the [physical print checklist](physical-print-check.md). | Pending |
 
-See [setup and recovery](../browser-setup.md) and [storage evidence](storage.md). No supported Safari/Firefox/device matrix or public release is claimed.
+See [setup and recovery](../browser-setup.md) and [storage evidence](storage.md). GitHub Pages is deployed and the reported B&W print workflow was accepted by the user; a supported Safari/Firefox/device accessibility matrix is not yet established.
+

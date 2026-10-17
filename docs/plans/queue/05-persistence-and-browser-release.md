@@ -1,6 +1,6 @@
 # Plan 05 — Persistence and browser release
 
-Status: active for remaining accessibility/browser-matrix acceptance; GitHub Pages is deployed and the user confirmed the B&W print workflow usable after PR 40 (2026-10-15). Recovery, preferences, backup and setup guidance are implemented.
+Status: queued for remaining accessibility/browser-matrix acceptance; implementation delivered through PR 45; GitHub Pages is deployed and the user confirmed the B&W print workflow usable after PR 40 (2026-10-15). Recovery, preferences, backup and setup guidance are implemented.
 Dependencies: implemented scoring/session slice of 04; address-system and external acceptance remain queued.
 
 ## Outcome
@@ -19,16 +19,30 @@ Deliver a recoverable local browser application and documented static-host deplo
 
 ## Acceptance and validation
 
-- [ ] Attempts survive reload; failed import/migration does not destroy old records; export/import round-trip preserves revision/provenance.
-- [ ] No credentials, household defaults, trackers or learner names are required.
+- [x] Attempts survive reload; failed import/migration does not destroy old records; export/import round-trip preserves revision/provenance.
+- [x] No credentials, household defaults, trackers or learner names are required. The startup map is the documented public Redmond example, not an inferred household location.
 - [ ] Static release works on declared browser matrix; data remains understandable when network/source acquisition is unavailable.
-- [ ] Release evidence distinguishes completed checks from pending device/paper checks; no guaranteed offline mode claimed.
+- [x] Release evidence distinguishes completed checks from pending device/paper checks; no guaranteed offline mode claimed. See the current summary and acceptance table below.
 
 ## Risks and boundaries
 
 No accounts or sync are required. GitHub Pages has been published by the user; optional hosting changes remain separate work.
 
-## Execution record
+## Current acceptance summary (2026-10-17)
+
+Implementation includes transactional progress/preferences, revision-locked resume, retry/conflict recovery, backup/restore, schema compatibility, packaged static delivery and GitHub Pages publication. User feedback confirms the reported B&W print workflow usable. Plan 08 is now the active implementation plan; this plan remains queued until its external acceptance is supported.
+
+| Gate | Evidence / remaining action | Completion method |
+|---|---|---|
+| Persistence, revision/provenance and rollback | Real container Chromium IndexedDB round trips, conflicting imports, blocked/failed upgrades and reload recovery recorded in [storage evidence](../../validation/storage.md) | Automated checks completed for version 1; actual future transformations need new fixtures |
+| Keyboard/semantics/reflow | Automated Chromium evidence exists; screen reader, actual zoom and intended-device touch/keyboard remain pending | [Manual accessibility observations](../../validation/accessibility.md) |
+| Static deployment | Pages deployed; latest main CI and Pages runs succeeded through PR 45 | Hosted/device matrix still needs explicit selection and observations |
+| Printing | User accepted reported page fit and B&W workflow; numerical scale calibration and broader mode/worksheet coverage remain pending | [Scoped physical/device checks](../../validation/physical-print-check.md) |
+| Storage pressure | Injected quota/unavailable tests pass; real quota, eviction and private-mode behavior unverified | Target-device observations; do not delete user data to recover |
+
+## Historical execution record
+
+The entries below preserve what was true at each implementation stage. Later entries and the current summary supersede earlier statements such as memory-only UI, no host published or setup still pending. They do not imply completion of unobserved device, curriculum or physical-calibration gates.
 
 Implemented version-1 IndexedDB stores, immutable pack revision insertion, validated atomic pack/session/attempt commits with expected-version leases, immutable attempt checks, exact attempt-order metadata, validated reloads, cancellation, quota/unavailable error normalization and versionchange close/reload notification. Same-content pack insertion is idempotent independent of JSON object-key ordering; changed content at the same revision is rejected. Returned write success occurs only after transaction completion. Late failures roll back pack, session, attempts and metadata together; no database deletion is used as recovery.
 
@@ -146,3 +160,4 @@ B&W fidelity follow-up (2026-10-15): the user accepted physical page fit and req
 
 
 2026-10-16 Terrain usability correction: the supplied one-page export was missing expected street context because the source selection included only highways/trails. Default Terrain to streets/trails with local/connecting roads and names, retaining sparse highways as a choice. Keep the existing Letter geometry, lossless B&W/color output, native invocation and additive contour metadata. Resume elevation-grid work after this focused correction is reviewed.
+
