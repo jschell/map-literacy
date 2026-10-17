@@ -12,6 +12,8 @@ Choose **Topographic — USGS (US)** in the map-type selector to browse source c
 
 Choose **Terrain — contours + roads (US)** for contours and water with streets/trails and optional light hillshade. Terrain road context also offers Highways + trails only for a sparse view. This higher-resolution reference view uses zoom 13–16 and shows source-reported contour units/intervals when available; see [terrain view and source limits](docs/terrain-view.md).
 
+Choose **Load contour lesson** under Lesson map and print to practice reading a synthetic hill's contour elevations. Answer in metres, use hints/retry, resume saved progress, or print separate learner and instructor sheets. The two-question demo is invented terrain with known answers; real topo/terrain reference imagery remains separate. See [supported terrain packs and limits](docs/contracts/terrain-lessons-v2.md).
+
 For a saved file with the selected physical Letter orientation, use **Download Letter PDF**. Native browser Print can override the requested orientation. See [PDF output and fidelity](docs/pdf-output.md).
 
 ## Start here

@@ -26,7 +26,7 @@ const announce = (text) => { get('status').textContent = text; };
 function selectFeature(id) {
   selected = id || null; featurePicker.choose(selected);
   const feature = pack?.features.features.find((f) => f.id === id);
-  get('selection').textContent = feature ? `${feature.properties.name ?? 'Unnamed feature'} · ${feature.id}. Drawing geometry alone does not establish a permitted driving route.` : 'Choose a road on the map or use the feature list.';
+  get('selection').textContent = feature ? `${feature.properties.name ?? 'Unnamed feature'} · ${feature.id}. ${pack.module === 'topographic' ? 'Synthetic contour; use the labeled reference and contour interval.' : 'Drawing geometry alone does not establish a permitted driving route.'}` : 'Choose a road on the map or use the feature list.';
   editor.selectedFeature(selected); updateView();
 }
 function updateView() {
@@ -40,10 +40,10 @@ function updateView() {
   const screenHeight = Math.max(320, Math.min(560, screenWidth * .56));
   const screenKey = `${variant}:${rotation}:${screenWidth}`;
   const model = cachedModel(screenModels, screenKey, () => createMapModel(pack, { variant, rotationDeg: rotation, screenWidth, screenHeight })); currentModel = model;
-  const overlay = trace.overlay();
-  const viewKey = JSON.stringify([rotation, screenWidth, screenHeight, headingDeg, overlay?.startNodeId, overlay?.mode, overlay?.edgeIds]);
+  const overlay = trace.overlay(), lessonAnnotations = lessons.annotations();
+  const viewKey = JSON.stringify([rotation, screenWidth, screenHeight, headingDeg, overlay?.startNodeId, overlay?.mode, overlay?.edgeIds,lessonAnnotations]);
   if (screenViewKey !== viewKey) {
-    get('map').replaceChildren(renderMap(document, model, { selectedId: selected, headingDeg, route: overlay, onSelect: (id) => { if (!editor.isPlacing()) { if (trace.isTracing()) trace.selectFeature(id); else selectFeature(id); } } }));
+    get('map').replaceChildren(renderMap(document, model, { selectedId: selected, headingDeg, route: overlay, annotations:lessonAnnotations, onSelect: (id) => { if (!editor.isPlacing()) { if (trace.isTracing()) trace.selectFeature(id); else selectFeature(id); } } }));
     screenViewKey = viewKey;
   } else {
     if (screenVariant !== variant) updateMapLabels(document, get('map').querySelector('svg'), model);
@@ -100,7 +100,7 @@ function install(value) {
 
   get('attribution').textContent = pack.sources.map((s) => `${s.attribution} · ${s.license} · source ${s.sourceAt?.slice(0, 10) ?? 'date unknown'}`).join(' | ');
   featurePicker.set(pack.features.features.map((f) => ({ id: f.id, text: `${f.properties.name ?? 'Unnamed feature'} (${f.id})` })), '', true); featurePicker.enabled(true);
-  get('selection').textContent = 'Choose a road on the map or use the feature list.'; editor.installed(); trace.installed(); lessons.installed(); preferences.installed(); updateView();
+  get('selection').textContent = pack.module === 'topographic' ? 'Synthetic contour lesson; elevations increase toward the hill center. No real terrain is represented.' : 'Choose a road on the map or use the feature list.'; editor.installed(); trace.installed(); lessons.installed(); preferences.installed(); updateView();
   get('map').dataset.loadVersion = String(++loadVersion);
 }
 async function load(operation) {
@@ -125,6 +125,8 @@ get('demo').addEventListener('click', () => load(async (signal) => {
   if (!response.ok) throw new Error('Synthetic map could not be loaded.');
   return readImport(await response.blob(), signal);
 }));
+get('terrain-demo').addEventListener('click', () => load(async(signal) => { const response=await fetch('tests/fixtures/terrain-hill.json',{signal}); if(!response.ok) throw new Error('Contour lesson could not be loaded.'); return readImport(await response.blob(),signal); }));
+document.addEventListener('lesson-view-changed', () => requestAnimationFrame(updateView));
 get('import').addEventListener('change', () => { const file = get('import').files[0]; if (file) load((signal) => readImport(file, signal)); get('import').value = ''; });
 get('rotate').addEventListener('click', () => { rotation = (rotation + 90) % 360; preferences.changed(); });
 for (const id of ['variant', 'scale', 'orientation']) get(id).addEventListener('change', () => preferences.changed());

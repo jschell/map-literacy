@@ -1,6 +1,6 @@
 # Lesson pack v1
 
-Status: street-core v1 structural/reference validation implemented. An initial SVG/print renderer is implemented; scoring and persistence remain later work; terrain/routing payloads remain later-plan contracts.
+Status: street-core v1 validation, rendering, scoring and persistence implemented. The separate [synthetic contour v2 contract](terrain-lessons-v2.md) adds the first bounded terrain capability; this file retains the street v1 envelope. Real terrain/routing payloads remain unsupported.
 
 ## Envelope and primitives
 
@@ -27,7 +27,7 @@ Implementation clarification: dates are canonical UTC with millisecond precision
 
 Reviewed pack requires reviewedAt and a review note describing checked extent/features and exclusions. A reviewed pack can have partial topology, but no scored exercise may use excluded/unresolved parts. Draft content can be previewed with a visible unreviewed indicator; scored practice starts only on reviewed, supported exercises. Rejected content is not offered for practice. Review does not establish current real-world conditions.
 
-Street-core application imports only module=street and capabilities=[street-core]. Future topo/directions capabilities are recognized but rejected with unsupported-capability before persistence. They cannot be silently ignored. This preserves an extension boundary without pretending later modules are implemented.
+Version-1 street imports require module=street and capabilities=[street-core]. The application also supports the separate synthetic contour v2 envelope; it does not broaden v1. Future topo/directions capabilities are recognized but rejected with unsupported-capability before persistence. They cannot be silently ignored. This preserves an extension boundary without pretending later modules are implemented.
 
 Limits: 10 MiB file, 10,000 features, 100,000 total coordinate positions, 20,000 nodes, 40,000 directed edges, 5,000 restrictions, 2,000 labels, 200 exercises, nesting depth 32, individual free text 2,000 chars. Check byte size before parse; validate budgets before rendering/writes. Geographic support: abs(latitude)<=70 degrees, no dateline crossing, display diagonal <=5 km; source extent <=10 km diagonal. Exceeding these returns extent-unsupported. These are initial bounded-SVG limits, not geographic-data limitations.
 

@@ -154,3 +154,7 @@ storage.loadSettings reads the retained record; recoverSettings supplies visible
 
 Saved values override pack view defaults; absent settings leave authored print presets in effect. Use pack view defaults is an explicit preference change. Preferences do not modify source content, pack revisions, geographic scoring units/tolerances or instructor-answer output. Dedicated preference files are <=16 KiB UTF-8 JSON; restore uses their values through a new local CAS update. Full backup settings may be {} (legacy/no preferences) or the strict record; different existing preferences fail the full import atomically. Progress-only per-session backups exclude preferences, and the session-file UI explicitly rejects full backups that contain them.
 
+
+## Synthetic contour envelope v2 follow-up
+
+The application now supports the separate [synthetic contour lesson contract](terrain-lessons-v2.md) with a numeric metre input and exercise-supplied reference/target annotations. Existing pack revision/session/save/conflict/backup behavior applies without a database or backup-envelope migration. Version-1 street data remains unchanged; real terrain-v1/draft geographic sidecars and routing capabilities remain unsupported.

@@ -39,3 +39,7 @@ Real IndexedDB fixtures hold an older connection open, observe the blocked callb
 
 The production adapter still implements version 1 only. The destructive version-2 fixture tests IndexedDB rollback, not a supported migration. Any actual future migration needs its own transformation and preservation fixtures before release. Blocked checks run against real connections in container Chromium; they do not establish Safari/Firefox or actual-device acceptance. Recovery never deletes a database; test cleanup removes only uniquely named fixture databases.
 
+
+## Synthetic contour v2 records
+
+The existing version-1 stores/backup envelope now accept a validated synthetic contour v2 pack and contour-elevation attempts. The embedded grid/source/revision and recomputed numeric result travel with the pack/session; no store migration or silent conversion of street records occurs. Unit checks cover hint/answer/pack round-trip and fabricated-score rejection. Browser checks cover actual save/reload and restoring an older conflicting backup into a new session without overwriting the completed original. Real terrain sidecars and terrain-v1 imports remain unsupported.

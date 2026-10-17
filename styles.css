@@ -192,3 +192,5 @@ h2.sheet-block { font-size: 12pt; line-height: 1.4; }
 #explorer-terrain[hidden], #explorer-relief-wrap[hidden] { display: none; }
 
 #explorer-terrain-roads-wrap[hidden] { display: none; }
+
+.feature--contour { fill: none; }

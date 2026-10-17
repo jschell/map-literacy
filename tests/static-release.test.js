@@ -15,7 +15,7 @@ async function fixture(t) {
   const assets = {
     'index.html': '<!doctype html>\n<head>\n  <meta charset="utf-8">\n<script type="module" src="src/ui/app.js"></script></head>',
     'styles.css': 'body { color: black; }', 'LICENSE': 'MIT fixture',
-    'src/ui/app.js': 'export const loaded = true;', 'tests/fixtures/street-square.json': '{}',
+    'src/ui/app.js': 'export const loaded = true;', 'tests/fixtures/street-square.json': '{}', 'tests/fixtures/terrain-hill.json': '{}',
     'data/raw/home.json': 'excluded raw data', '.env': 'excluded configuration', 'node_modules/index.js': 'excluded dependency'
   };
   for (const [path, content] of Object.entries(assets)) await writeFile(join(root, path), content);
@@ -63,7 +63,7 @@ test('preview serves correct MIME/headers and blocks traversal, internal files a
   const server = createStaticServer(join(root, 'dist/site')); server.listen(0, '127.0.0.1'); await once(server, 'listening');
   t.after(() => new Promise((resolve) => server.close(resolve)));
   const base = `http://127.0.0.1:${server.address().port}`;
-  for (const [path, mime] of [['/', 'text/html'], ['/styles.css', 'text/css'], ['/src/ui/app.js', 'text/javascript'], ['/tests/fixtures/street-square.json', 'application/json'], ['/LICENSE', 'text/plain']]) {
+  for (const [path, mime] of [['/', 'text/html'], ['/styles.css', 'text/css'], ['/src/ui/app.js', 'text/javascript'], ['/tests/fixtures/street-square.json', 'application/json'], ['/tests/fixtures/terrain-hill.json', 'application/json'], ['/LICENSE', 'text/plain']]) {
     const response = await fetch(base + path); assert.equal(response.status, 200); assert.ok(response.headers.get('content-type').startsWith(mime));
     for (const [key, value] of Object.entries(RESPONSE_HEADERS)) assert.equal(response.headers.get(key), value);
   }
