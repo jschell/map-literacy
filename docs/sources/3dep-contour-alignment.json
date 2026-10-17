@@ -1,0 +1,52 @@
+{
+  "checkedAt": "2026-10-17T23:26:12.666613+00:00",
+  "reproductionNote": "Reacquired TIFF/XML hashes verified; original acquisition timestamp retained solely to reproduce the prior normalized artifact bytes.",
+  "sourceSha256": "40bccd5f1252cec0e5fd6f2a15e5a62590e42d43455a61cf1b48bc55784b5c85",
+  "metadataSha256": "392bacf7bb0ef6d90e951ae9893f473293fca63551ed9243d4b7b4f48a51e368",
+  "normalizedSha256": "a7147b3e546eae03c52d978b500bac4e254a8e41b8f09bc1baa58cfe519bb860",
+  "metricContourSha256": "953fe948f069f521125d4d74dce9b81752d1030bb60d13da6bf3fb641ba48f69",
+  "geographicContourSha256": "898ab1328c5b7d0e66b0545789e827b13116eb495e34026f0db79db0a124e7bd",
+  "geographicBytes": 1505325,
+  "levels": [
+    {
+      "levelM": 200,
+      "lines": 4,
+      "junctions": 0,
+      "closed": 1
+    },
+    {
+      "levelM": 300,
+      "lines": 10,
+      "junctions": 0,
+      "closed": 5
+    }
+  ],
+  "metricAudit": {
+    "verticesChecked": 1665,
+    "maxElevationErrorM": 2.8390445550030563e-10,
+    "boundaryOpenEndpoints": 16,
+    "interiorOpenEndpoints": 0,
+    "uniqueEdgesPreserved": true
+  },
+  "operation": {
+    "id": "EPSG:1188",
+    "accuracyM": 4.0,
+    "description": "Inverse of UTM zone 10N + NAD83 to WGS 84 (1) + axis order change (2D)",
+    "pipeline": "proj=pipeline step inv proj=utm zone=10 ellps=GRS80 step proj=unitconvert xy_in=rad xy_out=deg",
+    "pyproj": "3.7.2",
+    "proj": "9.5.1",
+    "maxRoundTripM": 2.08250058582033e-09,
+    "verticalConversion": false
+  },
+  "displayCheck": {
+    "lines": 14,
+    "coordinatePositions": 1665,
+    "views": [
+      "90-degree screen",
+      "Letter portrait 1:10000",
+      "Letter landscape 1:10000"
+    ],
+    "method": "shared mapModel.convert/clip; real benchmark SVG preview inspected separately"
+  },
+  "review": "Processing and exact-edge/elevation audit only. No surveyed absolute accuracy, real road/trail alignment, terrain lesson answers or device/paper acceptance established."
+}

@@ -39,3 +39,7 @@ The earlier browser Terrain fetch failure was not reproduced by a bounded direct
 ## Connected-line preparation follow-up
 
 The [connected-line contract](contracts/contour-lines-v1.md) now provides exact-endpoint deduplication and iterative chain/ring traversal, retaining the metric CRS and reporting branch junctions for review. Synthetic geometry tests establish algorithm behavior; the real benchmark grid/segments were not reacquired or reviewed in this slice. Geographic reprojection, road/trail alignment and lesson-pack integration remain next gates.
+
+## Geographic draft sidecar
+
+The [geographic contour contract](contracts/geographic-contours-v1.md) now defines offline conversion, draft validation and shared screen/paper overlay integration. [Benchmark audit evidence](sources/3dep-contour-alignment.json) records reproduced source/grid hashes, exact-edge preservation and source-elevation residuals. EPSG:1188 explicitly contributes a reported 4 m display-operation accuracy; inverse consistency does not remove that limit or unknown source uncertainty. Real road/trail alignment, full terrain lesson-pack consumers and reviewed answers remain pending.

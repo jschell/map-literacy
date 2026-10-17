@@ -25,3 +25,16 @@ The preparer reads a bounded source window plus a two-pixel halo (maximum one mi
 The initial approximate warp-mesh experiment disagreed with exact nearest-center indexing near cell boundaries. The final method uses exact inverse sampling and records that choice explicitly. Nearest sampling preserves original elevations but can produce blocky contours; it is not a claim of improved source resolution or smoothness.
 
 CI runs two synthetic preparation tests without downloading real source data. The real-data acquisition, full comparison and output hashes are recorded separately in `docs/sources/3dep-benchmark-preparation.json`. No source sample grid or large derived product is committed.
+
+## Geographic contour preparation
+
+With Node 24 and this Python environment installed, prepare a draft display sidecar from a normalized EPSG:26910 benchmark grid:
+
+```sh
+.elevation-venv/bin/python tools/elevation/geographic_contours.py /outside/normalized-grid.json /outside/geographic-contours.json --levels 200,300
+node scripts/derive-contour-lines.js /outside/normalized-grid.json 200,300 > /outside/metric-contours-and-audit.json
+```
+
+The second command exposes the source-elevation/exact-edge audit in addition to metric lines. The geographic command validates/derives through Node, refuses an existing output path and prints the output hash, counts and operation metadata. It retains the full source grid and exact grid-file hash. Raw and derived real products remain outside git.
+
+The pinned display operation is EPSG:1188 (reported 4 m accuracy), selected explicitly with networking disabled. Higher-accuracy regional grids are a separate decision; no vertical conversion is performed. See [the contract, limits and future lesson-pack gates](../../docs/contracts/geographic-contours-v1.md). Run all six Python tests using the command above; CI now explicitly installs Node 24 for cross-runtime preparation tests.
