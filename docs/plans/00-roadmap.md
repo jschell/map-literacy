@@ -1,6 +1,6 @@
 # Plan 00 — Roadmap
 
-Status: reference, 2026-10-12. Current authorized deliverable: planning foundation and reviewable PR.
+Status: reference, reconciled 2026-10-17 through merged PR 45. GitHub Pages is deployed; the user accepted the B&W print workflow. Street scoring, sessions, persistence and recovery are implemented. Current implementation is Plan 08 contour topology and terrain integration; reviewed learning materials, learning evidence and remaining device/accessibility acceptance are still open.
 
 ## Milestones
 
@@ -24,3 +24,4 @@ Keep source hashes/queries/version and attribution; deterministic fixtures; revi
 ## Completion discipline
 
 Each plan records actual changes, validation and unresolved acceptance items. Use one focused PR per coherent work package or substantial slice; fix related issues together. Preserve open decisions rather than declaring implementation-ready based on prose alone.
+

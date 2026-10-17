@@ -1,6 +1,16 @@
 # Letter print and device validation
 
-Status: pending physical output and actual-device observations. Container PDFs and touch emulation do not complete these checks.
+Status: partial user-reported acceptance; formal calibration and the broader device matrix remain pending. Container PDFs and touch emulation do not complete manual checks.
+
+## Recorded user feedback (reconciled 2026-10-17)
+
+| Reported evidence | What it supports | Still open |
+|---|---|---|
+| Post-PR-35 Safari street PDF showed map, attribution, north and scale; user reported improvement | Visible output for the affected Safari street sample | Other modes, devices and worksheet coverage |
+| User reported physical page fit looked good, then requested sharper B&W output | Usable physical page fit for the reported workflow | Measured horizontal/vertical scale error, printer/driver details and full orientation coverage |
+| User confirmed PR 40 merged/deployed and usable | Acceptance of the reported B&W print workflow after the quality change | Later Terrain composition, contour/label review and broader browser/device acceptance |
+
+These observations are recorded in [Plan 05](../plans/queue/05-persistence-and-browser-release.md) and [Plan 08](../plans/active/08-topographic-learning.md). They are not formal ruler measurements or complete device test records. The procedure and blank record below collect the remaining evidence.
 
 ## Physical calibration
 
@@ -46,3 +56,4 @@ Verify explicit import, draft/source display, native keyboard controls, focus vi
 | Pass, failure, adjustment and retest | Pending |
 
 Retest both scale directions after any browser/driver/scaling change. Preserve failures and fixes; do not mark a row passed from a screenshot.
+

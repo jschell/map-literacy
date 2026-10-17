@@ -19,9 +19,9 @@ Build orientation, endpoint, connected-route and detour lessons with determinist
 
 ## Acceptance and validation
 
-- [ ] Tests cover rotated maps, wrap-around headings, tolerance boundaries, one-way return, bridge crossing, no valid answer and multiple routes.
+- [x] Tests cover rotated maps, wrap-around headings, tolerance boundaries, one-way return, bridge crossing, no valid answer and multiple routes.
 - [x] Wrong/ambiguous/unreviewed answers receive appropriate deterministic feedback; no engine shortest-path exact-match assumption.
-- [ ] Refresh/reset behavior follows the contract; interaction and paper versions use the same pack/exercise revision.
+- [x] Refresh/reset behavior follows the contract; interaction and paper versions use the same pack/exercise revision.
 - [ ] Usability checks demonstrate completion with keyboard and touch without driving-time interaction.
 
 ## Risks and boundaries
@@ -42,6 +42,9 @@ Address-design follow-up: official county handout (visible November 2020 date, r
 
 Validation: primary-source scope/date/pages were checked; design-case IDs/references and expected-result consistency pass a local check; documentation links resolve. Existing application/schema/scoring are unchanged. Current core keyboard/touch/recovery evidence is documented under Plan 05; it does not establish address-learning transfer or device/curriculum acceptance.
 
+Reconciliation through PR 45: the automated scoring fixtures, session revision-lock/reset tests and subsequent storage/browser recovery checks support the two checked acceptance items above. See [scoring tests](../../../tests/score.test.js), [session tests](../../../tests/session.test.js) and [storage evidence](../../validation/storage.md). This is automated evidence for the existing street capability; keyboard/touch target-device and curriculum acceptance remain open.
+
 Next action: use the draft design in instructor/pilot material review. If the pilot supports interactive address practice, revise pack/application/scoring/print contracts together, then implement the proposed bounded address-choice slice and its fixtures. No address-v1 capability is supported yet. Perform real-device/curriculum acceptance when observations are available. This plan is not complete.
+
 
 
