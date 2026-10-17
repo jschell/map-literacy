@@ -4,7 +4,7 @@ import { terrainRequest, boundedTerrainImage, TERRAIN_LIMITS } from '../src/map/
 import { geographicView } from '../src/map/geographic.js';
 import { project } from '../src/map/explorer.js';
 
-test('terrain exports share the exact Mercator print extent, pixel grid and sparse layer selection', () => {
+test('terrain exports share the exact Mercator print extent, pixel grid and street layer selection', () => {
   for (const orientation of ['portrait', 'landscape']) {
     const view = geographicView(project(-121.75, 47.5, 15), 15, orientation);
     const request = terrainRequest(view, { relief: true });
@@ -17,7 +17,7 @@ test('terrain exports share the exact Mercator print extent, pixel grid and spar
     for (const layer of request.layers) {
       const p = new URL(layer.url).searchParams;
       assert.equal(p.get('bbox'), request.bbox.join(',')); assert.equal(p.get('bboxSR'), '3857'); assert.equal(p.get('imageSR'), '3857'); assert.equal(p.get('size'), request.pixels.join(','));
-      if (layer.id === 'roads') { const ids = p.get('layers').slice(5).split(',').map(Number); assert.ok(ids.includes(29) && ids.includes(37)); assert.ok(!ids.includes(32) && !ids.includes(21) && !ids.includes(27)); }
+      if (layer.id === 'roads') { const ids = p.get('layers').slice(5).split(',').map(Number); assert.ok(ids.includes(29) && ids.includes(37)); assert.ok(ids.includes(31) && ids.includes(32) && ids.includes(20) && ids.includes(21)); assert.ok(!ids.includes(27) && !ids.includes(38)); }
     }
     assert.notEqual(request.key, terrainRequest(view).key);
   }
@@ -32,4 +32,13 @@ test('terrain response bounds reject service errors and oversized chunked bodies
   let canceled = false;
   const stream = new ReadableStream({ pull(c) { c.enqueue(new Uint8Array(1024 * 1024)); }, cancel() { canceled = true; } });
   await assert.rejects(boundedTerrainImage(new Response(stream, { headers: { 'content-type': 'image/png' } })), /limit/); assert.equal(canceled, true);
+});
+
+test('sparse terrain roads are explicit and cannot reuse a street-context snapshot', () => {
+  const view = geographicView(project(-122.122,47.674,15),15,'landscape');
+  const streets = terrainRequest(view), sparse = terrainRequest(view,{roads:'sparse'});
+  assert.deepEqual(streets.bbox,sparse.bbox);assert.notEqual(streets.key,sparse.key);
+  const ids = new URL(sparse.layers.find(l=>l.id==='roads').url).searchParams.get('layers').slice(5).split(',').map(Number);
+  assert.ok(ids.includes(29)&&ids.includes(37));assert.ok(!ids.includes(32)&&!ids.includes(31)&&!ids.includes(21));
+  assert.throws(()=>terrainRequest(view,{roads:'unknown'}));
 });

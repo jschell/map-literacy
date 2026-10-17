@@ -15,7 +15,7 @@ export function createExplorer() {
   const images = new Map(), pointers = new Map();
   const streets = createGeographicStreets(get, () => updatePrintAvailability());
   const terrain = createGeographicTerrain(get, () => updatePrintAvailability());
-  const terrainOptions = () => ({ relief: get('explorer-relief').value === 'light', appearance: get('explorer-appearance').value, contrast: get('explorer-topo-contrast').value });
+  const terrainOptions = () => ({ roads: get('explorer-terrain-roads').value, relief: get('explorer-relief').value === 'light', appearance: get('explorer-appearance').value, contrast: get('explorer-topo-contrast').value });
   let displayScale = 1, marking = '', pointerStart = null, dragged = false;
   const size = () => [viewport.clientWidth, viewport.clientHeight];
   function tileSnapshot() {
@@ -34,7 +34,7 @@ export function createExplorer() {
     if (basemap === 'terrain') {
       const ready = !!terrain.snapshot();
       get('explorer-print').disabled = get('explorer-pdf').disabled = !ready;
-      get('explorer-print-status').textContent = ready ? 'Ready to print terrain: contours, water, highways and trails.' : 'Print needs every selected terrain layer for this view. Zoom 13–16, or Retry map.';
+      get('explorer-print-status').textContent = ready ? `Ready to print terrain: contours, water, ${terrain.snapshot().roads === 'streets' ? 'streets' : 'highways'} and trails.` : 'Print needs every selected terrain layer for this view. Zoom 13–16, or Retry map.';
       return;
     }
     const vector = currentVector(), tiles = tileSnapshot();
@@ -175,7 +175,7 @@ export function createExplorer() {
     get('geographic-print').dataset.center = `${view.center[1].toFixed(5)},${view.center[0].toFixed(5)}`;
     get('geographic-paper-map').style.width = `${view.width}mm`; get('geographic-paper-map').style.height = `${view.height}mm`;
     get('geographic-print-status').textContent = '';
-    get('geographic-paper-credit').textContent = `${USGS_ACKNOWLEDGMENT} Terrain · contours, water, highways/trails · ${snapshot.metadata.credit} · ${snapshot.layers.includes('relief') ? 'light relief' : 'no relief'} · approximate center scale 1:${Math.round(view.scaleDenominator).toLocaleString()} · viewed ${new Date().toISOString().slice(0, 10)}.`;
+    get('geographic-paper-credit').textContent = `${USGS_ACKNOWLEDGMENT} Terrain · contours, water, ${snapshot.roads === 'streets' ? 'streets/trails' : 'highways/trails'} · ${snapshot.metadata.credit} · ${snapshot.layers.includes('relief') ? 'light relief' : 'no relief'} · approximate center scale 1:${Math.round(view.scaleDenominator).toLocaleString()} · viewed ${new Date().toISOString().slice(0, 10)}.`;
     return true;
   }
   function prepareTilePrint() {
@@ -323,6 +323,7 @@ export function createExplorer() {
     streets.annotate(view.inverse([x / frame.width * view.width, y / frame.height * view.height]), marking);
   });
   get('explorer-topo-contrast').addEventListener('change', () => { if (basemap === 'terrain') terrain.render(terrainOptions()); });
+  get('explorer-terrain-roads').addEventListener('change', () => { if (basemap === 'terrain') settle(); });
   get('explorer-relief').addEventListener('change', () => { if (basemap === 'terrain') settle(); });
   get('explorer-appearance').addEventListener('change', () => { if (basemap === 'terrain') terrain.render(terrainOptions()); layer.dataset.appearance = get('explorer-appearance').value; get('explorer-topo-contrast-wrap').hidden = basemap === 'street' || get('explorer-appearance').value !== 'bw'; });
   get('explorer-basemap').onchange = () => {
@@ -336,6 +337,7 @@ export function createExplorer() {
     get('explorer-terrain-help').hidden = basemap !== 'terrain';
     get('explorer-contour-details').hidden = basemap !== 'terrain';
     get('explorer-relief-wrap').hidden = basemap !== 'terrain';
+    get('explorer-terrain-roads-wrap').hidden = basemap !== 'terrain';
     get('explorer-topo-help').hidden = basemap !== 'topo';
     get('explorer-street-status').hidden = topo;
     get('explorer-vector').hidden = topo;

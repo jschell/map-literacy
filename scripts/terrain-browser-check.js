@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 export async function checkTerrain(page, checkPdfDownload) {
   const fixtures = await page.evaluate(() => {
     const result = {};
-    for (const [width, height] of [[1980,1530], [1530,1980]]) for (const id of ['water','contours','roads','relief']) {
+    for (const [width, height] of [[1980,1530], [1530,1980]]) for (const id of ['water','contours','roads','roads-sparse','relief']) {
       const c = document.createElement('canvas'); c.width = width; c.height = height; const p = c.getContext('2d');
       if (id === 'water') { p.fillStyle = '#7dbbe8'; p.fillRect(100, 100, 180, height - 200); }
       if (id === 'contours') {
@@ -12,7 +12,8 @@ export async function checkTerrain(page, checkPdfDownload) {
         for (let y = 70; y < height - 70; y += 48) { p.beginPath(); p.moveTo(320,y); p.bezierCurveTo(700,y-40,1000,y+40,width-50,y); p.stroke(); }
         p.fillStyle = '#714719'; p.font = '24px Arial'; p.fillText('SYNTHETIC 200 ft', 500, 400);
       }
-      if (id === 'roads') { p.strokeStyle = '#555555'; p.lineWidth = 5; p.beginPath(); p.moveTo(400,80); p.lineTo(width-80,height-80); p.stroke(); }
+      if (id === 'roads' || id === 'roads-sparse') { p.strokeStyle = '#555555'; p.lineWidth = 5; p.beginPath(); p.moveTo(400,80); p.lineTo(width-80,height-80); p.stroke(); }
+      if (id === 'roads') { p.strokeStyle='#222222'; p.lineWidth=8; p.beginPath(); p.moveTo(350,700); p.lineTo(width-100,700); p.stroke(); p.fillStyle='#222222'; p.font='24px Arial'; p.fillText('Test Local St',500,680); }
       if (id === 'relief') { p.fillStyle = '#888888'; p.fillRect(0,0,width,height); }
       result[`${width},${height}/${id}`] = c.toDataURL('image/png').split(',')[1];
     }
@@ -41,7 +42,7 @@ export async function checkTerrain(page, checkPdfDownload) {
     records.push({ id, size, bbox: u.searchParams.get('bbox'), layers: u.searchParams.get('layers') });
     if (holdNext && id === 'water') { holdNext = false; held(); await new Promise((r) => { release = r; }); }
     if (fail === id) return route.fulfill({ contentType: 'application/json', body: '{"error":{"message":"source unavailable"}}' }).catch(() => {});
-    return route.fulfill({ headers: { 'access-control-allow-origin': '*' }, contentType: 'image/png', body: Buffer.from(fixtures[`${size}/${id}`], 'base64') }).catch(() => {});
+    return route.fulfill({ headers: { 'access-control-allow-origin': '*' }, contentType: 'image/png', body: Buffer.from(fixtures[`${size}/${id === 'roads' && !u.searchParams.get('layers').split(',').includes('32') ? 'roads-sparse' : id}`], 'base64') }).catch(() => {});
   };
   await page.route(matcher, handler);
   const ready = () => page.waitForFunction(() => !document.getElementById('explorer-print').disabled && !!document.querySelector('#explorer-terrain canvas'));
@@ -51,20 +52,40 @@ export async function checkTerrain(page, checkPdfDownload) {
   try {
     await page.locator('#explorer-basemap').selectOption('terrain'); await ready(); await metadataReady();
     assert.equal(await page.locator('#explorer-relief-wrap').isVisible(), true);
+    assert.equal(await page.locator('#explorer-terrain-roads-wrap').isVisible(), true);
+    assert.equal(await page.locator('#explorer-terrain-roads').inputValue(),'streets');
     assert.equal(await page.locator('#explorer-labels').isDisabled(), true);
     assert.equal(await page.locator('#explorer-vector svg').count(), 0);
+    const terrainViewport=page.viewportSize();await page.setViewportSize({width:320,height:900});await ready();
+    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,'terrain controls fit a phone');
+    await page.setViewportSize(terrainViewport);await ready();
     for (const orientation of ['landscape','portrait']) {
       await page.locator('#orientation').selectOption(orientation); await ready(); await metadataReady();
       await page.locator('#explorer-print').click();
       const canvas = page.locator('#geographic-paper-tiles canvas');
-      const samples = await canvas.evaluate((c) => ({ width:c.width,height:c.height,water:[...c.getContext('2d').getImageData(180,200,1,1).data],background:[...c.getContext('2d').getImageData(20,20,1,1).data] }));
+      const samples = await canvas.evaluate((c) => ({ width:c.width,height:c.height,water:[...c.getContext('2d').getImageData(180,200,1,1).data],background:[...c.getContext('2d').getImageData(20,20,1,1).data],localStreet:c.getContext('2d').getImageData(600,700,1,1).data[0] }));
       assert.deepEqual([samples.width,samples.height], orientation === 'landscape' ? [1980,1530] : [1530,1980]);
+      assert.ok(samples.localStreet<150,'terrain print includes local street geometry');
       assert.equal(samples.water[0],samples.water[1]); assert.ok(samples.water[0]<220); assert.deepEqual(samples.background,[255,255,255,255]);
       assert.match(await page.locator('#geographic-paper-credit').textContent(), /20 ft, 40 ft \(vary within this area\)/);
       const pdf = await page.pdf({ path:new URL(`../artifacts/browser/terrain-native-${orientation}.pdf`,import.meta.url).pathname,preferCSSPageSize:true,printBackground:true });
       assert.equal((pdf.toString('latin1').match(/\/Type \/Page\b/g)??[]).length,1); assert.match(pdf.toString('latin1'),/\/Subtype\s*\/Image/);
       await checkPdfDownload(page,orientation,'terrain');
     }
+    const metadataBeforeRoadChoice=metadataRecords.length;
+    await page.locator('#explorer-terrain-roads').selectOption('sparse'); await ready();
+    await page.locator('#explorer-print').click();
+    const roadSample=()=>page.locator('#geographic-paper-tiles canvas').evaluate(c=>c.getContext('2d').getImageData(600,700,1,1).data[0]);
+    assert.ok((await roadSample())>220,'sparse selection excludes the local street');
+    assert.match(await page.locator('#geographic-paper-credit').textContent(),/highways\/trails/);
+    await page.locator('#explorer-terrain-roads').selectOption('streets'); await ready(); await page.locator('#explorer-print').click();
+    assert.ok((await roadSample())<150);assert.match(await page.locator('#geographic-paper-credit').textContent(),/streets\/trails/);
+    assert.equal(metadataRecords.length,metadataBeforeRoadChoice,'road detail changes reuse same-area contour metadata');
+    holdNext=true;const changingRoads=new Promise(r=>{held=r;});
+    await page.locator('#explorer-terrain-roads').selectOption('sparse'); await changingRoads;
+    assert.equal(await page.locator('#explorer-print').isDisabled(),true);
+    await page.locator('#explorer-terrain-roads').selectOption('streets'); await ready(); release();
+    await page.locator('#explorer-print').click();assert.ok((await roadSample())<150,'late sparse response cannot replace streets');
     const requestsBeforeStyle = records.length, detailsBeforeStyle = metadataRecords.length;
     await page.locator('#explorer-appearance').selectOption('color');
     const colored = await page.locator('#explorer-terrain canvas').evaluate((c)=>[...c.getContext('2d').getImageData(180,200,1,1).data]);
@@ -113,7 +134,8 @@ export async function checkTerrain(page, checkPdfDownload) {
     await page.locator('#explorer-basemap').selectOption('street');
     await page.waitForFunction(()=>!document.getElementById('explorer-print').disabled&&!!document.querySelector('#explorer-vector svg'));
     assert.equal(await page.locator('#explorer-relief-wrap').isVisible(),false);
-    return { contourMetadata:true,metadataFailureKeepsPrint:true,staleMetadataRejected:true,sharedGrid:true,sourcePixels:[1980,1530],missingLayerBlocksPrint:true,staleViewRejected:true,lightRelief:true,letterPdf:true };
+    assert.equal(await page.locator('#explorer-terrain-roads-wrap').isVisible(),false);
+    return { localStreetContext:true,staleRoadChoiceRejected:true,contourMetadata:true,metadataFailureKeepsPrint:true,staleMetadataRejected:true,sharedGrid:true,sourcePixels:[1980,1530],missingLayerBlocksPrint:true,staleViewRejected:true,lightRelief:true,letterPdf:true };
   } finally {
     releaseMetadata?.(); await page.unroute(metadataMatcher,metadataHandler);
     release?.(); await page.unroute(matcher,handler);

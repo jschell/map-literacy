@@ -18,7 +18,7 @@ export function createGeographicTerrain(get, onChange) {
     const canvas = document.createElement('canvas'); canvas.width = result.canvas.width; canvas.height = result.canvas.height;
     const ctx = canvas.getContext('2d'); ctx.drawImage(result.canvas, 0, 0);
     if (appearance === 'bw') { const pixels = ctx.getImageData(0, 0, canvas.width, canvas.height); monochrome(pixels.data, contrast); ctx.putImageData(pixels, 0, 0); }
-    canvas.setAttribute('aria-label', 'USGS contours, water, highways and trails'); canvas.setAttribute('role', 'img');
+    canvas.setAttribute('aria-label', `USGS contours, water, ${result.roads === 'streets' ? 'streets' : 'highways'} and trails`); canvas.setAttribute('role', 'img');
     holder.replaceChildren(canvas);
   }
   async function decode(blob, pixels, signal) {
@@ -88,10 +88,10 @@ export function createGeographicTerrain(get, onChange) {
         ctx.drawImage(image, 0, 0);
       }
       ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over';
-      completed = { key: request.key, canvas, view, layers: request.layers.map((l) => l.id), metadataKey: JSON.stringify(request.bbox), metadata: metadataFor(request) };
+      completed = { key: request.key, canvas, view, layers: request.layers.map((l) => l.id), roads: request.roads, metadataKey: JSON.stringify(request.bbox), metadata: metadataFor(request) };
       get('explorer-contour-details').textContent = completed.metadata.text;
       render({ appearance: get('explorer-appearance').value, contrast: get('explorer-topo-contrast').value });
-      get('explorer-status').textContent = 'Terrain ready: contours, water, highways and trails. Coverage varies; zoom in for source labels.';
+      get('explorer-status').textContent = `Terrain ready: contours, water, ${request.roads === 'streets' ? 'streets' : 'highways'} and trails. Coverage varies; zoom in for source labels.`;
       onChange();
     }).catch((error) => {
       if (current !== generation) return;
