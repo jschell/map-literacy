@@ -1,6 +1,6 @@
 # Plan 08 — Topographic data and learning
 
-Status: active for connected contour topology, terrain lesson-pack integration and geographic display/print alignment; printable USGS composite and terrain-focused reference views implemented; source-reported contour metadata and standalone elevation-grid foundation implemented; bounded real DEM preparation and standalone contour segments implemented; contour integration and terrain lessons queued.
+Status: active for terrain lesson-pack integration and geographic display/print alignment; exact-endpoint contour stitching with explicit branch review is implemented; printable USGS composite and terrain-focused reference views implemented; source-reported contour metadata and standalone elevation-grid foundation implemented; bounded real DEM preparation and standalone contour segments implemented; contour integration and terrain lessons queued.
 Dependencies: 01–05 shared foundation; source research may start earlier.
 
 ## Outcome
@@ -17,7 +17,8 @@ Add terrain interpretation to the shared pack/renderer/lesson system without equ
 - [x] Acquire, verify and prepare the bounded benchmark DEM with actual source/metadata hashes and all-sample comparison; see ../../elevation-preparation.md.
 - [x] Define and test a standalone normalized elevation-grid contract with CRS, units/reference, sample centers, nodata, provenance and uncertainty; see ../../contracts/elevation-grid-v1.md.
 - [x] Define standalone contour-segment output and verify actual benchmark raster normalization (PR 45); see ../../contracts/contour-segments-v1.md and ../../elevation-preparation.md.
-- [ ] Stitch/deduplicate segments, review connected contour topology and define terrain lesson-pack integration; standalone segments are not supported lesson packs.
+- [x] Stitch/deduplicate exact segment endpoints into deterministic open chains/closed rings, with explicit junction review and synthetic topology tests; see ../../contracts/contour-lines-v1.md.
+- [ ] Independently review real benchmark contour topology and define terrain lesson-pack integration; connected lines are not supported lesson packs.
 - [x] Select the initial bounded preparation path: optional offline Rasterio/PyProj plus standalone JavaScript contour segments (PR 45). Browser GeoTIFF reading and alternative contour libraries remain optional future decisions if a concrete workload needs them; connected contour review is still pending.
 - [x] Specify and independently check the bounded benchmark raster reprojection/georeferencing using exact inverse nearest-center sampling into EPSG:26910.
 - [ ] Convert connected contour geometry to the display/pack geographic reference and verify road/trail alignment; grid-space geometry alone is insufficient.
@@ -48,7 +49,7 @@ OSM is not a complete DEM source. USGS candidate is US-specific; global sources 
 
 Tracking reconciliation through PR 45: standalone contour output, verified raster normalization and benchmark/count limits are delivered. Geographic integration, connected topology, runtime/device budgets and terrain lesson answers are deliberately separate open tasks. The current reference-map UI does not expose numerical DEM answers.
 
-Next action: stitch/deduplicate and review contour topology, define terrain lesson-pack integration, and verify geographic display/print alignment before enabling terrain lessons. Keep street-core import rejecting unsupported terrain packs until that contract is implemented.
+Next action: review connected benchmark topology, define terrain lesson-pack integration and verify geographic display/print alignment before enabling terrain lessons. Keep street-core import rejecting unsupported terrain packs until that contract is implemented.
 
 
 First-slice verification: 155 Node tests and complete packaged Chromium browser checks pass, including both topo paper orientations, grayscale pixels, provider switch/zoom/failure recovery and street regression checks. Real default USGS imagery was replayed and visually checked in a one-page B&W landscape PDF. Safari topo and physical-paper checks remain pending.
@@ -71,3 +72,7 @@ B&W fidelity follow-up (2026-10-15): the user accepted physical page fit and req
 
 2026-10-17 benchmark preparation and contour derivation: verified TIFF/XML hashes and tile-specific NAD83/NAVD88 metre metadata. Offline exact inverse nearest-center sampling produces a 233 × 338 EPSG:26910 grid. All 78,754 elevations agree with independent GDAL-transform/source-index checks; coordinate round trips stay below 1e-6 m. Added bounded unsmoothed JavaScript contour segments with analytic plane/hill/valley/saddle/nodata tests; 178 Node tests and two synthetic Python preparation tests pass. Raw/normalized real grids remain outside git. Terrain service probe returned all three PNGs with CORS, without reproducing the earlier browser failure. Contour topology, lessons and device acceptance remain open.
 
+
+2026-10-17 connected-contour follow-up: added bounded exact-endpoint stitching, reversed/plateau duplicate removal, canonical open chains and closed rings, and explicit needs-review junctions rather than arbitrary branch continuation. Ten known-answer tests cover analytic plane/valley/hill, nodata gaps, plateaus, branch/touching rings, preserved saddle geometry, near endpoints/interior crossings, deterministic immutable output, invalid/count budgets and a 20,000-edge iterative chain. No numerical map UI, geographic reprojection, lesson import or real-terrain answer approval is added. See [connected-line contract](../../contracts/contour-lines-v1.md).
+
+Validation: 188 Node tests pass, fixtures reproduce exactly, the synthetic street pack validates, and 141 local Markdown links resolve. Complete packaged Chromium site/Pages checks pass with zero browser errors, covering printing, lessons, storage/recovery and accessibility regressions. Local pinned Chromium/font archives were extracted without archive ownership changes; no product code was changed for the runtime. Real benchmark topology and device/paper/lesson acceptance remain pending.
