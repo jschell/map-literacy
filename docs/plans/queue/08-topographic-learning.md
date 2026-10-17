@@ -53,3 +53,6 @@ B&W fidelity follow-up (2026-10-15): the user accepted physical page fit and req
 
 
 2026-10-16: user reports PR 41 merged/deployed; merge CI and Pages workflow both succeeded. Implemented source-reported contour details for all four rendered geometry layers. A bounded live view returned mixed 20/40 ft intervals. Pending/unavailable/unknown/truncated metadata is additive and never gates basic printing. This source summary is not the reviewed elevation/lesson contract; paper/Safari review remains open.
+
+
+2026-10-16 street-context correction: the user reported missing streets in Terrain — contours + roads. The original highways/trails-only layer selection omitted local/connecting streets. Added default Streets + trails with local geometry/names and retained the original selection as an explicit sparse option. The image key includes road context; browser checks require local-road pixels and reject stale road-choice results. This is a reference-view correction; the elevation-grid foundation is checkpointed and paused until this fix is reviewed.

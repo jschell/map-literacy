@@ -4,8 +4,8 @@ const MERCATOR_RADIUS_M = 6378137;
 const origin = Math.PI * MERCATOR_RADIUS_M;
 export const TERRAIN_LIMITS = Object.freeze({ minZoom: 13, maxZoom: 16, maxBytes: 8 * 1024 * 1024, timeoutMs: 20000 });
 /** One common EPSG:3857 envelope and exact Letter aspect for every source layer. */
-export function terrainRequest(view, { relief = false } = {}) {
-  if (!Number.isInteger(view.zoom) || view.zoom < 13 || view.zoom > 16 || !['portrait', 'landscape'].includes(view.orientation) || !Array.isArray(view.center) || view.center.length !== 2 || !view.center.every(Number.isFinite) || typeof relief !== 'boolean') throw new Error('Terrain detail needs zoom 13–16.');
+export function terrainRequest(view, { relief = false, roads = 'streets' } = {}) {
+  if (!Number.isInteger(view.zoom) || view.zoom < 13 || view.zoom > 16 || !['portrait', 'landscape'].includes(view.orientation) || !Array.isArray(view.center) || view.center.length !== 2 || !view.center.every(Number.isFinite) || typeof relief !== 'boolean' || !['streets','sparse'].includes(roads)) throw new Error('Terrain detail needs zoom 13–16.');
   const [lon, lat] = view.center;
   if (Math.abs(lon) >= 180 || Math.abs(lat) > 85) throw new Error('Terrain view is outside the supported map extent.');
   const x = lon / 180 * origin, y = MERCATOR_RADIUS_M * Math.asinh(Math.tan(lat * Math.PI / 180));
@@ -21,10 +21,10 @@ export function terrainRequest(view, { relief = false } = {}) {
     layer('water', 'https://basemap.nationalmap.gov/arcgis/rest/services/USGSHydroCached/MapServer/export'),
     // Index labels plus normal/depression index and intermediate lines. No supplemental clutter.
     layer('contours', 'https://carto.nationalmap.gov/arcgis/rest/services/contours/MapServer/export', { layers: 'show:21,25,26,29,33,34' }),
-    layer('roads', 'https://carto.nationalmap.gov/arcgis/rest/services/transportation/MapServer/export', { layers: 'show:16,17,18,24,29,30,37' })
+    layer('roads', 'https://carto.nationalmap.gov/arcgis/rest/services/transportation/MapServer/export', { layers: roads === 'streets' ? 'show:16,17,18,20,21,24,29,30,31,32,33,37' : 'show:16,17,18,24,29,30,37' })
   ];
   if (relief) layers.unshift(layer('relief', 'https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer/exportImage', { renderingRule: JSON.stringify({ rasterFunction: 'Hillshade Gray' }), pixelType: 'U8', interpolation: 'RSP_BilinearInterpolation' }));
-  return { key: JSON.stringify([bbox, pixels, relief]), bbox, pixels, layers };
+  return { key: JSON.stringify([bbox, pixels, relief, roads]), bbox, pixels, layers, roads };
 }
 
 /** Response byte budget applies before image decode, including chunked responses. */

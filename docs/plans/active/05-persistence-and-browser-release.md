@@ -143,3 +143,6 @@ B&W fidelity follow-up (2026-10-15): the user accepted physical page fit and req
 
 
 2026-10-16: PR 41 merge CI and Pages deployment are successful, matching the user report. Added independent, bounded contour metadata updates to screen/print snapshots without changing map print readiness. Device/paper review of the new composition/footer is distinct from the previously accepted B&W workflow.
+
+
+2026-10-16 Terrain usability correction: the supplied one-page export was missing expected street context because the source selection included only highways/trails. Default Terrain to streets/trails with local/connecting roads and names, retaining sparse highways as a choice. Keep the existing Letter geometry, lossless B&W/color output, native invocation and additive contour metadata. Resume elevation-grid work after this focused correction is reviewed.
