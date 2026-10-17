@@ -140,3 +140,6 @@ B&W fidelity follow-up (2026-10-15): the user accepted physical page fit and req
 
 
 2026-10-15 acceptance update: the user reports PR 40 merged/deployed and usable. Record that confirmation for the existing B&W print workflow without treating it as all-browser/accessibility or learning acceptance. The next implemented slice adds the optional terrain-focused composition; its own physical/Safari review is still pending. See [terrain view](../../terrain-view.md).
+
+
+2026-10-16: PR 41 merge CI and Pages deployment are successful, matching the user report. Added independent, bounded contour metadata updates to screen/print snapshots without changing map print readiness. Device/paper review of the new composition/footer is distinct from the previously accepted B&W workflow.

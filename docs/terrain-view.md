@@ -2,7 +2,7 @@
 
 Choose **Terrain — contours + roads (US)** under Map type. Pan or jump to an area, use zoom 13–16, then Print this map or Download Letter PDF. Terrain relief defaults to Off — clear contours; Light hillshade adds subdued relief. B&W uses the existing Stronger lines / Standard grayscale choice. Color retains source colors. Orientation, 8 mm PDF margins, north, approximate center scale and lossless Letter PDF output remain available without a lesson pack.
 
-This view prioritizes contours and water, with controlled-access/secondary highways and trails. Local streets, buildings, parcels, railways and airport clutter are omitted. Roads/trails may be absent where the source has none; a successfully loaded transparent layer is not an availability failure. Coverage is US-focused and not complete. Elevation labels and interval vary by source quadrangle. The screen and printed footer explicitly say that elevation units/interval have not been verified for the selected extent. Do not infer feet/meters from an unlabeled number or treat the view as a terrain lesson answer key.
+This view prioritizes contours and water, with controlled-access/secondary highways and trails. Local streets, buildings, parcels, railways and airport clutter are omitted. Roads/trails may be absent where the source has none; a successfully loaded transparent layer is not an availability failure. Coverage is US-focused and not complete. Elevation labels and interval vary by source quadrangle. The screen and printed footer show source-reported units/intervals when all bounded metadata queries complete, including mixed values; otherwise they explicitly mark units/interval unverified. Do not infer feet/meters from an unlabeled number or treat the view as a terrain lesson answer key.
 
 ## Sources reviewed — 2026-10-15
 
@@ -13,7 +13,7 @@ This view prioritizes contours and water, with controlled-access/secondary highw
 | Sparse roads/trails | [USGS transportation MapServer](https://carto.nationalmap.gov/arcgis/rest/services/transportation/MapServer?f=pjson) | Highway labels 16–18, trail labels 24, highways 29–30, trails 37 |
 | Optional relief | [USGS 3DEP ImageServer](https://elevation.nationalmap.gov/arcgis/rest/services/3DEPElevation/ImageServer?f=pjson) | Hillshade Gray visualization, composited at 18% opacity |
 
-The contour service advertises a 1:50,000 large-scale group boundary and variable large-scale contour intervals; the client limits this view to zoom 13–16. Normal Intermediate layer metadata exposes contourunits and contourinterval fields, but its general description is not sufficient to establish those values for every viewed quadrangle. A bounded live metadata query timed out during review; automatic per-extent unit/interval verification remains future work. The original composite Topographic mode remains available.
+The contour service advertises a 1:50,000 large-scale group boundary and variable large-scale contour intervals; the client limits this view to zoom 13–16. Normal Intermediate layer metadata exposes contourunits and contourinterval fields, but its general description is not sufficient to establish those values for every viewed quadrangle. The initial bounded metadata query timed out. A later four-layer probe succeeded with mixed intervals, and bounded per-extent source metadata is now implemented; see [contour details](contour-metadata.md). The original composite Topographic mode remains available.
 
 All printed output includes the USGS acknowledgment. The [National Map terms](https://www.usgs.gov/faqs/what-are-terms-uselicensing-map-services-and-data-national-map) and [service listings](https://www.usgs.gov/faqs/what-are-base-map-services-or-urls-used-national-map) remain the source/policy references. These public services are a bounded preview dependency, with no production SLA or offline guarantee.
 
@@ -37,3 +37,6 @@ CSP adds carto.nationalmap.gov, basemap.nationalmap.gov and elevation.nationalma
 - Physical paper and target Safari acceptance of this new composition remain pending. Automated checks and visual inspection do not establish contour-reading accuracy, safe/legal access or learning transfer.
 
 Execution evidence: 164 Node tests, fixture reproduction, synthetic pack validation and the full packaged Chromium release suite pass under host-header and Pages meta CSP. The existing print-quality gate retains 11/11 synthetic thin-line sample centers and zero added PDF compression error. These contrast metrics belong to that synthetic fixture, not to a measurement of real terrain readability.
+
+
+Contour-details follow-up (2026-10-16): source metadata is now queried separately after image readiness. Missing/pending metadata never disables basic printing; snapshots carry reported/mixed or unverified status. This supersedes the earlier per-extent-unverified-only behavior. See [metadata contract and live evidence](contour-metadata.md).

@@ -10,7 +10,7 @@ Geographic printing now uses source-backed vector roads and street names, with B
 
 Choose **Topographic — USGS (US)** in the map-type selector to browse source contours and print the current area in B&W or color on Letter paper. B&W print defaults to Stronger lines; choose Standard grayscale in Topo print contrast for comparison. PDF downloads use lossless image encoding. This first topo mode uses raster imagery; editable contours, elevation queries and terrain lessons are future work. See [topographic browsing and source details](docs/topographic-browsing.md).
 
-Choose **Terrain — contours + roads (US)** for contours and water with sparse highway/trail context and optional light hillshade. This higher-resolution reference view uses zoom 13–16; see [terrain view and source limits](docs/terrain-view.md).
+Choose **Terrain — contours + roads (US)** for contours and water with sparse highway/trail context and optional light hillshade. This higher-resolution reference view uses zoom 13–16 and shows source-reported contour units/intervals when available; see [terrain view and source limits](docs/terrain-view.md).
 
 For a saved file with the selected physical Letter orientation, use **Download Letter PDF**. Native browser Print can override the requested orientation. See [PDF output and fidelity](docs/pdf-output.md).
 
