@@ -1,0 +1,13 @@
+# Contour segments v1
+
+`deriveContours(grid, levelsM)` in `src/terrain/contours.js` derives unsmoothed marching-squares segments from a validated elevation-grid-v1 snapshot. Explicit levels are finite, unique, increasing metre elevations, with 1–64 levels. At most 2,000,000 cell-level evaluations and 131072 emitted segments are allowed; failures throw without returning partial output.
+
+The result has `format: map-literacy-contour-segments-v1`, `gridId`, `horizontalCrs`, `verticalReference`, `units: m`, `method: marching-squares-asymptotic-v1`, `skippedCells` and `contours`. Each contour has `levelM` and `segments`, an array of pairs of `[easting,northing]` endpoints. The coordinates retain the input metric CRS. This is an internal derivation result, not an importable lesson pack, geographic GeoJSON, connected polyline or render-ready cartographic layer.
+
+Each cell uses top-left, top-right, bottom-right, bottom-left sample centers. Values equal to the level classify high. A crossing is linearly interpolated on an edge whose endpoint classifications differ. Shared edges use a canonical endpoint order; zero-length segments are dropped. A wholly flat cell, including one exactly at the level, emits no line. Plateau boundaries can produce coincident segments in neighboring cells; deduplication/stitching is a future topology step, not an inferred polygon interior.
+
+Four-crossing saddles use the asymptotic determinant `(TL-level)*(BR-level) - (TR-level)*(BL-level)`, scaled before multiplication. A positive determinant pairs top/right and bottom/left crossings; a negative determinant pairs top/left and right/bottom. An exact zero follows the positive pairing (TL–BR connectivity). This tie-break is a deterministic convention at a degenerate saddle, not evidence for a physical ridge connection. No smoothing, depression classification or answer inference occurs.
+
+Any cell with a null sample is omitted entirely; `skippedCells` counts such cells once across all levels. Contours may therefore terminate at grid or missing-data boundaries. No extrapolation, bridging holes or added half-pixel shift occurs. Edge interpolation and saddle topology define a marching-squares approximation; this is not an exact bilinear interior isoline.
+
+Analytic tests use a 1e-9 metre coordinate/elevation-equation tolerance. They check a rectangular planar slope, a closed hill, valley columns, flat terrain, nodata, unit conversion, saddle connectivity, exact vertices and processing/output limits. Real-data smoke counts show execution only; independent contour topology/cartographic/lesson review remains pending.

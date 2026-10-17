@@ -13,3 +13,7 @@ data/derived/
 artifacts/
 pilot-data/
 .DS_Store
+
+# Optional offline elevation tooling; keep DEM inputs/outputs outside the repository.
+.elevation-venv/
+__pycache__/
