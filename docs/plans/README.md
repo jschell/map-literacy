@@ -13,7 +13,7 @@ Plans are work packages with evidence-based completion, not claims that an appli
 | [05 Persistence and browser release](active/05-persistence-and-browser-release.md) | Active: Pages deployed; user confirms B&W print usable; broader device/accessibility acceptance pending | Implemented 04 slice | Recoverable local app and static deployment |
 | [06 Learning pilot](queue/06-learning-pilot.md) | Queue: protocol/reporting kit prepared; reviewed packs and participants pending | 05 | Exploratory usefulness/transfer evidence |
 | [07 Directions and simulation](queue/07-directions-and-simulation.md) | Queue | 05; 06 findings inform scope | Reviewed maneuvers and stationary playback |
-| [08 Topographic learning](queue/08-topographic-learning.md) | Queue: USGS composite and terrain-focused reference views implemented; source-reported contour details implemented; reviewed elevation data/lessons pending | 01–05 shared core | Terrain layers and contour lessons |
+| [08 Topographic learning](queue/08-topographic-learning.md) | Queue: USGS composite and terrain-focused reference views implemented; source-reported contour details and synthetic elevation-grid foundation implemented; real DEM/contour lessons pending | 01–05 shared core | Terrain layers and contour lessons |
 | [09 Delivery extensions](queue/09-delivery-extensions.md) | Queue | 05; demonstrated need | TinyJS/sync/scale decisions |
 
 Topographic data research can occur earlier without blocking street delivery. No dependency on routing is required for contour-reading lessons. Plan 09 is optional; live navigation remains separate future scope.

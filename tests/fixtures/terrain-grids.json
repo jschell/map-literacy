@@ -1,0 +1,433 @@
+{
+  "flat": {
+    "format": "map-literacy-elevation-grid-v1",
+    "id": "flat",
+    "width": 3,
+    "height": 3,
+    "horizontal": {
+      "crs": "LOCAL_METRIC",
+      "units": "m",
+      "axisOrder": "easting,northing",
+      "origin": [
+        1000,
+        2000
+      ],
+      "step": [
+        10,
+        -20
+      ],
+      "registration": "sample-center"
+    },
+    "vertical": {
+      "units": "m",
+      "reference": "synthetic-zero",
+      "nodata": null,
+      "uncertaintyM": 0
+    },
+    "source": {
+      "kind": "synthetic",
+      "productId": "analytic-grids",
+      "version": "recipe-v1",
+      "acquiredAt": "2026-10-16T00:00:00.000Z",
+      "url": null,
+      "sha256": "202d008891b0ae70d3f4ef6b93582c1a8c7320174617e117245eb45f369e4cb8",
+      "license": "CC0-1.0",
+      "attribution": "Invented Map Literacy terrain fixtures; no geographic source.",
+      "transforms": [
+        {
+          "operation": "generate-analytic-grid",
+          "version": "1",
+          "parameters": {
+            "recipeFile": "terrain-recipe.json",
+            "case": "flat"
+          }
+        }
+      ]
+    },
+    "samples": [
+      100,
+      100,
+      100,
+      100,
+      100,
+      100,
+      100,
+      100,
+      100
+    ]
+  },
+  "hill": {
+    "format": "map-literacy-elevation-grid-v1",
+    "id": "hill",
+    "width": 5,
+    "height": 5,
+    "horizontal": {
+      "crs": "LOCAL_METRIC",
+      "units": "m",
+      "axisOrder": "easting,northing",
+      "origin": [
+        1000,
+        2000
+      ],
+      "step": [
+        10,
+        -20
+      ],
+      "registration": "sample-center"
+    },
+    "vertical": {
+      "units": "m",
+      "reference": "synthetic-zero",
+      "nodata": null,
+      "uncertaintyM": 0
+    },
+    "source": {
+      "kind": "synthetic",
+      "productId": "analytic-grids",
+      "version": "recipe-v1",
+      "acquiredAt": "2026-10-16T00:00:00.000Z",
+      "url": null,
+      "sha256": "202d008891b0ae70d3f4ef6b93582c1a8c7320174617e117245eb45f369e4cb8",
+      "license": "CC0-1.0",
+      "attribution": "Invented Map Literacy terrain fixtures; no geographic source.",
+      "transforms": [
+        {
+          "operation": "generate-analytic-grid",
+          "version": "1",
+          "parameters": {
+            "recipeFile": "terrain-recipe.json",
+            "case": "hill"
+          }
+        }
+      ]
+    },
+    "samples": [
+      60,
+      70,
+      80,
+      70,
+      60,
+      70,
+      80,
+      90,
+      80,
+      70,
+      80,
+      90,
+      100,
+      90,
+      80,
+      70,
+      80,
+      90,
+      80,
+      70,
+      60,
+      70,
+      80,
+      70,
+      60
+    ]
+  },
+  "valley": {
+    "format": "map-literacy-elevation-grid-v1",
+    "id": "valley",
+    "width": 5,
+    "height": 5,
+    "horizontal": {
+      "crs": "LOCAL_METRIC",
+      "units": "m",
+      "axisOrder": "easting,northing",
+      "origin": [
+        1000,
+        2000
+      ],
+      "step": [
+        10,
+        -20
+      ],
+      "registration": "sample-center"
+    },
+    "vertical": {
+      "units": "m",
+      "reference": "synthetic-zero",
+      "nodata": null,
+      "uncertaintyM": 0
+    },
+    "source": {
+      "kind": "synthetic",
+      "productId": "analytic-grids",
+      "version": "recipe-v1",
+      "acquiredAt": "2026-10-16T00:00:00.000Z",
+      "url": null,
+      "sha256": "202d008891b0ae70d3f4ef6b93582c1a8c7320174617e117245eb45f369e4cb8",
+      "license": "CC0-1.0",
+      "attribution": "Invented Map Literacy terrain fixtures; no geographic source.",
+      "transforms": [
+        {
+          "operation": "generate-analytic-grid",
+          "version": "1",
+          "parameters": {
+            "recipeFile": "terrain-recipe.json",
+            "case": "valley"
+          }
+        }
+      ]
+    },
+    "samples": [
+      120,
+      110,
+      100,
+      110,
+      120,
+      120,
+      110,
+      100,
+      110,
+      120,
+      120,
+      110,
+      100,
+      110,
+      120,
+      120,
+      110,
+      100,
+      110,
+      120,
+      120,
+      110,
+      100,
+      110,
+      120
+    ]
+  },
+  "plane": {
+    "format": "map-literacy-elevation-grid-v1",
+    "id": "plane",
+    "width": 3,
+    "height": 3,
+    "horizontal": {
+      "crs": "LOCAL_METRIC",
+      "units": "m",
+      "axisOrder": "easting,northing",
+      "origin": [
+        1000,
+        2000
+      ],
+      "step": [
+        10,
+        -20
+      ],
+      "registration": "sample-center"
+    },
+    "vertical": {
+      "units": "m",
+      "reference": "synthetic-zero",
+      "nodata": null,
+      "uncertaintyM": 0
+    },
+    "source": {
+      "kind": "synthetic",
+      "productId": "analytic-grids",
+      "version": "recipe-v1",
+      "acquiredAt": "2026-10-16T00:00:00.000Z",
+      "url": null,
+      "sha256": "202d008891b0ae70d3f4ef6b93582c1a8c7320174617e117245eb45f369e4cb8",
+      "license": "CC0-1.0",
+      "attribution": "Invented Map Literacy terrain fixtures; no geographic source.",
+      "transforms": [
+        {
+          "operation": "generate-analytic-grid",
+          "version": "1",
+          "parameters": {
+            "recipeFile": "terrain-recipe.json",
+            "case": "plane"
+          }
+        }
+      ]
+    },
+    "samples": [
+      10,
+      12,
+      14,
+      14,
+      16,
+      18,
+      18,
+      20,
+      22
+    ]
+  },
+  "nodata": {
+    "format": "map-literacy-elevation-grid-v1",
+    "id": "nodata",
+    "width": 3,
+    "height": 3,
+    "horizontal": {
+      "crs": "LOCAL_METRIC",
+      "units": "m",
+      "axisOrder": "easting,northing",
+      "origin": [
+        1000,
+        2000
+      ],
+      "step": [
+        10,
+        -20
+      ],
+      "registration": "sample-center"
+    },
+    "vertical": {
+      "units": "m",
+      "reference": "synthetic-zero",
+      "nodata": null,
+      "uncertaintyM": 0
+    },
+    "source": {
+      "kind": "synthetic",
+      "productId": "analytic-grids",
+      "version": "recipe-v1",
+      "acquiredAt": "2026-10-16T00:00:00.000Z",
+      "url": null,
+      "sha256": "202d008891b0ae70d3f4ef6b93582c1a8c7320174617e117245eb45f369e4cb8",
+      "license": "CC0-1.0",
+      "attribution": "Invented Map Literacy terrain fixtures; no geographic source.",
+      "transforms": [
+        {
+          "operation": "generate-analytic-grid",
+          "version": "1",
+          "parameters": {
+            "recipeFile": "terrain-recipe.json",
+            "case": "nodata"
+          }
+        }
+      ]
+    },
+    "samples": [
+      10,
+      12,
+      14,
+      14,
+      null,
+      18,
+      18,
+      20,
+      22
+    ]
+  },
+  "feet": {
+    "format": "map-literacy-elevation-grid-v1",
+    "id": "feet",
+    "width": 3,
+    "height": 3,
+    "horizontal": {
+      "crs": "LOCAL_METRIC",
+      "units": "m",
+      "axisOrder": "easting,northing",
+      "origin": [
+        1000,
+        2000
+      ],
+      "step": [
+        10,
+        -20
+      ],
+      "registration": "sample-center"
+    },
+    "vertical": {
+      "units": "ft",
+      "reference": "synthetic-zero",
+      "nodata": null,
+      "uncertaintyM": 0
+    },
+    "source": {
+      "kind": "synthetic",
+      "productId": "analytic-grids",
+      "version": "recipe-v1",
+      "acquiredAt": "2026-10-16T00:00:00.000Z",
+      "url": null,
+      "sha256": "202d008891b0ae70d3f4ef6b93582c1a8c7320174617e117245eb45f369e4cb8",
+      "license": "CC0-1.0",
+      "attribution": "Invented Map Literacy terrain fixtures; no geographic source.",
+      "transforms": [
+        {
+          "operation": "generate-analytic-grid",
+          "version": "1",
+          "parameters": {
+            "recipeFile": "terrain-recipe.json",
+            "case": "feet"
+          }
+        }
+      ]
+    },
+    "samples": [
+      10,
+      12,
+      14,
+      14,
+      16,
+      18,
+      18,
+      20,
+      22
+    ]
+  },
+  "surveyFeet": {
+    "format": "map-literacy-elevation-grid-v1",
+    "id": "surveyFeet",
+    "width": 3,
+    "height": 3,
+    "horizontal": {
+      "crs": "LOCAL_METRIC",
+      "units": "m",
+      "axisOrder": "easting,northing",
+      "origin": [
+        1000,
+        2000
+      ],
+      "step": [
+        10,
+        -20
+      ],
+      "registration": "sample-center"
+    },
+    "vertical": {
+      "units": "us-survey-ft",
+      "reference": "synthetic-zero",
+      "nodata": null,
+      "uncertaintyM": 0
+    },
+    "source": {
+      "kind": "synthetic",
+      "productId": "analytic-grids",
+      "version": "recipe-v1",
+      "acquiredAt": "2026-10-16T00:00:00.000Z",
+      "url": null,
+      "sha256": "202d008891b0ae70d3f4ef6b93582c1a8c7320174617e117245eb45f369e4cb8",
+      "license": "CC0-1.0",
+      "attribution": "Invented Map Literacy terrain fixtures; no geographic source.",
+      "transforms": [
+        {
+          "operation": "generate-analytic-grid",
+          "version": "1",
+          "parameters": {
+            "recipeFile": "terrain-recipe.json",
+            "case": "surveyFeet"
+          }
+        }
+      ]
+    },
+    "samples": [
+      10,
+      12,
+      14,
+      14,
+      16,
+      18,
+      18,
+      20,
+      22
+    ]
+  }
+}

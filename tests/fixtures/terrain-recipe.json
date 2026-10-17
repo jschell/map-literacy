@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "license": "CC0-1.0",
+  "note": "Invented numeric grids, no real geography.",
+  "origin": [
+    1000,
+    2000
+  ],
+  "step": [
+    10,
+    -20
+  ],
+  "formulas": {
+    "flat": "100",
+    "hill": "100 - 10*(abs(column-2)+abs(row-2))",
+    "valley": "100 + 10*abs(column-2)",
+    "plane": "10 + 2*column + 4*row",
+    "nodata": "plane, center sample null",
+    "feet": "plane in international feet",
+    "surveyFeet": "plane in US survey feet"
+  }
+}

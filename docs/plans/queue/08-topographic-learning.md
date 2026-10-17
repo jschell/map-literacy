@@ -1,6 +1,6 @@
 # Plan 08 — Topographic data and learning
 
-Status: printable USGS composite and terrain-focused reference views implemented; verified terrain metadata and elevation/contour lesson pipeline queued.
+Status: printable USGS composite and terrain-focused reference views implemented; source-reported contour metadata and standalone elevation-grid foundation implemented; real DEM preparation and terrain lessons queued.
 Dependencies: 01–05 shared foundation; source research may start earlier.
 
 ## Outcome
@@ -13,8 +13,10 @@ Add terrain interpretation to the shared pack/renderer/lesson system without equ
 - [x] Query source-reported per-extent contour units/intervals with explicit mixed/unknown/partial handling; keep basic printing available when metadata is pending/unavailable. See ../../contour-metadata.md.
 - [ ] Complete representative physical/Safari review and independently review terrain data before supporting lesson answers.
 
-- [ ] Select one bounded terrain area and synthetic elevation fixtures; compare USGS 3DEP products for US coverage/resolution/license/access.
-- [ ] Define raster/contour schema: horizontal CRS, vertical reference, units, resolution, origin/grid orientation, nodata, source/version and uncertainty.
+- [x] Select a bounded candidate area, compare 3DEP products and implement seven synthetic elevation fixtures; see ../../elevation-preparation.md.
+- [ ] Acquire, verify and prepare the actual bounded DEM; catalog metadata alone is not source-byte verification.
+- [x] Define and test a standalone normalized elevation-grid contract with CRS, units/reference, sample centers, nodata, provenance and uncertainty; see ../../contracts/elevation-grid-v1.md.
+- [ ] Define contour output/lesson-pack integration and verify actual raster normalization.
 - [ ] Start with reviewed precomputed contours if it reduces risk; evaluate geotiff.js for DEM reading and d3-contour for marching-squares contour derivation.
 - [ ] Specify raster reprojection/georeferencing and contour conversion to geographic coordinates; d3-contour output alone is grid-space geometry.
 - [ ] Bound raster memory/bytes and processing time; evaluate Web Workers and selected preparation tooling.
@@ -25,7 +27,8 @@ Add terrain interpretation to the shared pack/renderer/lesson system without equ
 
 ## Acceptance and validation
 
-- [ ] Synthetic hill/valley/flat/nodata and meter/foot fixtures produce known elevations and contours within defined tolerances.
+- [x] Synthetic hill/valley/flat/nodata and metre/international-foot/survey-foot fixtures produce known elevations and coordinate round trips.
+- [ ] Derived synthetic contours meet explicit geometry and elevation tolerances.
 - [ ] Real data provenance includes actual source product/version and CRS/vertical units; no unsupported datum conversion.
 - [ ] Contour smoothing/generalization does not change the reviewed answer; profile ascent calculation documents sampling/noise behavior.
 - [ ] Street packs remain valid without terrain; terrain lessons do not require routing service.
@@ -40,7 +43,7 @@ OSM is not a complete DEM source. USGS candidate is US-specific; global sources 
 
 2026-10-14: user requested topographic viewing and B&W Letter printing after street printing worked on Safari. The first slice uses the official USGS Topo cached raster service, with provider separation, north/approximate center scale, exact USGS acknowledgment, B&W pixel conversion and color output. No DEM, numerical elevation queries, editable contours or terrain lesson support is advertised. USGS tiles include their own cartography and cannot support blank/partial names or independent hillshade controls. See ../../topographic-browsing.md for current source review and boundaries.
 
-Next action after terrain-reference device review: select a bounded 3DEP product and define the versioned terrain schema, then implement synthetic grid/contour validation. Keep street-core import rejecting unsupported terrain packs until that contract is implemented.
+Next action: acquire and verify the pinned benchmark DEM outside git, specify reproducible normalization, and implement known-answer contour derivation fixtures. Keep street-core import rejecting unsupported terrain packs until that contract is implemented.
 
 
 First-slice verification: 155 Node tests and complete packaged Chromium browser checks pass, including both topo paper orientations, grayscale pixels, provider switch/zoom/failure recovery and street regression checks. Real default USGS imagery was replayed and visually checked in a one-page B&W landscape PDF. Safari topo and physical-paper checks remain pending.
@@ -55,4 +58,7 @@ B&W fidelity follow-up (2026-10-15): the user accepted physical page fit and req
 2026-10-16: user reports PR 41 merged/deployed; merge CI and Pages workflow both succeeded. Implemented source-reported contour details for all four rendered geometry layers. A bounded live view returned mixed 20/40 ft intervals. Pending/unavailable/unknown/truncated metadata is additive and never gates basic printing. This source summary is not the reviewed elevation/lesson contract; paper/Safari review remains open.
 
 
-2026-10-16 street-context correction: the user reported missing streets in Terrain — contours + roads. The original highways/trails-only layer selection omitted local/connecting streets. Added default Streets + trails with local geometry/names and retained the original selection as an explicit sparse option. The image key includes road context; browser checks require local-road pixels and reject stale road-choice results. This is a reference-view correction; the elevation-grid foundation is checkpointed and paused until this fix is reviewed.
+2026-10-16 street-context correction: the user reported missing streets in Terrain — contours + roads. The original highways/trails-only layer selection omitted local/connecting streets. Added default Streets + trails with local geometry/names and retained the original selection as an explicit sparse option. The image key includes road context; browser checks require local-road pixels and reject stale road-choice results. This is a reference-view correction; the elevation-grid work was paused for this correction and resumed after PR 43 merged/deployed.
+
+
+2026-10-17 elevation-grid foundation: PR 43 merge checks and Pages deployment succeeded. Added a standalone strict grid contract, immutable sampling with explicit outside/nodata results, unit conversions, seven deterministic CC0 grids and a pinned 3DEP catalog candidate. 174 Node tests and complete packaged Chromium checks pass. The actual DEM is not downloaded or verified; contour derivation and lesson-pack support remain pending. See ../../elevation-preparation.md for source-selection evidence and the next gate.
