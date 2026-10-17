@@ -13,7 +13,7 @@ Plans are work packages with evidence-based completion, not claims that an appli
 | [05 Persistence and browser release](queue/05-persistence-and-browser-release.md) | Queue: implementation delivered; Pages deployed and B&W print accepted; broader device/accessibility acceptance pending | Implemented 04 slice | Recoverable local app and static deployment |
 | [06 Learning pilot](queue/06-learning-pilot.md) | Queue: protocol/reporting kit prepared; reviewed packs and participants pending | 05 | Exploratory usefulness/transfer evidence |
 | [07 Directions and simulation](queue/07-directions-and-simulation.md) | Queue | 05; 06 findings inform scope | Reviewed maneuvers and stationary playback |
-| [08 Topographic learning](active/08-topographic-learning.md) | Active: contour topology and terrain integration next; USGS composite and terrain-focused reference views implemented; source-reported contour details and elevation-grid foundation, benchmark DEM preparation and contour segments implemented; topology integration/terrain lessons pending | 01–05 shared core | Terrain layers and contour lessons |
+| [08 Topographic learning](active/08-topographic-learning.md) | Active: terrain integration/alignment next; exact-endpoint contour chains/rings and branch review implemented; USGS composite and terrain-focused reference views implemented; source-reported contour details and elevation-grid foundation, benchmark DEM preparation and contour segments implemented; topology integration/terrain lessons pending | 01–05 shared core | Terrain layers and contour lessons |
 | [09 Delivery extensions](queue/09-delivery-extensions.md) | Queue | 05; demonstrated need | TinyJS/sync/scale decisions |
 
 ## Remaining work and completion methods
@@ -25,7 +25,7 @@ Plans are work packages with evidence-based completion, not claims that an appli
 | 04 | Curriculum acceptance; address implementation only if supported by pilot | Instructor/content review and device completion; later contract/code work |
 | 05 | Supported browser matrix, screen reader/zoom, actual storage-pressure behavior | Recorded device/assistive-technology observations; future migrations need version-specific automated fixtures |
 | 06 | Five matched reviewed packs/sheets, participation, transfer and retention | Material review followed by actual participant observations |
-| 08 | Connected contours, terrain pack contract, display/print alignment, terrain exercises | Automated known-answer checks and source/content review, then device/paper and learner evidence |
+| 08 | Real contour topology review, terrain pack contract, display/print alignment, terrain exercises | Automated known-answer checks and source/content review, then device/paper and learner evidence |
 
 Automated checks and historical execution records already support several implementation tasks. They do not close manual acceptance. User feedback establishes usable page fit/B&W printing for the reported workflow; it does not establish ruler calibration, every map mode, every worksheet or a complete browser matrix. See [print evidence](../validation/physical-print-check.md). Plans 07 and 09 remain unstarted/deferred; they are not required merely to complete the roadmap.
 

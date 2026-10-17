@@ -35,3 +35,7 @@ See [tooling and reproduction commands](../tools/elevation/README.md) and the [c
 The normalized benchmark is 233 × 338 at 10 m spacing, EPSG:26910, with 78,754 samples, no missing samples and elevations 142.84785–359.55460 m. An independent transform/index path agreed with all sampled source elevations exactly; maximum coordinate round-trip error was 2.88e-9 m. This checks preparation consistency, not surveyed absolute accuracy. Real contour smoke output contains 548 segments at 200 m and 1103 at 300 m. No connected contour topology or lesson answers have been approved.
 
 The earlier browser Terrain fetch failure was not reproduced by a bounded direct request for the same default view: water, contours and roads each returned HTTP 200, valid PNG signatures and Access-Control-Allow-Origin `*`. This confirms service responses for that probe only; it does not establish browser/network reliability or close the device acceptance gate. No speculative provider change was made.
+
+## Connected-line preparation follow-up
+
+The [connected-line contract](contracts/contour-lines-v1.md) now provides exact-endpoint deduplication and iterative chain/ring traversal, retaining the metric CRS and reporting branch junctions for review. Synthetic geometry tests establish algorithm behavior; the real benchmark grid/segments were not reacquired or reviewed in this slice. Geographic reprojection, road/trail alignment and lesson-pack integration remain next gates.
