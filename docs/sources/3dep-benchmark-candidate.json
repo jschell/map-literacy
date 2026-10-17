@@ -19,7 +19,8 @@
     "downloadURL": "https://prd-tnm.s3.amazonaws.com/StagedProducts/Elevation/13/TIFF/historical/n48w122/USGS_13_n48w122_20250813.tif",
     "sizeInBytes": 473964013
   },
-  "demDownloaded": false,
-  "demSha256": null,
-  "nativeGridMetadataVerified": false
+  "demDownloaded": true,
+  "demSha256": "40bccd5f1252cec0e5fd6f2a15e5a62590e42d43455a61cf1b48bc55784b5c85",
+  "nativeGridMetadataVerified": true,
+  "preparationEvidence": "3dep-benchmark-preparation.json"
 }
