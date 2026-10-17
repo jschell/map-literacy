@@ -1,11 +1,12 @@
 // Provider-owned map imagery, not an elevation grid or a terrain lesson pack.
 export const BASEMAPS = Object.freeze({
   street: Object.freeze({ maxZoom: 19, credit: '© OpenStreetMap contributors', href: 'https://www.openstreetmap.org/copyright' }),
+  terrain: Object.freeze({ maxZoom: 16, credit: 'USGS terrain layers', href: 'https://www.usgs.gov/programs/national-geospatial-program/national-map' }),
   topo: Object.freeze({ maxZoom: 16, credit: 'USGS The National Map', href: 'https://www.usgs.gov/programs/national-geospatial-program/national-map' })
 });
 export const USGS_ACKNOWLEDGMENT = 'Map services and data available from U.S. Geological Survey, National Geospatial Program.';
 export function tileURL(kind, zoom, x, y) {
-  if (!Object.hasOwn(BASEMAPS, kind) || ![zoom, x, y].every(Number.isInteger) || zoom < 0 || zoom > BASEMAPS[kind].maxZoom || x < 0 || y < 0 || x >= 2 ** zoom || y >= 2 ** zoom) throw new Error('Unsupported map tile.');
+  if (!['street', 'topo'].includes(kind) || ![zoom, x, y].every(Number.isInteger) || zoom < 0 || zoom > BASEMAPS[kind].maxZoom || x < 0 || y < 0 || x >= 2 ** zoom || y >= 2 ** zoom) throw new Error('Unsupported map tile.');
   return kind === 'topo' ? `https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/tile/${zoom}/${y}/${x}` : `https://tile.openstreetmap.org/${zoom}/${x}/${y}.png`;
 }
 export function rasterFurniture(document, view) {

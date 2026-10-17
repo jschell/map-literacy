@@ -1,3 +1,4 @@
+import { createGeographicTerrain } from './geographic-terrain.js';
 import { monochrome } from '../print/monochrome.js';
 import { geographicPdf } from '../export/geographic-pdf.js';
 import { BASEMAPS, USGS_ACKNOWLEDGMENT, rasterFurniture } from '../map/basemaps.js';
@@ -13,9 +14,12 @@ export function createExplorer() {
   let active = true, zoom = DEFAULT_VIEW.zoom, center = project(DEFAULT_VIEW.lon, DEFAULT_VIEW.lat, zoom), timer, generation = 0, lastView;
   const images = new Map(), pointers = new Map();
   const streets = createGeographicStreets(get, () => updatePrintAvailability());
+  const terrain = createGeographicTerrain(get, () => updatePrintAvailability());
+  const terrainOptions = () => ({ relief: get('explorer-relief').value === 'light', appearance: get('explorer-appearance').value, contrast: get('explorer-topo-contrast').value });
   let displayScale = 1, marking = '', pointerStart = null, dragged = false;
   const size = () => [viewport.clientWidth, viewport.clientHeight];
   function tileSnapshot() {
+    if (basemap === 'terrain') return null;
     if (!lastView || lastView.zoom !== zoom || lastView.orientation !== get('orientation').value || lastView.center.some((value, i) => value !== center[i])) return null;
     const view = geographicView(center, zoom, lastView.orientation);
     const tiles = visibleTiles(center, zoom, view.worldWidth, view.worldHeight, basemap);
@@ -27,6 +31,12 @@ export function createExplorer() {
     return basemap === 'street' && streets.ready() && view.zoom === zoom && view.orientation === get('orientation').value && view.center.every((value, i) => Math.abs(value - focus[i]) <= 1e-9);
   }
   function updatePrintAvailability() {
+    if (basemap === 'terrain') {
+      const ready = !!terrain.snapshot();
+      get('explorer-print').disabled = get('explorer-pdf').disabled = !ready;
+      get('explorer-print-status').textContent = ready ? 'Ready to print terrain: contours, water, highways and trails.' : 'Print needs every selected terrain layer for this view. Zoom 13–16, or Retry map.';
+      return;
+    }
     const vector = currentVector(), tiles = tileSnapshot();
     if (basemap === 'topo') {
       get('explorer-print').disabled = !tiles; get('explorer-pdf').disabled = !tiles;
@@ -68,9 +78,14 @@ export function createExplorer() {
     if (!active || viewport.clientWidth === 0 || viewport.clientHeight === 0 || matchMedia('print').matches) return;
     clearTimeout(timer); normalize(); describe();
     layer.dataset.basemap = basemap; layer.dataset.appearance = get('explorer-appearance').value;
-    get('explorer-topo-contrast-wrap').hidden = basemap !== 'topo' || get('explorer-appearance').value !== 'bw';
+    get('explorer-topo-contrast-wrap').hidden = basemap === 'street' || get('explorer-appearance').value !== 'bw';
     layer.style.transformOrigin = '0 0';
     layer.style.transform = `scale(${displayScale})`;
+    if (basemap === 'terrain') {
+      generation++; images.clear(); layer.replaceChildren();
+      terrain.update(geographicView(center, zoom, get('orientation').value), terrainOptions());
+      return;
+    }
     const current = ++generation, [width, height] = size();
     const tiles = visibleTiles(center, zoom, width / displayScale, height / displayScale, basemap), keys = new Set(tiles.map((tile) => tile.key));
     for (const [key, img] of images) if (!keys.has(key)) { img.remove(); images.delete(key); }
@@ -95,6 +110,7 @@ export function createExplorer() {
   }
   function move(dx, dy) {
     if (!active) return;
+    if (basemap === 'terrain') terrain.invalidate({ keepPreview: true });
     center[0] += dx / displayScale; center[1] += dy / displayScale;
     get('explorer-print').disabled = true; get('explorer-pdf').disabled = true;
     get('explorer-print-status').textContent = 'Move the map to choose an area; printing is ready when the new view loads.';
@@ -105,6 +121,8 @@ export function createExplorer() {
     layer.style.transform = `translate(${transform[0]}px, ${transform[1]}px) scale(${displayScale})`;
     const preview = get('explorer-vector').querySelector('svg');
     if (preview) preview.style.transform = `translate(${transform[0]}px, ${transform[1]}px)`;
+    const terrainPreview = get('explorer-terrain').querySelector('canvas');
+    if (terrainPreview) terrainPreview.style.transform = `translate(${transform[0]}px, ${transform[1]}px)`;
     describe({ sourceUpdate: false }); clearTimeout(timer); timer = setTimeout(settle, 180);
   }
   function settle() {
@@ -122,6 +140,7 @@ export function createExplorer() {
     zoom = next; settle();
   }
   function preparePrint() {
+    if (basemap === 'terrain') return prepareTerrainPrint();
     const snapshot = basemap === 'street' ? streets.snapshot() : null;
     const focus = unproject(...center, zoom);
     if (!snapshot || snapshot.model.view.zoom !== zoom || snapshot.model.view.orientation !== get('orientation').value || snapshot.model.view.center.some((value, i) => Math.abs(value - focus[i]) > 1e-9)) {
@@ -138,6 +157,25 @@ export function createExplorer() {
     get('geographic-paper-tiles').replaceChildren(snapshot.svg);
     const coverage = `${snapshot.model.labels.length}/${snapshot.model.availableNames} street names`;
     get('geographic-paper-credit').textContent = `© OpenStreetMap contributors · openstreetmap.org/copyright · ${coverage} · ${snapshot.provenance.sourceAt ? 'Data ' + snapshot.provenance.sourceAt.slice(0, 10) : 'Fetched ' + snapshot.provenance.fetchedAt.slice(0, 10)} · source ${snapshot.provenance.sha256.slice(0, 12)}`;
+    return true;
+  }
+  function prepareTerrainPrint() {
+    const snapshot = terrain.snapshot();
+    get('geographic-paper-tiles').replaceChildren();
+    if (!snapshot) return false;
+    const { view } = snapshot, holder = get('geographic-paper-tiles');
+    const canvas = document.createElement('canvas'); canvas.width = snapshot.canvas.width; canvas.height = snapshot.canvas.height;
+    const ctx = canvas.getContext('2d'); if (!ctx) throw new Error('This browser cannot prepare terrain printing.');
+    ctx.drawImage(snapshot.canvas, 0, 0);
+    if (get('explorer-appearance').value === 'bw') { const pixels = ctx.getImageData(0, 0, canvas.width, canvas.height); monochrome(pixels.data, get('explorer-topo-contrast').value); ctx.putImageData(pixels, 0, 0); }
+    Object.assign(canvas.style, { left: '0mm', top: '0mm', width: `${view.width}mm`, height: `${view.height}mm` });
+    holder.dataset.rendering = 'tiles'; holder.dataset.basemap = 'terrain'; holder.dataset.appearance = get('explorer-appearance').value;
+    holder.replaceChildren(canvas, rasterFurniture(document, view));
+    get('geographic-print').dataset.orientation = view.orientation; document.body.dataset.printOrientation = view.orientation;
+    get('geographic-print').dataset.center = `${view.center[1].toFixed(5)},${view.center[0].toFixed(5)}`;
+    get('geographic-paper-map').style.width = `${view.width}mm`; get('geographic-paper-map').style.height = `${view.height}mm`;
+    get('geographic-print-status').textContent = '';
+    get('geographic-paper-credit').textContent = `${USGS_ACKNOWLEDGMENT} Terrain · contours, water, highways/trails · elevation units/interval unverified · ${snapshot.layers.includes('relief') ? 'light relief' : 'no relief'} · approximate center scale 1:${Math.round(view.scaleDenominator).toLocaleString()} · viewed ${new Date().toISOString().slice(0, 10)}.`;
     return true;
   }
   function prepareTilePrint() {
@@ -224,7 +262,7 @@ export function createExplorer() {
   get('explorer-in').onclick = () => changeZoom(1);
   get('explorer-out').onclick = () => changeZoom(-1);
   get('explorer-world').onclick = () => { zoom = 2; center = project(0, 0, zoom); settle(); };
-  get('explorer-retry').onclick = () => { images.clear(); layer.replaceChildren(); settle(); try { if (basemap === 'street') streets.update(geographicView(center, zoom, get('orientation').value), { retry: true }); } catch {} };
+  get('explorer-retry').onclick = () => { if (basemap === 'terrain') terrain.invalidate(); images.clear(); layer.replaceChildren(); settle(); try { if (basemap === 'street') streets.update(geographicView(center, zoom, get('orientation').value), { retry: true }); } catch {} };
   get('explorer-jump').onsubmit = (event) => {
     event.preventDefault();
     try {
@@ -284,15 +322,20 @@ export function createExplorer() {
     if (x < 0 || y < 0 || x > frame.width || y > frame.height) return;
     streets.annotate(view.inverse([x / frame.width * view.width, y / frame.height * view.height]), marking);
   });
-  get('explorer-appearance').addEventListener('change', () => { layer.dataset.appearance = get('explorer-appearance').value; get('explorer-topo-contrast-wrap').hidden = basemap !== 'topo' || get('explorer-appearance').value !== 'bw'; });
+  get('explorer-topo-contrast').addEventListener('change', () => { if (basemap === 'terrain') terrain.render(terrainOptions()); });
+  get('explorer-relief').addEventListener('change', () => { if (basemap === 'terrain') settle(); });
+  get('explorer-appearance').addEventListener('change', () => { if (basemap === 'terrain') terrain.render(terrainOptions()); layer.dataset.appearance = get('explorer-appearance').value; get('explorer-topo-contrast-wrap').hidden = basemap === 'street' || get('explorer-appearance').value !== 'bw'; });
   get('explorer-basemap').onchange = () => {
     const focus = unproject(...center, zoom);
     basemap = get('explorer-basemap').value;
     zoom = Math.min(zoom, BASEMAPS[basemap].maxZoom); center = project(...focus, zoom);
-    generation++; images.clear(); layer.replaceChildren(); streets.invalidate();
+    generation++; images.clear(); layer.replaceChildren(); streets.invalidate(); terrain.invalidate();
     delete layer.dataset.offset;
-    const topo = basemap === 'topo';
-    get('explorer-topo-help').hidden = !topo;
+    const topo = basemap !== 'street';
+    get('explorer-terrain').hidden = basemap !== 'terrain';
+    get('explorer-terrain-help').hidden = basemap !== 'terrain';
+    get('explorer-relief-wrap').hidden = basemap !== 'terrain';
+    get('explorer-topo-help').hidden = basemap !== 'topo';
     get('explorer-street-status').hidden = topo;
     get('explorer-vector').hidden = topo;
     for (const id of ['explorer-labels', 'explorer-landmarks', 'explorer-heading', 'explorer-mark-start', 'explorer-mark-end', 'explorer-mark-route', 'explorer-clear']) get(id).disabled = topo;

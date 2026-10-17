@@ -183,3 +183,7 @@ h2.sheet-block { font-size: 12pt; line-height: 1.4; }
 #explorer-pdf-link[hidden] { display: none; }
 
 #explorer-topo-contrast-wrap[hidden] { display: none; }
+
+#explorer-terrain { position: absolute; inset: 0; overflow: hidden; background: white; pointer-events: none; }
+#explorer-terrain canvas { display: block; width: 100%; height: 100%; }
+#explorer-terrain[hidden], #explorer-relief-wrap[hidden] { display: none; }
