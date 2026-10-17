@@ -1,3 +1,4 @@
+import { createContourOverlayModel } from '../terrain/geographic.js';
 const NS = 'http://www.w3.org/2000/svg';
 const element = (doc, tag, attrs = {}, text = null) => {
   const node = doc.createElementNS(NS, tag);
@@ -7,7 +8,8 @@ const element = (doc, tag, attrs = {}, text = null) => {
 };
 
 /** No imported HTML/styles are executed. Returns a detached SVG. */
-export function renderMap(doc, model, { selectedId = null, headingDeg = null, route = null, annotations = null, onSelect = () => {} } = {}) {
+export function renderMap(doc, model, { selectedId = null, headingDeg = null, route = null, annotations = null, terrain = null, onSelect = () => {} } = {}) {
+  const contours = terrain ? createContourOverlayModel(terrain, model) : null;
   const clipId = `clip-${crypto.randomUUID()}`;
   const svg = element(doc, 'svg', { viewBox: `0 0 ${model.width} ${model.height}`, class: model.paper ? 'map-svg print-map' : 'map-svg screen-map', role: 'img', 'aria-label': `${model.title}, ${model.variant} map${model.draft ? ', unreviewed draft' : ''}` });
   svg.append(element(doc, 'title', {}, model.title));
@@ -15,6 +17,15 @@ export function renderMap(doc, model, { selectedId = null, headingDeg = null, ro
   clip.append(element(doc, 'polygon', { points: model.clip.map((c) => c.join(',')).join(' ') })); defs.append(clip); svg.append(defs);
   const background = element(doc, 'rect', { width: model.width, height: model.height, class: 'map-background' }); svg.append(background);
   const group = element(doc, 'g', { 'clip-path': `url(#${clipId})` }); svg.append(group);
+  if (contours) {
+    const layer = element(doc, 'g', { class: 'terrain-overlay', 'pointer-events': 'none', 'aria-label': 'Draft terrain contours' });
+    layer.append(element(doc, 'title', {}, `Draft contours; horizontal operation accuracy ${contours.horizontalAccuracyM} m; elevations ${contours.verticalReference}; source grid ${contours.sourceGridSha256}. Not reviewed lesson answers.`));
+    for (const path of contours.paths) layer.append(element(doc, 'path', {
+      d: path.points.map((p,i)=>`${i?'L':'M'}${p.join(',')}`).join(' '),
+      class: 'terrain-contour', 'data-elevation-m': path.levelM, 'stroke-width': model.paper ? .2 : 1.2
+    }));
+    group.append(layer);
+  }
   const layer = (item) => item.role === 'water' ? 0 : item.role === 'building' ? 1 : item.bridge ? 3 : 2;
   const paths = [...model.paths].sort((a, b) => layer(a) - layer(b));
   for (const item of paths) {
@@ -85,6 +96,10 @@ export function renderMap(doc, model, { selectedId = null, headingDeg = null, ro
   const barWidth = meters * model.metersToUnits, bx = 5 * unit, by = model.height - 6 * unit;
   svg.append(element(doc, 'path', { d: `M${bx},${by-2*unit} V${by} H${bx+barWidth} V${by-2*unit}`, class: 'scale-bar', 'stroke-width': model.paper ? 0.3 : 2 }));
   svg.append(element(doc, 'text', { x: bx, y: by + 4 * unit, class: 'scale-label', 'font-size': model.paper ? 3 : 13 }, `${meters} m`));
+  if (contours) {
+    svg.append(element(doc, 'rect', { x: model.paper ? 2 : 8, y: model.paper ? 1 : 2, width: model.paper ? 55 : 210, height: model.paper ? 6 : 20, class: 'terrain-note-background' }));
+    svg.append(element(doc, 'text', { x: model.paper ? 3 : 10, y: model.paper ? 5 : 16, class: 'terrain-review-note', 'font-size': model.paper ? 3 : 12 }, 'Draft terrain; 4 m operation'));
+  }
   return svg;
 }
 

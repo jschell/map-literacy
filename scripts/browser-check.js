@@ -1,3 +1,4 @@
+import { checkTerrainOverlay } from './terrain-overlay-browser-check.js';
 import { checkPrintQuality } from './print-quality-browser-check.js';
 import { checkExplorer, mockTiles } from './explorer-browser-check.js';
 import assert from 'node:assert/strict';
@@ -57,6 +58,7 @@ const loadDemo = () => afterInstall(() => page.locator('#demo').click());
 const importReady = (file) => afterInstall(() => page.locator('#import').setInputFiles(file));
 try {
   await page.goto(base);
+  const terrainOverlayChecks = await checkTerrainOverlay(page);
   const geographicChecks = await checkExplorer(page, base);
   const printQuality = await checkPrintQuality(page, base);
   const storageChecks = await checkStorage(page);
@@ -479,6 +481,6 @@ try {
   await mobile.close();
   assert.equal(sourceRejectionMessages.length, geographicChecks.sourceRejections);
   assert.deepEqual(errors, []);
-  console.log(JSON.stringify({ geographicChecks, printQuality, syntheticFeatures: 6, pagesPackageChecks, storageChecks, autosaveChecks, preferenceChecks, accessibilityChecks, memoryLessonSessions: 'passed', sessionBackupControls: 'passed', variantsAndSelection: 'passed', labelEditingAndExport: 'passed', directedTracingAndPrint: 'passed', exerciseSheetsAndPagination: 'passed', boundedSearchAndRenderLimits: 'passed', invalidImportRetainsMap: 'passed', pdfDimensions: physical, mobileOverflow: false, realPack, browserErrors: errors }));
+  console.log(JSON.stringify({ terrainOverlayChecks, geographicChecks, printQuality, syntheticFeatures: 6, pagesPackageChecks, storageChecks, autosaveChecks, preferenceChecks, accessibilityChecks, memoryLessonSessions: 'passed', sessionBackupControls: 'passed', variantsAndSelection: 'passed', labelEditingAndExport: 'passed', directedTracingAndPrint: 'passed', exerciseSheetsAndPagination: 'passed', boundedSearchAndRenderLimits: 'passed', invalidImportRetainsMap: 'passed', pdfDimensions: physical, mobileOverflow: false, realPack, browserErrors: errors }));
 } finally { await browser.close(); server?.kill(); }
 

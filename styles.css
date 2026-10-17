@@ -19,6 +19,9 @@ input[type=file] { max-width: 240px; }
 #status { background: #e8eee6; border-left: 3px solid #597865; padding: 12px 16px; line-height: 1.5; }
 .map-panel { background: white; border: 1px solid #cbd1c9; border-radius: 10px; overflow: hidden; min-height: 280px; }
 .map-svg { display: block; }
+.terrain-contour { fill: none; stroke: #6b6b6b; }
+.terrain-note-background { fill: white; stroke: none; }
+.terrain-review-note { fill: #222; }
 .screen-map { width: 100%; height: auto; }
 .map-background { fill: white; }
 .feature { fill: none; stroke: #353b38; stroke-linejoin: round; stroke-linecap: round; }
