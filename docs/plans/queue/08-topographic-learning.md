@@ -10,7 +10,8 @@ Add terrain interpretation to the shared pack/renderer/lesson system without equ
 ## Work
 
 - [x] Add a terrain-focused reference view: contours/elevation labels and water with sparse highways/trails; optional light relief, no building/label clutter. Shared export grid/alignment and B&W output verified in automated/sampled rendering checks (see ../../terrain-view.md).
-- [ ] Verify per-extent contour units/intervals and representative physical/Safari readability; current view explicitly marks units/interval unverified and does not support terrain lesson answers.
+- [x] Query source-reported per-extent contour units/intervals with explicit mixed/unknown/partial handling; keep basic printing available when metadata is pending/unavailable. See ../../contour-metadata.md.
+- [ ] Complete representative physical/Safari review and independently review terrain data before supporting lesson answers.
 
 - [ ] Select one bounded terrain area and synthetic elevation fixtures; compare USGS 3DEP products for US coverage/resolution/license/access.
 - [ ] Define raster/contour schema: horizontal CRS, vertical reference, units, resolution, origin/grid orientation, nodata, source/version and uncertainty.
@@ -39,7 +40,7 @@ OSM is not a complete DEM source. USGS candidate is US-specific; global sources 
 
 2026-10-14: user requested topographic viewing and B&W Letter printing after street printing worked on Safari. The first slice uses the official USGS Topo cached raster service, with provider separation, north/approximate center scale, exact USGS acknowledgment, B&W pixel conversion and color output. No DEM, numerical elevation queries, editable contours or terrain lesson support is advertised. USGS tiles include their own cartography and cannot support blank/partial names or independent hillshade controls. See ../../topographic-browsing.md for current source review and boundaries.
 
-Next action after terrain-reference device review: verify per-extent source contour metadata, select a bounded 3DEP product and define the versioned terrain schema, then implement synthetic grid/contour validation. Keep street-core import rejecting unsupported terrain packs until that contract is implemented.
+Next action after terrain-reference device review: select a bounded 3DEP product and define the versioned terrain schema, then implement synthetic grid/contour validation. Keep street-core import rejecting unsupported terrain packs until that contract is implemented.
 
 
 First-slice verification: 155 Node tests and complete packaged Chromium browser checks pass, including both topo paper orientations, grayscale pixels, provider switch/zoom/failure recovery and street regression checks. Real default USGS imagery was replayed and visually checked in a one-page B&W landscape PDF. Safari topo and physical-paper checks remain pending.
@@ -49,3 +50,6 @@ B&W fidelity follow-up (2026-10-15): the user accepted physical page fit and req
 
 
 2026-10-15: user confirmed the PR-40 B&W workflow usable after merge/deployment. Added Terrain — contours + roads (US), with 1980 × 1530 / 1530 × 1980 shared EPSG:3857 source grids, bounded current-frame PNG requests, optional 18% hillshade and incomplete/stale-layer print blocking. This is a cartographic reference composition, not the DEM/lesson pipeline. Source unit/interval queries and paper/Safari review remain open; see ../../terrain-view.md for evidence and limits.
+
+
+2026-10-16: user reports PR 41 merged/deployed; merge CI and Pages workflow both succeeded. Implemented source-reported contour details for all four rendered geometry layers. A bounded live view returned mixed 20/40 ft intervals. Pending/unavailable/unknown/truncated metadata is additive and never gates basic printing. This source summary is not the reviewed elevation/lesson contract; paper/Safari review remains open.

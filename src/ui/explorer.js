@@ -175,7 +175,7 @@ export function createExplorer() {
     get('geographic-print').dataset.center = `${view.center[1].toFixed(5)},${view.center[0].toFixed(5)}`;
     get('geographic-paper-map').style.width = `${view.width}mm`; get('geographic-paper-map').style.height = `${view.height}mm`;
     get('geographic-print-status').textContent = '';
-    get('geographic-paper-credit').textContent = `${USGS_ACKNOWLEDGMENT} Terrain · contours, water, highways/trails · elevation units/interval unverified · ${snapshot.layers.includes('relief') ? 'light relief' : 'no relief'} · approximate center scale 1:${Math.round(view.scaleDenominator).toLocaleString()} · viewed ${new Date().toISOString().slice(0, 10)}.`;
+    get('geographic-paper-credit').textContent = `${USGS_ACKNOWLEDGMENT} Terrain · contours, water, highways/trails · ${snapshot.metadata.credit} · ${snapshot.layers.includes('relief') ? 'light relief' : 'no relief'} · approximate center scale 1:${Math.round(view.scaleDenominator).toLocaleString()} · viewed ${new Date().toISOString().slice(0, 10)}.`;
     return true;
   }
   function prepareTilePrint() {
@@ -334,6 +334,7 @@ export function createExplorer() {
     const topo = basemap !== 'street';
     get('explorer-terrain').hidden = basemap !== 'terrain';
     get('explorer-terrain-help').hidden = basemap !== 'terrain';
+    get('explorer-contour-details').hidden = basemap !== 'terrain';
     get('explorer-relief-wrap').hidden = basemap !== 'terrain';
     get('explorer-topo-help').hidden = basemap !== 'topo';
     get('explorer-street-status').hidden = topo;
