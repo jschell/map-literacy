@@ -1,13 +1,13 @@
 # Implementation plans
 
-Plans are work packages with evidence-based completion, not claims that an application exists. One implementation plan is active: 02, for reviewed neighborhood materials. Terrain feature expansion is paused. Plans whose implementation is delivered but whose acceptance is unfinished remain queued, not complete. Move finished plans into complete and update links here. Priorities reconciled after merged PR 58 on 2026-10-18; merge/deployment success is not curriculum or device acceptance.
+Plans are work packages with evidence-based completion, not claims that an application exists. One implementation plan is active: 10, for the concrete usability defects found in the website review. Neighborhood materials remain queued with their review gates. Terrain feature expansion is paused. Plans whose implementation is delivered but whose acceptance is unfinished remain queued, not complete. Move finished plans into complete and update links here. Priorities reconciled after merged PR 58 on 2026-10-18; merge/deployment success is not curriculum or device acceptance.
 
 | Plan | Status | Dependency | Outcome |
 |---|---|---|---|
 | [00 Roadmap](00-roadmap.md) | Reference | — | Scope, sequence and gates |
 | [Bootstrap record](complete/00-repository-bootstrap.md) | Complete: documentation only | — | README, contributor guidance, context and plans |
 | [01 Contracts and validation](complete/01-contracts-and-validation.md) | Complete: design contracts | Bootstrap | Contracts and measurable acceptance |
-| [02 Source and lesson packs](active/02-source-and-lesson-packs.md) | Active: bounded neighborhood sequence, source/content evidence and matched sheets | 01 | Reproducible, validated source packs |
+| [02 Source and lesson packs](queue/02-source-and-lesson-packs.md) | Queue: neighborhood source/content review; follows Plan 10 usability repairs | 01 | Reproducible, validated source packs |
 | [03 SVG and print](queue/03-svg-and-print.md) | Queue: physical/device acceptance pending | 01; implemented 02 slice | Readable interactive/printed variants |
 | [04 Street lessons](queue/04-street-lessons.md) | Queue: core scoring/sessions implemented; address design prepared; curriculum/device acceptance pending | Implemented 02–03 slices | Deterministic exercises and rubric |
 | [05 Persistence and browser release](queue/05-persistence-and-browser-release.md) | Queue: implementation delivered; Pages deployed and B&W print accepted; broader device/accessibility acceptance pending | Implemented 04 slice | Recoverable local app and static deployment |
@@ -16,10 +16,13 @@ Plans are work packages with evidence-based completion, not claims that an appli
 | [08 Topographic learning](queue/08-topographic-learning.md) | Queue: synthetic teaching capabilities delivered; acceptance pending; new capabilities paused | 01–05 shared core | Terrain layers and contour lessons |
 | [09 Delivery extensions](queue/09-delivery-extensions.md) | Queue | 05; demonstrated need | TinyJS/sync/scale decisions |
 
+| [10 Learner usability and workflows](active/10-learner-usability-and-workflows.md) | Active: planned; implementation pending | Existing 02–05 capabilities | Usable practice, honest progress and coherent print/navigation workflows |
+
 ## Remaining work and completion methods
 
 | Plan | Remaining work | Completion method |
 |---|---|---|
+| 10 | Practice defects, task navigation, print workflow and deployed acceptance | Task-based automated checks, rendered PDFs and recorded device/accessibility observations |
 | 02 | Reviewed neighborhood lessons, access/restriction decisions, genuinely newer source comparison | Source/content review plus reproducible preparation and comparison |
 | 03 | Pack performance, geometry/label readability, both-orientation worksheet calibration | Target-device observations and measured physical paper checks |
 | 04 | Curriculum acceptance; address implementation only if supported by pilot | Instructor/content review and device completion; later contract/code work |

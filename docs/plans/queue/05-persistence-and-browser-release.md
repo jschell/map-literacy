@@ -30,7 +30,7 @@ No accounts or sync are required. GitHub Pages has been published by the user; o
 
 ## Current acceptance summary (2026-10-17)
 
-Implementation includes transactional progress/preferences, revision-locked resume, retry/conflict recovery, backup/restore, schema compatibility, packaged static delivery and GitHub Pages publication. User feedback confirms the reported B&W print workflow usable. Plan 08 is now the active implementation plan; this plan remains queued until its external acceptance is supported.
+Implementation includes transactional progress/preferences, revision-locked resume, retry/conflict recovery, backup/restore, schema compatibility, packaged static delivery and GitHub Pages publication. User feedback confirms the reported B&W print workflow usable. Plan 10 is now the active implementation plan; this plan remains queued until its external acceptance is supported.
 
 | Gate | Evidence / remaining action | Completion method |
 |---|---|---|

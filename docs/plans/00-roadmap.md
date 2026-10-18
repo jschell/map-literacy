@@ -1,6 +1,6 @@
 # Plan 00 — Roadmap
 
-Status: reference, reprioritized 2026-10-18 after PR 58. Plan 02 is active for one bounded reviewed neighborhood sequence. Existing street and synthetic terrain software is sufficient for initial material evaluation; Plan 08 returns to the queue with its acceptance gaps retained. Printing is usable in the user-reported workflow; independent material review and observed transfer remain open.
+Status: reference, reprioritized 2026-10-18 after PR 58. Plan 10 is active for observed website usability defects; Plan 02 neighborhood acceptance follows. Existing street and synthetic terrain software is sufficient for initial material evaluation; Plan 08 returns to the queue with its acceptance gaps retained. Printing is usable in the user-reported workflow; independent material review and observed transfer remain open.
 
 ## Milestones
 
@@ -32,3 +32,8 @@ Each plan records actual changes, validation and unresolved acceptance items. Us
 The user approved returning from terrain feature expansion to practical map literacy. Execute in order: (1) verify the merged depression release; (2) prepare one reproducible neighborhood pack and matched instructor/learner sequence under Plan 02; (3) complete five equivalent eight-item synthetic sets under Plan 06; (4) resolve targeted material/device checks and coordinate actual observations; (5) use the existing revise/continue/pause criteria before further expansion. See [learning sequence and evidence ledger](../learning-sequence.md).
 
 Do not implement more terrain capabilities, directions simulation or address scoring merely because their plans contain unchecked items. A concrete learner/material problem can justify a focused fix. Blocked independent review or participation is a recorded boundary, not permission to replace learning evidence with more code.
+
+
+## Website usability correction — 2026-10-18
+
+The critical website review identified concrete barriers in existing practice and printing. [Plan 10](active/10-learner-usability-and-workflows.md) now precedes participant use: repair spatial answer entry, annotations, workspace and session semantics; simplify task navigation; complete print workflows; then perform device/content/learner acceptance. The earlier material-first correction remains the curriculum direction, not a reason to defer these defects.
