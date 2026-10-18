@@ -1,6 +1,6 @@
 # Static packages and hosting
 
-The same vanilla JavaScript application can run on Cloudflare Workers Static Assets or GitHub Pages. Packaging copies reviewed public assets; it does not bundle/transpile JavaScript or add a runtime service. Both prepared packages contain the synthetic map only. Real lessons, actual-device acceptance and publication remain pending.
+The same vanilla JavaScript application can run on Cloudflare Workers Static Assets or GitHub Pages. Packaging copies reviewed public assets; it does not bundle/transpile JavaScript or add a runtime service. Both packages include the synthetic lesson packs. GitHub Pages is deployed; real lesson approval and broader actual-device acceptance remain pending.
 
 ## Reproduce and preview
 
@@ -28,12 +28,12 @@ Run npm run browser:release to build and run the full Chromium suite from the pa
 
 ## Hosting choice
 
-Reviewed 2026-10-13. Cloudflare Workers Static Assets is the preferred target when the complete response-header policy is required; GitHub Pages is a viable zero-cost synthetic-demo option with the limits below. No host is provisioned and no domain or account is assumed.
+Reviewed 2026-10-13. Cloudflare Workers Static Assets is the preferred target when the complete response-header policy is required; GitHub Pages is a viable zero-cost synthetic-demo option with the limits below. GitHub Pages is deployed at https://jschell.github.io/map-literacy/; Cloudflare remains an optional prepared target.
 
 | Option | Current baseline cost | Fit and limits |
 |---|---|---|
 | Cloudflare Workers Static Assets | Static requests and asset storage have no additional charge; no paid plan is required for this asset-only package | _headers can apply CSP/nosniff. Cloudflare recommends Workers for new projects. No Worker script, database, functions, domain purchase or runtime package is needed. |
-| GitHub Pages | Available for this public repository on GitHub Free | Static HTML/CSS/JS, HTTPS and a project URL. Manual Actions workflow publishes only dist/pages. Meta CSP protects resources but does not meet the complete response-header requirement. |
+| GitHub Pages | Available for this public repository on GitHub Free | Static HTML/CSS/JS, HTTPS and a project URL. Actions publishes only dist/pages after merges to main pass its release gates. Meta CSP protects resources but does not meet the complete response-header requirement. |
 
 GitHub Pages documentation provides a static publishing workflow, but no supported project-level custom-response-header mechanism was identified. Cloudflare's _headers file is not a GitHub Pages configuration. The Pages HTML policy retains self-only script/style rules, an Overpass-only connect exception and an image exception for https://tile.openstreetmap.org, object blocking and base/form restrictions, while omitting frame-ancestors because browsers do not support it in a meta element. It does not set nosniff or cache response headers. Do not report Pages as passing those response-header gates; use Cloudflare or another configured header-capable host when they are required. A meta policy applies after the element is parsed, so the generator inserts it before styles/scripts.
 
@@ -51,17 +51,17 @@ npx --yes wrangler@4.150.0 deploy --config deploy/wrangler.json
 
 The final command publishes; do not run it as part of ordinary validation. These provider CLI commands have not been executed here. Keep provider credentials outside the repository. After publication, record the actual HTTPS URL/revision and inspect HTML, CSS, modules and fixture response MIME/CSP/nosniff, missing-path 404 behavior, save/reload/backup and both Letter outputs. Existing no-store headers avoid intentionally caching unhashed application files; host behavior still needs observation. Do not add analytics, bindings or run_worker_first as part of this asset-only setup.
 
-## Prepared GitHub Pages setup
+## Automatic GitHub Pages updates
 
-The manually triggered workflow is [.github/workflows/pages.yml](../.github/workflows/pages.yml). It is installed for Pages preparation; merging code does not publish anything. When ready to publish the synthetic demo:
+The [.github/workflows/pages.yml](../.github/workflows/pages.yml) workflow runs on every push to main, including merged PRs. Merging this workflow change starts the first automatic publication. Manual workflow_dispatch on main remains available for recovery; ordinary merges need no separate redeploy action.
 
-1. Merge the Pages preparation PR. The workflow runs manually on main; pushes/merges do not trigger publication.
-2. In repository Settings → Pages, choose GitHub Actions as the publishing source. Confirm environment/branch protection rules for github-pages.
-3. Run Publish reviewed static demo from Actions on main. It validates the fixture and tests both packages before uploading only dist/pages. The deploy job receives pages/id-token write permissions; the build job has read permissions.
-4. Use the URL returned by deployment. For the default project URL it should be https://jschell.github.io/map-literacy/; availability is not claimed until deployment succeeds. Keep the trailing slash so relative asset paths resolve correctly.
-5. Repeat hosted MIME, meta CSP, import, save/reload, backup, keyboard and Letter checks. Record the response-header limitations above separately from successful application behavior.
+Each run tests the exact triggering revision: Node tests, fixture reproduction, pack validation and the full packaged Chromium release checks (including the Pages project prefix and meta CSP). Only successful builds upload dist/pages; deploy depends on that build. Failed checks retain the previously published site. PR branches cannot publish. Existing pinned actions and the github-pages environment are retained; Pages must use GitHub Actions as its publishing source.
 
-The publishing workflow is prepared, but repository Pages setup and a manual deployment run are still required. This does not establish a live Pages site. A static synthetic demo does not establish a supported learner/browser release.
+Publishing runs are serialized without canceling an active deployment. A newer pending run replaces an older pending run. Immediately before publication, the deploy job compares its revision to the main branch head and skips a superseded revision. If main advances after that check, the next run publishes the newer version after the active run finishes. API failures fail the check rather than publish an unchecked revision. The build has read permissions; only deploy receives Pages/OIDC write permissions, plus contents read for the revision check.
+
+Follow [Publish reviewed static demo](https://github.com/jschell/map-literacy/actions/workflows/pages.yml) to check build/deploy progress. A successful deployment records the published commit and site URL in the Actions summary and github-pages environment. Publication follows release checks and Pages processing, so it is automatic rather than instantaneous. This workflow's first automatic deployment can only be verified after merge.
+
+Open https://jschell.github.io/map-literacy/ after deployment and reload an existing tab to load the updated version. The release fingerprint prevents a freshly loaded page from mixing old and new modules; already open tabs keep their current code until reloaded. Learner progress remains in browser storage. Hosted checks and broader device/physical-print acceptance remain separate from automated packaged checks.
 
 ## Sources
 
