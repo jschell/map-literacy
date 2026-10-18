@@ -18,3 +18,18 @@ test('generated single-page PDF has exact Letter dimensions and byte-correct cro
 test('PDF encoder rejects unsupported sizes, orientation and non-JPEG input', () => {
   for (const args of [[jpeg, 1, 1, 'auto'], [jpeg, 4001, 1, 'portrait'], [jpeg, 1.2, 1, 'portrait'], [new Uint8Array(0), 1, 1, 'portrait'], [new Uint8Array([0,0,0,0]), 1, 1, 'portrait']]) assert.throws(() => imagePdf(...args));
 });
+
+test('multi-page encoder preserves binary streams, Letter geometry and all object references', async () => {
+  const { imagePagesPdf } = await import('../src/export/image-pdf.js');
+  for (const orientation of ['portrait', 'landscape']) {
+    const bytes = imagePagesPdf([{ payload: jpeg, pixelWidth: 20, pixelHeight: 30 }, { payload: new Uint8Array([0, 10, 255, 128]), pixelWidth: 2, pixelHeight: 2, encoding: 'raw', grayscale: true }], orientation);
+    const text = new TextDecoder('latin1').decode(bytes);
+    assert.equal((text.match(/\/Type \/Page\b/g) ?? []).length, 2);
+    assert.equal((text.match(new RegExp(`/MediaBox \\[0 0 ${orientation === 'portrait' ? '612 792' : '792 612'}\\]`, 'g')) ?? []).length, 2);
+    const xrefAt = Number(text.match(/startxref\n(\d+)/)[1]);
+    const rows = text.slice(xrefAt).split('\n').slice(3, 11);
+    rows.forEach((row, i) => { const at = Number(row.slice(0, 10)); assert.ok(new TextDecoder().decode(bytes.slice(at, at + 12)).startsWith(`${i + 1} 0 obj\n`)); });
+    assert.ok(text.includes('/Count 2')); assert.ok(text.includes('/DeviceGray'));
+  }
+  for (const pages of [[], Array(65).fill({}), [{ payload: jpeg, pixelWidth: 1, pixelHeight: 1, encoding: 'raw' }]]) assert.throws(() => imagePagesPdf(pages, 'portrait'));
+});

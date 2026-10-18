@@ -1,3 +1,4 @@
+import { lessonPdf } from '../export/lesson-pdf.js';
 import { createExplorer } from './explorer.js';
 import { createPreferences } from './preferences.js';
 import { createLessons } from './lessons.js';
@@ -11,6 +12,14 @@ import { createExercisePrint } from '../print/exercise.js';
 import { paginateExercise } from '../print/pages.js';
 import { renderMap, updateMapLabels } from '../map/render.js';
 let explorer = null;
+let pdfSnapshot = null, pdfGeneration = 0, makingLessonPdf = false, lessonPdfUrl = null, lastPdfKey = null;
+function invalidateLessonPdf() {
+  pdfGeneration++; pdfSnapshot = null;
+  if (lessonPdfUrl) URL.revokeObjectURL(lessonPdfUrl);
+  lessonPdfUrl = null;
+  get('lesson-pdf-link').hidden = true; get('lesson-pdf-link').removeAttribute('href');
+  get('lesson-pdf-status').textContent = 'Download the selected lesson output as a fixed-size Letter PDF. Print the PDF at actual size.';
+}
 const get = (id) => document.getElementById(id);
 let pack = null, rotation = 0, selected = null, job = null, currentModel = null, loadVersion = 0;
 let printPagesKey = null, screenViewKey = null, paperViewKey = null, screenSelected = null, screenVariant = null, paperVariant = null;
@@ -80,6 +89,10 @@ function updateView() {
     get('paper-title').textContent = spec?.title ?? `${pack.title} — ${variant}${paper.draft ? ' — UNREVIEWED DRAFT' : ''}`;
     get('paper-summary').textContent = spec?.summary ?? (pack.module === 'topographic' ? `Synthetic hill; elevations rise toward the center. Contour interval: ${pack.terrain.intervalM} m. Choose Learner worksheet for a labeled reference and an elevation question.` : 'Mark a route, indicate your heading and explain how the roads connect.');
     get('paper-footer').textContent = spec ? `Letter ${orientation} · North up · 1:${scaleDenominator.toLocaleString()} · Print at 100% / actual size; measure the scale bar. ${spec.kind} · Page 1 of ${get('exercise-pages').children.length + 1} · Source credits follow the map.` : `Letter ${orientation} · ${printTrace ? `Trace preview: ${printTrace.edges.length} steps, ${Math.round(printTrace.lengthM)} m; S start, E end${printTrace.warnings.length ? '; needs review' : ''}; not route approval. ` : ''}North up · 1:${scaleDenominator.toLocaleString()} · Print at 100% / actual size; measure the scale bar. ${pack.sources.map((s) => `${s.attribution} · source ${s.sourceAt?.slice(0, 10) ?? 'date unknown'}`).join(' | ')}`;
+    const pdfKey = JSON.stringify([pack.id, pagesKey, paperKeyForView, variant]);
+    if (pdfKey !== lastPdfKey) { invalidateLessonPdf(); lastPdfKey = pdfKey; }
+    pdfSnapshot = { svg: get('paper-map').querySelector('svg'), model: paper, title: get('paper-title').textContent, summary: get('paper-summary').textContent, footer: get('paper-footer').textContent, spec, packId: pack.id, revision: pack.revision };
+    get('lesson-pdf').disabled = makingLessonPdf;
     if (get('print-preview').open) {
       const preview = get('print-preview-content');
       preview.dataset.orientation = orientation;
@@ -89,6 +102,7 @@ function updateView() {
       preview.replaceChildren(renderMap(document, paper, { headingDeg: paperHeading, route: paperTrace, annotations: spec?.annotations }), title, summary, footer);
     }
   } catch (error) {
+    invalidateLessonPdf(); get('lesson-pdf').disabled = true;
     get('print-preview-content').replaceChildren();
     get('paper-map').replaceChildren(); get('exercise-pages').replaceChildren(); printPagesKey = null; paperViewKey = null; get('print').disabled = true; printError = error.message;
     get('paper-summary').textContent = '';
@@ -98,6 +112,7 @@ function updateView() {
 }
 function install(value) {
   assertRenderable(value); lessons.guardReplacement();
+  invalidateLessonPdf(); lastPdfKey = null;
   pack = value; selected = null; rotation = 0;
   screenModels.clear(); paperModels.clear(); printPagesKey = null; screenViewKey = null; paperViewKey = null; screenSelected = null;
   get('print-exercise').replaceChildren();
@@ -144,6 +159,24 @@ get('rotate').addEventListener('click', () => { rotation = (rotation + 90) % 360
 for (const id of ['variant', 'scale', 'orientation']) get(id).addEventListener('change', () => preferences.changed());
 for (const id of ['heading', 'print-output', 'print-exercise']) get(id).addEventListener('change', updateView);
 get('feature').addEventListener('change', () => selectFeature(get('feature').value));
+get('lesson-pdf').addEventListener('click', async () => {
+  if (makingLessonPdf) return;
+  updateView(); if (!pdfSnapshot) return;
+  const snapshot = pdfSnapshot, generation = pdfGeneration;
+  makingLessonPdf = true; get('lesson-pdf').disabled = true; get('lesson-pdf').setAttribute('aria-busy', 'true');
+  get('lesson-pdf-status').textContent = 'Preparing the selected lesson PDF…';
+  try {
+    const bytes = await lessonPdf(document, snapshot);
+    if (generation !== pdfGeneration) return;
+    if (lessonPdfUrl) URL.revokeObjectURL(lessonPdfUrl);
+    lessonPdfUrl = URL.createObjectURL(new Blob([bytes], { type: 'application/pdf' }));
+    const link = get('lesson-pdf-link'); link.href = lessonPdfUrl;
+    link.download = `map-literacy-lesson-${snapshot.spec?.audience ?? 'map'}-${snapshot.model.orientation}.pdf`; link.hidden = false;
+    get('lesson-pdf-status').textContent = `PDF ready: Letter ${snapshot.model.orientation}, 1:${snapshot.model.scaleDenominator.toLocaleString()}. Save this snapshot and print at actual size / 100%. Lossless 300 dpi; no browser headers or footers.`;
+    link.click();
+  } catch (error) { if (generation === pdfGeneration) get('lesson-pdf-status').textContent = `PDF not prepared: ${error.message} Retry the download.`; }
+  finally { makingLessonPdf = false; get('lesson-pdf').removeAttribute('aria-busy'); get('lesson-pdf').disabled = !pdfSnapshot; }
+});
 get('print-preview').addEventListener('toggle', updateView);
 get('print').addEventListener('click', () => { updateView(); if (!get('print').disabled) { document.body.dataset.printTarget = 'lesson'; window.print(); } });
 let lastWidth = 0;

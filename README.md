@@ -16,7 +16,7 @@ Choose **Load contour lesson** under Lesson map and print to practice reading a 
 
 For a saved file with the selected physical Letter orientation, use **Download Letter PDF**. Native browser Print can override the requested orientation. See [PDF output and fidelity](docs/pdf-output.md).
 
-Contour printing: loading the synthetic contour lesson starts a learner worksheet at the pack's 1:1,000 portrait defaults, even when street print preferences were saved. Open **Preview lesson print layout** before printing. The worksheet labels a reference contour and target A; choose **Map only** for an unmarked diagram. In Safari's print dialog, match the selected Letter orientation, use actual size / 100%, and turn off browser headers and footers. Browser PDF checks do not replace a device/paper scale check.
+Contour printing: loading the synthetic contour lesson starts a learner worksheet at the pack's 1:1,000 portrait defaults, even when street print preferences were saved. Open **Preview lesson print layout** before printing. The worksheet labels a reference contour and target A; choose **Map only** for an unmarked diagram. Use **Download lesson PDF** to save the selected map, learner worksheet or instructor guide with fixed Letter dimensions and the declared map scale. The download omits browser headers/footers; print the saved PDF at actual size / 100%. Native Print lesson output remains available. Browser checks do not replace a device/paper scale check.
 
 ## Start here
 
