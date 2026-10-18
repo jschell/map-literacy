@@ -12,7 +12,7 @@ Choose **Topographic — USGS (US)** in the map-type selector to browse source c
 
 Choose **Terrain — contours + roads (US)** for contours and water with streets/trails and optional light hillshade. Terrain road context also offers Highways + trails only for a sparse view. This higher-resolution reference view uses zoom 13–16 and shows source-reported contour units/intervals when available; see [terrain view and source limits](docs/terrain-view.md).
 
-Choose **Load contour lesson** under Lesson map and print to practice reading a synthetic hill's contour elevations. Answer in metres, use hints/retry, resume saved progress, or print separate learner and instructor sheets. Choose **Load slope lesson** for three equal-rise comparisons using marked A/B spans, including equal slopes. Choose **Load profile lesson** for ascent, descent and signed elevation change. Choose **Load ridge/valley lesson** to classify marked H/L/A landforms using contour elevations. These demos use invented terrain with derived answers; real topo/terrain reference imagery remains separate. See [supported terrain packs and limits](docs/contracts/terrain-lessons-v2.md).
+Choose **Load contour lesson** under Lesson map and print to practice reading a synthetic hill's contour elevations. Answer in metres, use hints/retry, resume saved progress, or print separate learner and instructor sheets. Choose **Load slope lesson** for three equal-rise comparisons using marked A/B spans, including equal slopes. Choose **Load profile lesson** for ascent, descent and signed elevation change. Choose **Load ridge/valley lesson** to classify marked H/L/A landforms using contour elevations. Choose **Load depression lesson** to read decreasing elevations using inward contour ticks. These demos use invented terrain with derived answers; real topo/terrain reference imagery remains separate. See [supported terrain packs and limits](docs/contracts/terrain-lessons-v2.md).
 
 For a saved file with the selected physical Letter orientation, use **Download Letter PDF**. Native browser Print can override the requested orientation. See [PDF output and fidelity](docs/pdf-output.md).
 
@@ -30,6 +30,7 @@ Contour printing: loading the synthetic contour lesson starts a learner workshee
 - [Setup, saved progress, preferences and data removal](docs/browser-setup.md)
 - [Static packages: Cloudflare and GitHub Pages](docs/static-deployment.md)
 - [Ridge/valley lessons and bounds](docs/contracts/terrain-landforms-v1.md)
+- [Depression contours and bounds](docs/contracts/terrain-depressions-v1.md)
 - [Synthetic contour cartography and label/answer rules](docs/contour-cartography.md)
 - [Local address lessons: draft design and evidence](docs/address-lessons.md)
 - [Exploratory pilot kit and local reporting](docs/learning-pilot.md)

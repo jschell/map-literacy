@@ -4,8 +4,8 @@ import { join, dirname } from 'node:path';
 import { HOST_HEADERS, META_CSP } from './static-policy.js';
 
 const sha256 = (bytes) => createHash('sha256').update(bytes).digest('hex');
-const allowed = (path) => ['index.html', 'styles.css', 'LICENSE', 'NOTICE.txt', '_headers', '.nojekyll', 'tests/fixtures/street-square.json', 'tests/fixtures/terrain-landforms.json', 'tests/fixtures/terrain-profiles.json', 'tests/fixtures/terrain-slopes.json', 'tests/fixtures/terrain-hill.json'].includes(path) || /^src\/[a-zA-Z0-9/_-]+\.js$/.test(path);
-const notice = 'Map Literacy code: MIT; see LICENSE.\nSynthetic street-square.json, terrain-hill.json, terrain-slopes.json, terrain-profiles.json and terrain-landforms.json: CC0-1.0, invented geometry/terrain, not real conditions.\nhttps://creativecommons.org/publicdomain/zero/1.0/\nImported third-party packs retain their own provenance, licenses and attribution.\n';
+const allowed = (path) => ['index.html', 'styles.css', 'LICENSE', 'NOTICE.txt', '_headers', '.nojekyll', 'tests/fixtures/street-square.json', 'tests/fixtures/terrain-depressions.json', 'tests/fixtures/terrain-landforms.json', 'tests/fixtures/terrain-profiles.json', 'tests/fixtures/terrain-slopes.json', 'tests/fixtures/terrain-hill.json'].includes(path) || /^src\/[a-zA-Z0-9/_-]+\.js$/.test(path);
+const notice = 'Map Literacy code: MIT; see LICENSE.\nSynthetic street-square.json, terrain-hill.json, terrain-slopes.json, terrain-profiles.json, terrain-landforms.json and terrain-depressions.json: CC0-1.0, invented geometry/terrain, not real conditions.\nhttps://creativecommons.org/publicdomain/zero/1.0/\nImported third-party packs retain their own provenance, licenses and attribution.\n';
 
 async function regular(root, path) {
   const parts = path.split('/'); let target = root;
@@ -30,7 +30,7 @@ async function filesUnder(root, path) {
 
 /** Copies an explicit public asset set. Never reads raw packs, local state or credentials. */
 export async function buildStatic(root) {
-  const paths = ['index.html', 'styles.css', 'LICENSE', 'tests/fixtures/street-square.json', 'tests/fixtures/terrain-landforms.json', 'tests/fixtures/terrain-profiles.json', 'tests/fixtures/terrain-slopes.json', 'tests/fixtures/terrain-hill.json', ...await filesUnder(root, 'src')].sort();
+  const paths = ['index.html', 'styles.css', 'LICENSE', 'tests/fixtures/street-square.json', 'tests/fixtures/terrain-depressions.json', 'tests/fixtures/terrain-landforms.json', 'tests/fixtures/terrain-profiles.json', 'tests/fixtures/terrain-slopes.json', 'tests/fixtures/terrain-hill.json', ...await filesUnder(root, 'src')].sort();
   const assets = new Map();
   for (const path of paths) {
     if (!allowed(path)) throw new Error(`Unexpected source asset: ${path}`);
@@ -89,7 +89,7 @@ export async function verifyStatic(root) {
     if (!Array.isArray(profile.files) || profile.files.length > 1000) throw new Error('Invalid release asset list.');
     const site = join(output, profile.directory), all = (await filesUnder(output, profile.directory)).map((path) => path.slice(profile.directory.length + 1));
     const paths = profile.files.map((file) => file.path), special = profile.directory === 'site' ? '_headers' : '.nojekyll';
-    if (JSON.stringify(all) !== JSON.stringify(paths) || paths.some((path) => !allowed(path)) || paths.includes(special === '_headers' ? '.nojekyll' : '_headers') || !['index.html', 'styles.css', 'LICENSE', 'NOTICE.txt', special, 'tests/fixtures/street-square.json', 'tests/fixtures/terrain-landforms.json', 'tests/fixtures/terrain-profiles.json', 'tests/fixtures/terrain-slopes.json', 'tests/fixtures/terrain-hill.json'].every((path) => paths.includes(path))) throw new Error('Release asset set differs from its manifest.');
+    if (JSON.stringify(all) !== JSON.stringify(paths) || paths.some((path) => !allowed(path)) || paths.includes(special === '_headers' ? '.nojekyll' : '_headers') || !['index.html', 'styles.css', 'LICENSE', 'NOTICE.txt', special, 'tests/fixtures/street-square.json', 'tests/fixtures/terrain-depressions.json', 'tests/fixtures/terrain-landforms.json', 'tests/fixtures/terrain-profiles.json', 'tests/fixtures/terrain-slopes.json', 'tests/fixtures/terrain-hill.json'].every((path) => paths.includes(path))) throw new Error('Release asset set differs from its manifest.');
     let total = 0;
     for (const file of profile.files) {
       const bytes = await regular(site, file.path); total += bytes.length;

@@ -1,6 +1,6 @@
 # Synthetic ridge and valley lessons
 
-Status: bounded synthetic interpretation questions using the shared terrain v2 envelope, scoring, storage and print pipeline. Requires `terrain-contours-v1` first and optional companions in canonical order: slopes, profiles, landforms. Earlier readers reject the unknown capability before writes. Existing pack revisions and database/backup envelopes are unchanged.
+Status: bounded synthetic interpretation questions using the shared terrain v2 envelope, scoring, storage and print pipeline. Requires `terrain-contours-v1` first and optional companions in canonical order: slopes, profiles, landforms, depressions. Earlier readers reject the unknown capability before writes. Existing pack revisions and database/backup envelopes are unchanged.
 
 ## Supported question
 

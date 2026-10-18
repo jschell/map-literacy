@@ -1,3 +1,4 @@
+import { buildTerrainDepressionFixture } from './terrain-depression-fixture.js';
 import { buildTerrainLandformFixture } from './terrain-landform-fixture.js';
 import { buildTerrainLessonFixture, buildTerrainSlopeFixture, buildTerrainProfileFixture } from './terrain-lesson-fixture.js';
 import { buildTerrainFixtures } from './terrain-fixtures.js';
@@ -85,7 +86,7 @@ export function buildFixtures() {
       { id: 'rollback', expected: 'No partial backup import', implementedIn: '05' },
     ],
   };
-  return { 'terrain-landforms.json': JSON.stringify(buildTerrainLandformFixture(),null,2)+'\n', 'terrain-profiles.json': JSON.stringify(buildTerrainProfileFixture(),null,2)+'\n', 'terrain-slopes.json': JSON.stringify(buildTerrainSlopeFixture(),null,2)+'\n', 'terrain-hill.json': JSON.stringify(buildTerrainLessonFixture(),null,2)+'\n', ...buildTerrainFixtures(), 'synthetic-source.json': rawBytes, 'street-square.json': JSON.stringify(base, null, 2) + '\n', 'packs.json': JSON.stringify(packs, null, 2) + '\n', 'expected.json': JSON.stringify(expected, null, 2) + '\n' };
+  return { 'terrain-depressions.json': JSON.stringify(buildTerrainDepressionFixture(),null,2)+'\n', 'terrain-landforms.json': JSON.stringify(buildTerrainLandformFixture(),null,2)+'\n', 'terrain-profiles.json': JSON.stringify(buildTerrainProfileFixture(),null,2)+'\n', 'terrain-slopes.json': JSON.stringify(buildTerrainSlopeFixture(),null,2)+'\n', 'terrain-hill.json': JSON.stringify(buildTerrainLessonFixture(),null,2)+'\n', ...buildTerrainFixtures(), 'synthetic-source.json': rawBytes, 'street-square.json': JSON.stringify(base, null, 2) + '\n', 'packs.json': JSON.stringify(packs, null, 2) + '\n', 'expected.json': JSON.stringify(expected, null, 2) + '\n' };
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {

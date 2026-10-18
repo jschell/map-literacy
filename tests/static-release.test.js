@@ -15,7 +15,7 @@ async function fixture(t) {
   const assets = {
     'index.html': '<!doctype html>\n<head>\n  <meta charset="utf-8">\n<script type="module" src="src/ui/app.js"></script></head>',
     'styles.css': 'body { color: black; }', 'LICENSE': 'MIT fixture',
-    'src/ui/app.js': 'export const loaded = true;', 'tests/fixtures/street-square.json': '{}', 'tests/fixtures/terrain-hill.json': '{}', 'tests/fixtures/terrain-slopes.json': '{}', 'tests/fixtures/terrain-landforms.json': '{}', 'tests/fixtures/terrain-profiles.json': '{}',
+    'src/ui/app.js': 'export const loaded = true;', 'tests/fixtures/street-square.json': '{}', 'tests/fixtures/terrain-hill.json': '{}', 'tests/fixtures/terrain-slopes.json': '{}', 'tests/fixtures/terrain-depressions.json': '{}', 'tests/fixtures/terrain-landforms.json': '{}', 'tests/fixtures/terrain-profiles.json': '{}',
     'data/raw/home.json': 'excluded raw data', '.env': 'excluded configuration', 'node_modules/index.js': 'excluded dependency'
   };
   for (const [path, content] of Object.entries(assets)) await writeFile(join(root, path), content);

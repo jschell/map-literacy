@@ -46,6 +46,11 @@ export function renderMap(doc, model, { selectedId = null, headingDeg = null, ro
       hit.addEventListener('click', () => onSelect(item.id)); group.append(hit);
     }
   }
+  if(model.depressionTicks?.length) {
+    const marks=element(doc,'g',{class:'depression-hachures','pointer-events':'none','clip-path':`url(#${clipId})`});
+    for(const t of model.depressionTicks)marks.append(element(doc,'path',{d:`M${model.convert(t.from).join(',')} L${model.convert(t.to).join(',')}`,class:'depression-tick',fill:'none',stroke:'black','stroke-width':model.paper?.22:1.5}));
+    svg.append(marks);
+  }
   if (route) {
     const overlay = element(doc, 'g', { class: 'route-overlay', 'clip-path': `url(#${clipId})`, 'pointer-events': 'none' });
     for (const edge of route.edges) {
@@ -131,7 +136,7 @@ export function renderMap(doc, model, { selectedId = null, headingDeg = null, ro
       legend.append(element(doc,'path',{d:`M${x+2*u},${cy} h${8*u}`,fill:'none',stroke:'black','stroke-width':(index?.5:.22)*u}));
       legend.append(element(doc,'text',{x:x+12*u,y:cy+u,'font-size':3*u,fill:'black'},index?`Index: every ${model.contourIntervalM*5} m`:`Interval: ${model.contourIntervalM} m`));
     }
-    legend.append(element(doc,'text',{x:x+2*u,y:y+15*u,'font-size':3*u,fill:'black'},'Synthetic zero; no hachures'));svg.append(legend);
+    legend.append(element(doc,'text',{x:x+2*u,y:y+15*u,'font-size':3*u,fill:'black'},model.depressionTicks?.length?'Inward ticks: lower inside':'Synthetic zero; no hachures'));svg.append(legend);
   }
   if (contours) {
     svg.append(element(doc, 'rect', { x: model.paper ? 2 : 8, y: model.paper ? 1 : 2, width: model.paper ? 55 : 210, height: model.paper ? 6 : 20, class: 'terrain-note-background' }));
