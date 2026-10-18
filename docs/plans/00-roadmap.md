@@ -1,6 +1,6 @@
 # Plan 00 — Roadmap
 
-Status: reference, reconciled 2026-10-17 through merged PR 45. GitHub Pages is deployed; the user accepted the B&W print workflow. Street scoring, sessions, persistence and recovery are implemented. Current implementation is Plan 08 contour topology and terrain integration; reviewed learning materials, learning evidence and remaining device/accessibility acceptance are still open.
+Status: reference, reprioritized 2026-10-18 after PR 58. Plan 02 is active for one bounded reviewed neighborhood sequence. Existing street and synthetic terrain software is sufficient for initial material evaluation; Plan 08 returns to the queue with its acceptance gaps retained. Printing is usable in the user-reported workflow; independent material review and observed transfer remain open.
 
 ## Milestones
 
@@ -25,3 +25,10 @@ Keep source hashes/queries/version and attribution; deterministic fixtures; revi
 
 Each plan records actual changes, validation and unresolved acceptance items. Use one focused PR per coherent work package or substantial slice; fix related issues together. Preserve open decisions rather than declaring implementation-ready based on prose alone.
 
+
+
+## Authorized priority correction — 2026-10-18
+
+The user approved returning from terrain feature expansion to practical map literacy. Execute in order: (1) verify the merged depression release; (2) prepare one reproducible neighborhood pack and matched instructor/learner sequence under Plan 02; (3) complete five equivalent eight-item synthetic sets under Plan 06; (4) resolve targeted material/device checks and coordinate actual observations; (5) use the existing revise/continue/pause criteria before further expansion. See [learning sequence and evidence ledger](../learning-sequence.md).
+
+Do not implement more terrain capabilities, directions simulation or address scoring merely because their plans contain unchecked items. A concrete learner/material problem can justify a focused fix. Blocked independent review or participation is a recorded boundary, not permission to replace learning evidence with more code.
