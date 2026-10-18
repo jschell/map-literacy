@@ -1,0 +1,124 @@
+{
+  "status": "technical draft; independent review pending",
+  "set": "E",
+  "packSha256": "838c7b5819d178ea41234037976c05df17cb589e877379b08f9ff31ab76c5e56",
+  "answers": [
+    {
+      "id": "heading-1",
+      "type": "heading",
+      "rubric": {
+        "expectedDeg": 130.6012946441283,
+        "toleranceDeg": 15
+      }
+    },
+    {
+      "id": "heading-2",
+      "type": "heading",
+      "rubric": {
+        "expectedDeg": 298.886581775506,
+        "toleranceDeg": 15
+      }
+    },
+    {
+      "id": "endpoint-1",
+      "type": "endpoint",
+      "rubric": {
+        "expected": [
+          0.0010117354092817076,
+          0.000944286381861692
+        ],
+        "toleranceM": 8
+      }
+    },
+    {
+      "id": "endpoint-2",
+      "type": "endpoint",
+      "rubric": {
+        "expected": [
+          0.0010117354092069302,
+          0.00040469416365501086
+        ],
+        "toleranceM": 8
+      }
+    },
+    {
+      "id": "route-1",
+      "type": "route",
+      "acceptedRule": "any graph-valid route avoiding the authored closure; examples are not exhaustive",
+      "simplePathCount": 10,
+      "minimumEdges": 3,
+      "witnesses": [
+        [
+          "fg:r",
+          "ef:r",
+          "de:r"
+        ],
+        [
+          "gh:f",
+          "eh:r",
+          "de:r"
+        ]
+      ]
+    },
+    {
+      "id": "route-2",
+      "type": "route",
+      "acceptedRule": "any graph-valid route avoiding the authored closure; examples are not exhaustive",
+      "simplePathCount": 16,
+      "minimumEdges": 2,
+      "witnesses": [
+        [
+          "dj:r",
+          "bd:r"
+        ],
+        [
+          "dj:r",
+          "cd:r",
+          "bc:r"
+        ]
+      ]
+    },
+    {
+      "id": "detour-1",
+      "type": "detour",
+      "acceptedRule": "any graph-valid route avoiding the authored closure; examples are not exhaustive",
+      "simplePathCount": 8,
+      "minimumEdges": 4,
+      "witnesses": [
+        [
+          "ji:f",
+          "hi:r",
+          "eh:r",
+          "ef:f"
+        ],
+        [
+          "ji:f",
+          "hi:r",
+          "gh:r",
+          "fg:r"
+        ]
+      ]
+    },
+    {
+      "id": "detour-2",
+      "type": "detour",
+      "acceptedRule": "any graph-valid route avoiding the authored closure; examples are not exhaustive",
+      "simplePathCount": 8,
+      "minimumEdges": 4,
+      "witnesses": [
+        [
+          "bc:r",
+          "bd:f",
+          "de:f",
+          "eh:f"
+        ],
+        [
+          "bc:r",
+          "bd:f",
+          "id:r",
+          "hi:r"
+        ]
+      ]
+    }
+  ]
+}

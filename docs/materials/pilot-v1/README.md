@@ -1,4 +1,6 @@
-# Five draft street pilot sets
+# Five draft street pilot sets — retained revision 1
+
+**Superseded review candidate:** the [author desk review](../../reviews/2026-10-18-pilot-materials.md) found repeated transfer tasks. Do not use this revision as unfamiliar-transfer evidence. Use [revision 2](../pilot-v2/README.md) for the next review; original generated files and hashes remain unchanged.
 
 These are **prepared materials awaiting independent review**, not approved pilot packs or learner results. They implement the existing five-set/eight-item requirement without adding a scorer, reporting system or app feature. All packs and exercises remain draft; importing a pack supports inspection/print, while Begin lesson is disabled.
 

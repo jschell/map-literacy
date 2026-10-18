@@ -35,3 +35,5 @@ Topographic data research can occur earlier without blocking street delivery. No
 
 
 Current work order and separate implementation/content/device/learning evidence are maintained in [Learning sequence](../learning-sequence.md). Plans 03–05 acceptance work supports this sequence; Plan 06 materials follow without a new reporting subsystem.
+
+Current pilot review candidate: [revision 2](../materials/pilot-v2/README.md), with an [author desk review and unresolved concerns](../reviews/2026-10-18-pilot-materials.md). Revision 1 is retained for audit, with known transfer-task repetition. Independent approval remains pending.

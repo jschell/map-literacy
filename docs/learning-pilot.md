@@ -1,6 +1,6 @@
 # Exploratory learning pilot kit
 
-Protocol version 1 operationalizes the [initial acceptance proposal](validation/acceptance.md). **No participants, observations or learning results exist.** This kit prepares coordination and reporting. Five [candidate eight-item synthetic sets](materials/pilot-v1/README.md) are now prepared separately from the four-exercise demo. Independent content/equivalence review, recruitment and actual device/paper sessions remain pending.
+Protocol version 1 operationalizes the [initial acceptance proposal](validation/acceptance.md). **No participants, observations or learning results exist.** This kit prepares coordination and reporting. Five [candidate eight-item synthetic sets](materials/pilot-v2/README.md) are now prepared separately from the four-exercise demo. Independent content/equivalence review, recruitment and actual device/paper sessions remain pending.
 
 ## Preparation and permission
 
