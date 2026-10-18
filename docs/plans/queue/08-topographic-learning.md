@@ -1,6 +1,6 @@
 # Plan 08 — Topographic data and learning
 
-Status: active. The first synthetic contour lesson v2 capability supports import, numeric scoring, saved recovery and learner/instructor print. Reference cartography, bounded DEM preparation, connected contours and geographic draft overlays are implemented. Broader terrain instruction, real-source/answer review and device/paper acceptance remain open.
+Status: queued for acceptance; new capability expansion paused by user-approved priority correction on 2026-10-18. The first synthetic contour lesson v2 capability supports import, numeric scoring, saved recovery and learner/instructor print. Reference cartography, bounded DEM preparation, connected contours and geographic draft overlays are implemented. Broader terrain instruction, real-source/answer review and device/paper acceptance remain open.
 Dependencies: 01–05 shared foundation; source research may start earlier.
 
 ## Outcome
@@ -59,7 +59,7 @@ OSM is not a complete DEM source. USGS candidate is US-specific; global sources 
 
 Tracking reconciliation through PR 45: standalone contour output, verified raster normalization and benchmark/count limits are delivered. Geographic integration, connected topology, runtime/device budgets and terrain lesson answers are deliberately separate open tasks. The current reference-map UI does not expose numerical DEM answers.
 
-Next action: broaden reviewed synthetic terrain instruction beyond the initial contour-reading demo, complete contour cartography/ambiguity review, and evaluate the device/paper workflow. Real road/trail tie points and real terrain answers remain independent gates; keep real terrain-v1/draft sidecar payloads unsupported. Keep street-core import rejecting unsupported terrain packs until that contract is implemented.
+Next action: finish hosted PR-58 release verification, then retain terrain work in the queue while Plan 02 prepares reviewed street-learning materials. Existing synthetic terrain lessons remain available for evaluation. Further terrain instruction, real tie points/answers and device/paper acceptance require their recorded evidence; do not expand capabilities merely to close checklist items.
 
 
 First-slice verification: 155 Node tests and complete packaged Chromium browser checks pass, including both topo paper orientations, grayscale pixels, provider switch/zoom/failure recovery and street regression checks. Real default USGS imagery was replayed and visually checked in a one-page B&W landscape PDF. Safari topo and physical-paper checks remain pending.
@@ -147,3 +147,6 @@ Synthetic depression slice: a separate analytic basin pack adds inward ticks onl
 
 
 Validation for depression lessons: 223 Node tests pass; fixtures reproduce exactly, the basin pack validates and 168 local Markdown links resolve. Full packaged Chromium site/Pages checks pass with zero browser errors, including both numeric answers, lower-ground tick evidence, hill/uncertainty/nodata rejection, reversed winding and large origins, rotation, keyboard retry, hints, save/reload, invalid-import retention, backup fork and narrow reflow. Four direct and four native learner/instructor Letter documents were generated; representative learner map/question and instructor question pages plus the narrow map were rendered and visually inspected. Existing lesson, recovery, accessibility and fixed-scale PDF regressions pass. Hosted verification remains pending merge.
+
+
+2026-10-18 priority correction: PR 58 merged as 6869e8f; merge CI and automatic Pages deployment both succeeded. Hosted interactive depression checks remain pending and are the next release-verification task. Existing synthetic contour/slope/profile/landform/depression coverage is sufficient for initial material evaluation. Preserve remaining source, curriculum, device and pilot gates; defer optional hillshade, magnetic-north instruction and further capability expansion until a concrete evaluation finding justifies them. Plan 02 now owns active preparation.

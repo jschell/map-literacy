@@ -39,4 +39,7 @@ Geographic browsing is a usability prerequisite added after hosted-demo feedback
 
 Basic map viewing and printing must not depend on a lesson pack. Print this map prints the current geographic frame directly in the selected Letter orientation. Reviewed packs add learning activities, customized labels and worksheets; they are additive.
 
-USGS Topo raster browsing and direct Letter B&W/color printing are implemented separately from street lesson packs. This supplies source-drawn contours and shaded relief; numerical terrain/contour lessons remain pending. See [topographic browsing](topographic-browsing.md).
+USGS Topo raster browsing and direct Letter B&W/color printing are implemented separately from street lesson packs. This supplies source-drawn contours and shaded relief; bounded synthetic numerical contour lessons are implemented separately; reviewed real terrain lessons remain pending. See [topographic browsing](topographic-browsing.md).
+
+
+Priority correction approved 2026-10-18: return to the street-first release outcome. Plan 02 is active for one reviewed neighborhood sequence; existing terrain demos remain available while new terrain capabilities pause. See [learning sequence and evidence ledger](learning-sequence.md). Prepare controlled pilot materials using the existing protocol before expanding lesson types. Software tests, independent content review, actual paper/device use and observed transfer are separate gates.

@@ -10,7 +10,7 @@ Status: partial user-reported acceptance; formal calibration and the broader dev
 | User reported physical page fit looked good, then requested sharper B&W output | Usable physical page fit for the reported workflow | Measured horizontal/vertical scale error, printer/driver details and full orientation coverage |
 | User confirmed PR 40 merged/deployed and usable | Acceptance of the reported B&W print workflow after the quality change | Later Terrain composition, contour/label review and broader browser/device acceptance |
 
-These observations are recorded in [Plan 05](../plans/queue/05-persistence-and-browser-release.md) and [Plan 08](../plans/active/08-topographic-learning.md). They are not formal ruler measurements or complete device test records. The procedure and blank record below collect the remaining evidence.
+These observations are recorded in [Plan 05](../plans/queue/05-persistence-and-browser-release.md) and [Plan 08](../plans/queue/08-topographic-learning.md). They are not formal ruler measurements or complete device test records. The procedure and blank record below collect the remaining evidence.
 
 ## Physical calibration
 

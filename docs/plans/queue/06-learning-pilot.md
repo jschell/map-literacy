@@ -34,3 +34,10 @@ Prepared the [pilot kit](../../learning-pilot.md), blank observation template an
 Validation: invented software-test observations verify blank/no-result behavior, missing/late follow-up, actual zero versus null metrics, explicit denominators, revision gates, invalid/duplicate records, unequal exposure and small-cohort limits. No participant results are stored in the repository. The current four-exercise demo is not the required five-set/eight-item material.
 
 Next action: prepare/review five equivalent synthetic packs and matched Letter sheets before recruitment; coordinate permissions, devices and observations when available. Material approval and all learning/transfer/retention acceptance remain pending. A reporting-tool test pass does not authorize expanding lesson types.
+
+
+## Authorized preparation after priority correction
+
+Prepare five distinct, equivalently reviewed eight-item sets (two each heading, endpoint, route and detour) and matched learner/instructor Letter sheets using existing contracts. Record pack bytes/hash/revision, item skill, answer rationale, accepted alternatives, difficulty/clue differences and review status. Use the existing protocol and blank capture tool; do not build another dashboard or change predeclared thresholds after seeing outcomes. This preparation follows the Plan 02 sequence and can continue while external neighborhood review is unavailable.
+
+Run a coordinator walkthrough before recruitment: confirm every question can be solved from its supplied map, label variants retain necessary clues, answer sheets remain separate, and learner assistance is observable. An internal walkthrough identifies usability issues but supplies no participant or transfer results. Actual permissions, participation and delayed follow-up require user coordination. Report pending gates explicitly and pause expansion rather than inventing evidence.
