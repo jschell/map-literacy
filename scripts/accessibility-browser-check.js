@@ -84,17 +84,19 @@ export async function checkAccessibility(page, base) {
     await page.evaluate(() => { IDBDatabase.prototype.transaction = window.keyboardOriginalTransaction; window.releaseKeyboardSave(); });
     await saved(); await focused('feature-filter'); // Finishing an old save must not steal focus.
     await submit('Correct.', 'lesson-next');
-    await page.keyboard.press('Enter'); await saved(); await focused('answer-lon');
-    await submit('Enter a valid answer', 'answer-lon');
-    await type('answer-lon', '0'); await type('answer-lat', '0'); await submit('Correct.', 'lesson-next');
-    await page.keyboard.press('Enter'); await saved(); await focused('trace-start');
-    await choose('trace-start', 'A');
+    await page.keyboard.press('Enter'); await saved(); await focused('endpoint-reference');
+    await submit('Enter a valid answer', 'endpoint-reference');
+    await choose('endpoint-reference', 'A'); await submit('Correct.', 'lesson-next');
+    await page.keyboard.press('Enter'); await saved(); await focused('trace-edge');
+    assert.equal(await page.locator('#trace-start').inputValue(), 'A');
     for (const edge of ['AB', 'BC']) { await choose('trace-edge', edge); await activate('trace-add'); }
     await submit('Correct.', 'lesson-next');
-    await page.keyboard.press('Enter'); await saved(); await focused('trace-start');
+    await page.keyboard.press('Enter'); await saved(); await focused('trace-edge');
+    assert.equal(await page.locator('#trace-steps li').count(), 0);
+    for (const edge of ['AB', 'BC']) { await choose('trace-edge', edge); await activate('trace-add'); }
     await submit('Try again.', 'lesson-retry');
     assert.ok((await page.locator('#lesson-status').textContent()).includes('closed edge'));
-    await page.keyboard.press('Enter'); await saved(); await focused('trace-start');
+    await page.keyboard.press('Enter'); await saved(); await focused('trace-edge');
     await activate('trace-clear');
     for (const edge of ['AD', 'DC']) { await choose('trace-edge', edge); await activate('trace-add'); }
     await submit('Correct.', 'lesson-next');
@@ -120,6 +122,7 @@ export async function checkAccessibility(page, base) {
       const bounds = await page.locator('#lesson-export').boundingBox();
       assert.ok(bounds.x >= 0 && bounds.x + bounds.width <= width + 1, 'focused action fits viewport');
     }
+    await choose('trace-start', 'A'); await choose('trace-edge', 'AB'); await activate('trace-add');
     await page.emulateMedia({ forcedColors: 'active' }); await reach('trace-clear');
     assert.equal(await page.evaluate(() => matchMedia('(forced-colors: active)').matches), true);
     return { keyboardExercises: 4, retryAndHint: 'passed', namedControlsAndRegions: 'passed', focusAfterSave: 'passed', noDelayedFocusSteal: 'passed', keyboardBackup: 'passed', keyboardPreferencesAndPrint: 'passed', reflowWidths: [640, 320], forcedColorsFocus: 'passed' };

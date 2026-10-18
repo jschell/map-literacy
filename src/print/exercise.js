@@ -1,3 +1,4 @@
+import { exerciseAnnotations } from '../lesson/annotations.js';
 import { deriveLandform } from '../terrain/landforms.js';
 import { contourLevel, terrainExerciseAnnotations, slopeComparison, deriveLessonProfile, profileAnswer } from '../terrain/lesson-pack.js';
 import { validatePack } from '../data/validate-pack.js';
@@ -58,7 +59,7 @@ export function createExercisePrint(pack, exerciseId, audience) {
     markers.push({ coordinate: nodes.get(rubric.startNodeId).coordinate, text: 'S' });
     if (rubric.startNodeId !== rubric.endNodeId) markers.push({ coordinate: nodes.get(rubric.endNodeId).coordinate, text: 'E' });
     else markers[0].text = 'S/E';
-    add(`S = start node ${rubric.startNodeId}; E = end node ${rubric.endNodeId}. Mode: ${rubric.mode === 'drive' ? 'driving' : 'walking'}.`);
+    add(`Start = reference ${rubric.startNodeId}; End = reference ${rubric.endNodeId}. Mode: ${rubric.mode === 'drive' ? 'driving' : 'walking'}.`);
     if (rubric.objective === 'max-distance') add(`Maximum allowed route distance: ${rubric.maxDistanceM} m.`);
     if (exercise.scenario) {
       add(`Exercise-only closure: ${exercise.scenario.label}`);
@@ -70,7 +71,7 @@ export function createExercisePrint(pack, exerciseId, audience) {
       }
     }
     if (instructor) {
-      add('Accept any connected directed path from S to E that matches the mode and allowed access, obeys turn-sequence restrictions and avoids the exercise closures. Apply the stated distance limit when present. There is no single exact-match route answer.', 'answer');
+      add('Accept any connected directed path from Start to End that matches the mode and allowed access, obeys turn-sequence restrictions and avoids the exercise closures. Apply the stated distance limit when present. There is no single exact-match route answer.', 'answer');
       add('Unknown access, unresolved restrictions or excluded geometry need manual review; do not mark them correct from the drawing alone. No sample route is automatically approved or generated.');
       if (rubric.startNodeId === rubric.endNodeId) add('An empty path may be valid when start equals end and no positive-distance requirement applies.', 'answer');
     } else add('Draw your route on the map and explain the road connections and your choices.');
@@ -91,7 +92,7 @@ export function createExercisePrint(pack, exerciseId, audience) {
   if (blocks.reduce((sum, b) => sum + b.text.length, 0) > 100000) throw new Error('Exercise print text exceeds the layout limit; use a smaller source/lesson selection.');
   const inside = ([lon, lat]) => lon >= pack.bounds[0] && lon <= pack.bounds[2] && lat >= pack.bounds[1] && lat <= pack.bounds[3];
   if ((exercise.type === 'endpoint' && !inside(rubric.expected)) || !markers.every((m) => inside(m.coordinate)) || !closedEdges.every((e) => e.shape.every(inside))) throw new Error('Exercise endpoints or closures leave this print extent; choose a suitable lesson extent.');
-  return { kind, exerciseId, audience, draft, blocks, profile, annotations: slopeAnnotations ?? { markers, closedEdges }, headingDeg,
+  return { kind, exerciseId, audience, draft, blocks, profile, annotations: slopeAnnotations ?? (() => { const shared = exerciseAnnotations(pack,exercise,instructor); return { ...shared, markers: [...shared.markers, ...markers.filter(m => exercise.type === 'endpoint')] }; })(), headingDeg,
     title: `${kind} — ${exerciseName}${draft ? ' — UNREVIEWED DRAFT' : ''}`,
     summary: exercise.type === 'terrain-form' ? 'Classify landform A. H is higher; L is lower along the marked axis. Questions and source credits follow the map.' : exercise.type === 'profile-value' ? 'Synthetic transect from S to E. The elevation profile, question and source credits follow the map.' : exercise.type === 'relative-slope' ? `Synthetic terrain. A and B each span ${pack.terrain.intervalM} m of elevation change. Compare distances between the end ticks. Questions and source credits follow the map.` : exercise.type === 'contour-elevation' ? `Synthetic terrain; ${pack.capabilities.includes('terrain-depressions-v1')?'elevations decrease inward; inward ticks mark the lower side':'elevation increases toward the center'}. Contour interval: ${pack.terrain.intervalM} m. Questions${instructor ? ' and answer criteria' : ''} and source credits follow the map.` : `${exercise.type} · Questions${instructor ? ' and answer criteria' : ''} and source credits follow the map.` };
 }

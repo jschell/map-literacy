@@ -1,3 +1,4 @@
+import { checkPracticeWorkspace } from './practice-workspace-browser-check.js';
 import { checkTerrainDepressions } from './terrain-depressions-browser-check.js';
 import { checkTerrainLandforms } from './terrain-landforms-browser-check.js';
 import { checkTerrainProfileLessons } from './terrain-profile-lessons-browser-check.js';
@@ -127,14 +128,16 @@ try {
   await page.locator('#lesson-next').click();
   await page.locator('#lesson-submit').click();
   assert.ok((await page.locator('#lesson-status').textContent()).startsWith('Enter a valid answer'));
-  await page.locator('#answer-lon').fill('0'); await page.locator('#answer-lat').fill('0');
+  await page.locator('#endpoint-reference').selectOption('A');
   await page.locator('#lesson-submit').click(); await page.locator('#lesson-next').click();
-  await page.locator('#trace-start').selectOption('A');
+  assert.equal(await page.locator('#trace-start').inputValue(), 'A');
   for (const id of ['AB', 'BC']) { await page.locator('#trace-edge').selectOption(id); await page.locator('#trace-add').click(); }
   await page.locator('#lesson-submit').click();
   assert.ok((await page.locator('#lesson-status').textContent()).startsWith('Correct.'));
   await page.locator('#lesson-next').click();
   assert.ok((await page.locator('#lesson-route').textContent()).includes('Closed directed edges: BC'));
+  assert.equal(await page.locator('#trace-steps li').count(), 0, 'new question discards previous trace');
+  for (const id of ['AB', 'BC']) { await page.locator('#trace-edge').selectOption(id); await page.locator('#trace-add').click(); }
   await page.locator('#lesson-submit').click();
   assert.ok((await page.locator('#lesson-status').textContent()).includes('closed edge'));
   await page.locator('#lesson-retry').click(); await page.locator('#trace-clear').click();
@@ -364,7 +367,7 @@ try {
           assert.equal(await page.locator('#exercise-pages .sheet-answer, #exercise-pages .sheet-hint').count(), 0);
           assert.equal(await page.locator('#exercise-pages .sheet-answer-space').count(), 1);
         }
-        if (exercise === 'endpoint') assert.equal(await page.locator('#paper-map .exercise-mark').count(), audience === 'instructor' ? 1 : 0);
+        if (exercise === 'endpoint') assert.equal(await page.locator('#paper-map .exercise-mark').count(), audience === 'instructor' ? 9 : 8);
         if (exercise === 'detour') assert.equal(await page.locator('#paper-map .closure-line').count(), 2);
         await page.emulateMedia({ media: 'print' });
         assert.equal(await page.locator('#exercise-pages .exercise-page').evaluateAll((pages) => pages.every((page) => [...page.children].every((node) => node.scrollHeight <= node.clientHeight + 1))), true);
@@ -455,6 +458,7 @@ try {
     await page.emulateMedia({ media: 'screen' });
   }
   const pagesPackageChecks = process.env.MAP_LITERACY_RELEASE_CHECK === '1' ? await checkPagesPackage(page) : null;
+  const practiceWorkspaceChecks = await checkPracticeWorkspace(page,base,output);
   const terrainLessonChecks = await checkTerrainLessons(page,base,output);
   const lessonPdfChecks = await checkLessonPdf(page,base,output);
   const terrainSlopeChecks = await checkTerrainSlopes(page,base,output);
@@ -467,6 +471,12 @@ try {
   await mobile.locator('#lesson-start').tap(); await mobile.locator('#answer-heading').fill('0');
   await mobile.locator('#lesson-submit').tap();
   assert.ok((await mobile.locator('#lesson-status').textContent()).startsWith('Correct.'));
+  await mobile.locator('#lesson-next').tap();
+  const reference = mobile.locator('#map .exercise-mark').filter({hasText:/^A$/});
+  await reference.scrollIntoViewIfNeeded(); const point = await reference.boundingBox();
+  await mobile.touchscreen.tap(point.x+point.width/2,point.y+point.height/2);
+  await mobile.locator('#lesson-submit').tap();
+  assert.ok((await mobile.locator('#lesson-status').textContent()).startsWith('Correct.'), 'touch endpoint placement without coordinate entry');
   await mobile.locator('#lesson-end').tap();
   assert.equal(await mobile.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
   await mobile.locator('#trace-start').selectOption('A');
@@ -493,6 +503,6 @@ try {
   await mobile.close();
   assert.equal(sourceRejectionMessages.length, geographicChecks.sourceRejections);
   assert.deepEqual(errors, []);
-  console.log(JSON.stringify({ terrainDepressionChecks, terrainLandformChecks, terrainProfileLessonChecks, terrainSlopeChecks, lessonPdfChecks, terrainLessonChecks, terrainOverlayChecks, geographicChecks, printQuality, syntheticFeatures: 6, pagesPackageChecks, storageChecks, autosaveChecks, preferenceChecks, accessibilityChecks, memoryLessonSessions: 'passed', sessionBackupControls: 'passed', variantsAndSelection: 'passed', labelEditingAndExport: 'passed', directedTracingAndPrint: 'passed', exerciseSheetsAndPagination: 'passed', boundedSearchAndRenderLimits: 'passed', invalidImportRetainsMap: 'passed', pdfDimensions: physical, mobileOverflow: false, realPack, browserErrors: errors }));
+  console.log(JSON.stringify({ practiceWorkspaceChecks, terrainDepressionChecks, terrainLandformChecks, terrainProfileLessonChecks, terrainSlopeChecks, lessonPdfChecks, terrainLessonChecks, terrainOverlayChecks, geographicChecks, printQuality, syntheticFeatures: 6, pagesPackageChecks, storageChecks, autosaveChecks, preferenceChecks, accessibilityChecks, memoryLessonSessions: 'passed', sessionBackupControls: 'passed', variantsAndSelection: 'passed', labelEditingAndExport: 'passed', directedTracingAndPrint: 'passed', exerciseSheetsAndPagination: 'passed', boundedSearchAndRenderLimits: 'passed', invalidImportRetainsMap: 'passed', pdfDimensions: physical, mobileOverflow: false, realPack, browserErrors: errors }));
 } finally { await browser.close(); server?.kill(); }
 

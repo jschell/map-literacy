@@ -13,15 +13,17 @@ test('learner heading/endpoint sheets omit answer criteria and hints; instructor
   assert.equal(learner.headingDeg, null); assert.ok(!text(learner).includes('137'));
   assert.equal(instructor.headingDeg, 137); assert.ok(text(instructor).includes('Private hint'));
   assert.ok(text(instructor).includes('15°'));
-  assert.deepEqual(createExercisePrint(pack, 'endpoint', 'learner').annotations.markers, []);
+  assert.ok(createExercisePrint(pack, 'endpoint', 'learner').annotations.markers.every(m => m.text !== 'X'));
+  assert.equal(createExercisePrint(pack, 'endpoint', 'learner').annotations.markers.length, pack.topology.nodes.length);
   const endpoint = createExercisePrint(pack, 'endpoint', 'instructor');
-  assert.deepEqual(endpoint.annotations.markers, [{ coordinate: [0, 0], text: 'X' }]);
+  assert.deepEqual(endpoint.annotations.markers.filter(m=>m.text==='X'), [{ coordinate: [0, 0], text: 'X' }]);
   assert.ok(text(endpoint).includes('20 m'));
 });
 test('route/detour sheets use problem endpoints/closures without inventing a unique route', () => {
   const before = JSON.stringify(pack);
   const learner = createExercisePrint(pack, 'detour', 'learner');
-  assert.deepEqual(learner.annotations.markers.map((m) => m.text), ['S', 'E']);
+  assert.ok(learner.annotations.markers.some(m=>m.text==='Start A'));
+  assert.ok(learner.annotations.markers.some(m=>m.text==='End C'));
   assert.deepEqual(learner.annotations.closedEdges.map((e) => e.id), ['BC']);
   assert.equal(text(learner).includes('Closed edge BC: B → C'), false);
   const detourInstructor = createExercisePrint(pack, 'detour', 'instructor');

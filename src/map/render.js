@@ -71,8 +71,10 @@ export function renderMap(doc, model, { selectedId = null, headingDeg = null, ro
       g.append(element(doc, 'text', { x: cx, y: cy, 'text-anchor': 'middle', 'dominant-baseline': 'central', 'font-size': model.paper ? 3 : 13, fill: 'black' }, text));
       svg.append(g);
     };
-    marker(route.start, route.edges.length && route.startNodeId === route.endNodeId ? 'S/E' : 'S');
-    if (route.startNodeId !== route.endNodeId) marker(route.end, 'E');
+    if (!annotations?.routeEndpoints) {
+      marker(route.start, route.edges.length && route.startNodeId === route.endNodeId ? 'S/E' : 'S');
+      if (route.startNodeId !== route.endNodeId) marker(route.end, 'E');
+    }
   }
   for (const item of model.landmarks) group.append(element(doc, 'circle', { cx: item.point[0], cy: item.point[1], r: model.paper ? 1.2 : 5, class: 'landmark' }));
   const blockedLabels = [];
@@ -88,10 +90,10 @@ export function renderMap(doc, model, { selectedId = null, headingDeg = null, ro
     const marks = element(doc, 'g', { class: 'exercise-annotations', 'pointer-events': 'none' }); svg.append(marks);
     for (const edge of annotations.closedEdges) {
       const d = edge.shape.map((point, i) => `${i ? 'L' : 'M'}${model.convert(point).join(',')}`).join(' ');
-      marks.append(element(doc, 'path', { d, class: 'closure-line', 'stroke-width': .6, 'stroke-dasharray': '1 1', 'clip-path': `url(#${clipId})` }));
+      marks.append(element(doc, 'path', { d, class: 'closure-line', 'stroke-width': model.paper ? .6 : 3, 'stroke-dasharray': model.paper ? '1 1' : '5 5', 'clip-path': `url(#${clipId})` }));
       const i = Math.max(1, Math.floor(edge.shape.length / 2)), a = model.convert(edge.shape[i - 1]), b = model.convert(edge.shape[i]);
-      const x = a[0] + (b[0] - a[0]) / 3, y = a[1] + (b[1] - a[1]) / 3;
-      marks.append(element(doc, 'path', { d: `M${x-2},${y-2} L${x+2},${y+2} M${x-2},${y+2} L${x+2},${y-2}`, class: 'closure-line', 'stroke-width': .8 }));
+      const x = a[0] + (b[0] - a[0]) / 3, y = a[1] + (b[1] - a[1]) / 3, cross = model.paper ? 2 : 10;
+      marks.append(element(doc, 'path', { d: `M${x-cross},${y-cross} L${x+cross},${y+cross} M${x-cross},${y+cross} L${x+cross},${y-cross}`, class: 'closure-line', 'stroke-width': model.paper ? .8 : 4 }));
     }
     for(const coordinates of annotations.lines ?? []) {
       const d=coordinates.map((p,i)=>`${i?'L':'M'}${model.convert(p).join(',')}`).join(' ');

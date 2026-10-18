@@ -1,6 +1,6 @@
 # Plan 10 — Learner usability and website workflows
 
-Status: active planning; no fixes implemented by this document. Authorized 2026-10-18 after the critical website review.
+Status: active; package A implemented on a review branch, merge/deployment acceptance pending. Packages B–E remain open. Authorized 2026-10-18 after the critical website review.
 Dependencies: existing Plan 02–05 capabilities; supports their unfinished acceptance and Plan 06. Plan 02 remains queued for content/source acceptance. Plan 08 feature expansion stays paused.
 
 ## Outcome and boundaries
@@ -33,10 +33,10 @@ Keep each package a coherent PR (split only for a substantial contract or indepe
 
 ### A — Spatial answers, task annotations and the practice workspace (first)
 
-- [ ] Put prompt, map, relevant profile/chart, answer controls and feedback in one responsive workspace. On desktop keep related panels adjacent; on mobile stack them without intervening author/recovery controls. Preserve focus, autosave and usable map size; avoid sticky overlays hiding the task or mobile keyboard.
-- [ ] Add pointer/touch endpoint placement with a visible tentative answer, replace/reset and explicit submission. Provide an equivalent keyboard interaction and meaningful spatial instructions; coordinates may remain advanced details. Accessible choices must not reveal the correct answer or change what is tested.
-- [ ] Ensure each task has sufficient visible reference labels. Share street exercise annotations between screen and paper where appropriate: route start/end and authored closures, with synthetic changes distinguished from source geometry. Do not display the correct endpoint or instructor answers on learner views.
-- [ ] Set trace start/end/mode from the task with clear map interaction and keyboard alternatives. Define when traces reset or are explicitly retained between items; prevent accidental stale submission. Explain when a retained route already avoids a closure rather than forcing an unnecessary different route.
+- [x] Put prompt, map, relevant profile/chart, answer controls and feedback in one responsive workspace. On desktop keep related panels adjacent; on mobile stack them without intervening author/recovery controls. Preserve focus, autosave and usable map size; avoid sticky overlays hiding the task or mobile keyboard.
+- [x] Add pointer/touch endpoint placement with a visible tentative answer, replace/reset and explicit submission. Provide an equivalent keyboard interaction and meaningful spatial instructions; coordinates may remain advanced details. Accessible choices must not reveal the correct answer or change what is tested.
+- [x] Ensure each task has sufficient visible reference labels. Share street exercise annotations between screen and paper where appropriate: route start/end and authored closures, with synthetic changes distinguished from source geometry. Do not display the correct endpoint or instructor answers on learner views.
+- [x] Set trace start/end/mode from the task with clear map interaction and keyboard alternatives. Define when traces reset or are explicitly retained between items; prevent accidental stale submission. Explain when a retained route already avoids a closure rather than forcing an unnecessary different route.
 
 Acceptance: a first-time user can locate a referenced point without typing coordinates, see a closure before tracing, construct an accepted route and revise an answer. Run these tasks with pointer and keyboard at desktop/mobile widths, including rotated maps and profile lessons. Confirm letter references and closure identities agree on screen and learner paper, and that answer keys stay hidden. Source connectivity, access rules and scoring tolerances remain unchanged.
 
@@ -86,4 +86,13 @@ Completion requires A–D outcomes demonstrated and E evidence recorded, with ma
 
 ## Next action
 
-After this planning PR is merged and verified, implement package A as the first focused correction. Capture a before/after walkthrough of endpoint, route/detour and profile practice. Resolve the persistence contract decision at the start of B; do not postpone compatibility until after changing saved records.
+Package A is prepared for review; verify it after merge, then implement package B. Capture a before/after walkthrough of endpoint, route/detour and profile practice. Resolve the persistence contract decision at the start of B; do not postpone compatibility until after changing saved records.
+
+
+## Package A execution record — 2026-10-18
+
+Implemented responsive map/chart/answer placement, tentative pointer and keyboard endpoint answers, bounded searchable reference selection, shared screen/paper street references and scenario closures, automatic task start/mode and fresh traces for new questions. Retry keeps an editable route; Reset clears it. Task destination marks stay distinct from the trace's current endpoint. Existing topology, tolerances, storage schema and draft-review gates are unchanged. See [practice guidance](../../practice-workspace.md).
+
+Author checks include known-answer annotation/answer-isolation tests and task-based browser placement, rotation, retry/reset, route-context and responsive-layout walkthroughs. The full release suite and final evidence are recorded in the PR. Independent screen-reader, physical touch/Safari and curriculum/learner observations remain pending; simulated browser touch does not close those gates.
+
+After package A merges: verify CI, Pages deployment and hosted endpoint/detour/profile behavior, then implement B, beginning with its lifecycle/coverage compatibility decision. C–E are not delivered by this slice.
