@@ -161,3 +161,8 @@ B&W fidelity follow-up (2026-10-15): the user accepted physical page fit and req
 
 2026-10-16 Terrain usability correction: the supplied one-page export was missing expected street context because the source selection included only highways/trails. Default Terrain to streets/trails with local/connecting roads and names, retaining sparse highways as a choice. Keep the existing Letter geometry, lossless B&W/color output, native invocation and additive contour metadata. Resume elevation-grid work after this focused correction is reviewed.
 
+
+
+### Automatic Pages publication (2026-10-18)
+
+The user requested automatic site updates after PR merges. The Pages workflow now triggers on pushes to main while retaining manual recovery, exact-revision release gates, least-privilege permissions and serialized deployments. Superseded revisions are skipped before publication; successful runs record their commit and site URL in the Actions summary. This supersedes the historical manual-only setup above. First automatic hosted publication requires this change to merge; application/device acceptance gates remain open. See [deployment behavior and progress](../../static-deployment.md#automatic-github-pages-updates).
