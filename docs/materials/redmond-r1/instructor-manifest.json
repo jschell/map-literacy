@@ -1,0 +1,96 @@
+{
+  "status": "draft",
+  "packId": "redmond-cleveland-brown-draft",
+  "revision": 1,
+  "packSha256": "f94c397a77dac73635681e39da7d2cc08d7067b5a3961965e9e7fc2b9a1f8bca",
+  "checkpointFiles": {
+    "source.osm.json": "103fa2e3a00e1c178393314137ea3f9f96e3c1545a8f294c8fd0301bb9ae7564",
+    "pack.json": "88a97e78335faf1419ecb7fd1035d2347f06a23f15343fa24daa1f5784937302",
+    "acquisition.json": "7f3dbf35b8b9078b3b80fca7d99ded0a43ca98e83c48353c8f76d4e05253344e",
+    "review-report.json": "8887a05783903585e278686b4d71e4268bd56b35ec3d67a59cc9ca1c8db7608c"
+  },
+  "sourceAt": "2026-10-13T01:22:16.000Z",
+  "recipe": {
+    "version": 1,
+    "focusBounds": [
+      -122.1263,
+      47.67345,
+      -122.1246,
+      47.67465
+    ],
+    "wayIds": [
+      "way:6379332",
+      "way:6442223",
+      "way:6501235",
+      "way:428044625",
+      "way:1300842594",
+      "way:1300842595",
+      "way:1300842596",
+      "way:1301688983"
+    ],
+    "markerNodes": {
+      "A": 2459700408,
+      "B": 53196765,
+      "C": 12048793289,
+      "D": 53196764
+    },
+    "labelPolicy": "Authored abbreviations and A–D map references; partial retains required clues; blank is reconstruction only.",
+    "routePolicy": "Unknown access/partial topology retained; no scored route/detour or independent approval."
+  },
+  "counts": {
+    "roadFeatures": 8,
+    "referenceMarkers": 4,
+    "nodes": 31,
+    "edges": 60,
+    "unknownAccessEdges": 60,
+    "exercises": 4
+  },
+  "review": {
+    "technicalSourceReplay": "passed",
+    "independentContent": "pending",
+    "routeAccessRestrictions": "pending",
+    "paperDevice": "pending",
+    "learnerTransfer": "pending"
+  },
+  "answers": [
+    {
+      "id": "orient-ac",
+      "type": "heading",
+      "rubric": {
+        "expectedDeg": 18.948898601364988,
+        "toleranceDeg": 15
+      }
+    },
+    {
+      "id": "orient-ab",
+      "type": "heading",
+      "rubric": {
+        "expectedDeg": 111.03185854483058,
+        "toleranceDeg": 15
+      }
+    },
+    {
+      "id": "locate-b",
+      "type": "endpoint",
+      "rubric": {
+        "expected": [
+          -122.1249941,
+          47.6738799
+        ],
+        "toleranceM": 10
+      }
+    },
+    {
+      "id": "locate-a",
+      "type": "endpoint",
+      "rubric": {
+        "expected": [
+          -122.1258697,
+          47.6741066
+        ],
+        "toleranceM": 10
+      }
+    }
+  ],
+  "note": "Instructor/technical manifest contains answers. Do not distribute with learner sheets. Source observations are from 2026-10-13, not current field verification."
+}

@@ -1,0 +1,2307 @@
+{
+  "schemaVersion": 1,
+  "id": "redmond-cleveland-brown-draft",
+  "title": "Redmond — orient and locate (draft)",
+  "revision": 1,
+  "module": "street",
+  "capabilities": [
+    "street-core"
+  ],
+  "review": {
+    "status": "draft",
+    "reviewedAt": null,
+    "note": "Source-backed material draft. Independent content, route/access/restriction, device and learner review pending. Reference markers are authored map points, not physical landmarks."
+  },
+  "bounds": [
+    -122.1263,
+    47.67345,
+    -122.1246,
+    47.67465
+  ],
+  "sourceBounds": [
+    -122.129,
+    47.67,
+    -122.121,
+    47.677
+  ],
+  "sources": [
+    {
+      "id": "osm-source",
+      "kind": "osm",
+      "url": "https://overpass-api.de/api/interpreter",
+      "query": "[out:json][timeout:25][maxsize:33554432];\nway[highway](47.67,-122.129,47.677,-122.121)->.roads;\nrel(bw.roads)[type=restriction]->.turns;\n(.roads;.turns;);\n(._; >>;);\nout meta;\n",
+      "fetchedAt": "2026-10-13T01:23:50.930Z",
+      "sourceAt": "2026-10-13T01:22:16.000Z",
+      "version": "Overpass API 0.7.62.11 87bfad18",
+      "sha256": "103fa2e3a00e1c178393314137ea3f9f96e3c1545a8f294c8fd0301bb9ae7564",
+      "license": "ODbL-1.0",
+      "attribution": "© OpenStreetMap contributors — https://www.openstreetmap.org/copyright",
+      "transforms": [
+        {
+          "name": "prepare-osm",
+          "version": "1",
+          "parameters": {
+            "sourceFile": "source.osm.json",
+            "reportFile": "review-report.json",
+            "mode": "drive",
+            "accessPolicy": "unknown-until-reviewed"
+          }
+        },
+        {
+          "name": "prepare-redmond-materials",
+          "version": "1",
+          "parameters": {
+            "version": 1,
+            "focusBounds": [
+              -122.1263,
+              47.67345,
+              -122.1246,
+              47.67465
+            ],
+            "wayIds": [
+              "way:6379332",
+              "way:6442223",
+              "way:6501235",
+              "way:428044625",
+              "way:1300842594",
+              "way:1300842595",
+              "way:1300842596",
+              "way:1301688983"
+            ],
+            "markerNodes": {
+              "A": 2459700408,
+              "B": 53196765,
+              "C": 12048793289,
+              "D": 53196764
+            },
+            "labelPolicy": "Authored abbreviations and A–D map references; partial retains required clues; blank is reconstruction only.",
+            "routePolicy": "Unknown access/partial topology retained; no scored route/detour or independent approval."
+          }
+        }
+      ]
+    }
+  ],
+  "features": {
+    "type": "FeatureCollection",
+    "features": [
+      {
+        "type": "Feature",
+        "id": "way:6379332",
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -122.1263681,
+              47.6731997
+            ],
+            [
+              -122.1263062,
+              47.6733182
+            ],
+            [
+              -122.1261053,
+              47.6736777
+            ]
+          ]
+        },
+        "properties": {
+          "sourceId": "osm-source",
+          "role": "road",
+          "name": "161st Avenue Northeast",
+          "tags": {
+            "bicycle": "designated",
+            "cycleway": "lane",
+            "highway": "tertiary",
+            "lanes": "3",
+            "maxspeed": "25 mph",
+            "name": "161st Avenue Northeast",
+            "sidewalk:both": "separate",
+            "surface": "asphalt",
+            "turn:lanes:backward": "left|right"
+          }
+        }
+      },
+      {
+        "type": "Feature",
+        "id": "way:6442223",
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -122.1251796,
+              47.6735245
+            ],
+            [
+              -122.1251682,
+              47.6735464
+            ],
+            [
+              -122.1251445,
+              47.673592
+            ],
+            [
+              -122.1250388,
+              47.6737946
+            ],
+            [
+              -122.125029,
+              47.6738125
+            ],
+            [
+              -122.1249941,
+              47.6738799
+            ]
+          ]
+        },
+        "properties": {
+          "sourceId": "osm-source",
+          "role": "road",
+          "name": "Brown Street",
+          "tags": {
+            "highway": "residential",
+            "lane_markings": "no",
+            "lit": "yes",
+            "maxspeed": "25 mph",
+            "name": "Brown Street",
+            "surface": "concrete"
+          }
+        }
+      },
+      {
+        "type": "Feature",
+        "id": "way:6501235",
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -122.1258697,
+              47.6741066
+            ],
+            [
+              -122.1257595,
+              47.6740743
+            ],
+            [
+              -122.1249941,
+              47.6738799
+            ],
+            [
+              -122.1248485,
+              47.6738444
+            ],
+            [
+              -122.1241951,
+              47.6736867
+            ],
+            [
+              -122.1238937,
+              47.6736135
+            ],
+            [
+              -122.123775,
+              47.6735847
+            ],
+            [
+              -122.1236979,
+              47.6735662
+            ],
+            [
+              -122.123624,
+              47.6735483
+            ],
+            [
+              -122.1232638,
+              47.6734581
+            ],
+            [
+              -122.1231537,
+              47.6734296
+            ]
+          ]
+        },
+        "properties": {
+          "sourceId": "osm-source",
+          "role": "road",
+          "name": "Cleveland Street",
+          "tags": {
+            "highway": "secondary",
+            "lanes": "2",
+            "maxspeed": "25 mph",
+            "name": "Cleveland Street",
+            "old_ref": "SR 908",
+            "oneway": "no",
+            "sidewalk:both": "separate",
+            "surface": "concrete"
+          }
+        }
+      },
+      {
+        "type": "Feature",
+        "id": "way:428044625",
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -122.1261881,
+              47.6742502
+            ],
+            [
+              -122.1261461,
+              47.6742262
+            ],
+            [
+              -122.125994,
+              47.6741517
+            ],
+            [
+              -122.1258697,
+              47.6741066
+            ]
+          ]
+        },
+        "properties": {
+          "sourceId": "osm-source",
+          "role": "road",
+          "name": "Cleveland Street",
+          "tags": {
+            "highway": "secondary",
+            "lanes": "2",
+            "maxspeed": "25 mph",
+            "name": "Cleveland Street",
+            "old_ref": "SR 908",
+            "oneway": "no",
+            "sidewalk:both": "separate",
+            "surface": "concrete",
+            "turn:lanes": "left;through|through;right"
+          }
+        }
+      },
+      {
+        "type": "Feature",
+        "id": "way:1300842594",
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -122.1256841,
+              47.6744706
+            ],
+            [
+              -122.1255971,
+              47.6746442
+            ],
+            [
+              -122.125574,
+              47.6747442
+            ],
+            [
+              -122.1255608,
+              47.6748552
+            ]
+          ]
+        },
+        "properties": {
+          "sourceId": "osm-source",
+          "role": "road",
+          "name": "161st Avenue Northeast",
+          "tags": {
+            "bicycle": "designated",
+            "cycleway": "lane",
+            "highway": "tertiary",
+            "lanes": "3",
+            "maxspeed": "25 mph",
+            "name": "161st Avenue Northeast",
+            "sidewalk:both": "separate",
+            "surface": "asphalt",
+            "turn:lanes:forward": "left|through;right"
+          }
+        }
+      },
+      {
+        "type": "Feature",
+        "id": "way:1300842595",
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -122.1261053,
+              47.6736777
+            ],
+            [
+              -122.1259024,
+              47.6740444
+            ],
+            [
+              -122.1258697,
+              47.6741066
+            ]
+          ]
+        },
+        "properties": {
+          "sourceId": "osm-source",
+          "role": "road",
+          "name": "161st Avenue Northeast",
+          "tags": {
+            "bicycle": "designated",
+            "cycleway": "lane",
+            "highway": "tertiary",
+            "lanes": "2",
+            "maxspeed": "25 mph",
+            "name": "161st Avenue Northeast",
+            "sidewalk:both": "separate",
+            "surface": "asphalt",
+            "turn:lanes:forward": "left;through;right"
+          }
+        }
+      },
+      {
+        "type": "Feature",
+        "id": "way:1300842596",
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -122.1258697,
+              47.6741066
+            ],
+            [
+              -122.1258324,
+              47.6741764
+            ],
+            [
+              -122.1256841,
+              47.6744706
+            ]
+          ]
+        },
+        "properties": {
+          "sourceId": "osm-source",
+          "role": "road",
+          "name": "161st Avenue Northeast",
+          "tags": {
+            "bicycle": "designated",
+            "cycleway": "lane",
+            "highway": "tertiary",
+            "lanes": "3",
+            "maxspeed": "25 mph",
+            "name": "161st Avenue Northeast",
+            "sidewalk:both": "separate",
+            "surface": "asphalt",
+            "turn:lanes:backward": "left|through;right"
+          }
+        }
+      },
+      {
+        "type": "Feature",
+        "id": "way:1301688983",
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -122.1263968,
+              47.6743773
+            ],
+            [
+              -122.1263724,
+              47.6743615
+            ],
+            [
+              -122.1262881,
+              47.6743072
+            ],
+            [
+              -122.1261881,
+              47.6742502
+            ]
+          ]
+        },
+        "properties": {
+          "sourceId": "osm-source",
+          "role": "road",
+          "name": "Cleveland Street",
+          "tags": {
+            "highway": "secondary",
+            "lanes": "2",
+            "maxspeed": "25 mph",
+            "name": "Cleveland Street",
+            "old_ref": "SR 908",
+            "sidewalk:both": "separate",
+            "surface": "asphalt"
+          }
+        }
+      },
+      {
+        "type": "Feature",
+        "id": "reference:A",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            -122.1258697,
+            47.6741066
+          ]
+        },
+        "properties": {
+          "sourceId": "osm-source",
+          "role": "landmark",
+          "name": "A",
+          "tags": {
+            "map-literacy:reference": "authored map marker, not a physical landmark",
+            "map-literacy:source-node": "2459700408"
+          }
+        }
+      },
+      {
+        "type": "Feature",
+        "id": "reference:B",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            -122.1249941,
+            47.6738799
+          ]
+        },
+        "properties": {
+          "sourceId": "osm-source",
+          "role": "landmark",
+          "name": "B",
+          "tags": {
+            "map-literacy:reference": "authored map marker, not a physical landmark",
+            "map-literacy:source-node": "53196765"
+          }
+        }
+      },
+      {
+        "type": "Feature",
+        "id": "reference:C",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            -122.1256841,
+            47.6744706
+          ]
+        },
+        "properties": {
+          "sourceId": "osm-source",
+          "role": "landmark",
+          "name": "C",
+          "tags": {
+            "map-literacy:reference": "authored map marker, not a physical landmark",
+            "map-literacy:source-node": "12048793289"
+          }
+        }
+      },
+      {
+        "type": "Feature",
+        "id": "reference:D",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            -122.1251796,
+            47.6735245
+          ]
+        },
+        "properties": {
+          "sourceId": "osm-source",
+          "role": "landmark",
+          "name": "D",
+          "tags": {
+            "map-literacy:reference": "authored map marker, not a physical landmark",
+            "map-literacy:source-node": "53196764"
+          }
+        }
+      }
+    ]
+  },
+  "topology": {
+    "nodes": [
+      {
+        "id": "node:603452554",
+        "coordinate": [
+          -122.1263681,
+          47.6731997
+        ],
+        "sourceId": "osm-source",
+        "sourceObjectId": "node:603452554"
+      },
+      {
+        "id": "node:2511048826",
+        "coordinate": [
+          -122.1263062,
+          47.6733182
+        ],
+        "sourceId": "osm-source",
+        "sourceObjectId": "node:2511048826"
+      },
+      {
+        "id": "node:12048793287",
+        "coordinate": [
+          -122.1261053,
+          47.6736777
+        ],
+        "sourceId": "osm-source",
+        "sourceObjectId": "node:12048793287"
+      },
+      {
+        "id": "node:53196764",
+        "coordinate": [
+          -122.1251796,
+          47.6735245
+        ],
+        "sourceId": "osm-source",
+        "sourceObjectId": "node:53196764"
+      },
+      {
+        "id": "node:7252009160",
+        "coordinate": [
+          -122.1251682,
+          47.6735464
+        ],
+        "sourceId": "osm-source",
+        "sourceObjectId": "node:7252009160"
+      },
+      {
+        "id": "node:7252009161",
+        "coordinate": [
+          -122.1251445,
+          47.673592
+        ],
+        "sourceId": "osm-source",
+        "sourceObjectId": "node:7252009161"
+      },
+      {
+        "id": "node:10963931949",
+        "coordinate": [
+          -122.1250388,
+          47.6737946
+        ],
+        "sourceId": "osm-source",
+        "sourceObjectId": "node:10963931949"
+      },
+      {
+        "id": "node:7200724680",
+        "coordinate": [
+          -122.125029,
+          47.6738125
+        ],
+        "sourceId": "osm-source",
+        "sourceObjectId": "node:7200724680"
+      },
+      {
+        "id": "node:53196765",
+        "coordinate": [
+          -122.1249941,
+          47.6738799
+        ],
+        "sourceId": "osm-source",
+        "sourceObjectId": "node:53196765"
+      },
+      {
+        "id": "node:2459700408",
+        "coordinate": [
+          -122.1258697,
+          47.6741066
+        ],
+        "sourceId": "osm-source",
+        "sourceObjectId": "node:2459700408"
+      },
+      {
+        "id": "node:3316623393",
+        "coordinate": [
+          -122.1257595,
+          47.6740743
+        ],
+        "sourceId": "osm-source",
+        "sourceObjectId": "node:3316623393"
+      },
+      {
+        "id": "node:7187995308",
+        "coordinate": [
+          -122.1248485,
+          47.6738444
+        ],
+        "sourceId": "osm-source",
+        "sourceObjectId": "node:7187995308"
+      },
+      {
+        "id": "node:7187995309",
+        "coordinate": [
+          -122.1241951,
+          47.6736867
+        ],
+        "sourceId": "osm-source",
+        "sourceObjectId": "node:7187995309"
+      },
+      {
+        "id": "node:5470610250",
+        "coordinate": [
+          -122.1238937,
+          47.6736135
+        ],
+        "sourceId": "osm-source",
+        "sourceObjectId": "node:5470610250"
+      },
+      {
+        "id": "node:6113941660",
+        "coordinate": [
+          -122.123775,
+          47.6735847
+        ],
+        "sourceId": "osm-source",
+        "sourceObjectId": "node:6113941660"
+      },
+      {
+        "id": "node:5470610249",
+        "coordinate": [
+          -122.1236979,
+          47.6735662
+        ],
+        "sourceId": "osm-source",
+        "sourceObjectId": "node:5470610249"
+      },
+      {
+        "id": "node:5470610245",
+        "coordinate": [
+          -122.123624,
+          47.6735483
+        ],
+        "sourceId": "osm-source",
+        "sourceObjectId": "node:5470610245"
+      },
+      {
+        "id": "node:7187995311",
+        "coordinate": [
+          -122.1232638,
+          47.6734581
+        ],
+        "sourceId": "osm-source",
+        "sourceObjectId": "node:7187995311"
+      },
+      {
+        "id": "node:53196397",
+        "coordinate": [
+          -122.1231537,
+          47.6734296
+        ],
+        "sourceId": "osm-source",
+        "sourceObjectId": "node:53196397"
+      },
+      {
+        "id": "node:53183891",
+        "coordinate": [
+          -122.1255608,
+          47.6748552
+        ],
+        "sourceId": "osm-source",
+        "sourceObjectId": "node:53183891"
+      },
+      {
+        "id": "node:3316623418",
+        "coordinate": [
+          -122.125574,
+          47.6747442
+        ],
+        "sourceId": "osm-source",
+        "sourceObjectId": "node:3316623418"
+      },
+      {
+        "id": "node:4271979205",
+        "coordinate": [
+          -122.1261881,
+          47.6742502
+        ],
+        "sourceId": "osm-source",
+        "sourceObjectId": "node:4271979205"
+      },
+      {
+        "id": "node:3316623399",
+        "coordinate": [
+          -122.1261461,
+          47.6742262
+        ],
+        "sourceId": "osm-source",
+        "sourceObjectId": "node:3316623399"
+      },
+      {
+        "id": "node:3316623397",
+        "coordinate": [
+          -122.125994,
+          47.6741517
+        ],
+        "sourceId": "osm-source",
+        "sourceObjectId": "node:3316623397"
+      },
+      {
+        "id": "node:12056725589",
+        "coordinate": [
+          -122.1263968,
+          47.6743773
+        ],
+        "sourceId": "osm-source",
+        "sourceObjectId": "node:12056725589"
+      },
+      {
+        "id": "node:3316623392",
+        "coordinate": [
+          -122.1259024,
+          47.6740444
+        ],
+        "sourceId": "osm-source",
+        "sourceObjectId": "node:3316623392"
+      },
+      {
+        "id": "node:3316623398",
+        "coordinate": [
+          -122.1258324,
+          47.6741764
+        ],
+        "sourceId": "osm-source",
+        "sourceObjectId": "node:3316623398"
+      },
+      {
+        "id": "node:12048793289",
+        "coordinate": [
+          -122.1256841,
+          47.6744706
+        ],
+        "sourceId": "osm-source",
+        "sourceObjectId": "node:12048793289"
+      },
+      {
+        "id": "node:3316623412",
+        "coordinate": [
+          -122.1255971,
+          47.6746442
+        ],
+        "sourceId": "osm-source",
+        "sourceObjectId": "node:3316623412"
+      },
+      {
+        "id": "node:13507912418",
+        "coordinate": [
+          -122.1263724,
+          47.6743615
+        ],
+        "sourceId": "osm-source",
+        "sourceObjectId": "node:13507912418"
+      },
+      {
+        "id": "node:3316623402",
+        "coordinate": [
+          -122.1262881,
+          47.6743072
+        ],
+        "sourceId": "osm-source",
+        "sourceObjectId": "node:3316623402"
+      }
+    ],
+    "edges": [
+      {
+        "id": "way:6379332:1:f",
+        "from": "node:603452554",
+        "to": "node:2511048826",
+        "featureId": "way:6379332",
+        "sourceId": "osm-source",
+        "mode": "drive",
+        "access": "unknown",
+        "lengthM": 13.967953251016995,
+        "shape": [
+          [
+            -122.1263681,
+            47.6731997
+          ],
+          [
+            -122.1263062,
+            47.6733182
+          ]
+        ]
+      },
+      {
+        "id": "way:6379332:1:r",
+        "from": "node:2511048826",
+        "to": "node:603452554",
+        "featureId": "way:6379332",
+        "sourceId": "osm-source",
+        "mode": "drive",
+        "access": "unknown",
+        "lengthM": 13.967953251016995,
+        "shape": [
+          [
+            -122.1263062,
+            47.6733182
+          ],
+          [
+            -122.1263681,
+            47.6731997
+          ]
+        ]
+      },
+      {
+        "id": "way:6379332:2:f",
+        "from": "node:2511048826",
+        "to": "node:12048793287",
+        "featureId": "way:6379332",
+        "sourceId": "osm-source",
+        "mode": "drive",
+        "access": "unknown",
+        "lengthM": 42.7110852097021,
+        "shape": [
+          [
+            -122.1263062,
+            47.6733182
+          ],
+          [
+            -122.1261053,
+            47.6736777
+          ]
+        ]
+      },
+      {
+        "id": "way:6379332:2:r",
+        "from": "node:12048793287",
+        "to": "node:2511048826",
+        "featureId": "way:6379332",
+        "sourceId": "osm-source",
+        "mode": "drive",
+        "access": "unknown",
+        "lengthM": 42.7110852097021,
+        "shape": [
+          [
+            -122.1261053,
+            47.6736777
+          ],
+          [
+            -122.1263062,
+            47.6733182
+          ]
+        ]
+      },
+      {
+        "id": "way:6442223:1:f",
+        "from": "node:53196764",
+        "to": "node:7252009160",
+        "featureId": "way:6442223",
+        "sourceId": "osm-source",
+        "mode": "drive",
+        "access": "unknown",
+        "lengthM": 2.5804317711377895,
+        "shape": [
+          [
+            -122.1251796,
+            47.6735245
+          ],
+          [
+            -122.1251682,
+            47.6735464
+          ]
+        ]
+      },
+      {
+        "id": "way:6442223:1:r",
+        "from": "node:7252009160",
+        "to": "node:53196764",
+        "featureId": "way:6442223",
+        "sourceId": "osm-source",
+        "mode": "drive",
+        "access": "unknown",
+        "lengthM": 2.5804317711377895,
+        "shape": [
+          [
+            -122.1251682,
+            47.6735464
+          ],
+          [
+            -122.1251796,
+            47.6735245
+          ]
+        ]
+      },
+      {
+        "id": "way:6442223:2:f",
+        "from": "node:7252009160",
+        "to": "node:7252009161",
+        "featureId": "way:6442223",
+        "sourceId": "osm-source",
+        "mode": "drive",
+        "access": "unknown",
+        "lengthM": 5.372038047347539,
+        "shape": [
+          [
+            -122.1251682,
+            47.6735464
+          ],
+          [
+            -122.1251445,
+            47.673592
+          ]
+        ]
+      },
+      {
+        "id": "way:6442223:2:r",
+        "from": "node:7252009161",
+        "to": "node:7252009160",
+        "featureId": "way:6442223",
+        "sourceId": "osm-source",
+        "mode": "drive",
+        "access": "unknown",
+        "lengthM": 5.372038047347539,
+        "shape": [
+          [
+            -122.1251445,
+            47.673592
+          ],
+          [
+            -122.1251682,
+            47.6735464
+          ]
+        ]
+      },
+      {
+        "id": "way:6442223:3:f",
+        "from": "node:7252009161",
+        "to": "node:10963931949",
+        "featureId": "way:6442223",
+        "sourceId": "osm-source",
+        "mode": "drive",
+        "access": "unknown",
+        "lengthM": 23.877806922639465,
+        "shape": [
+          [
+            -122.1251445,
+            47.673592
+          ],
+          [
+            -122.1250388,
+            47.6737946
+          ]
+        ]
+      },
+      {
+        "id": "way:6442223:3:r",
+        "from": "node:10963931949",
+        "to": "node:7252009161",
+        "featureId": "way:6442223",
+        "sourceId": "osm-source",
+        "mode": "drive",
+        "access": "unknown",
+        "lengthM": 23.877806922639465,
+        "shape": [
+          [
+            -122.1250388,
+            47.6737946
+          ],
+          [
+            -122.1251445,
+            47.673592
+          ]
+        ]
+      },
+      {
+        "id": "way:6442223:4:f",
+        "from": "node:10963931949",
+        "to": "node:7200724680",
+        "featureId": "way:6442223",
+        "sourceId": "osm-source",
+        "mode": "drive",
+        "access": "unknown",
+        "lengthM": 2.1213347229413504,
+        "shape": [
+          [
+            -122.1250388,
+            47.6737946
+          ],
+          [
+            -122.125029,
+            47.6738125
+          ]
+        ]
+      },
+      {
+        "id": "way:6442223:4:r",
+        "from": "node:7200724680",
+        "to": "node:10963931949",
+        "featureId": "way:6442223",
+        "sourceId": "osm-source",
+        "mode": "drive",
+        "access": "unknown",
+        "lengthM": 2.1213347229413504,
+        "shape": [
+          [
+            -122.125029,
+            47.6738125
+          ],
+          [
+            -122.1250388,
+            47.6737946
+          ]
+        ]
+      },
+      {
+        "id": "way:6442223:5:f",
+        "from": "node:7200724680",
+        "to": "node:53196765",
+        "featureId": "way:6442223",
+        "sourceId": "osm-source",
+        "mode": "drive",
+        "access": "unknown",
+        "lengthM": 7.937028268391575,
+        "shape": [
+          [
+            -122.125029,
+            47.6738125
+          ],
+          [
+            -122.1249941,
+            47.6738799
+          ]
+        ]
+      },
+      {
+        "id": "way:6442223:5:r",
+        "from": "node:53196765",
+        "to": "node:7200724680",
+        "featureId": "way:6442223",
+        "sourceId": "osm-source",
+        "mode": "drive",
+        "access": "unknown",
+        "lengthM": 7.937028268391575,
+        "shape": [
+          [
+            -122.1249941,
+            47.6738799
+          ],
+          [
+            -122.125029,
+            47.6738125
+          ]
+        ]
+      },
+      {
+        "id": "way:6501235:1:f",
+        "from": "node:2459700408",
+        "to": "node:3316623393",
+        "featureId": "way:6501235",
+        "sourceId": "osm-source",
+        "mode": "drive",
+        "access": "unknown",
+        "lengthM": 8.99880145442266,
+        "shape": [
+          [
+            -122.1258697,
+            47.6741066
+          ],
+          [
+            -122.1257595,
+            47.6740743
+          ]
+        ]
+      },
+      {
+        "id": "way:6501235:1:r",
+        "from": "node:3316623393",
+        "to": "node:2459700408",
+        "featureId": "way:6501235",
+        "sourceId": "osm-source",
+        "mode": "drive",
+        "access": "unknown",
+        "lengthM": 8.99880145442266,
+        "shape": [
+          [
+            -122.1257595,
+            47.6740743
+          ],
+          [
+            -122.1258697,
+            47.6741066
+          ]
+        ]
+      },
+      {
+        "id": "way:6501235:2:f",
+        "from": "node:3316623393",
+        "to": "node:53196765",
+        "featureId": "way:6501235",
+        "sourceId": "osm-source",
+        "mode": "drive",
+        "access": "unknown",
+        "lengthM": 61.249090121521355,
+        "shape": [
+          [
+            -122.1257595,
+            47.6740743
+          ],
+          [
+            -122.1249941,
+            47.6738799
+          ]
+        ]
+      },
+      {
+        "id": "way:6501235:2:r",
+        "from": "node:53196765",
+        "to": "node:3316623393",
+        "featureId": "way:6501235",
+        "sourceId": "osm-source",
+        "mode": "drive",
+        "access": "unknown",
+        "lengthM": 61.249090121521355,
+        "shape": [
+          [
+            -122.1249941,
+            47.6738799
+          ],
+          [
+            -122.1257595,
+            47.6740743
+          ]
+        ]
+      },
+      {
+        "id": "way:6501235:3:f",
+        "from": "node:53196765",
+        "to": "node:7187995308",
+        "featureId": "way:6501235",
+        "sourceId": "osm-source",
+        "mode": "drive",
+        "access": "unknown",
+        "lengthM": 11.59420840264789,
+        "shape": [
+          [
+            -122.1249941,
+            47.6738799
+          ],
+          [
+            -122.1248485,
+            47.6738444
+          ]
+        ]
+      },
+      {
+        "id": "way:6501235:3:r",
+        "from": "node:7187995308",
+        "to": "node:53196765",
+        "featureId": "way:6501235",
+        "sourceId": "osm-source",
+        "mode": "drive",
+        "access": "unknown",
+        "lengthM": 11.59420840264789,
+        "shape": [
+          [
+            -122.1248485,
+            47.6738444
+          ],
+          [
+            -122.1249941,
+            47.6738799
+          ]
+        ]
+      },
+      {
+        "id": "way:6501235:4:f",
+        "from": "node:7187995308",
+        "to": "node:7187995309",
+        "featureId": "way:6501235",
+        "sourceId": "osm-source",
+        "mode": "drive",
+        "access": "unknown",
+        "lengthM": 51.969966935321615,
+        "shape": [
+          [
+            -122.1248485,
+            47.6738444
+          ],
+          [
+            -122.1241951,
+            47.6736867
+          ]
+        ]
+      },
+      {
+        "id": "way:6501235:4:r",
+        "from": "node:7187995309",
+        "to": "node:7187995308",
+        "featureId": "way:6501235",
+        "sourceId": "osm-source",
+        "mode": "drive",
+        "access": "unknown",
+        "lengthM": 51.969966935321615,
+        "shape": [
+          [
+            -122.1241951,
+            47.6736867
+          ],
+          [
+            -122.1248485,
+            47.6738444
+          ]
+        ]
+      },
+      {
+        "id": "way:6501235:5:f",
+        "from": "node:7187995309",
+        "to": "node:5470610250",
+        "featureId": "way:6501235",
+        "sourceId": "osm-source",
+        "mode": "drive",
+        "access": "unknown",
+        "lengthM": 23.98989006774388,
+        "shape": [
+          [
+            -122.1241951,
+            47.6736867
+          ],
+          [
+            -122.1238937,
+            47.6736135
+          ]
+        ]
+      },
+      {
+        "id": "way:6501235:5:r",
+        "from": "node:5470610250",
+        "to": "node:7187995309",
+        "featureId": "way:6501235",
+        "sourceId": "osm-source",
+        "mode": "drive",
+        "access": "unknown",
+        "lengthM": 23.98989006774388,
+        "shape": [
+          [
+            -122.1238937,
+            47.6736135
+          ],
+          [
+            -122.1241951,
+            47.6736867
+          ]
+        ]
+      },
+      {
+        "id": "way:6501235:6:f",
+        "from": "node:5470610250",
+        "to": "node:6113941660",
+        "featureId": "way:6501235",
+        "sourceId": "osm-source",
+        "mode": "drive",
+        "access": "unknown",
+        "lengthM": 9.446851752777157,
+        "shape": [
+          [
+            -122.1238937,
+            47.6736135
+          ],
+          [
+            -122.123775,
+            47.6735847
+          ]
+        ]
+      },
+      {
+        "id": "way:6501235:6:r",
+        "from": "node:6113941660",
+        "to": "node:5470610250",
+        "featureId": "way:6501235",
+        "sourceId": "osm-source",
+        "mode": "drive",
+        "access": "unknown",
+        "lengthM": 9.446851752777157,
+        "shape": [
+          [
+            -122.123775,
+            47.6735847
+          ],
+          [
+            -122.1238937,
+            47.6736135
+          ]
+        ]
+      },
+      {
+        "id": "way:6501235:7:f",
+        "from": "node:6113941660",
+        "to": "node:5470610249",
+        "featureId": "way:6501235",
+        "sourceId": "osm-source",
+        "mode": "drive",
+        "access": "unknown",
+        "lengthM": 6.128327259996753,
+        "shape": [
+          [
+            -122.123775,
+            47.6735847
+          ],
+          [
+            -122.1236979,
+            47.6735662
+          ]
+        ]
+      },
+      {
+        "id": "way:6501235:7:r",
+        "from": "node:5470610249",
+        "to": "node:6113941660",
+        "featureId": "way:6501235",
+        "sourceId": "osm-source",
+        "mode": "drive",
+        "access": "unknown",
+        "lengthM": 6.128327259996753,
+        "shape": [
+          [
+            -122.1236979,
+            47.6735662
+          ],
+          [
+            -122.123775,
+            47.6735847
+          ]
+        ]
+      },
+      {
+        "id": "way:6501235:8:f",
+        "from": "node:5470610249",
+        "to": "node:5470610245",
+        "featureId": "way:6501235",
+        "sourceId": "osm-source",
+        "mode": "drive",
+        "access": "unknown",
+        "lengthM": 5.880266371573171,
+        "shape": [
+          [
+            -122.1236979,
+            47.6735662
+          ],
+          [
+            -122.123624,
+            47.6735483
+          ]
+        ]
+      },
+      {
+        "id": "way:6501235:8:r",
+        "from": "node:5470610245",
+        "to": "node:5470610249",
+        "featureId": "way:6501235",
+        "sourceId": "osm-source",
+        "mode": "drive",
+        "access": "unknown",
+        "lengthM": 5.880266371573171,
+        "shape": [
+          [
+            -122.123624,
+            47.6735483
+          ],
+          [
+            -122.1236979,
+            47.6735662
+          ]
+        ]
+      },
+      {
+        "id": "way:6501235:9:f",
+        "from": "node:5470610245",
+        "to": "node:7187995311",
+        "featureId": "way:6501235",
+        "sourceId": "osm-source",
+        "mode": "drive",
+        "access": "unknown",
+        "lengthM": 28.774141700006524,
+        "shape": [
+          [
+            -122.123624,
+            47.6735483
+          ],
+          [
+            -122.1232638,
+            47.6734581
+          ]
+        ]
+      },
+      {
+        "id": "way:6501235:9:r",
+        "from": "node:7187995311",
+        "to": "node:5470610245",
+        "featureId": "way:6501235",
+        "sourceId": "osm-source",
+        "mode": "drive",
+        "access": "unknown",
+        "lengthM": 28.774141700006524,
+        "shape": [
+          [
+            -122.1232638,
+            47.6734581
+          ],
+          [
+            -122.123624,
+            47.6735483
+          ]
+        ]
+      },
+      {
+        "id": "way:6501235:10:f",
+        "from": "node:7187995311",
+        "to": "node:53196397",
+        "featureId": "way:6501235",
+        "sourceId": "osm-source",
+        "mode": "drive",
+        "access": "unknown",
+        "lengthM": 8.831758276552794,
+        "shape": [
+          [
+            -122.1232638,
+            47.6734581
+          ],
+          [
+            -122.1231537,
+            47.6734296
+          ]
+        ]
+      },
+      {
+        "id": "way:6501235:10:r",
+        "from": "node:53196397",
+        "to": "node:7187995311",
+        "featureId": "way:6501235",
+        "sourceId": "osm-source",
+        "mode": "drive",
+        "access": "unknown",
+        "lengthM": 8.831758276552794,
+        "shape": [
+          [
+            -122.1231537,
+            47.6734296
+          ],
+          [
+            -122.1232638,
+            47.6734581
+          ]
+        ]
+      },
+      {
+        "id": "way:428044625:1:f",
+        "from": "node:4271979205",
+        "to": "node:3316623399",
+        "featureId": "way:428044625",
+        "sourceId": "osm-source",
+        "mode": "drive",
+        "access": "unknown",
+        "lengthM": 4.124402440410765,
+        "shape": [
+          [
+            -122.1261881,
+            47.6742502
+          ],
+          [
+            -122.1261461,
+            47.6742262
+          ]
+        ]
+      },
+      {
+        "id": "way:428044625:1:r",
+        "from": "node:3316623399",
+        "to": "node:4271979205",
+        "featureId": "way:428044625",
+        "sourceId": "osm-source",
+        "mode": "drive",
+        "access": "unknown",
+        "lengthM": 4.124402440410765,
+        "shape": [
+          [
+            -122.1261461,
+            47.6742262
+          ],
+          [
+            -122.1261881,
+            47.6742502
+          ]
+        ]
+      },
+      {
+        "id": "way:428044625:2:f",
+        "from": "node:3316623399",
+        "to": "node:3316623397",
+        "featureId": "way:428044625",
+        "sourceId": "osm-source",
+        "mode": "drive",
+        "access": "unknown",
+        "lengthM": 14.082434734443186,
+        "shape": [
+          [
+            -122.1261461,
+            47.6742262
+          ],
+          [
+            -122.125994,
+            47.6741517
+          ]
+        ]
+      },
+      {
+        "id": "way:428044625:2:r",
+        "from": "node:3316623397",
+        "to": "node:3316623399",
+        "featureId": "way:428044625",
+        "sourceId": "osm-source",
+        "mode": "drive",
+        "access": "unknown",
+        "lengthM": 14.082434734443186,
+        "shape": [
+          [
+            -122.125994,
+            47.6741517
+          ],
+          [
+            -122.1261461,
+            47.6742262
+          ]
+        ]
+      },
+      {
+        "id": "way:428044625:3:f",
+        "from": "node:3316623397",
+        "to": "node:2459700408",
+        "featureId": "way:428044625",
+        "sourceId": "osm-source",
+        "mode": "drive",
+        "access": "unknown",
+        "lengthM": 10.571834427964319,
+        "shape": [
+          [
+            -122.125994,
+            47.6741517
+          ],
+          [
+            -122.1258697,
+            47.6741066
+          ]
+        ]
+      },
+      {
+        "id": "way:428044625:3:r",
+        "from": "node:2459700408",
+        "to": "node:3316623397",
+        "featureId": "way:428044625",
+        "sourceId": "osm-source",
+        "mode": "drive",
+        "access": "unknown",
+        "lengthM": 10.571834427964319,
+        "shape": [
+          [
+            -122.1258697,
+            47.6741066
+          ],
+          [
+            -122.125994,
+            47.6741517
+          ]
+        ]
+      },
+      {
+        "id": "way:1300842594:1:f",
+        "from": "node:12048793289",
+        "to": "node:3316623412",
+        "featureId": "way:1300842594",
+        "sourceId": "osm-source",
+        "mode": "drive",
+        "access": "unknown",
+        "lengthM": 20.372884939105287,
+        "shape": [
+          [
+            -122.1256841,
+            47.6744706
+          ],
+          [
+            -122.1255971,
+            47.6746442
+          ]
+        ]
+      },
+      {
+        "id": "way:1300842594:1:r",
+        "from": "node:3316623412",
+        "to": "node:12048793289",
+        "featureId": "way:1300842594",
+        "sourceId": "osm-source",
+        "mode": "drive",
+        "access": "unknown",
+        "lengthM": 20.372884939105287,
+        "shape": [
+          [
+            -122.1255971,
+            47.6746442
+          ],
+          [
+            -122.1256841,
+            47.6744706
+          ]
+        ]
+      },
+      {
+        "id": "way:1300842594:2:f",
+        "from": "node:3316623412",
+        "to": "node:3316623418",
+        "featureId": "way:1300842594",
+        "sourceId": "osm-source",
+        "mode": "drive",
+        "access": "unknown",
+        "lengthM": 11.253211903647077,
+        "shape": [
+          [
+            -122.1255971,
+            47.6746442
+          ],
+          [
+            -122.125574,
+            47.6747442
+          ]
+        ]
+      },
+      {
+        "id": "way:1300842594:2:r",
+        "from": "node:3316623418",
+        "to": "node:3316623412",
+        "featureId": "way:1300842594",
+        "sourceId": "osm-source",
+        "mode": "drive",
+        "access": "unknown",
+        "lengthM": 11.253211903647077,
+        "shape": [
+          [
+            -122.125574,
+            47.6747442
+          ],
+          [
+            -122.1255971,
+            47.6746442
+          ]
+        ]
+      },
+      {
+        "id": "way:1300842594:3:f",
+        "from": "node:3316623418",
+        "to": "node:53183891",
+        "featureId": "way:1300842594",
+        "sourceId": "osm-source",
+        "mode": "drive",
+        "access": "unknown",
+        "lengthM": 12.382158895290575,
+        "shape": [
+          [
+            -122.125574,
+            47.6747442
+          ],
+          [
+            -122.1255608,
+            47.6748552
+          ]
+        ]
+      },
+      {
+        "id": "way:1300842594:3:r",
+        "from": "node:53183891",
+        "to": "node:3316623418",
+        "featureId": "way:1300842594",
+        "sourceId": "osm-source",
+        "mode": "drive",
+        "access": "unknown",
+        "lengthM": 12.382158895290575,
+        "shape": [
+          [
+            -122.1255608,
+            47.6748552
+          ],
+          [
+            -122.125574,
+            47.6747442
+          ]
+        ]
+      },
+      {
+        "id": "way:1300842595:1:f",
+        "from": "node:12048793287",
+        "to": "node:3316623392",
+        "featureId": "way:1300842595",
+        "sourceId": "osm-source",
+        "mode": "drive",
+        "access": "unknown",
+        "lengthM": 43.513328601540174,
+        "shape": [
+          [
+            -122.1261053,
+            47.6736777
+          ],
+          [
+            -122.1259024,
+            47.6740444
+          ]
+        ]
+      },
+      {
+        "id": "way:1300842595:1:r",
+        "from": "node:3316623392",
+        "to": "node:12048793287",
+        "featureId": "way:1300842595",
+        "sourceId": "osm-source",
+        "mode": "drive",
+        "access": "unknown",
+        "lengthM": 43.513328601540174,
+        "shape": [
+          [
+            -122.1259024,
+            47.6740444
+          ],
+          [
+            -122.1261053,
+            47.6736777
+          ]
+        ]
+      },
+      {
+        "id": "way:1300842595:2:f",
+        "from": "node:3316623392",
+        "to": "node:2459700408",
+        "featureId": "way:1300842595",
+        "sourceId": "osm-source",
+        "mode": "drive",
+        "access": "unknown",
+        "lengthM": 7.336897233612007,
+        "shape": [
+          [
+            -122.1259024,
+            47.6740444
+          ],
+          [
+            -122.1258697,
+            47.6741066
+          ]
+        ]
+      },
+      {
+        "id": "way:1300842595:2:r",
+        "from": "node:2459700408",
+        "to": "node:3316623392",
+        "featureId": "way:1300842595",
+        "sourceId": "osm-source",
+        "mode": "drive",
+        "access": "unknown",
+        "lengthM": 7.336897233612007,
+        "shape": [
+          [
+            -122.1258697,
+            47.6741066
+          ],
+          [
+            -122.1259024,
+            47.6740444
+          ]
+        ]
+      },
+      {
+        "id": "way:1300842596:1:f",
+        "from": "node:2459700408",
+        "to": "node:3316623398",
+        "featureId": "way:1300842596",
+        "sourceId": "osm-source",
+        "mode": "drive",
+        "access": "unknown",
+        "lengthM": 8.24857979374226,
+        "shape": [
+          [
+            -122.1258697,
+            47.6741066
+          ],
+          [
+            -122.1258324,
+            47.6741764
+          ]
+        ]
+      },
+      {
+        "id": "way:1300842596:1:r",
+        "from": "node:3316623398",
+        "to": "node:2459700408",
+        "featureId": "way:1300842596",
+        "sourceId": "osm-source",
+        "mode": "drive",
+        "access": "unknown",
+        "lengthM": 8.24857979374226,
+        "shape": [
+          [
+            -122.1258324,
+            47.6741764
+          ],
+          [
+            -122.1258697,
+            47.6741066
+          ]
+        ]
+      },
+      {
+        "id": "way:1300842596:2:f",
+        "from": "node:3316623398",
+        "to": "node:12048793289",
+        "featureId": "way:1300842596",
+        "sourceId": "osm-source",
+        "mode": "drive",
+        "access": "unknown",
+        "lengthM": 34.54662049602817,
+        "shape": [
+          [
+            -122.1258324,
+            47.6741764
+          ],
+          [
+            -122.1256841,
+            47.6744706
+          ]
+        ]
+      },
+      {
+        "id": "way:1300842596:2:r",
+        "from": "node:12048793289",
+        "to": "node:3316623398",
+        "featureId": "way:1300842596",
+        "sourceId": "osm-source",
+        "mode": "drive",
+        "access": "unknown",
+        "lengthM": 34.54662049602817,
+        "shape": [
+          [
+            -122.1256841,
+            47.6744706
+          ],
+          [
+            -122.1258324,
+            47.6741764
+          ]
+        ]
+      },
+      {
+        "id": "way:1301688983:1:f",
+        "from": "node:12056725589",
+        "to": "node:13507912418",
+        "featureId": "way:1301688983",
+        "sourceId": "osm-source",
+        "mode": "drive",
+        "access": "unknown",
+        "lengthM": 2.5345917759058403,
+        "shape": [
+          [
+            -122.1263968,
+            47.6743773
+          ],
+          [
+            -122.1263724,
+            47.6743615
+          ]
+        ]
+      },
+      {
+        "id": "way:1301688983:1:r",
+        "from": "node:13507912418",
+        "to": "node:12056725589",
+        "featureId": "way:1301688983",
+        "sourceId": "osm-source",
+        "mode": "drive",
+        "access": "unknown",
+        "lengthM": 2.5345917759058403,
+        "shape": [
+          [
+            -122.1263724,
+            47.6743615
+          ],
+          [
+            -122.1263968,
+            47.6743773
+          ]
+        ]
+      },
+      {
+        "id": "way:1301688983:2:f",
+        "from": "node:13507912418",
+        "to": "node:3316623402",
+        "featureId": "way:1301688983",
+        "sourceId": "osm-source",
+        "mode": "drive",
+        "access": "unknown",
+        "lengthM": 8.734665135699423,
+        "shape": [
+          [
+            -122.1263724,
+            47.6743615
+          ],
+          [
+            -122.1262881,
+            47.6743072
+          ]
+        ]
+      },
+      {
+        "id": "way:1301688983:2:r",
+        "from": "node:3316623402",
+        "to": "node:13507912418",
+        "featureId": "way:1301688983",
+        "sourceId": "osm-source",
+        "mode": "drive",
+        "access": "unknown",
+        "lengthM": 8.734665135699423,
+        "shape": [
+          [
+            -122.1262881,
+            47.6743072
+          ],
+          [
+            -122.1263724,
+            47.6743615
+          ]
+        ]
+      },
+      {
+        "id": "way:1301688983:3:f",
+        "from": "node:3316623402",
+        "to": "node:4271979205",
+        "featureId": "way:1301688983",
+        "sourceId": "osm-source",
+        "mode": "drive",
+        "access": "unknown",
+        "lengthM": 9.80973050544742,
+        "shape": [
+          [
+            -122.1262881,
+            47.6743072
+          ],
+          [
+            -122.1261881,
+            47.6742502
+          ]
+        ]
+      },
+      {
+        "id": "way:1301688983:3:r",
+        "from": "node:4271979205",
+        "to": "node:3316623402",
+        "featureId": "way:1301688983",
+        "sourceId": "osm-source",
+        "mode": "drive",
+        "access": "unknown",
+        "lengthM": 9.80973050544742,
+        "shape": [
+          [
+            -122.1261881,
+            47.6742502
+          ],
+          [
+            -122.1262881,
+            47.6743072
+          ]
+        ]
+      }
+    ],
+    "restrictions": [],
+    "completeness": "partial",
+    "exclusions": [
+      {
+        "id": "issue:9",
+        "objectIds": [
+          "way:6379332"
+        ],
+        "reason": "unknown-direction: Explicit supported oneway tag absent; candidate graph edges have unknown access."
+      },
+      {
+        "id": "issue:10",
+        "objectIds": [
+          "way:6379332"
+        ],
+        "reason": "unreviewed-access: Driving access is not inferred from highway tags; every derived edge is unknown until review."
+      },
+      {
+        "id": "issue:20",
+        "objectIds": [
+          "way:6442223"
+        ],
+        "reason": "unknown-direction: Explicit supported oneway tag absent; candidate graph edges have unknown access."
+      },
+      {
+        "id": "issue:21",
+        "objectIds": [
+          "way:6442223"
+        ],
+        "reason": "unreviewed-access: Driving access is not inferred from highway tags; every derived edge is unknown until review."
+      },
+      {
+        "id": "issue:29",
+        "objectIds": [
+          "way:6501235"
+        ],
+        "reason": "unreviewed-access: Driving access is not inferred from highway tags; every derived edge is unknown until review."
+      },
+      {
+        "id": "issue:434",
+        "objectIds": [
+          "way:428044625"
+        ],
+        "reason": "unreviewed-access: Driving access is not inferred from highway tags; every derived edge is unknown until review."
+      },
+      {
+        "id": "issue:2280",
+        "objectIds": [
+          "way:1300842594"
+        ],
+        "reason": "unknown-direction: Explicit supported oneway tag absent; candidate graph edges have unknown access."
+      },
+      {
+        "id": "issue:2281",
+        "objectIds": [
+          "way:1300842594"
+        ],
+        "reason": "unreviewed-access: Driving access is not inferred from highway tags; every derived edge is unknown until review."
+      },
+      {
+        "id": "issue:2282",
+        "objectIds": [
+          "way:1300842595"
+        ],
+        "reason": "unknown-direction: Explicit supported oneway tag absent; candidate graph edges have unknown access."
+      },
+      {
+        "id": "issue:2283",
+        "objectIds": [
+          "way:1300842595"
+        ],
+        "reason": "unreviewed-access: Driving access is not inferred from highway tags; every derived edge is unknown until review."
+      },
+      {
+        "id": "issue:2284",
+        "objectIds": [
+          "way:1300842596"
+        ],
+        "reason": "unknown-direction: Explicit supported oneway tag absent; candidate graph edges have unknown access."
+      },
+      {
+        "id": "issue:2285",
+        "objectIds": [
+          "way:1300842596"
+        ],
+        "reason": "unreviewed-access: Driving access is not inferred from highway tags; every derived edge is unknown until review."
+      },
+      {
+        "id": "issue:2300",
+        "objectIds": [
+          "way:1301688983"
+        ],
+        "reason": "unknown-direction: Explicit supported oneway tag absent; candidate graph edges have unknown access."
+      },
+      {
+        "id": "issue:2301",
+        "objectIds": [
+          "way:1301688983"
+        ],
+        "reason": "unreviewed-access: Driving access is not inferred from highway tags; every derived edge is unknown until review."
+      },
+      {
+        "id": "issue:2709",
+        "objectIds": [
+          "relation:20376711",
+          "way:1154609273",
+          "node:53196397",
+          "way:6501235"
+        ],
+        "reason": "untranslated-restriction: Restriction preserved in raw source; no legal maneuver inferred before profile-aware translation/review."
+      },
+      {
+        "id": "issue:2710",
+        "objectIds": [
+          "relation:20376712",
+          "way:6501235",
+          "node:53196397",
+          "way:1154609272"
+        ],
+        "reason": "untranslated-restriction: Restriction preserved in raw source; no legal maneuver inferred before profile-aware translation/review."
+      },
+      {
+        "id": "material-scope",
+        "objectIds": [
+          "way:6379332",
+          "way:6442223",
+          "way:6501235",
+          "way:428044625",
+          "way:1300842594",
+          "way:1300842595",
+          "way:1300842596",
+          "way:1301688983"
+        ],
+        "reason": "Display subset only. Other ways and all untranslated restrictions remain in retained raw source/report. Access stays unknown; no approved route or detour. Renderer clips full original way geometry to the focus extent."
+      }
+    ]
+  },
+  "labels": [
+    {
+      "id": "label:161st",
+      "featureId": "way:1300842596",
+      "text": "161st Ave NE",
+      "anchor": [
+        -122.12583,
+        47.67431
+      ],
+      "rotationDeg": 0,
+      "visibleIn": "partial",
+      "priority": 80
+    },
+    {
+      "id": "label:cleveland",
+      "featureId": "way:6501235",
+      "text": "Cleveland St",
+      "anchor": [
+        -122.12543,
+        47.67399
+      ],
+      "rotationDeg": 0,
+      "visibleIn": "partial",
+      "priority": 80
+    },
+    {
+      "id": "label:brown",
+      "featureId": "way:6442223",
+      "text": "Brown St",
+      "anchor": [
+        -122.12509,
+        47.67368
+      ],
+      "rotationDeg": 0,
+      "visibleIn": "partial",
+      "priority": 80
+    },
+    {
+      "id": "label:reference-A",
+      "featureId": "reference:A",
+      "text": "A",
+      "anchor": [
+        -122.1258697,
+        47.6741066
+      ],
+      "rotationDeg": 0,
+      "visibleIn": "partial",
+      "priority": 100
+    },
+    {
+      "id": "label:reference-B",
+      "featureId": "reference:B",
+      "text": "B",
+      "anchor": [
+        -122.1249941,
+        47.6738799
+      ],
+      "rotationDeg": 0,
+      "visibleIn": "partial",
+      "priority": 100
+    },
+    {
+      "id": "label:reference-C",
+      "featureId": "reference:C",
+      "text": "C",
+      "anchor": [
+        -122.1256841,
+        47.6744706
+      ],
+      "rotationDeg": 0,
+      "visibleIn": "partial",
+      "priority": 100
+    },
+    {
+      "id": "label:reference-D",
+      "featureId": "reference:D",
+      "text": "D",
+      "anchor": [
+        -122.1251796,
+        47.6735245
+      ],
+      "rotationDeg": 0,
+      "visibleIn": "partial",
+      "priority": 100
+    }
+  ],
+  "exercises": [
+    {
+      "review": "draft",
+      "sourceIds": [
+        "osm-source"
+      ],
+      "scenario": null,
+      "id": "orient-ac",
+      "type": "heading",
+      "prompt": "On the map, face from reference A toward C. Give the straight-line true bearing, clockwise from north; do not follow the road curve.",
+      "hints": [
+        "Use the north arrow. North is geographic, even when the screen is rotated."
+      ],
+      "rubric": {
+        "expectedDeg": 18.948898601364988,
+        "toleranceDeg": 15
+      }
+    },
+    {
+      "review": "draft",
+      "sourceIds": [
+        "osm-source"
+      ],
+      "scenario": null,
+      "id": "orient-ab",
+      "type": "heading",
+      "prompt": "Face directly from reference A toward B. Give the true bearing clockwise from north, then explain why it is not exactly east.",
+      "hints": [
+        "Use the straight line between the markers rather than the screen edge."
+      ],
+      "rubric": {
+        "expectedDeg": 111.03185854483058,
+        "toleranceDeg": 15
+      }
+    },
+    {
+      "review": "draft",
+      "sourceIds": [
+        "osm-source"
+      ],
+      "scenario": null,
+      "id": "locate-b",
+      "type": "endpoint",
+      "prompt": "Locate the map reference at Brown Street and Cleveland Street. Mark it and name the two street clues you used.",
+      "hints": [
+        "Use both street names and the connected lines."
+      ],
+      "rubric": {
+        "expected": [
+          -122.1249941,
+          47.6738799
+        ],
+        "toleranceM": 10
+      }
+    },
+    {
+      "review": "draft",
+      "sourceIds": [
+        "osm-source"
+      ],
+      "scenario": null,
+      "id": "locate-a",
+      "type": "endpoint",
+      "prompt": "Locate the map reference at 161st Avenue Northeast and Cleveland Street. Mark it and explain how it differs from the Brown Street junction.",
+      "hints": [
+        "Read the complete street name and compare both junctions."
+      ],
+      "rubric": {
+        "expected": [
+          -122.1258697,
+          47.6741066
+        ],
+        "toleranceM": 10
+      }
+    }
+  ],
+  "print": {
+    "paper": "letter",
+    "orientation": "portrait",
+    "marginMm": 10,
+    "scaleDenominator": 1000,
+    "labelMinPt": 8,
+    "mapRotationDeg": 0
+  },
+  "extensions": {}
+}
