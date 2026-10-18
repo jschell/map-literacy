@@ -49,6 +49,9 @@ export async function checkPagesPackage(page) {
     await preview.locator('#lesson-start').click();await saved();
     await preview.locator('#answer-elevation').fill('85');await preview.locator('#lesson-submit').click();await saved();
     assert.match(await preview.locator('#lesson-status').textContent(),/^Correct/);
+    const lessonDownload = preview.waitForEvent('download'); await preview.locator('#lesson-pdf').click();
+    const directPdf = await lessonDownload; assert.ok(await directPdf.path());
+    assert.match(await preview.locator('#lesson-pdf-status').textContent(), /PDF ready: Letter portrait, 1:1,000/);
     assert.ok(requests.every((url) => url.startsWith(base) || url.startsWith(`blob:${new URL(base).origin}/`) || url.startsWith('https://tile.openstreetmap.org/') || url.startsWith('https://basemap.nationalmap.gov/') || url.startsWith('https://overpass-api.de/') || url.startsWith('https://carto.nationalmap.gov/') || url.startsWith('https://elevation.nationalmap.gov/') || new URL(url).pathname === '/favicon.ico'), 'app assets stay under the project prefix');
     await preview.evaluate(() => {
       window.pagesViolations = [];
@@ -58,7 +61,7 @@ export async function checkPagesPackage(page) {
     await preview.waitForFunction(() => window.pagesViolations.some((directive) => directive.startsWith('script-src')));
     assert.equal(await preview.evaluate(() => window.inlinePagesScriptRan === true), false);
     assert.deepEqual(errors, []);
-    return { geographicChecks, projectPath: '/map-literacy/', terrainLesson: 'passed', metaCspBlocksInline: 'passed', reloadAndPreferences: 'passed', backup: 'passed', portraitPdf: 'passed' };
+    return { geographicChecks, projectPath: '/map-literacy/', terrainLesson: 'passed', lessonPdf: 'passed', metaCspBlocksInline: 'passed', reloadAndPreferences: 'passed', backup: 'passed', portraitPdf: 'passed' };
   } finally {
     await preview.close(); await new Promise((resolve) => server.close(resolve));
   }

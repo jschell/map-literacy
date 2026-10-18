@@ -43,8 +43,11 @@
       <label>Print scale<select id="scale"><option value="1000">1:1,000</option><option value="5000" selected>1:5,000</option><option value="10000">1:10,000</option></select></label>
       <label>Print output<select id="print-output"><option value="map">Map only</option><option value="learner">Learner worksheet</option><option value="instructor">Instructor guide</option></select></label>
       <label>Exercise<select id="print-exercise" disabled><option value="">No exercises loaded</option></select></label>
+      <button id="lesson-pdf" aria-describedby="lesson-pdf-status" type="button" disabled>Download lesson PDF</button>
       <button id="print" type="button" disabled>Print lesson output</button>
     </section>
+    <p id="lesson-pdf-status" role="status" aria-live="polite">Load a lesson map to download a fixed-size Letter PDF.</p>
+    <a id="lesson-pdf-link" class="map-action" hidden>Save prepared lesson PDF</a>
     <section class="controls" aria-label="Saved view preferences">
       <button id="preferences-defaults" type="button" disabled>Use pack view defaults</button><button id="preferences-retry" type="button" disabled>Retry view preference save</button><button id="preferences-reload" type="button" disabled>Reload saved view preferences</button><button id="preferences-export" type="button" disabled>Download view preferences</button><label class="file-control">Restore view preferences<input id="preferences-import" type="file" accept=".json,application/json"></label>
     </section><p id="preferences-status" role="status" aria-live="polite">Loading view preferences…</p>
