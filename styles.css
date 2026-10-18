@@ -211,3 +211,34 @@ h2.sheet-block { font-size: 12pt; line-height: 1.4; }
 .paper-profile { display: block; width: 180mm; height: 70mm; max-width: 100%; margin: 0 0 3mm; }
 #profile-panel table { width: 100%; border-collapse: collapse; }
 #profile-panel th, #profile-panel td { padding: 6px; text-align: right; border-bottom: 1px solid #ddd; }
+
+/* Keep the task and spatial evidence together without fixed overlays. */
+#practice-workspace { margin: 24px 0; }
+#practice-workspace > h2 { margin-bottom: 12px; }
+#lesson-prompt { font-size: 1.2rem; font-weight: 650; line-height: 1.5; }
+.practice-grid { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(320px, 1fr); gap: 20px; align-items: start; }
+.practice-map, .practice-answer { min-width: 0; }
+.practice-answer { padding: 16px; background: white; border: 1px solid #cbd1c9; border-radius: 10px; }
+.practice-answer fieldset { min-width: 0; margin: 0; padding: 12px; border: 1px solid #cbd1c9; }
+.practice-answer input, .practice-answer select { width: 100%; min-width: 0; max-width: 100%; }
+.practice-answer .route-review { padding: 0; border: 0; margin-top: 16px; }
+.practice-answer .trace-controls { display: grid; grid-template-columns: 1fr; }
+#practice-workspace[data-task=route] .trace-controls > label:nth-child(-n+4),
+#practice-workspace[data-task=detour] .trace-controls > label:nth-child(-n+4) { display: none; }
+#session-tools { margin-top: 20px; padding: 14px; border: 1px solid #cbd1c9; }
+#session-tools select { max-width: 100%; }
+#session-tools summary, #endpoint-coordinates summary { cursor: pointer; padding: 12px 0; }
+#endpoint-status { font-size: .9rem; }
+#profile-panel { margin: 12px 0; padding: 12px; }
+@media (max-width: 850px) {
+  .practice-grid { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  #lesson-prompt { margin-bottom: 12px; }
+  .practice-answer { padding: 12px; }
+}
+.map-context summary { padding: 10px 0; cursor: pointer; font-size: .85rem; }
+#session-tools label { min-width: 0; grid-template-columns: minmax(0, 1fr); }
+#session-tools select { min-width: 0; width: 100%; }
+
+#practice-workspace[data-task=route] .trace-print,
+#practice-workspace[data-task=detour] .trace-print { display: none; }
+#trace-details summary { cursor: pointer; padding: 10px 0; font-size: .85rem; }

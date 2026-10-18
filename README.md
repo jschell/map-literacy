@@ -28,6 +28,7 @@ Contour printing: loading the synthetic contour lesson starts a learner workshee
 - [Architecture proposal](docs/architecture.md)
 - [Plan index and dependencies](docs/plans/README.md)
 - [Draft Redmond orient/location material packet](docs/materials/redmond-r1/README.md)
+- [Practice workspace and keyboard/map answers](docs/practice-workspace.md)
 - [Active work: learner usability and website workflows](docs/plans/active/10-learner-usability-and-workflows.md)
 - [Queued neighborhood lesson materials](docs/plans/queue/02-source-and-lesson-packs.md)
 - [Terrain implementation and remaining acceptance](docs/plans/queue/08-topographic-learning.md)

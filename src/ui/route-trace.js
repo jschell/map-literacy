@@ -5,7 +5,7 @@ const get = (id) => document.getElementById(id);
 export function createRouteTrace({ getPack, redraw }) {
   const startPicker = createSearchSelect({ select: get('trace-start'), filter: get('trace-start-filter'), summary: get('trace-start-matches'), placeholder: 'Choose a start node' });
   const edgePicker = createSearchSelect({ select: get('trace-edge'), filter: get('trace-edge-filter'), summary: get('trace-edge-matches'), placeholder: 'Choose a directed edge' });
-  let review = null, state = null, tracing = false;
+  let review = null, state = null, tracing = false, exerciseKey = null;
   const message = (text) => { get('trace-status').textContent = text; };
   function toggle(value) {
     tracing = value; get('trace-map').setAttribute('aria-pressed', String(value));
@@ -24,7 +24,7 @@ export function createRouteTrace({ getPack, redraw }) {
     for (const edge of trace?.edges ?? []) {
       const item = document.createElement('li'); item.textContent = `${edge.name}: ${edge.from} → ${edge.to} · ${Math.round(edge.lengthM)} m · access ${edge.access}`; get('trace-steps').append(item);
     }
-    message(trace ? `Trace preview · ${trace.edges.length} steps · ${Math.round(trace.lengthM)} m · current node ${trace.endNodeId}. ${trace.warnings.join(' ')} This is not route approval or exercise scoring.` : 'Select a start graph node to trace a path. No route or location is selected automatically.');
+    message(trace && exerciseKey ? `Draft route · ${trace.edges.length} segments · ${Math.round(trace.lengthM)} m · current reference ${trace.endNodeId}. ${trace.warnings.join(' ')} Submit answer to check it.` : trace ? `Trace preview · ${trace.edges.length} steps · ${Math.round(trace.lengthM)} m · current node ${trace.endNodeId}. ${trace.warnings.join(' ')} This is not route approval or exercise scoring.` : 'Select a start graph node to trace a path. No route or location is selected automatically.');
   }
   function append(id) {
     if (!state) return;
@@ -50,6 +50,20 @@ export function createRouteTrace({ getPack, redraw }) {
   get('include-trace').addEventListener('change', redraw);
   refresh();
   return {
+    setExercise(exercise) {
+      const next = exercise ? `${getPack().id}:${getPack().revision}:${exercise.id}` : null;
+      if (next === exerciseKey) return;
+      exerciseKey = next;
+      get('trace-details').open = !exercise;
+      if (exercise) get('include-trace').checked = false;
+      if (exercise && ['route','detour'].includes(exercise.type)) {
+        state = {startNodeId: exercise.rubric.startNodeId, mode: exercise.rubric.mode, edgeIds: []};
+        startPicker.choose(state.startNodeId); get('trace-mode').value = state.mode;
+        toggle(true); refresh();
+        message('New question: trace cleared. Start and travel mode are set from the prompt. Tap connected roads or choose the next segment below.');
+      } else { state = null; toggle(false); refresh(); }
+    },
+    clear() { if (state) state = {...state,edgeIds:[]}; refresh(); },
     isTracing: () => tracing,
     overlay: () => state ? review.inspect(state) : null,
     printOverlay: () => get('include-trace').checked && state?.edgeIds.length ? review.inspect(state) : null,
@@ -59,7 +73,7 @@ export function createRouteTrace({ getPack, redraw }) {
       else message(choices.length > 1 ? 'This road has multiple outgoing edges. Choose its directed edge in the list.' : 'No usable outgoing edge on this road from the current graph node. A visual crossing does not connect nodes.');
     },
     installed() {
-      review = createTraceReview(getPack()); state = null; toggle(false);
+      review = createTraceReview(getPack()); state = null; exerciseKey = null; toggle(false);
       startPicker.set(review.starts.map((node) => ({ id: node.id, text: `${node.id} · ${node.coordinate.map((v) => v.toFixed(5)).join(', ')}` })), '', true);
       startPicker.enabled(getPack().module !== 'topographic');
       get('trace-start').disabled = getPack().module === 'topographic'; get('trace-mode').disabled = getPack().module === 'topographic'; get('include-trace').checked = false;

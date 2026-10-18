@@ -1,3 +1,4 @@
+import { createEndpointAnswer } from './endpoint-answer.js';
 import { renderProfileChart } from '../terrain/profile-chart.js';
 import { lessonPdf } from '../export/lesson-pdf.js';
 import { createExplorer } from './explorer.js';
@@ -51,7 +52,9 @@ function updateView() {
   const screenHeight = Math.max(320, Math.min(560, screenWidth * .56));
   const screenKey = `${variant}:${rotation}:${screenWidth}`;
   const model = cachedModel(screenModels, screenKey, () => createMapModel(pack, { variant, rotationDeg: rotation, screenWidth, screenHeight })); currentModel = model;
-  const overlay = trace.overlay(), lessonAnnotations = lessons.annotations(), profile = lessons.profile();
+  const overlay = trace.overlay(), taskAnnotations = lessons.annotations(), profile = lessons.profile();
+  const lessonAnnotations = taskAnnotations ? {...taskAnnotations, markers:[...taskAnnotations.markers,...endpoint.markers()]} : null;
+  if (pack.module !== 'topographic') get('map-help').textContent = lessons.exercise()?.type === 'endpoint' ? 'Tap inside the map to place a tentative answer, or use the reference selector and keyboard map controls beside it. Named references are clues, not answer keys.' : lessons.exercise()?.scenario ? `Cross marks indicate an exercise-only closure: ${lessons.exercise().scenario.label} Start and End mark the task endpoints. Tapped road crossings connect only where the authored graph connects them.` : 'Start and End mark task start and destination. Choose connected roads by map taps or use Next directed edge and Add edge. Lettered references identify authored nodes; crossings alone do not connect roads.';
   get('profile-panel').hidden = !profile;
   if(pack.module === 'topographic') get('map-help').textContent = lessonAnnotations ? 'Read the marked contour references, slope spans, H/L landform axis or S/E profile. Use the labeled answer field and Submit answer; hints and retry are available.' : 'Begin or resume a lesson session to show its references and question. Synthetic elevations use a synthetic zero; no real terrain is represented.';
   const profileKey = profile ? JSON.stringify([pack.id,pack.revision,profile.path,Math.round(get('profile-chart').clientWidth)]) : '';
@@ -61,7 +64,7 @@ function updateView() {
   }
   const viewKey = JSON.stringify([rotation, screenWidth, screenHeight, headingDeg, overlay?.startNodeId, overlay?.mode, overlay?.edgeIds,lessonAnnotations]);
   if (screenViewKey !== viewKey) {
-    get('map').replaceChildren(renderMap(document, model, { selectedId: selected, headingDeg, route: overlay, annotations:lessonAnnotations, onSelect: (id) => { if (!editor.isPlacing()) { if (trace.isTracing()) trace.selectFeature(id); else selectFeature(id); } } }));
+    get('map').replaceChildren(renderMap(document, model, { selectedId: selected, headingDeg, route: overlay, annotations:lessonAnnotations, onSelect: (id) => { if (!editor.isPlacing() && !(lessons.exercise()?.type === 'endpoint')) { if (trace.isTracing()) trace.selectFeature(id); else selectFeature(id); } } }));
     screenViewKey = viewKey;
   } else {
     if (screenVariant !== variant) updateMapLabels(document, get('map').querySelector('svg'), model);
@@ -147,7 +150,8 @@ async function load(operation) {
 }
 const featurePicker = createSearchSelect({ select: get('feature'), filter: get('feature-filter'), summary: get('feature-matches'), placeholder: 'No feature selected' });
 const trace = createRouteTrace({ getPack: () => pack, redraw: updateView });
-const lessons = createLessons({ getPack: () => pack, getTrace: () => trace.overlay(), cancelPackLoad: () => { job?.abort(); if (pack) updateView(); else announce('Choose a map or restore a session backup.'); }, installPack: (value) => { job?.abort(); install(value); } });
+const lessons = createLessons({ getPack: () => pack, getTrace: () => trace.overlay(), getEndpoint: () => endpoint.answer(), cancelPackLoad: () => { job?.abort(); if (pack) updateView(); else announce('Choose a map or restore a session backup.'); }, installPack: (value) => { job?.abort(); install(value); } });
+const endpoint = createEndpointAnswer({getPack:()=>pack,getModel:()=>currentModel,isPracticing:()=>lessons.exercise()?.type==='endpoint' && lessons.isPracticing(),redraw:updateView});
 const editor = createLabelEditor({ getPack: () => pack, getModel: () => currentModel, applyPack: (value) => { assertRenderable(value); lessons.guardReplacement(); pack = value; screenModels.clear(); paperModels.clear(); printPagesKey = null; screenViewKey = null; paperViewKey = null; screenSelected = null; trace.packChanged(); lessons.packChanged(); updateView(); } });
 
 const preferences = createPreferences({
@@ -167,7 +171,14 @@ get('landform-demo').addEventListener('click',()=>load(async(signal)=>{const r=a
 get('profile-demo').addEventListener('click',()=>load(async(signal)=>{const r=await fetch('tests/fixtures/terrain-profiles.json',{signal});if(!r.ok)throw new Error('Profile lesson could not be loaded.');return readImport(await r.blob(),signal);}));
 get('slope-demo').addEventListener('click', () => load(async(signal) => { const r=await fetch('tests/fixtures/terrain-slopes.json',{signal});if(!r.ok)throw new Error('Slope lesson could not be loaded.');return readImport(await r.blob(),signal); }));
 get('terrain-demo').addEventListener('click', () => load(async(signal) => { const response=await fetch('tests/fixtures/terrain-hill.json',{signal}); if(!response.ok) throw new Error('Contour lesson could not be loaded.'); return readImport(await response.blob(),signal); }));
-document.addEventListener('lesson-view-changed', () => requestAnimationFrame(updateView));
+document.addEventListener('lesson-view-changed', () => {
+  const exercise = lessons.exercise();
+  trace.setExercise(exercise); endpoint.sync(exercise?.type==='endpoint' ? `${pack.id}:${pack.revision}:${exercise.id}` : null);
+  get('practice-workspace').dataset.task = exercise?.type ?? '';
+  updateView();
+});
+document.addEventListener('lesson-answer-cleared', () => { endpoint.clear(); if(pack) requestAnimationFrame(updateView); });
+document.addEventListener('lesson-draft-cleared', event => { if (!event.detail?.retainTrace) trace.clear(); });
 get('import').addEventListener('change', () => { const file = get('import').files[0]; if (file) load((signal) => readImport(file, signal)); get('import').value = ''; });
 get('rotate').addEventListener('click', () => { rotation = (rotation + 90) % 360; preferences.changed(); });
 for (const id of ['variant', 'scale', 'orientation']) get(id).addEventListener('change', () => preferences.changed());

@@ -1,11 +1,12 @@
-import { terrainExerciseAnnotations, deriveLessonProfile } from '../terrain/lesson-pack.js';
+import { exerciseAnnotations } from '../lesson/annotations.js';
+import { deriveLessonProfile } from '../terrain/lesson-pack.js';
 import { openStorage } from '../storage/indexeddb.js';
 import { createAutosave, findStoredVersion, forkSessionBundle } from '../storage/autosave.js';
 import { readBackup, serializeBackup } from '../storage/backup.js';
 import { createLessonSession, resumeLessonSession } from '../lesson/session.js';
 const get = (id) => document.getElementById(id);
 const messages = { correct: 'Correct.', incorrect: 'Try again.', 'needs-review': 'This answer needs review.', unanswered: 'Enter a valid answer before submitting.' };
-export function createLessons({ getPack, getTrace, installPack, cancelPackLoad }) {
+export function createLessons({ getPack, getTrace, getEndpoint, installPack, cancelPackLoad }) {
   let controller = null, restoreJob = null, storage = null, storageReady = false, canDiscard = false, listJob = 0, nextPage = null, connecting = null;
   let pendingFocus = null, viewExerciseKey = null;
   // A save may disable the button that a keyboard user just activated. Restore
@@ -16,7 +17,7 @@ export function createLessons({ getPack, getTrace, installPack, cancelPackLoad }
     const pending = pendingFocus; pendingFocus = null;
     const state = controller?.snapshot();
     if (state?.session.id !== pending.sessionId || state.session.version !== pending.version || ![document.body, pending.origin].includes(document.activeElement)) return;
-    const answerTarget = state.exercise.type === 'heading' ? 'answer-heading' : state.exercise.type === 'endpoint' ? 'answer-lon' : state.exercise.type === 'terrain-form' ? 'answer-landform' : state.exercise.type === 'profile-value' ? 'answer-profile' : state.exercise.type === 'relative-slope' ? 'answer-slope' : state.exercise.type === 'contour-elevation' ? 'answer-elevation' : 'trace-start';
+    const answerTarget = state.exercise.type === 'heading' ? 'answer-heading' : state.exercise.type === 'endpoint' ? 'endpoint-reference' : state.exercise.type === 'terrain-form' ? 'answer-landform' : state.exercise.type === 'profile-value' ? 'answer-profile' : state.exercise.type === 'relative-slope' ? 'answer-slope' : state.exercise.type === 'contour-elevation' ? 'answer-elevation' : 'trace-edge';
     const last = state.attempts.find((a) => a.id === state.session.answers[state.exercise.id]);
     const target = state.phase === 'completed' ? 'lesson-export' : state.phase === 'feedback' ? (last?.result.status === 'correct' ? 'lesson-next' : 'lesson-retry') : pending.origin.id === 'lesson-hint' && !get('lesson-hint').disabled ? 'lesson-hint' : answerTarget;
     get(target).focus();
@@ -54,7 +55,7 @@ export function createLessons({ getPack, getTrace, installPack, cancelPackLoad }
   }
   const cancelPending = () => { restoreJob?.abort(); restoreJob = null; };
   const status = (text) => { get('lesson-status').textContent = text; };
-  function clearAnswer() { for (const id of ['answer-heading', 'answer-lon', 'answer-lat', 'answer-elevation', 'answer-slope', 'answer-profile', 'answer-landform']) get(id).value = ''; }
+  function clearAnswer() { for (const id of ['answer-heading', 'answer-lon', 'answer-lat', 'answer-elevation', 'answer-slope', 'answer-profile', 'answer-landform']) get(id).value = ''; emit('lesson-answer-cleared'); }
   function refresh() {
     const saveState = writer.snapshot(); const busy = !storageReady || saveState.state === 'saving';
     get('save-status').textContent = !storageReady ? 'Opening browser storage…' : !controller ? (storage ? 'Browser storage ready. Keep downloaded backups against browser data loss.' : 'Memory only: browser storage is unavailable. Download session backups.') : !storage ? 'Changes are not saved: browser storage connection is unavailable. Download a session backup, retry storage or reload.' : saveState.state === 'saved' ? `Saved in this browser · version ${saveState.savedVersion}. Keep a downloaded backup.` : saveState.state === 'saving' ? 'Saving progress…' : saveState.state === 'conflict' ? (saveState.error?.code === 'revision-conflict' ? 'Changes are not saved: this pack revision already has different stored content. Download progress and select a reviewed pack with a new revision.' : 'Changes are not saved: another session version conflicts. Download, reload latest or save as a new session.') : `Changes are not saved. ${saveState.error?.message ?? ''} Retry saving or download a session backup.`;
@@ -73,13 +74,14 @@ export function createLessons({ getPack, getTrace, installPack, cancelPackLoad }
     get('profile-answer-label').textContent=e?.type==='profile-value'?`${e.rubric.quantity==='net-change'?'Signed net elevation change':e.rubric.quantity==='ascent'?'Total ascent':'Total descent'} in metres`:'Profile answer in metres';
     get('lesson-slope').hidden = e?.type !== 'relative-slope';
     get('lesson-elevation').hidden = e?.type !== 'contour-elevation';
-    get('lesson-heading').hidden = e?.type !== 'heading'; get('lesson-endpoint').hidden = e?.type !== 'endpoint'; get('lesson-route').hidden = !['route', 'detour'].includes(e?.type);
+    get('lesson-heading').hidden = e?.type !== 'heading'; get('lesson-endpoint').hidden = e?.type !== 'endpoint'; get('lesson-route').hidden = !active || !['route', 'detour'].includes(e?.type);
+    get('route-review').hidden = Boolean(active) && !['route','detour'].includes(e?.type);
     get('lesson-submit').disabled = !practicing; get('lesson-reset').disabled = !practicing;
     get('lesson-retry').disabled = busy || !active || state.phase !== 'feedback'; get('lesson-next').disabled = busy || !active || state.phase !== 'feedback'; get('lesson-end').disabled = busy || !active;
     get('lesson-hint').disabled = busy || !active || (state.session.hintCounts[e.id] ?? 0) >= e.hints.length;
     get('lesson-prompt').textContent = active ? `${state.session.index + 1}/${state.session.exerciseOrder.length} · ${e.prompt}` : 'Begin a session to answer reviewed exercises in pack order.';
     get('lesson-revision').textContent = state ? `Pack ${state.session.packId} · revision ${state.session.packRevision} · ${state.attempts.length} attempts · ${state.session.status}` : '';
-    get('lesson-route').textContent = e && ['route', 'detour'].includes(e.type) ? `Use “Trace a path” below: start ${e.rubric.startNodeId}, end ${e.rubric.endNodeId}, mode ${e.rubric.mode}. Submit the current trace here.${e.rubric.objective === 'max-distance' ? ` Maximum distance: ${e.rubric.maxDistanceM} m.` : ' Any valid route is accepted.'}${e.scenario ? ` ${e.scenario.label} Closed directed edges: ${e.scenario.closedEdgeIds.join(', ')}.` : ''}` : '';
+    get('lesson-route').textContent = active && e && ['route', 'detour'].includes(e.type) ? `Trace a path: start ${e.rubric.startNodeId}, end ${e.rubric.endNodeId}, ${e.rubric.mode === 'drive' ? 'driving' : 'walking'}. Submit the current trace here.${e.rubric.objective === 'max-distance' ? ` Maximum distance: ${e.rubric.maxDistanceM} m.` : ' Any valid route is accepted.'}${e.scenario ? ` ${e.scenario.label} Closed directed edges: ${e.scenario.closedEdgeIds.join(', ')}.` : ''}` : '';
     const nextView = active ? e?.id : null;
     if (nextView !== viewExerciseKey) { viewExerciseKey = nextView; emit('lesson-view-changed'); }
     finishKeyboardAction();
@@ -105,22 +107,22 @@ export function createLessons({ getPack, getTrace, installPack, cancelPackLoad }
   get('lesson-submit').addEventListener('click', (event) => run(() => {
     const e = controller.snapshot().exercise; let answer;
     if (e.type === 'heading') answer = get('answer-heading').value.trim() ? { type: e.type, degrees: Number(get('answer-heading').value) } : null;
-    else if (e.type === 'endpoint') answer = get('answer-lon').value.trim() && get('answer-lat').value.trim() ? { type: e.type, coordinate: [Number(get('answer-lon').value), Number(get('answer-lat').value)] } : null;
+    else if (e.type === 'endpoint') { const coordinate = getEndpoint(); answer = coordinate ? {type:e.type,coordinate} : null; }
     else if(e.type==='terrain-form') answer=get('answer-landform').value?{type:e.type,choice:get('answer-landform').value}:null;
     else if(e.type==='profile-value') answer=get('answer-profile').value.trim()?{type:e.type,valueM:Number(get('answer-profile').value)}:null;
     else if (e.type === 'relative-slope') answer = get('answer-slope').value ? {type:e.type,choice:get('answer-slope').value} : null;
     else if (e.type === 'contour-elevation') answer = get('answer-elevation').value.trim() ? {type:e.type,elevationM:Number(get('answer-elevation').value)} : null;
     else {
       const trace = getTrace();
-      if (!trace || trace.startNodeId !== e.rubric.startNodeId || trace.mode !== e.rubric.mode) { status(`Choose start ${e.rubric.startNodeId} and mode ${e.rubric.mode} in the trace controls.`); return; }
+      if (!trace || trace.startNodeId !== e.rubric.startNodeId || trace.mode !== e.rubric.mode) { status(`Choose start ${e.rubric.startNodeId} and ${e.rubric.mode === 'drive' ? 'driving' : 'walking'} in the trace controls.`); return; }
       answer = { type: e.type, edgeIds: trace.edgeIds };
     }
     controller.setAnswer(answer); const score = controller.submit();
     status(`${messages[score.status]} ${score.reasonCode.replaceAll('-', ' ')}. ${e.type==='terrain-form'?'Compare contour bends with H (higher) and L (lower).':e.type==='profile-value'&&Number.isFinite(score.metrics.profileErrorM)?`Profile error: ${Number(score.metrics.profileErrorM.toFixed(2))} m` : e.type === 'relative-slope' ? 'For the same elevation change, compare the horizontal distances between the end ticks.' : e.type === 'contour-elevation' && Number.isFinite(score.metrics.elevationErrorM) ? `Elevation error: ${Number(score.metrics.elevationErrorM.toFixed(2))} m` : Object.entries(score.metrics).map(([key, value]) => `${key}: ${Number(value.toFixed(2))}`).join(' · ')}`);
   }, true, event));
-  get('lesson-reset').addEventListener('click', () => run(() => { controller.reset(); emit('session-reset', { sessionId: controller.snapshot().session.id, exerciseId: controller.snapshot().exercise.id }); clearAnswer(); status('Draft answer cleared. Submitted attempts and hints are retained. The review trace is unchanged.'); }));
-  get('lesson-retry').addEventListener('click', (event) => run(() => { controller.retry(); clearAnswer(); status('Try another answer. Earlier attempts and hints are retained.'); }, true, event));
-  get('lesson-next').addEventListener('click', (event) => run(() => { controller.next(); clearAnswer(); get('lesson-hints').replaceChildren(); status(controller.snapshot().phase === 'completed' ? 'Session completed. Check the save status before closing.' : 'Next exercise. Choose a new trace when needed.'); }, true, event));
+  get('lesson-reset').addEventListener('click', () => run(() => { controller.reset(); emit('lesson-draft-cleared'); emit('session-reset', { sessionId: controller.snapshot().session.id, exerciseId: controller.snapshot().exercise.id }); clearAnswer(); status('Draft answer cleared. Submitted attempts and hints are retained. The current trace is cleared.'); }));
+  get('lesson-retry').addEventListener('click', (event) => run(() => { controller.retry(); clearAnswer(); emit('lesson-draft-cleared', {retainTrace:true}); status('Try another answer. Earlier attempts and hints are retained.'); }, true, event));
+  get('lesson-next').addEventListener('click', (event) => run(() => { controller.next(); clearAnswer(); get('lesson-hints').replaceChildren(); status(controller.snapshot().phase === 'completed' ? 'Session completed. Check the save status before closing.' : 'Next exercise. Route questions start with a fresh trace.'); }, true, event));
   get('lesson-end').addEventListener('click', (event) => run(() => { controller.end(); clearAnswer(); status('Session ended. Check the save status before closing.'); }, true, event));
   get('lesson-hint').addEventListener('click', (event) => run(() => { const hint = controller.hint(); if (hint !== null) { const li = document.createElement('li'); li.textContent = hint; get('lesson-hints').append(li); status('Hint shown. Hints are counted separately from correctness.'); } }, true, event));
   get('lesson-export').addEventListener('click', () => run(() => {
@@ -191,5 +193,5 @@ export function createLessons({ getPack, getTrace, installPack, cancelPackLoad }
   window.addEventListener('pageshow', (event) => { if (event.persisted) void connectStorage(); });
   window.addEventListener('pagehide', () => { cancelPending(); storage?.close(); storage = null; });
   refresh(); void connectStorage();
-  return { profile() {const state=controller?.snapshot();return state?.session.status==='active'&&state.exercise.type==='profile-value'?deriveLessonProfile(getPack(),state.exercise):null;}, guardReplacement, cancelPending, annotations() { const state=controller?.snapshot(); return state?.session.status==='active' ? terrainExerciseAnnotations(getPack(),state.exercise) : null; }, installed() { cancelPending(); controller = null; clearAnswer(); get('lesson-hints').replaceChildren(); status('Select a reviewed pack to practice or resume a saved session. Unfinished answers are discarded on refresh. Practice while stationary.'); refresh(); }, packChanged() { this.installed(); status('Pack content changed. The old session has ended; review the new revision before practicing.'); } };
+  return { exercise() {const s=controller?.snapshot();return s?.session.status==='active'?s.exercise:null;}, isPracticing() {return controller?.snapshot().phase==='practicing' && !get('lesson-fields').disabled;}, profile() {const state=controller?.snapshot();return state?.session.status==='active'&&state.exercise.type==='profile-value'?deriveLessonProfile(getPack(),state.exercise):null;}, guardReplacement, cancelPending, annotations() { const state=controller?.snapshot(); return state?.session.status==='active' ? exerciseAnnotations(getPack(),state.exercise) : null; }, installed() { cancelPending(); controller = null; clearAnswer(); get('lesson-hints').replaceChildren(); status('Select a reviewed pack to practice or resume a saved session. Unfinished answers are discarded on refresh. Practice while stationary.'); refresh(); }, packChanged() { this.installed(); status('Pack content changed. The old session has ended; review the new revision before practicing.'); } };
 }
