@@ -37,7 +37,7 @@ Contour printing: loading the synthetic contour lesson starts a learner workshee
 - [Depression contours and bounds](docs/contracts/terrain-depressions-v1.md)
 - [Synthetic contour cartography and label/answer rules](docs/contour-cartography.md)
 - [Local address lessons: draft design and evidence](docs/address-lessons.md)
-- [Five draft street pilot sets and review gates](docs/materials/pilot-v1/README.md)
+- [Five draft street pilot sets and review gates](docs/materials/pilot-v2/README.md)
 - [Exploratory pilot kit and local reporting](docs/learning-pilot.md)
 - [Run the map review interface](docs/map-review.md)
 - [Renderer validation evidence](docs/validation/render-evidence.md)

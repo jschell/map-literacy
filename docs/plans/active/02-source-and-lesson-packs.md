@@ -61,3 +61,6 @@ Validation: 225 Node tests pass; the packet validates and regenerates byte-for-b
 
 
 2026-10-18 continuation: PR-60 CI and Pages deployment passed; hosted synthetic street heading practice still scored correctly. Prepared the independent [five-set synthetic pilot material candidates](../../materials/pilot-v1/README.md) while Redmond content/route review remains pending. Candidate preparation does not complete neighborhood approval, newer-source comparison, equivalence or learner evidence. Further feature expansion stays paused.
+
+
+2026-10-18 material-review continuation: PR-61 merge and deployment passed. An author desk review identified repeated questions despite passing graph/print checks. [Revision 2](../../materials/pilot-v2/README.md) corrects the identified overlaps and preserves revision-1 references. The [desk report](../../reviews/2026-10-18-pilot-materials.md) and independent checklist identify remaining comparability and external-evidence gates. No neighborhood or synthetic material is independently approved by this work.
