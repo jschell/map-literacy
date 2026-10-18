@@ -29,6 +29,7 @@ Contour printing: loading the synthetic contour lesson starts a learner workshee
 - [Remaining browser/release acceptance](docs/plans/queue/05-persistence-and-browser-release.md)
 - [Setup, saved progress, preferences and data removal](docs/browser-setup.md)
 - [Static packages: Cloudflare and GitHub Pages](docs/static-deployment.md)
+- [Synthetic contour cartography and label/answer rules](docs/contour-cartography.md)
 - [Local address lessons: draft design and evidence](docs/address-lessons.md)
 - [Exploratory pilot kit and local reporting](docs/learning-pilot.md)
 - [Run the map review interface](docs/map-review.md)

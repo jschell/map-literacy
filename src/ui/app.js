@@ -53,6 +53,7 @@ function updateView() {
   const model = cachedModel(screenModels, screenKey, () => createMapModel(pack, { variant, rotationDeg: rotation, screenWidth, screenHeight })); currentModel = model;
   const overlay = trace.overlay(), lessonAnnotations = lessons.annotations(), profile = lessons.profile();
   get('profile-panel').hidden = !profile;
+  if(pack.module === 'topographic') get('map-help').textContent = lessonAnnotations ? 'Read the marked contour references, slope spans or S/E profile. Use the labeled answer field and Submit answer; hints and retry are available.' : 'Begin or resume a lesson session to show its references and question. Synthetic elevations use a synthetic zero; no real terrain is represented.';
   const profileKey = profile ? JSON.stringify([pack.id,pack.revision,profile.path,Math.round(get('profile-chart').clientWidth)]) : '';
   if(get('profile-chart').dataset.key!==profileKey) {
     get('profile-chart').dataset.key=profileKey;get('profile-chart').replaceChildren(...(profile?[renderProfileChart(document,profile)]:[]));
@@ -79,6 +80,7 @@ function updateView() {
     const paperKey = `${variant}:${scaleDenominator}:${orientation}`;
     const paper = cachedModel(paperModels, paperKey, () => createMapModel(pack, { paper: true, variant, scaleDenominator, orientation }));
     const output = get('print-output').value;
+    const mapAnnotations = pack.module === 'topographic' ? {closedEdges:[],markers:[],contourElevations:true} : null;
     const spec = output === 'map' ? null : createExercisePrint(pack, get('print-exercise').value, output);
     const pagesKey = `${pack.id}:${pack.revision}:${orientation}:${output}:${get('print-exercise').value}`;
     if (pagesKey !== printPagesKey) {
@@ -88,7 +90,7 @@ function updateView() {
     const paperHeading = spec ? spec.headingDeg : headingDeg, paperTrace = spec ? null : printTrace;
     const paperKeyForView = JSON.stringify([orientation, scaleDenominator, pack.revision, output, spec?.exerciseId, paperHeading, paperTrace?.startNodeId, paperTrace?.mode, paperTrace?.edgeIds]);
     if (paperViewKey !== paperKeyForView) {
-      get('paper-map').replaceChildren(renderMap(document, paper, { headingDeg: paperHeading, route: paperTrace, annotations: spec?.annotations }));
+      get('paper-map').replaceChildren(renderMap(document, paper, { headingDeg: paperHeading, route: paperTrace, annotations: spec?.annotations ?? mapAnnotations }));
       paperViewKey = paperKeyForView;
     } else if (paperVariant !== variant) updateMapLabels(document, get('paper-map').querySelector('svg'), paper);
     paperVariant = variant;
@@ -106,7 +108,7 @@ function updateView() {
       const title = document.createElement('h3'); title.textContent = get('paper-title').textContent;
       const summary = document.createElement('p'); summary.textContent = get('paper-summary').textContent;
       const footer = document.createElement('p'); footer.className = 'note'; footer.textContent = get('paper-footer').textContent;
-      preview.replaceChildren(renderMap(document, paper, { headingDeg: paperHeading, route: paperTrace, annotations: spec?.annotations }), title, summary, footer);
+      preview.replaceChildren(renderMap(document, paper, { headingDeg: paperHeading, route: paperTrace, annotations: spec?.annotations ?? mapAnnotations }), title, summary, footer);
     }
   } catch (error) {
     invalidateLessonPdf(); get('lesson-pdf').disabled = true;
@@ -115,7 +117,7 @@ function updateView() {
     get('paper-summary').textContent = '';
     get('paper-title').textContent = 'Print output is unavailable'; get('paper-footer').textContent = printError;
   }
-  announce(`${pack.title} · ${pack.review.status === 'reviewed' ? 'Reviewed pack' : 'Unreviewed draft'} · ${pack.features.features.length} features · ${model.labels.length} labels shown${model.suppressedLabels ? `, ${model.suppressedLabels} suppressed to avoid collisions/edges` : ''} · screen rotated ${rotation}°. ${printError}`);
+  announce(`${pack.title} · ${pack.review.status === 'reviewed' ? 'Reviewed pack' : 'Unreviewed draft'} · ${pack.features.features.length} features · ${model.labels.length + get('map').querySelectorAll('.contour-elevation-label').length} labels shown${model.suppressedLabels ? `, ${model.suppressedLabels} suppressed to avoid collisions/edges` : ''} · screen rotated ${rotation}°. ${printError}`);
 }
 function install(value) {
   assertRenderable(value); lessons.guardReplacement();

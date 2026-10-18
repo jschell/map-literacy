@@ -4,6 +4,15 @@ export async function checkTerrainProfileLessons(page,base,output) {
  await page.goto(base);await page.locator('#profile-demo').click();await page.waitForFunction(()=>document.getElementById('status').textContent.includes('elevation profiles'));
  assert.equal(await page.locator('#paper-map .profile-transect').count(),2);assert.equal(await page.locator('#exercise-pages .paper-profile').count(),1);
  await page.locator('#lesson-start').click();await saved();await page.locator('#profile-panel').waitFor({state:'visible'});assert.ok(await page.locator('#profile-values tr').count()>2);
+ assert.match(await page.locator('#map-help').textContent(),/Read the marked/);
+ assert.ok(await page.locator('#map .contour-elevation-label').count()>0);
+ const styleCheck=await page.evaluate(async()=>{
+  const {createMapModel}=await import('./src/map/model.js'),{renderMap}=await import('./src/map/render.js');
+  const p=await (await fetch('tests/fixtures/terrain-profiles.json')).json(),m=createMapModel(p);m.paths[0].contourLevelM=75;
+  const svg=renderMap(document,m),index=svg.querySelector('.contour--index'),other=svg.querySelector('.contour--intermediate');
+  return Number(index.getAttribute('stroke-width'))>Number(other.getAttribute('stroke-width'));
+ });assert.equal(styleCheck,true);
+
  assert.match(await page.locator('#profile-chart svg').getAttribute('aria-label'),/Axes use different scales/);
  await page.locator('#lesson-submit').click();assert.match(await page.locator('#lesson-status').textContent(),/Enter a valid answer/);
  await page.locator('#answer-profile').fill('0');await page.locator('#lesson-submit').click();await saved();assert.match(await page.locator('#lesson-status').textContent(),/Try again/);
@@ -27,6 +36,8 @@ export async function checkTerrainProfileLessons(page,base,output) {
  for(const answer of ['10','10','-10']) {await page.locator('#lesson-next').click();await saved();await page.locator('#answer-profile').fill(answer);await page.locator('#lesson-submit').click();await saved();assert.match(await page.locator('#lesson-status').textContent(),/^Correct/);}
  await page.setViewportSize({width:375,height:820});await page.waitForFunction(()=>document.querySelector('#profile-chart svg')?.getAttribute('viewBox')!=='0 0 180 70');
  const clipped=await page.locator('#profile-chart svg').evaluate(svg=>{const v=svg.viewBox.baseVal;return [...svg.querySelectorAll('text')].map(n=>{const b=n.getBBox();return {text:n.textContent,b:{x:b.x,y:b.y,width:b.width,height:b.height},view:{width:v.width,height:v.height}};}).filter(({b})=>b.x<0||b.y<0||b.x+b.width>v.width+.01||b.y+b.height>v.height+.01);});assert.deepEqual(clipped,[]);
+ const labelClips=await page.locator('#map .contour-elevation-label, #map .contour-legend text').evaluateAll(nodes=>nodes.filter(n=>{const b=n.getBBox(),v=n.ownerSVGElement.viewBox.baseVal;return b.x<0||b.y<0||b.x+b.width>v.width+.1||b.y+b.height>v.height+.1;}).map(n=>n.textContent));assert.deepEqual(labelClips,[]);
+ await page.locator('#map').screenshot({path:new URL('profile-cartography-narrow.png',output).pathname});
  await page.locator('#profile-panel').screenshot({path:new URL('profile-narrow.png',output).pathname});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
  await page.locator('#lesson-next').click();await saved();assert.match(await page.locator('#lesson-revision').textContent(),/completed/);assert.equal(await page.locator('#profile-panel').isVisible(),false);
  await page.locator('#lesson-import').setInputFiles({name:'profile-backup.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(backup))});await page.waitForFunction(()=>document.getElementById('lesson-status').textContent.startsWith('Session restored'));await page.waitForFunction(()=>!document.getElementById('save-fork').disabled);await page.locator('#save-fork').click();await saved();

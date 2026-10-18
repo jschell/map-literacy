@@ -198,6 +198,7 @@ h2.sheet-block { font-size: 12pt; line-height: 1.4; }
 #explorer-terrain-roads-wrap[hidden] { display: none; }
 
 .feature--contour { fill: none; }
+.feature--contour:not(.feature--selected) { stroke: black; }
 
 #print-preview { margin: 20px 0; }
 #print-preview summary { cursor: pointer; padding: 12px 0; font-weight: 600; }
