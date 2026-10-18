@@ -46,7 +46,10 @@ Do not globally approve an unresolved pack to unlock scoring. Narrow the scope o
 
 ## Preparation order and decision gate
 
-[Plan 02](plans/active/02-source-and-lesson-packs.md) owns neighborhood preparation. First reproduce/inventory the source checkpoint, select a small usable subset, then prepare the sequence and review packet. If the checkpoint is unavailable, record that fact and reacquire reproducibly. Independent review is a blocker to approval, not to drafting the next independent material.
+First execute [Plan 10](plans/active/10-learner-usability-and-workflows.md): the current endpoint coordinate-entry, missing street annotations and fragmented practice workspace prevent a fair screen/paper walkthrough. Repair those existing interactions and session/print semantics before participant use. Independent content review may proceed while UI work is underway; it does not approve the software or establish learning outcomes.
+
+
+[Plan 02](plans/queue/02-source-and-lesson-packs.md) owns neighborhood preparation. First reproduce/inventory the source checkpoint, select a small usable subset, then prepare the sequence and review packet. If the checkpoint is unavailable, record that fact and reacquire reproducibly. Independent review is a blocker to approval, not to drafting the next independent material.
 
 Five [candidate eight-item sets](materials/pilot-v2/README.md) are prepared; next independently review their content, overlap and comparability under [Plan 06](plans/queue/06-learning-pilot.md): baseline A, training B/C, immediate unfamiliar transfer D and delayed transfer E. Each has two heading, two endpoint, two route and two detour items. Match clues, exposure and difficulty; do not reuse one worksheet under different IDs. Keep this controlled assessment distinct from the six-stage coached practice sequence.
 

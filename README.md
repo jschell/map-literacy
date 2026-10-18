@@ -4,7 +4,7 @@ Learn to understand where you are, which direction you face, how routes connect 
 
 Street lessons cover orientation, roads, landmarks, addresses, return routes and detours. Synthetic topographic lessons cover contour elevations, relative slope, profiles and ridge/valley recognition. Real terrain lessons remain under development. Both use shared map, lesson, print and progress components.
 
-**Current priority:** complete one reviewed neighborhood learning sequence on screen and paper, and review the prepared unfamiliar-map and delayed-check material candidates using the existing pilot protocol. New terrain capabilities are paused. Software correctness is well tested; independent neighborhood content review and observed learning remain pending. See [practice sequence, evidence and next work](docs/learning-sequence.md).
+**Current priority:** repair the existing practice, navigation and print workflows under [Plan 10](docs/plans/active/10-learner-usability-and-workflows.md), then resume neighborhood and pilot material acceptance. New terrain capabilities are paused. Software correctness is well tested; independent neighborhood content review and observed learning remain pending. See [practice sequence, evidence and next work](docs/learning-sequence.md).
 
 **Current state:** a vanilla JavaScript geographic browser opening on a Redmond example at zoom 15, with direct map printing and a Letter portrait/landscape print area, mouse/touch panning, zoom and coordinate/OpenStreetMap-link jumps, alongside a map review interface with pack import, rotation, label variants, heading arrows, feature selection and fixed-scale print output. Data validation and OSM preparation are implemented; the Redmond draft renders but remains unreviewed. Reviewed street lessons now support heading, endpoint, route and detour scoring in revision-locked sessions, with hints, retries and multiple valid routes. Accepted progress saves in this browser with explicit saved-session resume, failed-save retry and conflict recovery. Session backup download/restore preserves committed attempts and hints; unfinished answers remain memory only. Labels, screen rotation, print scale and Letter orientation now save independently. Reviewed real lessons and routing deployment remain pending.
 
@@ -28,7 +28,8 @@ Contour printing: loading the synthetic contour lesson starts a learner workshee
 - [Architecture proposal](docs/architecture.md)
 - [Plan index and dependencies](docs/plans/README.md)
 - [Draft Redmond orient/location material packet](docs/materials/redmond-r1/README.md)
-- [Active work: reviewed neighborhood lesson materials](docs/plans/active/02-source-and-lesson-packs.md)
+- [Active work: learner usability and website workflows](docs/plans/active/10-learner-usability-and-workflows.md)
+- [Queued neighborhood lesson materials](docs/plans/queue/02-source-and-lesson-packs.md)
 - [Terrain implementation and remaining acceptance](docs/plans/queue/08-topographic-learning.md)
 - [Remaining browser/release acceptance](docs/plans/queue/05-persistence-and-browser-release.md)
 - [Setup, saved progress, preferences and data removal](docs/browser-setup.md)

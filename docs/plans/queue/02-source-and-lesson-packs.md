@@ -1,6 +1,6 @@
 # Plan 02 — Source and lesson packs
 
-Status: active, reprioritized 2026-10-18. Validation, source preparation and inspection tools exist; finish one bounded neighborhood learning sequence before adding capability types.
+Status: queued behind Plan 10 usability repairs, reprioritized 2026-10-18. Validation, source preparation and inspection tools exist; finish one bounded neighborhood learning sequence before adding capability types.
 Dependencies: 01.
 
 ## Outcome
