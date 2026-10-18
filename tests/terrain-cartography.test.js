@@ -25,3 +25,10 @@ test('elevation questions keep numeric contour labels hidden by default without 
   assert.equal(a.contourLabelsAllowed,false);assert.equal(b.contourLabelsAllowed,true);
   assert.deepEqual(a.paths.map(p=>p.d),b.paths.map(p=>p.d));assert.deepEqual(a.paths.map(p=>p.contourLevelM),[80,85,90]);
 });
+
+
+test('collinear contour segmentation does not remove readable labels',()=>{
+ const p=buildTerrainProfileFixture(),a=createMapModel(p,{screenWidth:320,screenHeight:320}),b=createMapModel(p,{screenWidth:320,screenHeight:320});
+ for(const path of b.paths)path.lines=path.lines.map(line=>line.flatMap((point,i)=>i===line.length-1?[point]:Array.from({length:20},(_,j)=>point.map((v,k)=>v+(line[i+1][k]-v)*j/20))));
+ const labels=contourLabelCandidates(b);assert.ok(labels.length>0);assert.equal(labels.length,contourLabelCandidates(a).length);
+});

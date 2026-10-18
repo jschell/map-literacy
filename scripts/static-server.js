@@ -17,7 +17,7 @@ export function createStaticServer(root, { basePath = '/', headers = RESPONSE_HE
       if (!path.startsWith(basePath)) { response.writeHead(404); response.end(); return; }
       path = '/' + path.slice(basePath.length);
       if (path === '/') path = '/index.html';
-      if (!['/index.html', '/styles.css', '/LICENSE', '/NOTICE.txt', '/tests/fixtures/street-square.json', '/tests/fixtures/terrain-profiles.json', '/tests/fixtures/terrain-slopes.json', '/tests/fixtures/terrain-hill.json'].includes(path) && !/^\/src\/[a-zA-Z0-9/_-]+\.js$/.test(path)) { response.writeHead(404); response.end(); return; }
+      if (!['/index.html', '/styles.css', '/LICENSE', '/NOTICE.txt', '/tests/fixtures/street-square.json', '/tests/fixtures/terrain-landforms.json', '/tests/fixtures/terrain-profiles.json', '/tests/fixtures/terrain-slopes.json', '/tests/fixtures/terrain-hill.json'].includes(path) && !/^\/src\/[a-zA-Z0-9/_-]+\.js$/.test(path)) { response.writeHead(404); response.end(); return; }
       const target = await realpath(resolve(root, '.' + path));
       if (!target.startsWith(root + sep)) { response.writeHead(404); response.end(); return; }
       const bytes = await readFile(target);

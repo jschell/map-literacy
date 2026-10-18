@@ -33,7 +33,8 @@ Add terrain interpretation to the shared pack/renderer/lesson system without equ
 - [x] Implement the first bounded synthetic relative-slope comparisons with analytic answers, saved recovery and matching learner/instructor output.
 - [x] Build bounded draft terrain-profile sampling and ascent/descent with analytic answers, explicit gaps and a documented noise policy.
 - [x] Implement the first complete synthetic transect-profile charts and ascent/descent/signed-change exercises with derived answers, saved recovery and printable output.
-- [ ] Implement ridge/valley recognition and broader real road/trail route-profile exercises with independently reviewed answers.
+- [x] Implement bounded synthetic ridge/valley recognition with grid-derived answers, saved recovery and matching learner/instructor output.
+- [ ] Independently review curriculum/real terrain answers and implement broader real road/trail route-profile exercises.
 - [ ] Add true/grid/magnetic north distinctions where taught; require source/date for declination rather than treating them as equal.
 - [ ] Verify alignment with roads/trails, units/nodata, profiles and matching printed variants; run unfamiliar-terrain pilot extension.
 
@@ -129,3 +130,11 @@ Hosted verification of PR 54 after automatic PR-55 publication: live Load profil
 
 
 Validation: all 214 Node tests pass; fixtures reproduce exactly, the street fixture validates and 161 local Markdown links resolve. The complete packaged Chromium site/Pages suite passes with zero browser errors, including contour cartography, profile/slope scoring, storage/backup/conflict recovery, keyboard/reflow and native/direct Letter output. Measured PDF scale bars remain 20.0237 mm and 49.9957 mm for nominal 20/50 mm. Narrow-screen cartography and representative profile learner/contour instructor PDFs were independently rendered and visually inspected. First hosted verification of this cartography change remains pending merge and automatic deployment; target Safari/physical-paper and real-source acceptance remain open.
+
+
+User acceptance and hosted PR-56 verification (2026-10-18): automatic push deployment and both CI jobs passed for c29efc0. Live checks verified legend, numeric label toggling, blank output, learner/instructor separation, corrected session guidance, contour/profile scoring, save/reload/resume/completion and four Letter downloads. Sampled downloaded learner/instructor PDFs were independently rendered and inspected. The user said to presume the current output acceptable and continue; no additional Safari/physical-paper measurement is inferred.
+
+Ridge/valley teaching slice: separate synthetic-terrain-landforms pack and optional terrain-landforms-v1 companion. Derived answers require a monotone longitudinal axis and six consistent outward half-sections across three stations, complete bounded profiles and at least 1 m relief per section. Flat/reversing/mixed/nodata/outside sections reject the pack; this is a bounded stencil rather than general terrain segmentation. H/L/A annotations, Ridge/Valley choice, hints/retry, saved recovery and learner/instructor native/direct Letter output share the existing pipeline. Source recipe/hash and regenerated contour geometry remain reproducible; existing pack revisions are unchanged. See [contract, fixture and limits](../../contracts/terrain-landforms-v1.md).
+
+
+Validation: all 219 Node tests pass; fixtures reproduce exactly, the new landform pack validates and 164 local Markdown links resolve. The full packaged Chromium site/Pages suite passes with zero browser errors, including all four ridge/valley outcomes, reversed axes, keyboard retry, hints, save/reload, backup fork, invalid-import retention, narrow labels and four direct plus four native learner/instructor Letter documents. Existing street/contour/slope/profile recovery and PDF scale checks also pass. Narrow maps and representative native/direct learner/instructor PDF map/question pages were rendered and visually inspected. A label-placement regression merges collinear runs only for label candidates, preserving all source/rendered geometry. First hosted verification of this slice remains pending merge and automatic deployment; independent curriculum/real-source/pilot gates remain open.

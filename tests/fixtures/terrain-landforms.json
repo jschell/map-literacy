@@ -1,0 +1,794 @@
+{
+  "schemaVersion": 2,
+  "id": "synthetic-terrain-landforms",
+  "title": "Synthetic landforms — ridge and valley",
+  "revision": 1,
+  "module": "topographic",
+  "capabilities": [
+    "terrain-contours-v1",
+    "terrain-landforms-v1"
+  ],
+  "review": {
+    "status": "reviewed",
+    "reviewedAt": "2026-10-17T00:00:00.000Z",
+    "note": "Analytic piecewise-linear ridge/valley and transverse/longitudinal sections checked numerically. Technical fixture review; independent curriculum/transfer review remains pending."
+  },
+  "bounds": [
+    -0.00035972824549454176,
+    -0.0003597282454874518,
+    0.00035972824549454176,
+    0.0003597282454874518
+  ],
+  "sourceBounds": [
+    -0.0003697281454945418,
+    -0.00036972814548745183,
+    0.0003697281454945418,
+    0.00036972814548745183
+  ],
+  "sources": [
+    {
+      "id": "landforms",
+      "kind": "synthetic",
+      "url": null,
+      "query": null,
+      "fetchedAt": "2026-10-16T00:00:00.000Z",
+      "sourceAt": null,
+      "version": "recipe-v1",
+      "sha256": "4c481f20158130e494defe609b1506a910e04fd77c2ff18cd04017f10c6416a9",
+      "license": "CC0-1.0",
+      "attribution": "Invented Map Literacy terrain fixtures; no geographic source.",
+      "transforms": [
+        {
+          "name": "generate-analytic-landforms",
+          "version": "1",
+          "parameters": {
+            "recipe": "landforms-v1: z=140-x/2+(y<=40?abs(y-20)-30:10-abs(y-60)); x,y=0..80 by 10 m"
+          }
+        }
+      ]
+    }
+  ],
+  "features": {
+    "type": "FeatureCollection",
+    "features": [
+      {
+        "type": "Feature",
+        "id": "contour-1",
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              0.00035972814549247394,
+              -0.0002697961091155889
+            ],
+            [
+              0.0002697961091187462,
+              -0.00022483009093030365
+            ],
+            [
+              0.0001798640727454984,
+              -0.00017986407274461216
+            ],
+            [
+              0.0002697961091178599,
+              -0.00013489805455818219
+            ],
+            [
+              0.0003597281454901107,
+              -0.00008993203637186299
+            ]
+          ]
+        },
+        "properties": {
+          "sourceId": "landforms",
+          "role": "contour",
+          "name": "Contour 1",
+          "tags": {}
+        }
+      },
+      {
+        "type": "Feature",
+        "id": "contour-2",
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              0.0003597281454945418,
+              -0.0003597281454874518
+            ],
+            [
+              0.00026979610912007554,
+              -0.000314762127302425
+            ],
+            [
+              0.00017986407274623694,
+              -0.0002697961091169183
+            ],
+            [
+              0.00008993203637291539,
+              -0.0002248300909310421
+            ],
+            [
+              0,
+              -0.0001798640727449076
+            ],
+            [
+              0.00008993203637262,
+              -0.00013489805455862538
+            ],
+            [
+              0.00017986407274505533,
+              -0.00008993203637230609
+            ],
+            [
+              0.0002697961091174168,
+              -0.00004496601818606079
+            ],
+            [
+              0.0003597281454898152,
+              0
+            ]
+          ]
+        },
+        "properties": {
+          "sourceId": "landforms",
+          "role": "contour",
+          "name": "Contour 2",
+          "tags": {}
+        }
+      },
+      {
+        "type": "Feature",
+        "id": "contour-3",
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              0.00017986407274727095,
+              -0.00035972814548922437
+            ],
+            [
+              0.00008993203637335851,
+              -0.000314762127303459
+            ],
+            [
+              0,
+              -0.0002697961091173614
+            ],
+            [
+              -0.00008993203637291539,
+              -0.0002248300909310421
+            ],
+            [
+              -0.0001798640727454984,
+              -0.00017986407274461216
+            ],
+            [
+              -0.00008993203637262,
+              -0.00013489805455862538
+            ],
+            [
+              0,
+              -0.00008993203637245379
+            ],
+            [
+              0.00008993203637247225,
+              -0.000044966018186208496
+            ],
+            [
+              0.0001798640727449076,
+              0
+            ],
+            [
+              0.0002697961091174168,
+              0.00004496601818606067
+            ],
+            [
+              0.0003597281454901107,
+              0.00008993203637186299
+            ]
+          ]
+        },
+        "properties": {
+          "sourceId": "landforms",
+          "role": "contour",
+          "name": "Contour 3",
+          "tags": {}
+        }
+      },
+      {
+        "type": "Feature",
+        "id": "contour-4",
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              0.00017986407274727095,
+              0.00035972814548922437
+            ],
+            [
+              0.00026979610912007554,
+              0.00031476212730242506
+            ],
+            [
+              0.00035972814549247394,
+              0.0002697961091155889
+            ]
+          ]
+        },
+        "properties": {
+          "sourceId": "landforms",
+          "role": "contour",
+          "name": "Contour 4",
+          "tags": {}
+        }
+      },
+      {
+        "type": "Feature",
+        "id": "contour-5",
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              0,
+              -0.0003597281454898152
+            ],
+            [
+              -0.00008993203637335851,
+              -0.0003147621273034592
+            ],
+            [
+              -0.00017986407274623694,
+              -0.0002697961091169183
+            ],
+            [
+              -0.0002697961091187462,
+              -0.0002248300909303037
+            ],
+            [
+              -0.0003597281454909969,
+              -0.00017986407274372593
+            ],
+            [
+              -0.0002697961091178599,
+              -0.0001348980545581821
+            ],
+            [
+              -0.00017986407274505533,
+              -0.00008993203637230609
+            ],
+            [
+              -0.00008993203637247227,
+              -0.00004496601818620837
+            ],
+            [
+              0,
+              0
+            ],
+            [
+              0.00008993203637247225,
+              0.000044966018186208496
+            ],
+            [
+              0.00017986407274505533,
+              0.00008993203637230609
+            ],
+            [
+              0.0002697961091178599,
+              0.00013489805455818224
+            ],
+            [
+              0.0003597281454909969,
+              0.00017986407274372593
+            ],
+            [
+              0.0002697961091187462,
+              0.00022483009093030365
+            ],
+            [
+              0.00017986407274623694,
+              0.0002697961091169183
+            ],
+            [
+              0.00008993203637335851,
+              0.000314762127303459
+            ],
+            [
+              0,
+              0.0003597281454898152
+            ]
+          ]
+        },
+        "properties": {
+          "sourceId": "landforms",
+          "role": "contour",
+          "name": "Contour 5",
+          "tags": {}
+        }
+      },
+      {
+        "type": "Feature",
+        "id": "contour-6",
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -0.00035972814549247394,
+              -0.0002697961091155889
+            ],
+            [
+              -0.00026979610912007554,
+              -0.000314762127302425
+            ],
+            [
+              -0.00017986407274727095,
+              -0.00035972814548922437
+            ]
+          ]
+        },
+        "properties": {
+          "sourceId": "landforms",
+          "role": "contour",
+          "name": "Contour 6",
+          "tags": {}
+        }
+      },
+      {
+        "type": "Feature",
+        "id": "contour-7",
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -0.0003597281454901107,
+              -0.00008993203637186299
+            ],
+            [
+              -0.0002697961091174168,
+              -0.00004496601818606079
+            ],
+            [
+              -0.0001798640727449076,
+              0
+            ],
+            [
+              -0.00008993203637247227,
+              0.00004496601818620837
+            ],
+            [
+              0,
+              0.00008993203637245379
+            ],
+            [
+              0.00008993203637261997,
+              0.00013489805455862524
+            ],
+            [
+              0.0001798640727454984,
+              0.00017986407274461216
+            ],
+            [
+              0.00008993203637291539,
+              0.00022483009093104216
+            ],
+            [
+              0,
+              0.0002697961091173614
+            ],
+            [
+              -0.00008993203637335851,
+              0.000314762127303459
+            ],
+            [
+              -0.00017986407274727095,
+              0.00035972814548922437
+            ]
+          ]
+        },
+        "properties": {
+          "sourceId": "landforms",
+          "role": "contour",
+          "name": "Contour 7",
+          "tags": {}
+        }
+      },
+      {
+        "type": "Feature",
+        "id": "contour-8",
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -0.0003597281454898152,
+              0
+            ],
+            [
+              -0.0002697961091174168,
+              0.00004496601818606067
+            ],
+            [
+              -0.00017986407274505533,
+              0.00008993203637230609
+            ],
+            [
+              -0.00008993203637261997,
+              0.00013489805455862524
+            ],
+            [
+              0,
+              0.0001798640727449076
+            ],
+            [
+              -0.00008993203637291539,
+              0.0002248300909310423
+            ],
+            [
+              -0.00017986407274623694,
+              0.0002697961091169183
+            ],
+            [
+              -0.00026979610912007554,
+              0.0003147621273024252
+            ],
+            [
+              -0.0003597281454945418,
+              0.0003597281454874518
+            ]
+          ]
+        },
+        "properties": {
+          "sourceId": "landforms",
+          "role": "contour",
+          "name": "Contour 8",
+          "tags": {}
+        }
+      },
+      {
+        "type": "Feature",
+        "id": "contour-9",
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -0.0003597281454901107,
+              0.00008993203637186299
+            ],
+            [
+              -0.0002697961091178599,
+              0.00013489805455818224
+            ],
+            [
+              -0.0001798640727454984,
+              0.00017986407274461216
+            ],
+            [
+              -0.0002697961091187462,
+              0.00022483009093030352
+            ],
+            [
+              -0.00035972814549247394,
+              0.0002697961091155889
+            ]
+          ]
+        },
+        "properties": {
+          "sourceId": "landforms",
+          "role": "contour",
+          "name": "Contour 9",
+          "tags": {}
+        }
+      }
+    ]
+  },
+  "topology": {
+    "nodes": [],
+    "edges": [],
+    "restrictions": [],
+    "completeness": "complete",
+    "exclusions": []
+  },
+  "labels": [],
+  "exercises": [
+    {
+      "id": "landform-1",
+      "type": "terrain-form",
+      "review": "reviewed",
+      "sourceIds": [
+        "landforms"
+      ],
+      "scenario": null,
+      "prompt": "At A on the marked H–L axis, is the landform a ridge or a valley? H is higher and L is lower. Read the contour elevations on both sides, rather than relying on screen direction.",
+      "hints": [
+        "Locate H and L to establish downhill along the axis.",
+        "A valley has higher ground on both sides; a ridge has lower ground on both sides.",
+        "Valley contour bends point uphill; ridge bends point downhill."
+      ],
+      "rubric": {
+        "axis": [
+          [
+            20,
+            20
+          ],
+          [
+            60,
+            20
+          ]
+        ],
+        "halfWidthM": 10
+      }
+    },
+    {
+      "id": "landform-2",
+      "type": "terrain-form",
+      "review": "reviewed",
+      "sourceIds": [
+        "landforms"
+      ],
+      "scenario": null,
+      "prompt": "At A on the marked H–L axis, is the landform a ridge or a valley? H is higher and L is lower. Read the contour elevations on both sides, rather than relying on screen direction.",
+      "hints": [
+        "Locate H and L to establish downhill along the axis.",
+        "A valley has higher ground on both sides; a ridge has lower ground on both sides.",
+        "Valley contour bends point uphill; ridge bends point downhill."
+      ],
+      "rubric": {
+        "axis": [
+          [
+            20,
+            60
+          ],
+          [
+            60,
+            60
+          ]
+        ],
+        "halfWidthM": 10
+      }
+    },
+    {
+      "id": "landform-3",
+      "type": "terrain-form",
+      "review": "reviewed",
+      "sourceIds": [
+        "landforms"
+      ],
+      "scenario": null,
+      "prompt": "At A on the marked H–L axis, is the landform a ridge or a valley? H is higher and L is lower. Read the contour elevations on both sides, rather than relying on screen direction.",
+      "hints": [
+        "Locate H and L to establish downhill along the axis.",
+        "A valley has higher ground on both sides; a ridge has lower ground on both sides.",
+        "Valley contour bends point uphill; ridge bends point downhill."
+      ],
+      "rubric": {
+        "axis": [
+          [
+            60,
+            20
+          ],
+          [
+            20,
+            20
+          ]
+        ],
+        "halfWidthM": 10
+      }
+    },
+    {
+      "id": "landform-4",
+      "type": "terrain-form",
+      "review": "reviewed",
+      "sourceIds": [
+        "landforms"
+      ],
+      "scenario": null,
+      "prompt": "At A on the marked H–L axis, is the landform a ridge or a valley? H is higher and L is lower. Read the contour elevations on both sides, rather than relying on screen direction.",
+      "hints": [
+        "Locate H and L to establish downhill along the axis.",
+        "A valley has higher ground on both sides; a ridge has lower ground on both sides.",
+        "Valley contour bends point uphill; ridge bends point downhill."
+      ],
+      "rubric": {
+        "axis": [
+          [
+            60,
+            60
+          ],
+          [
+            20,
+            60
+          ]
+        ],
+        "halfWidthM": 5
+      }
+    }
+  ],
+  "print": {
+    "paper": "letter",
+    "orientation": "portrait",
+    "marginMm": 10,
+    "scaleDenominator": 1000,
+    "labelMinPt": 8,
+    "mapRotationDeg": 0
+  },
+  "extensions": {},
+  "terrain": {
+    "format": "synthetic-contours-v1",
+    "grid": {
+      "format": "map-literacy-elevation-grid-v1",
+      "id": "landforms",
+      "width": 9,
+      "height": 9,
+      "horizontal": {
+        "crs": "LOCAL_METRIC",
+        "units": "m",
+        "axisOrder": "easting,northing",
+        "origin": [
+          0,
+          80
+        ],
+        "step": [
+          10,
+          -10
+        ],
+        "registration": "sample-center"
+      },
+      "vertical": {
+        "units": "m",
+        "reference": "synthetic-zero",
+        "nodata": null,
+        "uncertaintyM": 0
+      },
+      "source": {
+        "kind": "synthetic",
+        "productId": "analytic-landforms",
+        "version": "recipe-v1",
+        "acquiredAt": "2026-10-16T00:00:00.000Z",
+        "url": null,
+        "sha256": "4c481f20158130e494defe609b1506a910e04fd77c2ff18cd04017f10c6416a9",
+        "license": "CC0-1.0",
+        "attribution": "Invented Map Literacy terrain fixtures; no geographic source.",
+        "transforms": [
+          {
+            "operation": "generate-analytic-landforms",
+            "version": "1",
+            "parameters": {
+              "recipe": "landforms-v1: z=140-x/2+(y<=40?abs(y-20)-30:10-abs(y-60)); x,y=0..80 by 10 m"
+            }
+          }
+        ]
+      },
+      "samples": [
+        130,
+        125,
+        120,
+        115,
+        110,
+        105,
+        100,
+        95,
+        90,
+        140,
+        135,
+        130,
+        125,
+        120,
+        115,
+        110,
+        105,
+        100,
+        150,
+        145,
+        140,
+        135,
+        130,
+        125,
+        120,
+        115,
+        110,
+        140,
+        135,
+        130,
+        125,
+        120,
+        115,
+        110,
+        105,
+        100,
+        130,
+        125,
+        120,
+        115,
+        110,
+        105,
+        100,
+        95,
+        90,
+        120,
+        115,
+        110,
+        105,
+        100,
+        95,
+        90,
+        85,
+        80,
+        110,
+        105,
+        100,
+        95,
+        90,
+        85,
+        80,
+        75,
+        70,
+        120,
+        115,
+        110,
+        105,
+        100,
+        95,
+        90,
+        85,
+        80,
+        130,
+        125,
+        120,
+        115,
+        110,
+        105,
+        100,
+        95,
+        90
+      ]
+    },
+    "frame": {
+      "center": [
+        0,
+        0
+      ],
+      "origin": [
+        40,
+        40
+      ]
+    },
+    "intervalM": 10,
+    "contours": [
+      {
+        "featureId": "contour-1",
+        "levelM": 80
+      },
+      {
+        "featureId": "contour-2",
+        "levelM": 90
+      },
+      {
+        "featureId": "contour-3",
+        "levelM": 100
+      },
+      {
+        "featureId": "contour-4",
+        "levelM": 100
+      },
+      {
+        "featureId": "contour-5",
+        "levelM": 110
+      },
+      {
+        "featureId": "contour-6",
+        "levelM": 120
+      },
+      {
+        "featureId": "contour-7",
+        "levelM": 120
+      },
+      {
+        "featureId": "contour-8",
+        "levelM": 130
+      },
+      {
+        "featureId": "contour-9",
+        "levelM": 140
+      }
+    ]
+  }
+}

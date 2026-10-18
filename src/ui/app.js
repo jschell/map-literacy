@@ -53,7 +53,7 @@ function updateView() {
   const model = cachedModel(screenModels, screenKey, () => createMapModel(pack, { variant, rotationDeg: rotation, screenWidth, screenHeight })); currentModel = model;
   const overlay = trace.overlay(), lessonAnnotations = lessons.annotations(), profile = lessons.profile();
   get('profile-panel').hidden = !profile;
-  if(pack.module === 'topographic') get('map-help').textContent = lessonAnnotations ? 'Read the marked contour references, slope spans or S/E profile. Use the labeled answer field and Submit answer; hints and retry are available.' : 'Begin or resume a lesson session to show its references and question. Synthetic elevations use a synthetic zero; no real terrain is represented.';
+  if(pack.module === 'topographic') get('map-help').textContent = lessonAnnotations ? 'Read the marked contour references, slope spans, H/L landform axis or S/E profile. Use the labeled answer field and Submit answer; hints and retry are available.' : 'Begin or resume a lesson session to show its references and question. Synthetic elevations use a synthetic zero; no real terrain is represented.';
   const profileKey = profile ? JSON.stringify([pack.id,pack.revision,profile.path,Math.round(get('profile-chart').clientWidth)]) : '';
   if(get('profile-chart').dataset.key!==profileKey) {
     get('profile-chart').dataset.key=profileKey;get('profile-chart').replaceChildren(...(profile?[renderProfileChart(document,profile)]:[]));
@@ -96,7 +96,7 @@ function updateView() {
     paperVariant = variant;
     get('print').disabled = false;
     get('paper-title').textContent = spec?.title ?? `${pack.title} — ${variant}${paper.draft ? ' — UNREVIEWED DRAFT' : ''}`;
-    get('paper-summary').textContent = spec?.summary ?? (pack.module === 'topographic' ? `Synthetic hill; elevations rise toward the center. Contour interval: ${pack.terrain.intervalM} m. Choose Learner worksheet for a labeled reference and an elevation question.` : 'Mark a route, indicate your heading and explain how the roads connect.');
+    get('paper-summary').textContent = spec?.summary ?? (pack.module === 'topographic' ? `Synthetic terrain; read the labeled contour elevations. Contour interval: ${pack.terrain.intervalM} m. Choose Learner worksheet for a labeled reference and an elevation question.` : 'Mark a route, indicate your heading and explain how the roads connect.');
     get('paper-footer').textContent = spec ? `Letter ${orientation} · North up · 1:${scaleDenominator.toLocaleString()} · Print at 100% / actual size; measure the scale bar. ${spec.kind} · Page 1 of ${get('exercise-pages').children.length + 1} · Source credits follow the map.` : `Letter ${orientation} · ${printTrace ? `Trace preview: ${printTrace.edges.length} steps, ${Math.round(printTrace.lengthM)} m; S start, E end${printTrace.warnings.length ? '; needs review' : ''}; not route approval. ` : ''}North up · 1:${scaleDenominator.toLocaleString()} · Print at 100% / actual size; measure the scale bar. ${pack.sources.map((s) => `${s.attribution} · source ${s.sourceAt?.slice(0, 10) ?? 'date unknown'}`).join(' | ')}`;
     const pdfKey = JSON.stringify([pack.id, pagesKey, paperKeyForView, variant]);
     if (pdfKey !== lastPdfKey) { invalidateLessonPdf(); lastPdfKey = pdfKey; }
@@ -136,7 +136,7 @@ function install(value) {
   get('attribution').textContent = pack.sources.map((s) => `${s.attribution} · ${s.license} · source ${s.sourceAt?.slice(0, 10) ?? 'date unknown'}`).join(' | ');
   get('map-help').textContent = pack.module === 'topographic' ? 'Begin a lesson session to show its contour references or slope spans. Use the labeled answer field and Submit answer; hints and retry are available.' : 'Keyboard alternatives: choose a road in Feature selection, or build a path with Start graph node, Next directed edge and Add edge below.';
   featurePicker.set(pack.features.features.map((f) => ({ id: f.id, text: `${f.properties.name ?? 'Unnamed feature'} (${f.id})` })), '', true); featurePicker.enabled(true);
-  get('selection').textContent = pack.module === 'topographic' ? 'Synthetic contour lesson; elevations increase toward the hill center. No real terrain is represented.' : 'Choose a road on the map or use the feature list.'; editor.installed(); trace.installed(); lessons.installed(); preferences.installed(); updateView();
+  get('selection').textContent = pack.module === 'topographic' ? 'Synthetic terrain lesson. Use the contour elevations and marked exercise references. No real terrain is represented.' : 'Choose a road on the map or use the feature list.'; editor.installed(); trace.installed(); lessons.installed(); preferences.installed(); updateView();
   get('map').dataset.loadVersion = String(++loadVersion);
 }
 async function load(operation) {
@@ -162,6 +162,7 @@ get('demo').addEventListener('click', () => load(async (signal) => {
   if (!response.ok) throw new Error('Synthetic map could not be loaded.');
   return readImport(await response.blob(), signal);
 }));
+get('landform-demo').addEventListener('click',()=>load(async(signal)=>{const r=await fetch('tests/fixtures/terrain-landforms.json',{signal});if(!r.ok)throw new Error('Landform lesson could not be loaded.');return readImport(await r.blob(),signal);}));
 get('profile-demo').addEventListener('click',()=>load(async(signal)=>{const r=await fetch('tests/fixtures/terrain-profiles.json',{signal});if(!r.ok)throw new Error('Profile lesson could not be loaded.');return readImport(await r.blob(),signal);}));
 get('slope-demo').addEventListener('click', () => load(async(signal) => { const r=await fetch('tests/fixtures/terrain-slopes.json',{signal});if(!r.ok)throw new Error('Slope lesson could not be loaded.');return readImport(await r.blob(),signal); }));
 get('terrain-demo').addEventListener('click', () => load(async(signal) => { const response=await fetch('tests/fixtures/terrain-hill.json',{signal}); if(!response.ok) throw new Error('Contour lesson could not be loaded.'); return readImport(await response.blob(),signal); }));
