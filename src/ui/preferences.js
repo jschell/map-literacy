@@ -1,9 +1,13 @@
 import { openStorage } from '../storage/indexeddb.js';
 import { checkedSettings, createPreferenceWriter } from '../storage/settings.js';
 const get = (id) => document.getElementById(id);
-export function createPreferences({ readView, applyView, packDefaults }) {
+export function createPreferences({ readView, applyView, packDefaults, preferPackPrintDefaults = () => false }) {
   let storage = null, ready = false, active = false, warnings = [], loading = null, editGeneration = 0;
   const writer = createPreferenceWriter({ storage: { saveSettings: (...args) => storage ? storage.saveSettings(...args) : Promise.reject(Object.assign(new Error('Browser storage is unavailable.'), { code: 'storage-unavailable' })) }, onChange: refresh });
+  function applySaved(values, useDefaults = false) {
+    const defaults = packDefaults();
+    applyView(useDefaults && preferPackPrintDefaults() ? { ...values, printScale: defaults.printScale, orientation: defaults.orientation } : values);
+  }
   function refresh() {
     const state = writer.snapshot();
     get('preferences-status').textContent = !ready ? 'Loading view preferences…' : `${warnings.join(' ')} ${state.state === 'saved' ? 'View preferences saved in this browser.' : state.state === 'saving' ? 'Saving view preferences…' : state.state === 'conflict' ? 'View preferences are not saved: another tab changed them. Reload saved preferences or download your choices.' : state.state === 'error' ? `View preferences are not saved. ${state.error.message} Retry or download your choices.` : 'Pack view defaults apply until you choose a preference.'}`.trim();
@@ -21,7 +25,7 @@ export function createPreferences({ readView, applyView, packDefaults }) {
         if (!storage) { const opening = new AbortController(); storage = await openStorage({ signal: opening.signal, onBlocked: () => { opening.abort(); get('preferences-status').textContent = 'Close other tabs to unblock view preference storage, then retry.'; }, onVersionChange: () => { storage = null; get('preferences-status').textContent = 'Preference storage changed. Download your choices and reload.'; } }); }
         const raw = await storage.loadSettings(); if (generation !== editGeneration) return;
         const recovered = writer.initialize(raw); warnings = recovered.warnings;
-        if (reload || recovered.record || recovered.warnings.length) { active = true; applyView(recovered.values); }
+        if (reload || recovered.record || recovered.warnings.length) { active = true; applySaved(recovered.values, !reload); }
       } catch (e) { warnings = [e.message]; }
       finally { ready = true; refresh(); loading = null; }
     })(); return loading;
@@ -50,5 +54,5 @@ export function createPreferences({ readView, applyView, packDefaults }) {
   window.addEventListener('pagehide', () => { storage?.close(); storage = null; });
   window.addEventListener('pageshow', (event) => { if (event.persisted) void connect(true); });
   refresh(); void connect();
-  return { changed: change, installed() { if (active) applyView(writer.snapshot().values); }, ready: () => ready };
+  return { changed: change, installed() { if (active) applySaved(writer.snapshot().values, true); }, ready: () => ready };
 }
