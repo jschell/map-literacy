@@ -9,7 +9,7 @@ import { createLessonSession, resumeLessonSession } from '../lesson/session.js';
 const get = (id) => document.getElementById(id);
 export function createLessons({ getPack, getTrace, getEndpoint, installPack, cancelPackLoad }) {
   let controller = null, restoreJob = null, storage = null, storageReady = false, canDiscard = false, listJob = 0, nextPage = null, connecting = null;
-  let pendingFocus = null, viewExerciseKey = null;
+  let pendingFocus = null, viewExerciseKey = null, packLoading = false;
   // A save may disable the button that a keyboard user just activated. Restore
   // focus only for that action, and never after the user moves elsewhere.
   document.addEventListener('focusin', (event) => { if (pendingFocus && event.target !== pendingFocus.origin) pendingFocus = null; });
@@ -69,11 +69,13 @@ export function createLessons({ getPack, getTrace, getEndpoint, installPack, can
     get('save-retry').textContent = controller ? 'Retry saving' : 'Retry browser storage';
     get('save-reload').disabled = !storage || !controller || busy || saveState.state !== 'conflict' || saveState.error?.code === 'revision-conflict';
     get('save-fork').disabled = !controller || busy || saveState.state !== 'conflict' || saveState.error?.code === 'revision-conflict';
+    get('save-overview').hidden = storageReady && Boolean(storage) && !controller;
+    for (const id of ['save-retry','save-reload','save-fork']) get(id).hidden = get(id).disabled;
     get('saved-resume').disabled = !storage || busy || !get('saved-session').value;
     get('saved-refresh').disabled = !storage || busy; get('saved-next').disabled = !storage || busy || !nextPage;
     const state = controller?.snapshot(), active = state?.session.status === 'active', practicing = active && !busy && state.phase === 'practicing', e = state?.exercise;
     get('lesson-export').disabled = !controller;
-    get('lesson-start').disabled = busy || !getPack() || Boolean(active) || getPack().review.status !== 'reviewed' || !getPack().exercises.some((e) => e.review === 'reviewed');
+    get('lesson-start').disabled = packLoading || busy || !getPack() || Boolean(active) || getPack().review.status !== 'reviewed' || !getPack().exercises.some((e) => e.review === 'reviewed');
     get('lesson-hints').hidden = !active || state.phase==='paused';
     get('lesson-fields').disabled = !practicing; get('lesson-fields').hidden = !active || state.phase==='paused';
     get('lesson-landform').hidden=e?.type!=='terrain-form';
@@ -110,7 +112,7 @@ export function createLessons({ getPack, getTrace, getEndpoint, installPack, can
     const last=state?.attempts.find(a=>a.id===state.session.answers[e.id]);
     get('lesson-score-details').hidden=state?.phase!=='feedback' || !last;
     get('lesson-score-record').textContent=state?.phase==='feedback' && last ? JSON.stringify(last.result,null,2) : '';
-    get('lesson-prompt').textContent = active && state.phase!=='paused' ? `${state.session.index + 1}/${state.session.exerciseOrder.length} · ${e.prompt}` : state?.phase==='paused' ? 'Session paused. Resume when ready; unfinished answers and traces were cleared.' : state ? `${progress.label}. Begin a new session to practice again.` : 'Begin a session to answer reviewed exercises in pack order.';
+    get('lesson-prompt').textContent = active && state.phase!=='paused' ? `${state.session.index + 1}/${state.session.exerciseOrder.length} · ${e.prompt}` : state?.phase==='paused' ? 'Session paused. Resume when ready; unfinished answers and traces were cleared.' : state ? `${progress.label}. Begin a new session to practice again.` : 'Begin a session to answer the prepared questions in pack order.';
     get('lesson-revision').textContent = state ? `Pack ${state.session.packId} · revision ${state.session.packRevision} · ${state.attempts.length} ${state.attempts.length===1?'attempt':'attempts'} · ${state.phase==='paused'?'paused':progress.label.toLowerCase()}` : '';
     get('lesson-route').textContent = active && state.phase!=='paused' && e && ['route', 'detour'].includes(e.type) ? `Trace a path: start ${e.rubric.startNodeId}, end ${e.rubric.endNodeId}, ${e.rubric.mode === 'drive' ? 'driving' : 'walking'}. Submit the current trace here.${e.rubric.objective === 'max-distance' ? ` Maximum distance: ${e.rubric.maxDistanceM} m.` : ' Any valid route is accepted.'}${e.scenario ? ` ${e.scenario.label} Closed directed edges: ${e.scenario.closedEdgeIds.join(', ')}.` : ''}` : '';
     const nextView = active && state.phase!=='paused' ? e?.id : null;
@@ -226,5 +228,5 @@ export function createLessons({ getPack, getTrace, getEndpoint, installPack, can
   window.addEventListener('pageshow', (event) => { if (event.persisted) void connectStorage(); });
   window.addEventListener('pagehide', () => { cancelPending(); storage?.close(); storage = null; });
   refresh(); void connectStorage();
-  return { exercise() {const s=controller?.snapshot();return s?.session.status==='active' && s.phase!=='paused'?s.exercise:null;}, currentExercise() {const s=controller?.snapshot();return s?.session.status==='active'?s.exercise:null;}, isPracticing() {return controller?.snapshot().phase==='practicing' && !get('lesson-fields').disabled;}, profile() {const state=controller?.snapshot();return state?.session.status==='active'&&state.phase!=='paused'&&state.exercise.type==='profile-value'?deriveLessonProfile(getPack(),state.exercise):null;}, guardReplacement, cancelPending, annotations() { const state=controller?.snapshot(); return state?.session.status==='active' && state.phase!=='paused' ? exerciseAnnotations(getPack(),state.exercise) : null; }, installed() { cancelPending(); controller = null; clearAnswer(); get('lesson-hints').replaceChildren(); status('Select a reviewed pack to practice or resume a saved session. Unfinished answers are discarded on refresh. Practice while stationary.'); refresh(); }, packChanged() { this.installed(); status('Pack content changed. The old session has ended; review the new revision before practicing.'); } };
+  return { setPackLoading(value) { packLoading=value; get('task-materials').setAttribute('aria-busy',String(value)); refresh(); }, exercise() {const s=controller?.snapshot();return s?.session.status==='active' && s.phase!=='paused'?s.exercise:null;}, currentExercise() {const s=controller?.snapshot();return s?.session.status==='active'?s.exercise:null;}, isPracticing() {return controller?.snapshot().phase==='practicing' && !get('lesson-fields').disabled;}, profile() {const state=controller?.snapshot();return state?.session.status==='active'&&state.phase!=='paused'&&state.exercise.type==='profile-value'?deriveLessonProfile(getPack(),state.exercise):null;}, guardReplacement, cancelPending, annotations() { const state=controller?.snapshot(); return state?.session.status==='active' && state.phase!=='paused' ? exerciseAnnotations(getPack(),state.exercise) : null; }, installed() { cancelPending(); controller = null; clearAnswer(); get('lesson-hints').replaceChildren(); status('Begin the prepared lesson or open a saved session. Unfinished answers are discarded on refresh. Practice while stationary.'); refresh(); }, packChanged() { this.installed(); status('Pack content changed. The old session has ended; review the new revision before practicing.'); } };
 }

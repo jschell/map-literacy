@@ -3,7 +3,7 @@ export async function checkAutosave(page, base) {
   const context = page.context();
   const saved = (p) => p.waitForFunction(() => document.getElementById('save-status').textContent.startsWith('Saved in this browser'));
   try {
-    await page.goto(base);
+    await page.goto(base); await page.locator('#nav-review').click();
     await page.evaluate(() => { window.progressEvents = []; for (const name of ['answer-submitted', 'answer-scored', 'save-completed', 'save-failed']) document.addEventListener(name, (e) => window.progressEvents.push({ name, detail: structuredClone(e.detail) })); });
     await page.locator('#demo').click(); await page.locator('#map svg').waitFor(); await page.locator('#lesson-start').click(); await saved(page);
     await page.waitForFunction(() => document.getElementById('saved-session').options.length === 2);
@@ -27,7 +27,7 @@ export async function checkAutosave(page, base) {
     await page.waitForFunction(() => document.getElementById('lesson-status').textContent.includes('Saved session resumed'));
     assert.ok((await page.locator('#lesson-revision').textContent()).includes('1 attempt'));
     assert.equal(await page.locator('#lesson-submit').isDisabled(), true);
-    const other = await context.newPage(); await other.goto(base);
+    const other = await context.newPage(); await other.goto(base); await other.locator('#nav-review').click();
     await other.locator(`#saved-session option[value="${sessionId}"]`).waitFor({ state: 'attached' });
     await other.locator('#saved-session').selectOption(sessionId); await other.locator('#saved-resume').click();
     await other.waitForFunction(() => document.getElementById('lesson-status').textContent.includes('Saved session resumed'));
@@ -47,7 +47,7 @@ export async function checkAutosave(page, base) {
     await saved(page);
     const memory = await context.newPage();
     await memory.addInitScript(() => Object.defineProperty(window, 'indexedDB', { value: undefined }));
-    await memory.goto(base); await memory.locator('#demo').click(); await memory.locator('#map svg').waitFor();
+    await memory.goto(base); await memory.locator('#nav-review').click(); await memory.locator('#demo').click(); await memory.locator('#map svg').waitFor();
     await memory.locator('#lesson-start').click(); await memory.locator('#answer-heading').fill('0'); await memory.locator('#lesson-submit').click();
     await memory.waitForFunction(() => document.getElementById('save-status').textContent.startsWith('Changes are not saved'));
     assert.ok((await memory.locator('#lesson-revision').textContent()).includes('1 attempt'));

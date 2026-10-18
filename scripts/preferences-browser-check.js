@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 export async function checkPreferences(page, base) {
   const saved = () => page.waitForFunction(() => document.getElementById('preferences-status').textContent.includes('View preferences saved in this browser.'));
-  await page.goto(base); await page.locator('#demo').click(); await page.locator('#map svg').waitFor();
+  await page.goto(base); await page.locator('#nav-review').click(); await page.locator('#demo').click(); await page.locator('#map svg').waitFor();
   await page.locator('#variant').selectOption('blank'); await page.locator('#orientation').selectOption('portrait'); await page.locator('#scale').selectOption('5000'); await page.locator('#rotate').click(); await saved();
   await page.reload(); await page.locator('#demo').click(); await page.locator('#map svg').waitFor();
   assert.equal(await page.locator('#variant').inputValue(), 'blank'); assert.equal(await page.locator('#orientation').inputValue(), 'portrait'); assert.equal(await page.locator('#scale').inputValue(), '5000');
@@ -9,7 +9,7 @@ export async function checkPreferences(page, base) {
   const downloadEvent = page.waitForEvent('download'); await page.locator('#preferences-export').click(); const download = await downloadEvent; const path = await download.path();
   await page.locator('#preferences-defaults').click(); await saved();
   await page.locator('#preferences-import').setInputFiles(path); await saved(); assert.equal(await page.locator('#variant').inputValue(), 'blank');
-  const other = await page.context().newPage(); await other.goto(base);
+  const other = await page.context().newPage(); await other.goto(base); await other.locator('#nav-review').click();
   await other.waitForFunction(() => document.getElementById('preferences-status').textContent.includes('View preferences saved'));
   await page.locator('#variant').selectOption('partial'); await saved();
   await other.locator('#variant').selectOption('labeled');
@@ -37,6 +37,6 @@ export async function checkPreferences(page, base) {
   const retained = await page.evaluate(async () => { const { openStorage } = await import('/src/storage/indexeddb.js'); const s = await openStorage(); const value = await s.loadSettings(); s.close(); return value.values.labels; });
   assert.equal(retained, 'future-style');
   await page.locator('#preferences-defaults').click(); await saved();
-  await page.goto(base);
+  await page.goto(base); await page.locator('#nav-review').click();
   return { reload: 'passed', fileRestore: 'passed', staleRestore: 'passed', crossTabConflict: 'passed', invalidStoredFallback: 'passed' };
 }

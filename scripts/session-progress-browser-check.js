@@ -5,7 +5,7 @@ export async function checkSessionProgress(page,base,output) {
  const saved=()=>page.waitForFunction(()=>document.getElementById('save-status').textContent.startsWith('Saved in this browser'));
  const answer=async(id,value)=>{await page.locator(`#${id}`).fill(value);await page.locator('#lesson-submit').click();await saved();};
  const next=async()=>{await page.locator('#lesson-next').click();await saved();};
- await page.goto(base);await page.locator('#demo').click();await page.locator('#orientation').selectOption('landscape');await page.locator('#lesson-start').click();await saved();
+ await page.goto(base); await page.locator('#nav-review').click();await page.locator('#demo').click();await page.locator('#orientation').selectOption('landscape');await page.locator('#lesson-start').click();await saved();
  assert.equal(await page.locator('#print-output').inputValue(),'learner');assert.equal(await page.locator('#print-exercise').inputValue(),'heading');
  await answer('answer-heading','0');
  assert.ok(!(await page.locator('#lesson-status').textContent()).includes('angularErrorDeg'));

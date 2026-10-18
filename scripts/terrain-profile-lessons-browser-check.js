@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';import {readFile} from 'node:fs/promises';import {buildTerrainProfileFixture} from './terrain-lesson-fixture.js';
 export async function checkTerrainProfileLessons(page,base,output) {
  const saved=()=>page.waitForFunction(()=>document.getElementById('save-status').textContent.startsWith('Saved in this browser'));
- await page.goto(base);await page.locator('#profile-demo').click();await page.waitForFunction(()=>document.getElementById('status').textContent.includes('elevation profiles'));
+ await page.goto(base); await page.locator('#nav-review').click();await page.locator('#profile-demo').click();await page.waitForFunction(()=>document.getElementById('status').textContent.includes('elevation profiles'));
  assert.equal(await page.locator('#paper-map .profile-transect').count(),2);assert.equal(await page.locator('#exercise-pages .paper-profile').count(),1);
  await page.locator('#lesson-start').click();await saved();await page.locator('#profile-panel').waitFor({state:'visible'});assert.ok(await page.locator('#profile-values tr').count()>2);
  assert.match(await page.locator('#map-help').textContent(),/Read the marked/);

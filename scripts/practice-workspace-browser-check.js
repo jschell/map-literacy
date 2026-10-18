@@ -28,7 +28,7 @@ export async function checkPracticeWorkspace(page, base, output) {
     if (touch) await page.touchscreen.tap(box.x+box.width/2,box.y+box.height/2);
     else await page.mouse.click(box.x+box.width/2,box.y+box.height/2);
   };
-  await page.goto(base); await loadDemo('demo'); await page.locator('#lesson-start').click(); await saved();
+  await page.goto(base); await page.locator('#nav-review').click(); await loadDemo('demo'); await page.locator('#lesson-start').click(); await saved();
   await page.locator('#answer-heading').fill('0'); await page.locator('#lesson-submit').click(); await saved();
   await page.locator('#lesson-next').click(); await saved();
   assert.match(await page.locator('#lesson-prompt').textContent(),/Locate A/);

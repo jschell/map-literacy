@@ -6,7 +6,7 @@ export async function checkTerrainLessons(page,base,output) {
   const saved=()=>page.waitForFunction(()=>document.getElementById('save-status').textContent.startsWith('Saved in this browser'));
   try {
     await page.setViewportSize({width:1280,height:1000});
-    await page.goto(base);
+    await page.goto(base); await page.locator('#nav-review').click();
     await page.waitForFunction(()=>!document.getElementById('scale').disabled);
     await page.locator('#scale').selectOption('5000');await page.locator('#orientation').selectOption('landscape');
     await page.waitForFunction(()=>document.getElementById('preferences-status').textContent.includes('View preferences saved'));

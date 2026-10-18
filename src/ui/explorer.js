@@ -16,6 +16,7 @@ export function createExplorer() {
   const streets = createGeographicStreets(get, () => updatePrintAvailability());
   const terrain = createGeographicTerrain(get, () => updatePrintAvailability());
   const terrainOptions = () => ({ roads: get('explorer-terrain-roads').value, relief: get('explorer-relief').value === 'light', appearance: get('explorer-appearance').value, contrast: get('explorer-topo-contrast').value });
+  let priorArea = null;
   let displayScale = 1, marking = '', pointerStart = null, dragged = false;
   const size = () => [viewport.clientWidth, viewport.clientHeight];
   function tileSnapshot() {
@@ -31,6 +32,11 @@ export function createExplorer() {
     return basemap === 'street' && streets.ready() && view.zoom === zoom && view.orientation === get('orientation').value && view.center.every((value, i) => Math.abs(value - focus[i]) <= 1e-9);
   }
   function updatePrintAvailability() {
+    const vectorReady = currentVector();
+    for (const id of ['explorer-labels', 'explorer-landmarks', 'explorer-heading', 'explorer-mark-start', 'explorer-mark-end', 'explorer-mark-route', 'explorer-clear']) get(id).disabled = !vectorReady;
+    for (const id of ['explorer-labels-wrap','explorer-landmarks-wrap','explorer-detail-retry']) get(id).hidden = basemap !== 'street';
+    get('explorer-markings').hidden = get('explorer-exports').hidden = !vectorReady;
+    get('explorer-retry').textContent = basemap === 'terrain' ? 'Retry terrain layers' : 'Retry map tiles';
     if (basemap === 'terrain') {
       const ready = !!terrain.snapshot();
       get('explorer-print').disabled = get('explorer-pdf').disabled = !ready;
@@ -261,7 +267,23 @@ export function createExplorer() {
   });
   get('explorer-in').onclick = () => changeZoom(1);
   get('explorer-out').onclick = () => changeZoom(-1);
-  get('explorer-world').onclick = () => { zoom = 2; center = project(0, 0, zoom); settle(); };
+  function restoreArea(area) {
+    zoom = area.zoom; center = project(area.lon, area.lat, zoom);
+    get('explorer-basemap').value = area.basemap;
+    if (basemap !== area.basemap) get('explorer-basemap').onchange(); else settle();
+    viewport.focus();
+  }
+  get('explorer-world').onclick = () => {
+    if (!priorArea) { const [lon,lat] = unproject(...center,zoom); priorArea = {lon,lat,zoom,basemap}; }
+    get('explorer-return').hidden = false; zoom = 2; center = project(0, 0, zoom); settle();
+  };
+  get('explorer-return').onclick = () => { if (priorArea) { const area = priorArea; priorArea = null; get('explorer-return').hidden = true; restoreArea(area); } };
+  get('explorer-example').onclick = () => { priorArea = null; get('explorer-return').hidden = true; restoreArea({...DEFAULT_VIEW,basemap:'street'}); };
+  get('explorer-detail-retry').onclick = () => {
+    if (basemap !== 'street') return;
+    try { streets.update(geographicView(center,zoom,get('orientation').value),{retry:true}); }
+    catch (error) { get('explorer-street-status').textContent = error.message; }
+  };
   get('explorer-retry').onclick = () => { if (basemap === 'terrain') terrain.invalidate(); images.clear(); layer.replaceChildren(); settle(); try { if (basemap === 'street') streets.update(geographicView(center, zoom, get('orientation').value), { retry: true }); } catch {} };
   get('explorer-jump').onsubmit = (event) => {
     event.preventDefault();
@@ -273,10 +295,11 @@ export function createExplorer() {
   get('explorer-place').oninput = () => {
     get('explorer-search').href = `https://www.openstreetmap.org/search?query=${encodeURIComponent(get('explorer-place').value.trim())}`;
   };
+  get('explorer-place-search').onsubmit = (event) => { event.preventDefault(); get('explorer-place').oninput(); get('explorer-search').click(); };
   viewport.onkeydown = (event) => {
     if (event.target !== viewport) return;
     const delta = { ArrowLeft: [-100, 0], ArrowRight: [100, 0], ArrowUp: [0, -100], ArrowDown: [0, 100] }[event.key];
-    if (event.key === 'Enter' && marking) { event.preventDefault(); settle(); if (streets.ready()) streets.annotate(streets.view().center, marking); }
+    if (event.key === 'Enter' && marking) { event.preventDefault(); settle(); if (currentVector()) streets.annotate(streets.view().center, marking); }
     else if (delta) { event.preventDefault(); move(...delta); }
     else if (['+', '=', '-'].includes(event.key)) { event.preventDefault(); changeZoom(event.key === '-' ? -1 : 1); }
   };
@@ -315,7 +338,7 @@ export function createExplorer() {
     for (const value of ['start', 'end', 'route']) get(`explorer-mark-${value}`).setAttribute('aria-pressed', String(marking === value));
   };
   viewport.addEventListener('click', (event) => {
-    if (basemap !== 'street' || !marking || dragged || !streets.ready() || event.target.closest('a')) return;
+    if (basemap !== 'street' || !marking || dragged || !currentVector() || event.target.closest('a')) return;
     settle();
     const frame = get('explorer-vector').getBoundingClientRect(), view = streets.view();
     const x = event.clientX - frame.left, y = event.clientY - frame.top;

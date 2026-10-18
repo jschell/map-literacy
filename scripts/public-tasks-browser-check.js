@@ -1,0 +1,90 @@
+import assert from 'node:assert/strict';
+import {geographicFixture} from './geographic-fixture.js';
+
+export async function checkPublicTasks(parent,base,output) {
+  const page=await parent.context().newPage(), errors=[];
+  let sourceMode='timeout', tileRequests=0, sourceRequests=0;
+  page.on('pageerror',error=>errors.push(error.message));
+  await page.route('https://tile.openstreetmap.org/**',route=>{tileRequests++;return route.fallback();});
+  await page.route('https://overpass-api.de/**',route=>{
+    sourceRequests++;
+    if(sourceMode==='timeout')return; // Let the real application abort deadline fire.
+    if(sourceMode==='offline')return route.abort('internetdisconnected');
+    return route.fulfill({contentType:'application/json',body:JSON.stringify(geographicFixture(new URLSearchParams(route.request().postData()).get('data')))});
+  });
+  const saved=()=>page.waitForFunction(()=>document.getElementById('save-status').textContent.startsWith('Saved in this browser'));
+  try {
+    await page.clock.install(); await page.goto(base);
+    assert.equal(await page.locator('#nav-explore').getAttribute('aria-current'),'page');
+    assert.equal(await page.locator('#demo').isVisible(),false);
+    assert.equal(await page.locator('#label-text').isVisible(),false);
+    await page.waitForFunction(()=>!document.getElementById('explorer-print').disabled);
+    assert.equal(await page.locator('#explorer-labels').isDisabled(),true);
+    assert.equal(await page.locator('#explorer-markings').isVisible(),false);
+    await page.clock.runFor(700);assert.ok(sourceRequests>0);
+    await page.clock.fastForward(26000);
+    await page.waitForFunction(()=>document.getElementById('explorer-street-status').textContent.includes('timed out'));
+    assert.match(await page.locator('#explorer-print-status').textContent(),/visible tile map/);
+    const tilesBefore=tileRequests;sourceMode='success';
+    await page.locator('#explorer-detail-retry').click();await page.clock.runFor(700);
+    await page.locator('#explorer-vector svg').waitFor();
+    assert.equal(tileRequests,tilesBefore,'detail retry retains loaded tiles');
+    assert.equal(await page.locator('#explorer-labels').isEnabled(),true);
+    await page.locator('#explorer-world').click();await page.locator('#explorer-return').click();
+    assert.match(await page.locator('#explorer-position').textContent(),/47.67400, -122.12200 · Zoom 15/);
+    sourceMode='offline';await page.locator('#explorer-out').click();await page.clock.fastForward(6000);
+    await page.waitForFunction(()=>document.getElementById('explorer-street-status').textContent.includes('Failed to fetch'));
+    assert.equal(await page.locator('#explorer-labels').isDisabled(),true);
+    sourceMode='success';await page.locator('#explorer-detail-retry').click();await page.clock.fastForward(6000);
+    await page.waitForFunction(()=>!document.getElementById('explorer-labels').disabled);
+    await page.locator('#explorer-basemap').selectOption('topo');
+    assert.equal(await page.locator('#explorer-labels-wrap').isVisible(),false);
+    assert.equal(await page.locator('#explorer-detail-retry').isVisible(),false);
+    await page.locator('#explorer-example').click();
+    assert.equal(await page.locator('#explorer-basemap').inputValue(),'street');
+    assert.match(await page.locator('#explorer-position').textContent(),/Zoom 15/);
+    const searchPattern='https://www.openstreetmap.org/search**';
+    await page.context().route(searchPattern,route=>route.fulfill({contentType:'text/html',body:'<title>External place search fixture</title>'}));
+    await page.locator('#explorer-place').fill('Redmond park');
+    const link=await page.locator('#explorer-search').getAttribute('href'), popupEvent=page.waitForEvent('popup');
+    await page.locator('#explorer-place').press('Enter');const popup=await popupEvent;
+    await popup.waitForLoadState();assert.equal(popup.url(),link);await popup.close();await page.context().unroute(searchPattern);
+    await page.locator('#nav-practice').focus();await page.keyboard.press('Enter');
+    assert.equal(await page.locator('#materials-title').evaluate(n=>n===document.activeElement),true);
+    assert.equal(await page.locator('#explorer-map').isVisible(),false);
+    assert.equal(await page.locator('#label-text').isVisible(),false);
+    assert.equal(await page.locator('#material-settings').isVisible(),false);
+    const order=await page.locator('.lesson-sequence button').evaluateAll(nodes=>nodes.map(n=>n.id));
+    assert.deepEqual(order,['terrain-demo','depression-demo','slope-demo','landform-demo','profile-demo']);
+    await page.locator('#demo').click();await page.locator('#lesson-start').click();await saved();
+    const sessionId=(await page.locator('#lesson-record').textContent()).match(/ · session ([^ ]+) · stored/)[1];
+    assert.match(await page.locator('#status').textContent(),/Technically validated synthetic fixture.*approval not recorded/);
+    await page.locator('#answer-heading').fill('75');
+    await page.locator('#nav-explore').click();assert.equal(await page.locator('#save-status').isVisible(),true);
+    await page.locator('#nav-practice').click();assert.equal(await page.locator('#answer-heading').inputValue(),'75','task switching retains the current draft');
+    assert.equal(await page.locator('#lesson-entry').getAttribute('open'),null);
+    await page.locator('#material-settings summary').first().click();assert.equal(await page.locator('#print-current').isVisible(),true);
+    await page.locator('#lesson-pause').click();await page.locator('#nav-explore').click();await page.goBack();
+    assert.match(await page.locator('#lesson-progress').textContent(),/^Paused/);
+    await page.locator('#lesson-resume').click();await page.locator('#answer-heading').fill('0');await page.locator('#lesson-submit').click();await saved();
+    await page.reload();await page.locator(`#saved-session option[value="${sessionId}"]`).waitFor({state:'attached'});await page.locator('#saved-session').selectOption(sessionId);
+    await page.locator('#saved-resume').click();await saved();assert.match(await page.locator('#lesson-progress').textContent(),/1\/4 answered/);
+    await page.locator('#nav-review').click();assert.equal(await page.locator('#label-text').isVisible(),true);
+    await page.locator('#nav-practice').click();await page.setViewportSize({width:390,height:844});
+    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
+    await page.screenshot({path:new URL('public-practice-mobile.png',output).pathname,fullPage:true});
+    // A slow/failed replacement must not let Begin start the previous pack by mistake.
+    await page.locator('#lesson-end').click();await saved();await page.locator('#nav-review').click();
+    const before=await page.locator('#map').getAttribute('data-load-version');
+    let releaseFixture;const fixtureGate=new Promise(resolve=>{releaseFixture=resolve;});
+    await page.route('**/tests/fixtures/terrain-hill.json',async route=>{await fixtureGate;await route.fulfill({status:503,body:'Test fixture temporarily unavailable'});});
+    await page.locator('#terrain-demo').click();
+    assert.equal(await page.locator('#task-materials').getAttribute('aria-busy'),'true');
+    assert.equal(await page.locator('#lesson-start').isDisabled(),true);
+    releaseFixture();await page.waitForFunction(()=>document.getElementById('status').textContent.includes('Map not loaded'));
+    assert.equal(await page.locator('#map').getAttribute('data-load-version'),before);
+    assert.equal(await page.locator('#lesson-start').isEnabled(),true);
+    assert.deepEqual(errors,[]);
+    return {lessonLoadFailureRetainsMap:true,taskNavigation:true,focusAndHistory:true,draftRetained:true,savedResume:true,reviewDisclosure:true,evidenceBasis:true,timeoutFallback:true,offlineRetry:true,detailRetryRetainsTiles:true,modeControls:true,worldReturn:true,externalSearchEnter:true};
+  } finally {await page.close();}
+}

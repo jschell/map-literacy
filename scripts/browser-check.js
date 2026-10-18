@@ -1,3 +1,4 @@
+import { checkPublicTasks } from './public-tasks-browser-check.js';
 import { checkSessionProgress } from './session-progress-browser-check.js';
 import { checkPracticeWorkspace } from './practice-workspace-browser-check.js';
 import { checkTerrainDepressions } from './terrain-depressions-browser-check.js';
@@ -65,7 +66,7 @@ async function afterInstall(operation) {
 const loadDemo = () => afterInstall(() => page.locator('#demo').click());
 const importReady = (file) => afterInstall(() => page.locator('#import').setInputFiles(file));
 try {
-  await page.goto(base);
+  await page.goto(base); await page.locator('#nav-review').click();
   const terrainOverlayChecks = await checkTerrainOverlay(page);
   const geographicChecks = await checkExplorer(page, base);
   const printQuality = await checkPrintQuality(page, base);
@@ -74,6 +75,7 @@ try {
   const autosaveChecks = await checkAutosave(page, base);
   const preferenceChecks = await checkPreferences(page, base);
   const accessibilityChecks = await checkAccessibility(page, base);
+  await page.locator('#nav-review').click();
   assert.equal(await page.locator('#map svg').count(), 0);
   await loadDemo();
   await page.locator('#map svg').waitFor();
@@ -467,9 +469,10 @@ try {
   const terrainDepressionChecks=await checkTerrainDepressions(page,base,output);
   const terrainLandformChecks=await checkTerrainLandforms(page,base,output);
   const terrainProfileLessonChecks=await checkTerrainProfileLessons(page,base,output);
+  const publicTaskChecks = await checkPublicTasks(page,base,output);
   const mobile = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
   await mockTiles(mobile);
-  await mobile.goto(base); await mobile.locator('#demo').tap(); await mobile.locator('#map svg').waitFor();
+  await mobile.goto(base); await mobile.locator('#nav-review').click(); await mobile.locator('#demo').tap(); await mobile.locator('#map svg').waitFor();
   await mobile.locator('#lesson-start').tap(); await mobile.locator('#answer-heading').fill('0');
   await mobile.locator('#lesson-submit').tap();
   assert.ok((await mobile.locator('#lesson-status').textContent()).startsWith('Correct.'));
@@ -505,6 +508,6 @@ try {
   await mobile.close();
   assert.equal(sourceRejectionMessages.length, geographicChecks.sourceRejections);
   assert.deepEqual(errors, []);
-  console.log(JSON.stringify({ sessionProgressChecks, practiceWorkspaceChecks, terrainDepressionChecks, terrainLandformChecks, terrainProfileLessonChecks, terrainSlopeChecks, lessonPdfChecks, terrainLessonChecks, terrainOverlayChecks, geographicChecks, printQuality, syntheticFeatures: 6, pagesPackageChecks, storageChecks, autosaveChecks, preferenceChecks, accessibilityChecks, memoryLessonSessions: 'passed', sessionBackupControls: 'passed', variantsAndSelection: 'passed', labelEditingAndExport: 'passed', directedTracingAndPrint: 'passed', exerciseSheetsAndPagination: 'passed', boundedSearchAndRenderLimits: 'passed', invalidImportRetainsMap: 'passed', pdfDimensions: physical, mobileOverflow: false, realPack, browserErrors: errors }));
+  console.log(JSON.stringify({ publicTaskChecks, sessionProgressChecks, practiceWorkspaceChecks, terrainDepressionChecks, terrainLandformChecks, terrainProfileLessonChecks, terrainSlopeChecks, lessonPdfChecks, terrainLessonChecks, terrainOverlayChecks, geographicChecks, printQuality, syntheticFeatures: 6, pagesPackageChecks, storageChecks, autosaveChecks, preferenceChecks, accessibilityChecks, memoryLessonSessions: 'passed', sessionBackupControls: 'passed', variantsAndSelection: 'passed', labelEditingAndExport: 'passed', directedTracingAndPrint: 'passed', exerciseSheetsAndPagination: 'passed', boundedSearchAndRenderLimits: 'passed', invalidImportRetainsMap: 'passed', pdfDimensions: physical, mobileOverflow: false, realPack, browserErrors: errors }));
 } finally { await browser.close(); server?.kill(); }
 

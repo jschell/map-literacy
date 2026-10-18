@@ -49,3 +49,12 @@ The next Safari device sample contained all map/attribution content on page one 
 The post-PR-34 device PDF contains one blank page with Safari chrome and no map or attribution. The fixed print layer inside zero-height root/body elements failed on the affected device; a one-page count alone was insufficient acceptance evidence. That layout is superseded: the geographic layer now participates in normal block flow, with automatic root/body heights, a single inherited page context, hidden unrelated content and an unfragmented map/credit block. Existing map dimensions, label placement and synchronous native print remain unchanged.
 
 The browser regression requires positive map/body flow height and checks generated PDF content streams for street paths and map text, in addition to page count, Letter orientation and absence of raster images. A deliberately hidden map with browser headers/footers must fail that content check. Local Chromium evidence does not establish Safari behavior; affected-device printing remains required after deployment.
+
+
+## Public task and readiness controls
+
+Use **Explore and print** for geography. The **Map readiness** group separates tile availability from optional vector street details. Loaded tiles can print after a street-detail timeout or error; their names are fixed, so street label/landmark settings stay disabled and vector markings/exports remain hidden until matching details are ready. These controls are omitted for Topographic/Terrain. The current area's failure is reported without claiming a general provider outage.
+
+**Retry street details only** retries the bounded vector request while retaining loaded tiles. The existing request cooldown/Retry-After and stale-result protections still apply. **Retry map tiles** remains available for tile failure (and retries street acquisition too); Terrain uses **Retry terrain layers**. There is no guarantee of availability or offline coverage.
+
+**World view** retains the prior area in memory. **Return to prior area** restores its center, zoom and map type; **Reset to Redmond example** restores the documented street example. Neither uses device location. Enter in Place name, its Search button and the external link open the same OpenStreetMap search in another tab. Copy the resulting map URL back into Go to location; integrated geocoding remains deferred.
