@@ -1,0 +1,1553 @@
+{
+  "schemaVersion": 1,
+  "id": "pilot-street-d",
+  "title": "Invented street set D — draft",
+  "revision": 1,
+  "module": "street",
+  "capabilities": [
+    "street-core"
+  ],
+  "review": {
+    "status": "draft",
+    "reviewedAt": null,
+    "note": "Analytic invented material; independent content/equivalence, device and participant review pending. No learning results."
+  },
+  "bounds": [
+    -0.0001753674709264923,
+    -0.00010791844364677605,
+    0.0010859293393406513,
+    0.0011398885609526074
+  ],
+  "sourceBounds": [
+    -0.0002753674709264923,
+    -0.00020791844364677605,
+    0.0011859293393406513,
+    0.0012398885609526075
+  ],
+  "sources": [
+    {
+      "id": "invented",
+      "kind": "synthetic",
+      "url": null,
+      "query": null,
+      "fetchedAt": "2026-10-18T00:00:00.000Z",
+      "sourceAt": null,
+      "version": "pilot-material-recipe-v1",
+      "sha256": "233c160f3482c4f59009e214afdabff77d10498bd7390d5433eb16f778c5e894",
+      "license": "CC0-1.0",
+      "attribution": "Invented Map Literacy street diagrams; no geographic source or real roads.",
+      "transforms": [
+        {
+          "name": "pilot-materials",
+          "version": "1",
+          "parameters": {
+            "version": 1,
+            "labelTweaks": {},
+            "set": "D",
+            "pointsM": {
+              "a": [
+                0,
+                0
+              ],
+              "b": [
+                52.5,
+                0
+              ],
+              "c": [
+                108.75,
+                0
+              ],
+              "d": [
+                108.75,
+                48.75
+              ],
+              "e": [
+                45,
+                60
+              ],
+              "f": [
+                -7.5,
+                52.5
+              ],
+              "g": [
+                37.5,
+                108.75
+              ],
+              "h": [
+                108.75,
+                105
+              ]
+            },
+            "roads": [
+              "ab",
+              "bc",
+              "cd",
+              "de",
+              "ef",
+              "fa",
+              "ae",
+              "eg",
+              "gh",
+              "hd",
+              "fg",
+              "gd"
+            ],
+            "access": "invented bidirectional roads; no real travel permission",
+            "labels": "short road names omit Road; upright labels and reference letters; labeled/partial retain all clues"
+          }
+        }
+      ]
+    }
+  ],
+  "features": {
+    "type": "FeatureCollection",
+    "features": [
+      {
+        "type": "Feature",
+        "id": "road:ab",
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              0,
+              0
+            ],
+            [
+              0.00047214319095538254,
+              0
+            ]
+          ]
+        },
+        "properties": {
+          "sourceId": "invented",
+          "role": "road",
+          "name": "Ash Rd",
+          "tags": {
+            "highway": "residential",
+            "oneway": "no"
+          }
+        }
+      },
+      {
+        "type": "Feature",
+        "id": "road:bc",
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              0.00047214319095538254,
+              0
+            ],
+            [
+              0.000978010895550435,
+              0
+            ]
+          ]
+        },
+        "properties": {
+          "sourceId": "invented",
+          "role": "road",
+          "name": "Bay Rd",
+          "tags": {
+            "highway": "residential",
+            "oneway": "no"
+          }
+        }
+      },
+      {
+        "type": "Feature",
+        "id": "road:cd",
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              0.000978010895550435,
+              0
+            ],
+            [
+              0.0009780108955695231,
+              0.0004384186772944221
+            ]
+          ]
+        },
+        "properties": {
+          "sourceId": "invented",
+          "role": "road",
+          "name": "Elm Rd",
+          "tags": {
+            "highway": "residential",
+            "oneway": "no"
+          }
+        }
+      },
+      {
+        "type": "Feature",
+        "id": "road:de",
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              0.0009780108955695231,
+              0.0004384186772944221
+            ],
+            [
+              0.00040469416368800655,
+              0.000539592218230236
+            ]
+          ]
+        },
+        "properties": {
+          "sourceId": "invented",
+          "role": "road",
+          "name": "Fir Rd",
+          "tags": {
+            "highway": "residential",
+            "oneway": "no"
+          }
+        }
+      },
+      {
+        "type": "Feature",
+        "id": "road:ef",
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              0.00040469416368800655,
+              0.000539592218230236
+            ],
+            [
+              -0.00006744902728086707,
+              0.0004721431909552734
+            ]
+          ]
+        },
+        "properties": {
+          "sourceId": "invented",
+          "role": "road",
+          "name": "Oak Rd",
+          "tags": {
+            "highway": "residential",
+            "oneway": "no"
+          }
+        }
+      },
+      {
+        "type": "Feature",
+        "id": "road:fa",
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -0.00006744902728086707,
+              0.0004721431909552734
+            ],
+            [
+              0,
+              0
+            ]
+          ]
+        },
+        "properties": {
+          "sourceId": "invented",
+          "role": "road",
+          "name": "Ivy Rd",
+          "tags": {
+            "highway": "residential",
+            "oneway": "no"
+          }
+        }
+      },
+      {
+        "type": "Feature",
+        "id": "road:ae",
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              0,
+              0
+            ],
+            [
+              0.00040469416368800655,
+              0.000539592218230236
+            ]
+          ]
+        },
+        "properties": {
+          "sourceId": "invented",
+          "role": "road",
+          "name": "Yew Rd",
+          "tags": {
+            "highway": "residential",
+            "oneway": "no"
+          }
+        }
+      },
+      {
+        "type": "Feature",
+        "id": "road:eg",
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              0.00040469416368800655,
+              0.000539592218230236
+            ],
+            [
+              0.00033724513642945596,
+              0.000978010895544788
+            ]
+          ]
+        },
+        "properties": {
+          "sourceId": "invented",
+          "role": "road",
+          "name": "Gum Rd",
+          "tags": {
+            "highway": "residential",
+            "oneway": "no"
+          }
+        }
+      },
+      {
+        "type": "Feature",
+        "id": "road:gh",
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              0.00033724513642945596,
+              0.000978010895544788
+            ],
+            [
+              0.0009780108956389845,
+              0.000944286381864909
+            ]
+          ]
+        },
+        "properties": {
+          "sourceId": "invented",
+          "role": "road",
+          "name": "Lime Rd",
+          "tags": {
+            "highway": "residential",
+            "oneway": "no"
+          }
+        }
+      },
+      {
+        "type": "Feature",
+        "id": "road:hd",
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              0.0009780108956389845,
+              0.000944286381864909
+            ],
+            [
+              0.0009780108955695231,
+              0.0004384186772944221
+            ]
+          ]
+        },
+        "properties": {
+          "sourceId": "invented",
+          "role": "road",
+          "name": "Palm Rd",
+          "tags": {
+            "highway": "residential",
+            "oneway": "no"
+          }
+        }
+      },
+      {
+        "type": "Feature",
+        "id": "road:fg",
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -0.00006744902728086707,
+              0.0004721431909552734
+            ],
+            [
+              0.00033724513642945596,
+              0.000978010895544788
+            ]
+          ]
+        },
+        "properties": {
+          "sourceId": "invented",
+          "role": "road",
+          "name": "Reed Rd",
+          "tags": {
+            "highway": "residential",
+            "oneway": "no"
+          }
+        }
+      },
+      {
+        "type": "Feature",
+        "id": "road:gd",
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              0.00033724513642945596,
+              0.000978010895544788
+            ],
+            [
+              0.0009780108955695231,
+              0.0004384186772944221
+            ]
+          ]
+        },
+        "properties": {
+          "sourceId": "invented",
+          "role": "road",
+          "name": "Rose Rd",
+          "tags": {
+            "highway": "residential",
+            "oneway": "no"
+          }
+        }
+      },
+      {
+        "type": "Feature",
+        "id": "reference:a",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            0,
+            0
+          ]
+        },
+        "properties": {
+          "sourceId": "invented",
+          "role": "landmark",
+          "name": "A",
+          "tags": {
+            "map-literacy:reference": "invented map reference"
+          }
+        }
+      },
+      {
+        "type": "Feature",
+        "id": "reference:b",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            0.00047214319095538254,
+            0
+          ]
+        },
+        "properties": {
+          "sourceId": "invented",
+          "role": "landmark",
+          "name": "B",
+          "tags": {
+            "map-literacy:reference": "invented map reference"
+          }
+        }
+      },
+      {
+        "type": "Feature",
+        "id": "reference:c",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            0.000978010895550435,
+            0
+          ]
+        },
+        "properties": {
+          "sourceId": "invented",
+          "role": "landmark",
+          "name": "C",
+          "tags": {
+            "map-literacy:reference": "invented map reference"
+          }
+        }
+      },
+      {
+        "type": "Feature",
+        "id": "reference:d",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            0.0009780108955695231,
+            0.0004384186772944221
+          ]
+        },
+        "properties": {
+          "sourceId": "invented",
+          "role": "landmark",
+          "name": "D",
+          "tags": {
+            "map-literacy:reference": "invented map reference"
+          }
+        }
+      },
+      {
+        "type": "Feature",
+        "id": "reference:e",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            0.00040469416368800655,
+            0.000539592218230236
+          ]
+        },
+        "properties": {
+          "sourceId": "invented",
+          "role": "landmark",
+          "name": "E",
+          "tags": {
+            "map-literacy:reference": "invented map reference"
+          }
+        }
+      },
+      {
+        "type": "Feature",
+        "id": "reference:f",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            -0.00006744902728086707,
+            0.0004721431909552734
+          ]
+        },
+        "properties": {
+          "sourceId": "invented",
+          "role": "landmark",
+          "name": "F",
+          "tags": {
+            "map-literacy:reference": "invented map reference"
+          }
+        }
+      },
+      {
+        "type": "Feature",
+        "id": "reference:g",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            0.00033724513642945596,
+            0.000978010895544788
+          ]
+        },
+        "properties": {
+          "sourceId": "invented",
+          "role": "landmark",
+          "name": "G",
+          "tags": {
+            "map-literacy:reference": "invented map reference"
+          }
+        }
+      },
+      {
+        "type": "Feature",
+        "id": "reference:h",
+        "geometry": {
+          "type": "Point",
+          "coordinates": [
+            0.0009780108956389845,
+            0.000944286381864909
+          ]
+        },
+        "properties": {
+          "sourceId": "invented",
+          "role": "landmark",
+          "name": "H",
+          "tags": {
+            "map-literacy:reference": "invented map reference"
+          }
+        }
+      }
+    ]
+  },
+  "topology": {
+    "nodes": [
+      {
+        "id": "a",
+        "coordinate": [
+          0,
+          0
+        ],
+        "sourceId": "invented",
+        "sourceObjectId": null
+      },
+      {
+        "id": "b",
+        "coordinate": [
+          0.00047214319095538254,
+          0
+        ],
+        "sourceId": "invented",
+        "sourceObjectId": null
+      },
+      {
+        "id": "c",
+        "coordinate": [
+          0.000978010895550435,
+          0
+        ],
+        "sourceId": "invented",
+        "sourceObjectId": null
+      },
+      {
+        "id": "d",
+        "coordinate": [
+          0.0009780108955695231,
+          0.0004384186772944221
+        ],
+        "sourceId": "invented",
+        "sourceObjectId": null
+      },
+      {
+        "id": "e",
+        "coordinate": [
+          0.00040469416368800655,
+          0.000539592218230236
+        ],
+        "sourceId": "invented",
+        "sourceObjectId": null
+      },
+      {
+        "id": "f",
+        "coordinate": [
+          -0.00006744902728086707,
+          0.0004721431909552734
+        ],
+        "sourceId": "invented",
+        "sourceObjectId": null
+      },
+      {
+        "id": "g",
+        "coordinate": [
+          0.00033724513642945596,
+          0.000978010895544788
+        ],
+        "sourceId": "invented",
+        "sourceObjectId": null
+      },
+      {
+        "id": "h",
+        "coordinate": [
+          0.0009780108956389845,
+          0.000944286381864909
+        ],
+        "sourceId": "invented",
+        "sourceObjectId": null
+      }
+    ],
+    "edges": [
+      {
+        "id": "ab:f",
+        "from": "a",
+        "to": "b",
+        "featureId": "road:ab",
+        "sourceId": "invented",
+        "mode": "drive",
+        "access": "allowed",
+        "lengthM": 52.50000000000001,
+        "shape": [
+          [
+            0,
+            0
+          ],
+          [
+            0.00047214319095538254,
+            0
+          ]
+        ]
+      },
+      {
+        "id": "ab:r",
+        "from": "b",
+        "to": "a",
+        "featureId": "road:ab",
+        "sourceId": "invented",
+        "mode": "drive",
+        "access": "allowed",
+        "lengthM": 52.50000000000001,
+        "shape": [
+          [
+            0.00047214319095538254,
+            0
+          ],
+          [
+            0,
+            0
+          ]
+        ]
+      },
+      {
+        "id": "bc:f",
+        "from": "b",
+        "to": "c",
+        "featureId": "road:bc",
+        "sourceId": "invented",
+        "mode": "drive",
+        "access": "allowed",
+        "lengthM": 56.24999999999999,
+        "shape": [
+          [
+            0.00047214319095538254,
+            0
+          ],
+          [
+            0.000978010895550435,
+            0
+          ]
+        ]
+      },
+      {
+        "id": "bc:r",
+        "from": "c",
+        "to": "b",
+        "featureId": "road:bc",
+        "sourceId": "invented",
+        "mode": "drive",
+        "access": "allowed",
+        "lengthM": 56.24999999999999,
+        "shape": [
+          [
+            0.000978010895550435,
+            0
+          ],
+          [
+            0.00047214319095538254,
+            0
+          ]
+        ]
+      },
+      {
+        "id": "cd:f",
+        "from": "c",
+        "to": "d",
+        "featureId": "road:cd",
+        "sourceId": "invented",
+        "mode": "drive",
+        "access": "allowed",
+        "lengthM": 48.749999997632635,
+        "shape": [
+          [
+            0.000978010895550435,
+            0
+          ],
+          [
+            0.0009780108955695231,
+            0.0004384186772944221
+          ]
+        ]
+      },
+      {
+        "id": "cd:r",
+        "from": "d",
+        "to": "c",
+        "featureId": "road:cd",
+        "sourceId": "invented",
+        "mode": "drive",
+        "access": "allowed",
+        "lengthM": 48.749999997632635,
+        "shape": [
+          [
+            0.0009780108955695231,
+            0.0004384186772944221
+          ],
+          [
+            0.000978010895550435,
+            0
+          ]
+        ]
+      },
+      {
+        "id": "de:f",
+        "from": "d",
+        "to": "e",
+        "featureId": "road:de",
+        "sourceId": "invented",
+        "mode": "drive",
+        "access": "allowed",
+        "lengthM": 64.73503687993036,
+        "shape": [
+          [
+            0.0009780108955695231,
+            0.0004384186772944221
+          ],
+          [
+            0.00040469416368800655,
+            0.000539592218230236
+          ]
+        ]
+      },
+      {
+        "id": "de:r",
+        "from": "e",
+        "to": "d",
+        "featureId": "road:de",
+        "sourceId": "invented",
+        "mode": "drive",
+        "access": "allowed",
+        "lengthM": 64.73503687993036,
+        "shape": [
+          [
+            0.00040469416368800655,
+            0.000539592218230236
+          ],
+          [
+            0.0009780108955695231,
+            0.0004384186772944221
+          ]
+        ]
+      },
+      {
+        "id": "ef:f",
+        "from": "e",
+        "to": "f",
+        "featureId": "road:ef",
+        "sourceId": "invented",
+        "mode": "drive",
+        "access": "allowed",
+        "lengthM": 53.03300858837861,
+        "shape": [
+          [
+            0.00040469416368800655,
+            0.000539592218230236
+          ],
+          [
+            -0.00006744902728086707,
+            0.0004721431909552734
+          ]
+        ]
+      },
+      {
+        "id": "ef:r",
+        "from": "f",
+        "to": "e",
+        "featureId": "road:ef",
+        "sourceId": "invented",
+        "mode": "drive",
+        "access": "allowed",
+        "lengthM": 53.03300858837861,
+        "shape": [
+          [
+            -0.00006744902728086707,
+            0.0004721431909552734
+          ],
+          [
+            0.00040469416368800655,
+            0.000539592218230236
+          ]
+        ]
+      },
+      {
+        "id": "fa:f",
+        "from": "f",
+        "to": "a",
+        "featureId": "road:fa",
+        "sourceId": "invented",
+        "mode": "drive",
+        "access": "allowed",
+        "lengthM": 53.03300858899106,
+        "shape": [
+          [
+            -0.00006744902728086707,
+            0.0004721431909552734
+          ],
+          [
+            0,
+            0
+          ]
+        ]
+      },
+      {
+        "id": "fa:r",
+        "from": "a",
+        "to": "f",
+        "featureId": "road:fa",
+        "sourceId": "invented",
+        "mode": "drive",
+        "access": "allowed",
+        "lengthM": 53.03300858899106,
+        "shape": [
+          [
+            0,
+            0
+          ],
+          [
+            -0.00006744902728086707,
+            0.0004721431909552734
+          ]
+        ]
+      },
+      {
+        "id": "ae:f",
+        "from": "a",
+        "to": "e",
+        "featureId": "road:ae",
+        "sourceId": "invented",
+        "mode": "drive",
+        "access": "allowed",
+        "lengthM": 75,
+        "shape": [
+          [
+            0,
+            0
+          ],
+          [
+            0.00040469416368800655,
+            0.000539592218230236
+          ]
+        ]
+      },
+      {
+        "id": "ae:r",
+        "from": "e",
+        "to": "a",
+        "featureId": "road:ae",
+        "sourceId": "invented",
+        "mode": "drive",
+        "access": "allowed",
+        "lengthM": 75,
+        "shape": [
+          [
+            0.00040469416368800655,
+            0.000539592218230236
+          ],
+          [
+            0,
+            0
+          ]
+        ]
+      },
+      {
+        "id": "eg:f",
+        "from": "e",
+        "to": "g",
+        "featureId": "road:eg",
+        "sourceId": "invented",
+        "mode": "drive",
+        "access": "allowed",
+        "lengthM": 49.32354914179031,
+        "shape": [
+          [
+            0.00040469416368800655,
+            0.000539592218230236
+          ],
+          [
+            0.00033724513642945596,
+            0.000978010895544788
+          ]
+        ]
+      },
+      {
+        "id": "eg:r",
+        "from": "g",
+        "to": "e",
+        "featureId": "road:eg",
+        "sourceId": "invented",
+        "mode": "drive",
+        "access": "allowed",
+        "lengthM": 49.32354914179031,
+        "shape": [
+          [
+            0.00033724513642945596,
+            0.000978010895544788
+          ],
+          [
+            0.00040469416368800655,
+            0.000539592218230236
+          ]
+        ]
+      },
+      {
+        "id": "gh:f",
+        "from": "g",
+        "to": "h",
+        "featureId": "road:gh",
+        "sourceId": "invented",
+        "mode": "drive",
+        "access": "allowed",
+        "lengthM": 71.34861596056992,
+        "shape": [
+          [
+            0.00033724513642945596,
+            0.000978010895544788
+          ],
+          [
+            0.0009780108956389845,
+            0.000944286381864909
+          ]
+        ]
+      },
+      {
+        "id": "gh:r",
+        "from": "h",
+        "to": "g",
+        "featureId": "road:gh",
+        "sourceId": "invented",
+        "mode": "drive",
+        "access": "allowed",
+        "lengthM": 71.34861596056992,
+        "shape": [
+          [
+            0.0009780108956389845,
+            0.000944286381864909
+          ],
+          [
+            0.00033724513642945596,
+            0.000978010895544788
+          ]
+        ]
+      },
+      {
+        "id": "hd:f",
+        "from": "h",
+        "to": "d",
+        "featureId": "road:hd",
+        "sourceId": "invented",
+        "mode": "drive",
+        "access": "allowed",
+        "lengthM": 56.24999999726841,
+        "shape": [
+          [
+            0.0009780108956389845,
+            0.000944286381864909
+          ],
+          [
+            0.0009780108955695231,
+            0.0004384186772944221
+          ]
+        ]
+      },
+      {
+        "id": "hd:r",
+        "from": "d",
+        "to": "h",
+        "featureId": "road:hd",
+        "sourceId": "invented",
+        "mode": "drive",
+        "access": "allowed",
+        "lengthM": 56.24999999726841,
+        "shape": [
+          [
+            0.0009780108955695231,
+            0.0004384186772944221
+          ],
+          [
+            0.0009780108956389845,
+            0.000944286381864909
+          ]
+        ]
+      },
+      {
+        "id": "fg:f",
+        "from": "f",
+        "to": "g",
+        "featureId": "road:fg",
+        "sourceId": "invented",
+        "mode": "drive",
+        "access": "allowed",
+        "lengthM": 72.03514767067765,
+        "shape": [
+          [
+            -0.00006744902728086707,
+            0.0004721431909552734
+          ],
+          [
+            0.00033724513642945596,
+            0.000978010895544788
+          ]
+        ]
+      },
+      {
+        "id": "fg:r",
+        "from": "g",
+        "to": "f",
+        "featureId": "road:fg",
+        "sourceId": "invented",
+        "mode": "drive",
+        "access": "allowed",
+        "lengthM": 72.03514767067765,
+        "shape": [
+          [
+            0.00033724513642945596,
+            0.000978010895544788
+          ],
+          [
+            -0.00006744902728086707,
+            0.0004721431909552734
+          ]
+        ]
+      },
+      {
+        "id": "gd:f",
+        "from": "g",
+        "to": "d",
+        "featureId": "road:gd",
+        "sourceId": "invented",
+        "mode": "drive",
+        "access": "allowed",
+        "lengthM": 93.14806760839988,
+        "shape": [
+          [
+            0.00033724513642945596,
+            0.000978010895544788
+          ],
+          [
+            0.0009780108955695231,
+            0.0004384186772944221
+          ]
+        ]
+      },
+      {
+        "id": "gd:r",
+        "from": "d",
+        "to": "g",
+        "featureId": "road:gd",
+        "sourceId": "invented",
+        "mode": "drive",
+        "access": "allowed",
+        "lengthM": 93.14806760839988,
+        "shape": [
+          [
+            0.0009780108955695231,
+            0.0004384186772944221
+          ],
+          [
+            0.00033724513642945596,
+            0.000978010895544788
+          ]
+        ]
+      }
+    ],
+    "restrictions": [],
+    "completeness": "complete",
+    "exclusions": []
+  },
+  "labels": [
+    {
+      "id": "label:road:ab",
+      "featureId": "road:ab",
+      "text": "Ash",
+      "anchor": [
+        0.00023607159547769127,
+        0
+      ],
+      "rotationDeg": 0,
+      "visibleIn": "partial",
+      "priority": 80
+    },
+    {
+      "id": "label:road:bc",
+      "featureId": "road:bc",
+      "text": "Bay",
+      "anchor": [
+        0.0007250770432529088,
+        0
+      ],
+      "rotationDeg": 0,
+      "visibleIn": "partial",
+      "priority": 80
+    },
+    {
+      "id": "label:road:cd",
+      "featureId": "road:cd",
+      "text": "Elm",
+      "anchor": [
+        0.0009780108955552071,
+        0.000219209338647211
+      ],
+      "rotationDeg": -90,
+      "visibleIn": "partial",
+      "priority": 80
+    },
+    {
+      "id": "label:road:de",
+      "featureId": "road:de",
+      "text": "Fir",
+      "anchor": [
+        0.0006913525296300252,
+        0.0004890054477633512
+      ],
+      "rotationDeg": 10.007979801441309,
+      "visibleIn": "partial",
+      "priority": 80
+    },
+    {
+      "id": "label:road:ef",
+      "featureId": "road:ef",
+      "text": "Oak",
+      "anchor": [
+        0.0001686225682027324,
+        0.0005058677045943224
+      ],
+      "rotationDeg": -8.13010235415598,
+      "visibleIn": "partial",
+      "priority": 80
+    },
+    {
+      "id": "label:road:fa",
+      "featureId": "road:fa",
+      "text": "Ivy",
+      "anchor": [
+        -0.000033724513639861015,
+        0.00023607159547767766
+      ],
+      "rotationDeg": 81.86989764584403,
+      "visibleIn": "partial",
+      "priority": 80
+    },
+    {
+      "id": "label:road:ae",
+      "featureId": "road:ae",
+      "text": "Yew",
+      "anchor": [
+        0.0002023470818395166,
+        0.0002697961091168006
+      ],
+      "rotationDeg": -53.13010235415598,
+      "visibleIn": "partial",
+      "priority": 80
+    },
+    {
+      "id": "label:road:eg",
+      "featureId": "road:eg",
+      "text": "Gum",
+      "anchor": [
+        0.0003709696500580604,
+        0.0007588015568872772
+      ],
+      "rotationDeg": 81.25383773744478,
+      "visibleIn": "partial",
+      "priority": 80
+    },
+    {
+      "id": "label:road:gh",
+      "featureId": "road:gh",
+      "text": "Lime",
+      "anchor": [
+        0.0006576280160352555,
+        0.0009611486387094964
+      ],
+      "rotationDeg": 3.01278750418334,
+      "visibleIn": "partial",
+      "priority": 80
+    },
+    {
+      "id": "label:road:hd",
+      "featureId": "road:hd",
+      "text": "Palm",
+      "anchor": [
+        0.0009780108955979006,
+        0.0006913525295796656
+      ],
+      "rotationDeg": 90,
+      "visibleIn": "partial",
+      "priority": 80
+    },
+    {
+      "id": "label:road:fg",
+      "featureId": "road:fg",
+      "text": "Reed",
+      "anchor": [
+        0.00013489805456588197,
+        0.0007250770432522389
+      ],
+      "rotationDeg": -51.34019174590991,
+      "visibleIn": "partial",
+      "priority": 80
+    },
+    {
+      "id": "label:road:gd",
+      "featureId": "road:gd",
+      "text": "Rose",
+      "anchor": [
+        0.0006576280160070605,
+        0.0007082147864175239
+      ],
+      "rotationDeg": 40.10090754621224,
+      "visibleIn": "partial",
+      "priority": 80
+    },
+    {
+      "id": "label:reference:a",
+      "featureId": "reference:a",
+      "text": "A",
+      "anchor": [
+        0,
+        0
+      ],
+      "rotationDeg": 0,
+      "visibleIn": "partial",
+      "priority": 100
+    },
+    {
+      "id": "label:reference:b",
+      "featureId": "reference:b",
+      "text": "B",
+      "anchor": [
+        0.00047214319095538254,
+        0
+      ],
+      "rotationDeg": 0,
+      "visibleIn": "partial",
+      "priority": 100
+    },
+    {
+      "id": "label:reference:c",
+      "featureId": "reference:c",
+      "text": "C",
+      "anchor": [
+        0.000978010895550435,
+        0
+      ],
+      "rotationDeg": 0,
+      "visibleIn": "partial",
+      "priority": 100
+    },
+    {
+      "id": "label:reference:d",
+      "featureId": "reference:d",
+      "text": "D",
+      "anchor": [
+        0.0009780108955695231,
+        0.0004384186772944221
+      ],
+      "rotationDeg": 0,
+      "visibleIn": "partial",
+      "priority": 100
+    },
+    {
+      "id": "label:reference:e",
+      "featureId": "reference:e",
+      "text": "E",
+      "anchor": [
+        0.00040469416368800655,
+        0.000539592218230236
+      ],
+      "rotationDeg": 0,
+      "visibleIn": "partial",
+      "priority": 100
+    },
+    {
+      "id": "label:reference:f",
+      "featureId": "reference:f",
+      "text": "F",
+      "anchor": [
+        -0.00006744902728086707,
+        0.0004721431909552734
+      ],
+      "rotationDeg": 0,
+      "visibleIn": "partial",
+      "priority": 100
+    },
+    {
+      "id": "label:reference:g",
+      "featureId": "reference:g",
+      "text": "G",
+      "anchor": [
+        0.00033724513642945596,
+        0.000978010895544788
+      ],
+      "rotationDeg": 0,
+      "visibleIn": "partial",
+      "priority": 100
+    },
+    {
+      "id": "label:reference:h",
+      "featureId": "reference:h",
+      "text": "H",
+      "anchor": [
+        0.0009780108956389845,
+        0.000944286381864909
+      ],
+      "rotationDeg": 0,
+      "visibleIn": "partial",
+      "priority": 100
+    }
+  ],
+  "exercises": [
+    {
+      "review": "draft",
+      "sourceIds": [
+        "invented"
+      ],
+      "scenario": null,
+      "id": "heading-1",
+      "type": "heading",
+      "prompt": "Face directly from C toward G. Give the true bearing clockwise from north, not the road-following direction.",
+      "hints": [
+        "Use geographic north and the straight line between the references."
+      ],
+      "rubric": {
+        "expectedDeg": 326.76828893630994,
+        "toleranceDeg": 15
+      }
+    },
+    {
+      "review": "draft",
+      "sourceIds": [
+        "invented"
+      ],
+      "scenario": null,
+      "id": "heading-2",
+      "type": "heading",
+      "prompt": "Face directly from H toward A. Give the true bearing clockwise from north, not the road-following direction.",
+      "hints": [
+        "Use geographic north and the straight line between the references."
+      ],
+      "rubric": {
+        "expectedDeg": 226.00508601331344,
+        "toleranceDeg": 15
+      }
+    },
+    {
+      "review": "draft",
+      "sourceIds": [
+        "invented"
+      ],
+      "scenario": null,
+      "id": "endpoint-1",
+      "type": "endpoint",
+      "prompt": "Locate the junction shared by Gum Road and Lime Road. Mark the reference and explain the street clues.",
+      "hints": [
+        "Street labels omit Road. Use both names."
+      ],
+      "rubric": {
+        "expected": [
+          0.00033724513642945596,
+          0.000978010895544788
+        ],
+        "toleranceM": 8
+      }
+    },
+    {
+      "review": "draft",
+      "sourceIds": [
+        "invented"
+      ],
+      "scenario": null,
+      "id": "endpoint-2",
+      "type": "endpoint",
+      "prompt": "Locate the junction shared by Ash Road and Bay Road. Mark the reference and explain the street clues.",
+      "hints": [
+        "Street labels omit Road. Use both names."
+      ],
+      "rubric": {
+        "expected": [
+          0.00047214319095538254,
+          0
+        ],
+        "toleranceM": 8
+      }
+    },
+    {
+      "review": "draft",
+      "sourceIds": [
+        "invented"
+      ],
+      "scenario": null,
+      "id": "route-1",
+      "type": "route",
+      "prompt": "Trace a connected route from C to G. All drawn roads permit travel in both directions in this invented exercise. Any valid connected route is accepted; explain its connections.",
+      "hints": [
+        "Use the junctions; more than one answer may work."
+      ],
+      "rubric": {
+        "startNodeId": "c",
+        "endNodeId": "g",
+        "mode": "drive",
+        "objective": "any-valid",
+        "maxDistanceM": null
+      }
+    },
+    {
+      "review": "draft",
+      "sourceIds": [
+        "invented"
+      ],
+      "scenario": null,
+      "id": "route-2",
+      "type": "route",
+      "prompt": "Trace a connected route from H to A. All drawn roads permit travel in both directions in this invented exercise. Any valid connected route is accepted; explain its connections.",
+      "hints": [
+        "Use the junctions; more than one answer may work."
+      ],
+      "rubric": {
+        "startNodeId": "h",
+        "endNodeId": "a",
+        "mode": "drive",
+        "objective": "any-valid",
+        "maxDistanceM": null
+      }
+    },
+    {
+      "review": "draft",
+      "sourceIds": [
+        "invented"
+      ],
+      "scenario": {
+        "id": "closure-1",
+        "closedEdgeIds": [
+          "cd:f",
+          "cd:r"
+        ],
+        "label": "Closed: C–D (both directions)"
+      },
+      "id": "detour-1",
+      "type": "detour",
+      "prompt": "Trace a route from C to F while the road directly joining C and D is closed in both directions. Use any connected alternative and explain the change.",
+      "hints": [
+        "The marked closure is invented; use another connection."
+      ],
+      "rubric": {
+        "startNodeId": "c",
+        "endNodeId": "f",
+        "mode": "drive",
+        "objective": "any-valid",
+        "maxDistanceM": null
+      }
+    },
+    {
+      "review": "draft",
+      "sourceIds": [
+        "invented"
+      ],
+      "scenario": {
+        "id": "closure-2",
+        "closedEdgeIds": [
+          "hd:f",
+          "hd:r"
+        ],
+        "label": "Closed: H–D (both directions)"
+      },
+      "id": "detour-2",
+      "type": "detour",
+      "prompt": "Trace a route from H to B while the road directly joining H and D is closed in both directions. Use any connected alternative and explain the change.",
+      "hints": [
+        "The marked closure is invented; use another connection."
+      ],
+      "rubric": {
+        "startNodeId": "h",
+        "endNodeId": "b",
+        "mode": "drive",
+        "objective": "any-valid",
+        "maxDistanceM": null
+      }
+    }
+  ],
+  "print": {
+    "paper": "letter",
+    "orientation": "portrait",
+    "marginMm": 10,
+    "scaleDenominator": 1000,
+    "labelMinPt": 8,
+    "mapRotationDeg": 0
+  },
+  "extensions": {}
+}

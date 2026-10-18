@@ -1,0 +1,304 @@
+{
+  "protocolVersion": 1,
+  "status": "draft; not approved or participant data",
+  "sets": {
+    "A": {
+      "packId": "pilot-street-a",
+      "revision": 1,
+      "sha256": "29cefd134ab22328be5e61e1a0eb3e3b785485e42f561f94fc4fa22143132843",
+      "exercises": [
+        {
+          "id": "heading-1",
+          "skill": "heading"
+        },
+        {
+          "id": "heading-2",
+          "skill": "heading"
+        },
+        {
+          "id": "endpoint-1",
+          "skill": "endpoint"
+        },
+        {
+          "id": "endpoint-2",
+          "skill": "endpoint"
+        },
+        {
+          "id": "route-1",
+          "skill": "route"
+        },
+        {
+          "id": "route-2",
+          "skill": "route"
+        },
+        {
+          "id": "detour-1",
+          "skill": "detour"
+        },
+        {
+          "id": "detour-2",
+          "skill": "detour"
+        }
+      ]
+    },
+    "B": {
+      "packId": "pilot-street-b",
+      "revision": 1,
+      "sha256": "930202f61f2d99573a31b8538c0ed31d73035ccb3f428e8986734925d60b75cc",
+      "exercises": [
+        {
+          "id": "heading-1",
+          "skill": "heading"
+        },
+        {
+          "id": "heading-2",
+          "skill": "heading"
+        },
+        {
+          "id": "endpoint-1",
+          "skill": "endpoint"
+        },
+        {
+          "id": "endpoint-2",
+          "skill": "endpoint"
+        },
+        {
+          "id": "route-1",
+          "skill": "route"
+        },
+        {
+          "id": "route-2",
+          "skill": "route"
+        },
+        {
+          "id": "detour-1",
+          "skill": "detour"
+        },
+        {
+          "id": "detour-2",
+          "skill": "detour"
+        }
+      ]
+    },
+    "C": {
+      "packId": "pilot-street-c",
+      "revision": 1,
+      "sha256": "32d76d30f8d0cc2657ecedc2211438c96f2235f31344082b34c3417069f9995b",
+      "exercises": [
+        {
+          "id": "heading-1",
+          "skill": "heading"
+        },
+        {
+          "id": "heading-2",
+          "skill": "heading"
+        },
+        {
+          "id": "endpoint-1",
+          "skill": "endpoint"
+        },
+        {
+          "id": "endpoint-2",
+          "skill": "endpoint"
+        },
+        {
+          "id": "route-1",
+          "skill": "route"
+        },
+        {
+          "id": "route-2",
+          "skill": "route"
+        },
+        {
+          "id": "detour-1",
+          "skill": "detour"
+        },
+        {
+          "id": "detour-2",
+          "skill": "detour"
+        }
+      ]
+    },
+    "D": {
+      "packId": "pilot-street-d",
+      "revision": 1,
+      "sha256": "fe0e9483fdfcc0e5c0d8609426d9d631a6c5ea607ac85a0851f7a77a98840478",
+      "exercises": [
+        {
+          "id": "heading-1",
+          "skill": "heading"
+        },
+        {
+          "id": "heading-2",
+          "skill": "heading"
+        },
+        {
+          "id": "endpoint-1",
+          "skill": "endpoint"
+        },
+        {
+          "id": "endpoint-2",
+          "skill": "endpoint"
+        },
+        {
+          "id": "route-1",
+          "skill": "route"
+        },
+        {
+          "id": "route-2",
+          "skill": "route"
+        },
+        {
+          "id": "detour-1",
+          "skill": "detour"
+        },
+        {
+          "id": "detour-2",
+          "skill": "detour"
+        }
+      ]
+    },
+    "E": {
+      "packId": "pilot-street-e",
+      "revision": 1,
+      "sha256": "b7ae07399b7cf29e590e895af9235645b7cfcc66cd8433a35a5ba48045e42b96",
+      "exercises": [
+        {
+          "id": "heading-1",
+          "skill": "heading"
+        },
+        {
+          "id": "heading-2",
+          "skill": "heading"
+        },
+        {
+          "id": "endpoint-1",
+          "skill": "endpoint"
+        },
+        {
+          "id": "endpoint-2",
+          "skill": "endpoint"
+        },
+        {
+          "id": "route-1",
+          "skill": "route"
+        },
+        {
+          "id": "route-2",
+          "skill": "route"
+        },
+        {
+          "id": "detour-1",
+          "skill": "detour"
+        },
+        {
+          "id": "detour-2",
+          "skill": "detour"
+        }
+      ]
+    }
+  },
+  "comparison": [
+    {
+      "set": "A",
+      "nodes": 7,
+      "undirectedRoads": 9,
+      "headingDegrees": [
+        26.565051177077976,
+        153.43494882318146
+      ],
+      "endpointToleranceM": 8,
+      "routeMinimumEdges": [
+        3,
+        3
+      ],
+      "detourMinimumEdges": [
+        4,
+        3
+      ],
+      "equivalence": "pending human review; different node/road counts do not establish unfamiliarity or matched difficulty"
+    },
+    {
+      "set": "B",
+      "nodes": 8,
+      "undirectedRoads": 11,
+      "headingDegrees": [
+        45,
+        113.19859050939976
+      ],
+      "endpointToleranceM": 8,
+      "routeMinimumEdges": [
+        3,
+        3
+      ],
+      "detourMinimumEdges": [
+        3,
+        3
+      ],
+      "equivalence": "pending human review; different node/road counts do not establish unfamiliarity or matched difficulty"
+    },
+    {
+      "set": "C",
+      "nodes": 9,
+      "undirectedRoads": 12,
+      "headingDegrees": [
+        61.9275130615672,
+        177.9545915134055
+      ],
+      "endpointToleranceM": 8,
+      "routeMinimumEdges": [
+        3,
+        2
+      ],
+      "detourMinimumEdges": [
+        3,
+        4
+      ],
+      "equivalence": "pending human review; different node/road counts do not establish unfamiliarity or matched difficulty"
+    },
+    {
+      "set": "D",
+      "nodes": 8,
+      "undirectedRoads": 12,
+      "headingDegrees": [
+        326.76828893630994,
+        226.00508601331344
+      ],
+      "endpointToleranceM": 8,
+      "routeMinimumEdges": [
+        2,
+        3
+      ],
+      "detourMinimumEdges": [
+        3,
+        4
+      ],
+      "equivalence": "pending human review; different node/road counts do not establish unfamiliarity or matched difficulty"
+    },
+    {
+      "set": "E",
+      "nodes": 10,
+      "undirectedRoads": 14,
+      "headingDegrees": [
+        130.6012946441283,
+        298.886581775506
+      ],
+      "endpointToleranceM": 8,
+      "routeMinimumEdges": [
+        3,
+        2
+      ],
+      "detourMinimumEdges": [
+        4,
+        4
+      ],
+      "equivalence": "pending human review; different node/road counts do not establish unfamiliarity or matched difficulty"
+    }
+  ],
+  "approval": {
+    "independentContent": null,
+    "conditionsComparable": null,
+    "physicalDevice": null,
+    "learningObserved": false
+  }
+}

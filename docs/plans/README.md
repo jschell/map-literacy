@@ -11,7 +11,7 @@ Plans are work packages with evidence-based completion, not claims that an appli
 | [03 SVG and print](queue/03-svg-and-print.md) | Queue: physical/device acceptance pending | 01; implemented 02 slice | Readable interactive/printed variants |
 | [04 Street lessons](queue/04-street-lessons.md) | Queue: core scoring/sessions implemented; address design prepared; curriculum/device acceptance pending | Implemented 02–03 slices | Deterministic exercises and rubric |
 | [05 Persistence and browser release](queue/05-persistence-and-browser-release.md) | Queue: implementation delivered; Pages deployed and B&W print accepted; broader device/accessibility acceptance pending | Implemented 04 slice | Recoverable local app and static deployment |
-| [06 Learning pilot](queue/06-learning-pilot.md) | Queue: protocol/reporting kit prepared; reviewed packs and participants pending | 05 | Exploratory usefulness/transfer evidence |
+| [06 Learning pilot](queue/06-learning-pilot.md) | Queue: five candidate eight-item sets and protocol/reporting kit prepared; independent equivalence/content review and participants pending | 05 | Exploratory usefulness/transfer evidence |
 | [07 Directions and simulation](queue/07-directions-and-simulation.md) | Queue | 05; 06 findings inform scope | Reviewed maneuvers and stationary playback |
 | [08 Topographic learning](queue/08-topographic-learning.md) | Queue: synthetic teaching capabilities delivered; acceptance pending; new capabilities paused | 01–05 shared core | Terrain layers and contour lessons |
 | [09 Delivery extensions](queue/09-delivery-extensions.md) | Queue | 05; demonstrated need | TinyJS/sync/scale decisions |
@@ -24,7 +24,7 @@ Plans are work packages with evidence-based completion, not claims that an appli
 | 03 | Pack performance, geometry/label readability, both-orientation worksheet calibration | Target-device observations and measured physical paper checks |
 | 04 | Curriculum acceptance; address implementation only if supported by pilot | Instructor/content review and device completion; later contract/code work |
 | 05 | Supported browser matrix, screen reader/zoom, actual storage-pressure behavior | Recorded device/assistive-technology observations; future migrations need version-specific automated fixtures |
-| 06 | Five matched reviewed packs/sheets, participation, transfer and retention | Material review followed by actual participant observations |
+| 06 | Independent review of five candidate packs/sheets, actual paper/device use, participation, transfer and retention | Material review followed by actual participant observations |
 | 08 | Existing lesson evaluation, real road/trail tie points/answers and device/paper acceptance; feature expansion paused | Automated known-answer checks and source/content review, then device/paper and learner evidence |
 
 Automated checks and historical execution records already support several implementation tasks. They do not close manual acceptance. User feedback establishes usable page fit/B&W printing for the reported workflow; it does not establish ruler calibration, every map mode, every worksheet or a complete browser matrix. See [print evidence](../validation/physical-print-check.md). Plans 07 and 09 remain unstarted/deferred; they are not required merely to complete the roadmap.

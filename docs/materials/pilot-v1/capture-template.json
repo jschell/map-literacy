@@ -1,0 +1,205 @@
+{
+  "protocolVersion": 1,
+  "materialsApproved": null,
+  "conditionsComparable": null,
+  "factualError": null,
+  "sets": {
+    "A": {
+      "packId": "pilot-street-a",
+      "revision": 1,
+      "sha256": "29cefd134ab22328be5e61e1a0eb3e3b785485e42f561f94fc4fa22143132843",
+      "exercises": [
+        {
+          "id": "heading-1",
+          "skill": "heading"
+        },
+        {
+          "id": "heading-2",
+          "skill": "heading"
+        },
+        {
+          "id": "endpoint-1",
+          "skill": "endpoint"
+        },
+        {
+          "id": "endpoint-2",
+          "skill": "endpoint"
+        },
+        {
+          "id": "route-1",
+          "skill": "route"
+        },
+        {
+          "id": "route-2",
+          "skill": "route"
+        },
+        {
+          "id": "detour-1",
+          "skill": "detour"
+        },
+        {
+          "id": "detour-2",
+          "skill": "detour"
+        }
+      ]
+    },
+    "B": {
+      "packId": "pilot-street-b",
+      "revision": 1,
+      "sha256": "930202f61f2d99573a31b8538c0ed31d73035ccb3f428e8986734925d60b75cc",
+      "exercises": [
+        {
+          "id": "heading-1",
+          "skill": "heading"
+        },
+        {
+          "id": "heading-2",
+          "skill": "heading"
+        },
+        {
+          "id": "endpoint-1",
+          "skill": "endpoint"
+        },
+        {
+          "id": "endpoint-2",
+          "skill": "endpoint"
+        },
+        {
+          "id": "route-1",
+          "skill": "route"
+        },
+        {
+          "id": "route-2",
+          "skill": "route"
+        },
+        {
+          "id": "detour-1",
+          "skill": "detour"
+        },
+        {
+          "id": "detour-2",
+          "skill": "detour"
+        }
+      ]
+    },
+    "C": {
+      "packId": "pilot-street-c",
+      "revision": 1,
+      "sha256": "32d76d30f8d0cc2657ecedc2211438c96f2235f31344082b34c3417069f9995b",
+      "exercises": [
+        {
+          "id": "heading-1",
+          "skill": "heading"
+        },
+        {
+          "id": "heading-2",
+          "skill": "heading"
+        },
+        {
+          "id": "endpoint-1",
+          "skill": "endpoint"
+        },
+        {
+          "id": "endpoint-2",
+          "skill": "endpoint"
+        },
+        {
+          "id": "route-1",
+          "skill": "route"
+        },
+        {
+          "id": "route-2",
+          "skill": "route"
+        },
+        {
+          "id": "detour-1",
+          "skill": "detour"
+        },
+        {
+          "id": "detour-2",
+          "skill": "detour"
+        }
+      ]
+    },
+    "D": {
+      "packId": "pilot-street-d",
+      "revision": 1,
+      "sha256": "fe0e9483fdfcc0e5c0d8609426d9d631a6c5ea607ac85a0851f7a77a98840478",
+      "exercises": [
+        {
+          "id": "heading-1",
+          "skill": "heading"
+        },
+        {
+          "id": "heading-2",
+          "skill": "heading"
+        },
+        {
+          "id": "endpoint-1",
+          "skill": "endpoint"
+        },
+        {
+          "id": "endpoint-2",
+          "skill": "endpoint"
+        },
+        {
+          "id": "route-1",
+          "skill": "route"
+        },
+        {
+          "id": "route-2",
+          "skill": "route"
+        },
+        {
+          "id": "detour-1",
+          "skill": "detour"
+        },
+        {
+          "id": "detour-2",
+          "skill": "detour"
+        }
+      ]
+    },
+    "E": {
+      "packId": "pilot-street-e",
+      "revision": 1,
+      "sha256": "b7ae07399b7cf29e590e895af9235645b7cfcc66cd8433a35a5ba48045e42b96",
+      "exercises": [
+        {
+          "id": "heading-1",
+          "skill": "heading"
+        },
+        {
+          "id": "heading-2",
+          "skill": "heading"
+        },
+        {
+          "id": "endpoint-1",
+          "skill": "endpoint"
+        },
+        {
+          "id": "endpoint-2",
+          "skill": "endpoint"
+        },
+        {
+          "id": "route-1",
+          "skill": "route"
+        },
+        {
+          "id": "route-2",
+          "skill": "route"
+        },
+        {
+          "id": "detour-1",
+          "skill": "detour"
+        },
+        {
+          "id": "detour-2",
+          "skill": "detour"
+        }
+      ]
+    }
+  },
+  "participants": [],
+  "items": []
+}

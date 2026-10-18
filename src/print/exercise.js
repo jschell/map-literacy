@@ -66,14 +66,14 @@ export function createExercisePrint(pack, exerciseId, audience) {
       const edges = new Map(pack.topology.edges.map((e) => [e.id, e]));
       for (const id of exercise.scenario.closedEdgeIds) {
         const edge = edges.get(id); closedEdges.push(edge);
-        add(`Closed edge ${id}: ${edge.from} → ${edge.to} (${edge.mode}).`);
+        if (instructor) add(`Closed edge ${id}: ${edge.from} → ${edge.to} (${edge.mode}).`);
       }
     }
     if (instructor) {
       add('Accept any connected directed path from S to E that matches the mode and allowed access, obeys turn-sequence restrictions and avoids the exercise closures. Apply the stated distance limit when present. There is no single exact-match route answer.', 'answer');
       add('Unknown access, unresolved restrictions or excluded geometry need manual review; do not mark them correct from the drawing alone. No sample route is automatically approved or generated.');
       if (rubric.startNodeId === rubric.endNodeId) add('An empty path may be valid when start equals end and no positive-distance requirement applies.', 'answer');
-    } else add('Draw a path on the map, list its directed edges if known, and explain the road connections and your choices.');
+    } else add('Draw your route on the map and explain the road connections and your choices.');
   }
   if (instructor) {
     add('Hints supplied by the author', 'heading');
