@@ -1,6 +1,6 @@
 # Plan 10 — Learner usability and website workflows
 
-Status: active; package A merged and hosted behavior verified after PR 64. Package B implemented on a review branch; merge/deployment acceptance pending. Packages C–E remain open. Authorized 2026-10-18 after the critical website review.
+Status: active; package A merged and hosted behavior verified after PR 64. Package B merged in PR 65; its post-merge browser check failed and blocked Pages publication. A focused responsive-check repair is prepared; deployment and hosted acceptance remain pending. Packages C–E remain open. Authorized 2026-10-18 after the critical website review.
 Dependencies: existing Plan 02–05 capabilities; supports their unfinished acceptance and Plan 06. Plan 02 remains queued for content/source acceptance. Plan 08 feature expansion stays paused.
 
 ## Outcome and boundaries
@@ -86,7 +86,7 @@ Completion requires A–D outcomes demonstrated and E evidence recorded, with ma
 
 ## Next action
 
-Package B is prepared for review. After merge, verify CI, automatic Pages deployment and hosted early-end/pause/current-question print behavior, then implement package C. The lifecycle/coverage compatibility decision is recorded in docs/decisions.md; no storage migration is required.
+Merge the focused release-check repair, then verify CI, automatic Pages deployment and hosted early-end/pause/current-question print behavior for package B before implementing package C. The lifecycle/coverage compatibility decision is recorded in docs/decisions.md; no storage migration is required.
 
 
 ## Package A execution record — 2026-10-18
@@ -105,3 +105,12 @@ PR 64 merged as 669bd20df6008c72e9e4ce5b4cd3ff829636797e; CI and automatic Pages
 Package B derives exact recorded coverage separately from latest-answer correctness, labels closed partial sessions Ended early, adds a per-question coverage review, and provides memory-only Pause/Resume while preserving strict v1 records/backups. Legacy closed sessions stay immutable; missing coverage is never inferred from the lifecycle or last-item index. Friendly saved-session labels retain raw IDs/timestamps in details. Feedback uses plain explanations/actions with full-precision diagnostic details; print key rounding stays finer than the rubric or retains exact values. Practice defaults to learner/current-question printing, manual overrides are explicit, and filenames identify the question and audience.
 
 Validation includes legacy/current v1 roundtrips, end-early and all-answered-but-incorrect cases, repeat attempts, pause/reload, last-item legacy gaps and tolerance-boundary display checks. Browser acceptance covers current-question printing, override recovery, audience isolation, backup preservation and saved labels, plus the existing full release checks. Exact results are recorded in the PR. C–E remain undelivered; software tests do not replace independent content, physical Safari/touch, assistive-technology or learning observations.
+
+
+## Package B post-merge release blocker — 2026-10-18
+
+PR 65 merged as 0862884a263b60d4f805c5eb1c326e0baf7c17a4. All 247 Node tests, fixture reproduction and pack validation passed, but both [foundation CI](https://github.com/jschell/map-literacy/actions/runs/39168813955) and the [Pages build](https://github.com/jschell/map-literacy/actions/runs/39168813944) failed at “mobile profile belongs between map and answer”. Deployment was skipped; the hosted page still exposed the earlier controls without Pause/Resume or Print current question. Do not treat this merge as deployed or package B as accepted.
+
+The check took map, answer and profile rectangles in separate browser protocol calls immediately after resizing. The app redraws its responsive SVG/chart through ResizeObserver and requestAnimationFrame; measurements could span different layouts or scroll anchoring. The repair waits for the resized map, reads all three rectangles in one page evaluation, retains the order/spacing assertions, adds landscape-to-portrait transitions and includes the measured rectangles in a failure. Fixture loading also waits for the new validated map before starting its session. This changes the test harness only; it does not relax layout bounds, bypass browser checks or change application data/scoring.
+
+Validation and exact release results are recorded in the repair PR. Package C remains next after successful deployment and hosted package B checks. Physical device, assistive-technology, curriculum and learner acceptance remain separate.

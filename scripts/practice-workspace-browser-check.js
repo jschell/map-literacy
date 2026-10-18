@@ -2,6 +2,24 @@ import assert from 'node:assert/strict';
 
 /** Complete spatial tasks with the controls a learner sees, never by filling coordinates. */
 export async function checkPracticeWorkspace(page, base, output) {
+  // ResizeObserver schedules a responsive SVG redraw on the next animation frame.
+  // Read all rectangles together: separate protocol calls can straddle that redraw
+  // or scroll anchoring and compare positions from different document layouts.
+  const layout = async () => {
+    await page.waitForFunction(() => {
+      const map = document.getElementById('map'), svg = map.querySelector('svg');
+      return svg && svg.viewBox.baseVal.width === Math.max(280, Math.min(2000, Math.round(map.clientWidth)));
+    });
+    return page.evaluate(() => {
+      const box = (selector) => document.querySelector(selector).getBoundingClientRect().toJSON();
+      return { map: box('#map-panel'), answer: box('.practice-answer'), profile: box('#profile-panel') };
+    });
+  };
+  const loadDemo = async (id) => {
+    const before = await page.locator('#map').getAttribute('data-load-version');
+    await page.locator(`#${id}`).click();
+    await page.waitForFunction((previous) => (document.getElementById('map').dataset.loadVersion ?? null) !== previous, before);
+  };
   const saved = () => page.waitForFunction(() => document.getElementById('save-status').textContent.startsWith('Saved in this browser'));
   const marks = () => page.locator('#map .exercise-mark').allTextContents();
   const clickReference = async (text, touch = false) => {
@@ -10,7 +28,7 @@ export async function checkPracticeWorkspace(page, base, output) {
     if (touch) await page.touchscreen.tap(box.x+box.width/2,box.y+box.height/2);
     else await page.mouse.click(box.x+box.width/2,box.y+box.height/2);
   };
-  await page.goto(base); await page.locator('#demo').click(); await page.locator('#lesson-start').click(); await saved();
+  await page.goto(base); await loadDemo('demo'); await page.locator('#lesson-start').click(); await saved();
   await page.locator('#answer-heading').fill('0'); await page.locator('#lesson-submit').click(); await saved();
   await page.locator('#lesson-next').click(); await saved();
   assert.match(await page.locator('#lesson-prompt').textContent(),/Locate A/);
@@ -38,7 +56,7 @@ export async function checkPracticeWorkspace(page, base, output) {
   await page.locator('#lesson-retry').click(); await saved();
   await page.locator('#endpoint-reference').selectOption('A');
   await page.locator('#lesson-submit').click(); await saved();
-  const mapBox = await page.locator('#map-panel').boundingBox(), answerBox = await page.locator('.practice-answer').boundingBox();
+  const { map: mapBox, answer: answerBox } = await layout();
   assert.ok(mapBox.x+mapBox.width<=answerBox.x,'desktop map is beside answers');
   await page.locator('#practice-workspace').screenshot({path:new URL('practice-endpoint-desktop.png',output).pathname});
   await page.locator('#lesson-next').click(); await saved();
@@ -63,20 +81,24 @@ export async function checkPracticeWorkspace(page, base, output) {
   await page.locator('#lesson-submit').click(); await saved(); assert.match(await page.locator('#lesson-status').textContent(),/^Correct/);
   await page.locator('#practice-workspace').screenshot({path:new URL('practice-detour-desktop.png',output).pathname});
   await page.locator('#lesson-end').click(); await saved();
-  await page.locator('#profile-demo').click(); await page.locator('#lesson-start').click(); await saved();
+  await loadDemo('profile-demo'); await page.locator('#lesson-start').click(); await saved();
   assert.equal(await page.locator('#profile-panel').isVisible(),true);
   assert.equal(await page.locator('#lesson-route').isVisible(),false);
-  await page.setViewportSize({width:390,height:844});
-  const narrow = await page.locator('#map-panel').boundingBox(), below = await page.locator('.practice-answer').boundingBox(), chart = await page.locator('#profile-panel').boundingBox();
-  assert.ok(chart.y>=narrow.y+narrow.height-1 && below.y>=chart.y+chart.height-1,'mobile profile belongs between map and answer');
-  assert.ok(below.y-chart.y-chart.height<75,'unrelated controls do not separate evidence from answers');
+  // Include a landscape-to-portrait change so the chart and map must reflow.
+  for (const viewport of [{width:844,height:390}, {width:375,height:820}, {width:390,height:844}]) {
+    await page.setViewportSize(viewport);
+    const { map: narrow, answer: below, profile: chart } = await layout();
+    assert.ok(chart.y>=narrow.bottom-1 && below.y>=chart.bottom-1,
+        `mobile profile belongs between map and answer: ${JSON.stringify({viewport,narrow,below,chart})}`);
+    assert.ok(below.y-chart.bottom<75,'unrelated controls do not separate evidence from answers');
+  }
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
   await page.locator('#practice-workspace').screenshot({path:new URL('practice-profile-mobile.png',output).pathname});
   await page.locator('#lesson-end').click(); await saved();
-  await page.locator('#demo').click(); await page.locator('#lesson-start').click(); await saved();
+  await loadDemo('demo'); await page.locator('#lesson-start').click(); await saved();
   await page.locator('#answer-heading').fill('0'); await page.locator('#lesson-submit').click(); await saved();
   await page.locator('#lesson-next').click(); await saved();
-  const mobileMap = await page.locator('#map-panel').boundingBox(), mobileAnswer = await page.locator('.practice-answer').boundingBox();
+  const { map: mobileMap, answer: mobileAnswer } = await layout();
   assert.ok(mobileAnswer.y-mobileMap.y-mobileMap.height<75,'mobile answer follows the map without review controls');
   await page.locator('#practice-workspace').screenshot({path:new URL('practice-endpoint-mobile.png',output).pathname});
   await page.setViewportSize({width:1280,height:1000});
