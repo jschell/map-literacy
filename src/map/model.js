@@ -30,14 +30,17 @@ export function createMapModel(pack, { paper = false, variant = 'labeled', rotat
   const minY = Math.min(...projected.map((p) => p[1])), maxY = Math.max(...projected.map((p) => p[1]));
   const width = paper ? LETTER_LAYOUTS[orientation].width : screenWidth, height = paper ? LETTER_LAYOUTS[orientation].height : screenHeight;
   const padding = paper ? 0 : 40;
-  const factor = paper ? 1000 / scaleDenominator : Math.min((width - 2 * padding) / (maxX - minX), (height - 2 * padding) / (maxY - minY));
-  if (paper && ((maxX - minX) * factor > width || (maxY - minY) * factor > height)) {
+  const terrainTop = pack.terrain ? paper ? 22 : 90 : padding;
+  const terrainBottom = pack.terrain ? paper ? 10 : 40 : padding;
+  const centerY = (terrainTop + height - terrainBottom) / 2;
+  const factor = paper ? 1000 / scaleDenominator : Math.min((width - 2 * padding) / (maxX - minX), (height - terrainTop - terrainBottom) / (maxY - minY));
+  if (paper && ((maxX - minX) * factor > width || (maxY - minY) * factor > height - terrainTop - terrainBottom)) {
     throw Object.assign(new Error('The selected extent does not fit this print scale. Choose another orientation, a larger scale denominator or a smaller extent.'), { code: 'print-extent-too-large' });
   }
   const offsetX = (minX + maxX) / 2, offsetY = (minY + maxY) / 2;
-  const convert = (c) => { const [x, y] = rotateScreen(projection.project(c), rotation); return [width / 2 + (x - offsetX) * factor, height / 2 + (y - offsetY) * factor]; };
+  const convert = (c) => { const [x, y] = rotateScreen(projection.project(c), rotation); return [width / 2 + (x - offsetX) * factor, centerY + (y - offsetY) * factor]; };
   const invert = ([x, y]) => {
-    const local = [(x - width / 2) / factor + offsetX, (y - height / 2) / factor + offsetY];
+    const local = [(x - width / 2) / factor + offsetX, (y - centerY) / factor + offsetY];
     const a = rotation * Math.PI / 180;
     return projection.inverse([local[0] * Math.cos(a) + local[1] * Math.sin(a), local[0] * Math.sin(a) - local[1] * Math.cos(a)]);
   };
@@ -53,7 +56,8 @@ export function createMapModel(pack, { paper = false, variant = 'labeled', rotat
       const a = convert(line[i - 1]), b = convert(line[i]);
       if (Math.hypot(a[0] - b[0], a[1] - b[1]) > (paper ? 5 : 20)) directionSymbol = { point: [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2], angle: Math.atan2(b[1] - a[1], b[0] - a[0]) * 180 / Math.PI + 90 + (direction === '-1' ? 180 : 0) };
     }
-    paths.push({ id: feature.id, name: feature.properties.name ?? 'Unnamed feature', role: feature.properties.role, directionSymbol,
+    const contour = pack.terrain?.contours.find(c => c.featureId === feature.id);
+    paths.push({ contourLevelM: contour?.levelM, id: feature.id, name: feature.properties.name ?? 'Unnamed feature', role: feature.properties.role, directionSymbol,
       level: level(feature), bridge: feature.properties.tags.bridge === 'yes', tunnel: feature.properties.tags.tunnel === 'yes',
       d: lines.map((line) => pathLine(line, convert, g.type === 'Polygon' || g.type === 'MultiPolygon')).join(' '),
       lines, geometryType: g.type });
@@ -81,8 +85,8 @@ export function createMapModel(pack, { paper = false, variant = 'labeled', rotat
     if (box[0] < 0 || box[1] < 0 || box[2] > width || box[3] > height || !boxCorners.every((corner) => insideExtent(invert(corner))) || boxes.some((b) => overlaps(box, b))) { suppressed++; continue; }
     boxes.push(box); names.add(l.text); labels.push({ ...l, point: anchor, rotationDeg: l.rotationDeg + rotation, fontSize });
   }
-  return { width, height, paper, orientation, rotationDeg: rotation, scaleDenominator, paths, landmarks, labels, suppressedLabels: suppressed,
-    projection, convert, invert, metersToUnits: factor, clip: projected.map(([x, y]) => [width / 2 + (x - offsetX) * factor, height / 2 + (y - offsetY) * factor]),
+  return { contourIntervalM: pack.terrain?.intervalM, contourLabelsAllowed: !pack.exercises.some(x => x.type === 'contour-elevation'), width, height, paper, orientation, rotationDeg: rotation, scaleDenominator, paths, landmarks, labels, suppressedLabels: suppressed,
+    projection, convert, invert, metersToUnits: factor, clip: projected.map(([x, y]) => [width / 2 + (x - offsetX) * factor, centerY + (y - offsetY) * factor]),
     draft: pack.review.status !== 'reviewed', variant, packId: pack.id, title: pack.title };
 }
 

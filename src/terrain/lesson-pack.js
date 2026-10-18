@@ -73,10 +73,10 @@ export function terrainExerciseAnnotations(pack,exercise,instructor=false) {
     const markers=distanceM(coordinates[0],coordinates.at(-1))<1e-6?[{coordinate:coordinates[0],text:'S/E'}]:[{coordinate:coordinates[0],text:'S'},{coordinate:coordinates.at(-1),text:'E'}];
     return {closedEdges:[],markers,lines:[coordinates]};
   }
-  if(exercise?.type==='relative-slope') { const {a,b}=slopeComparison(pack,exercise);return {closedEdges:[],markers:[],spans:[{from:a.from,to:a.to,text:'A'},{from:b.from,to:b.to,text:'B'}]}; }
+  if(exercise?.type==='relative-slope') { const {a,b}=slopeComparison(pack,exercise);return {contourElevations:instructor,closedEdges:[],markers:[],spans:[{from:a.from,to:a.to,text:'A'},{from:b.from,to:b.to,text:'B'}]}; }
   if(exercise?.type!=='contour-elevation')return null;
   const anchor=(id,reference=false)=>{const points=pack.features.features.find(f=>f.id===id).geometry.coordinates;return points[reference?0:Math.floor((points.length-1)/2)];};
-  return {closedEdges:[],markers:[
+  return {contourElevations:instructor,closedEdges:[],markers:[
     {coordinate:anchor(exercise.rubric.referenceFeatureId,true),text:`${contourLevel(pack,exercise.rubric.referenceFeatureId)} m`},
     {coordinate:anchor(exercise.rubric.featureId),text:instructor?`A: ${contourLevel(pack,exercise.rubric.featureId)} m`:'A'}
   ]};

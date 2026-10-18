@@ -43,7 +43,7 @@ export function createExercisePrint(pack, exerciseId, audience) {
     if(instructor) {const {a,b,choice}=slopeComparison(pack,exercise);add(`Expected comparison: ${choice==='equal'?'equal average slope':`${choice} is steeper`}. A: rise ${a.riseM} m / run ${Number(a.runM.toFixed(3))} m; B: rise ${b.riseM} m / run ${Number(b.runM.toFixed(3))} m.`, 'answer');}
     else add('Circle A, B or equal and explain how equal rise and horizontal distance support your choice.');
   } else if (exercise.type === 'contour-elevation') {
-    const annotations = terrainExerciseAnnotations(pack,exercise,instructor); markers.push(...annotations.markers);
+    slopeAnnotations = terrainExerciseAnnotations(pack,exercise,instructor); markers.push(...slopeAnnotations.markers);
     add(`Synthetic terrain; elevations use a synthetic zero reference. Contour interval: ${pack.terrain.intervalM} m.`);
     if(instructor) add(`Expected contour A elevation: ${contourLevel(pack,rubric.featureId)} m. Accept numeric error up to ${rubric.toleranceM} m (inclusive).`, 'answer');
     else add('Write the elevation of contour A in metres and explain how you counted from the labeled reference contour.');

@@ -14,6 +14,11 @@ export async function checkTerrainLessons(page,base,output) {
     await page.locator('#terrain-demo').click();
     await page.waitForFunction(()=>document.getElementById('status').textContent.includes('Synthetic hill'));
     assert.equal(await page.locator('#map .feature--contour').count(),3);
+    assert.equal(await page.locator('#map .contour-legend').count(),1);
+    assert.equal(await page.locator('#map .contour-elevation-label').count(),0);
+    assert.equal(await page.locator('#paper-map .contour-elevation-label').count(),0);
+    assert.match(await page.locator('#paper-map .contour-legend').textContent(),/Interval: 5 m.*Index: every 25 m/);
+
     assert.equal(await page.locator('#scale').inputValue(),'1000');
     assert.equal(await page.locator('#orientation').inputValue(),'portrait');
     assert.equal(await page.locator('#print-output').inputValue(),'learner');
@@ -26,6 +31,11 @@ export async function checkTerrainLessons(page,base,output) {
     // Map-only output keeps terrain guidance and no stale heading/route wording.
     await page.locator('#print-output').selectOption('map');
     assert.match(await page.locator('#paper-summary').textContent(),/Contour interval: 5 m/);
+    assert.ok(await page.locator('#paper-map .contour-elevation-label').count()>0);
+    await page.locator('#variant').selectOption('blank');
+    assert.equal(await page.locator('#paper-map .contour-elevation-label').count(),0);
+    await page.locator('#variant').selectOption('labeled');
+
     assert.equal(await page.locator('#paper-map .heading-arrow').count(),0);
     await page.locator('#print-output').selectOption('learner');
     await page.locator('#lesson-start').click();await saved();
@@ -59,6 +69,8 @@ export async function checkTerrainLessons(page,base,output) {
       await page.waitForFunction(()=>!document.getElementById('print').disabled);
       const texts=await page.locator('#paper-map .exercise-mark').allTextContents();
       assert.equal(texts.includes(audience==='learner'?'A':'A: 85 m'),true);
+      assert.equal(await page.locator('#paper-map .contour-elevation-label').count()>0,audience==='instructor');
+
       assert.equal((await page.locator('#exercise-pages').textContent()).includes('Expected contour A elevation: 85 m'),audience==='instructor');
       await page.evaluate(()=>document.body.dataset.printTarget='lesson');await page.emulateMedia({media:'print'});
       const pdf=await page.pdf({path:new URL(`terrain-${audience}-${orientation}.pdf`,output).pathname,preferCSSPageSize:true,printBackground:true});
@@ -85,6 +97,6 @@ export async function checkTerrainLessons(page,base,output) {
     await page.setViewportSize({width:375,height:820});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);
     await page.locator('#map').screenshot({path:new URL('terrain-lesson.png',output).pathname});
     assert.deepEqual(errors,[]);
-    return {numericScoring:true,keyboardFocus:true,hintsAndReload:true,backupRestore:true,invalidImportRetained:true,letterDocuments:4,narrowReflow:true};
+    return {contourCartography:true,numericScoring:true,keyboardFocus:true,hintsAndReload:true,backupRestore:true,invalidImportRetained:true,letterDocuments:4,narrowReflow:true};
   } finally {page.off('pageerror',onError);await page.setViewportSize({width:1280,height:1000});}
 }
