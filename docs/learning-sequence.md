@@ -6,9 +6,9 @@ Priority decision: approved 2026-10-18. Build a complete street-learning experie
 
 | Outcome | Available evidence | Still needed |
 |---|---|---|
-| Software behaves consistently | Street scoring/recovery; five synthetic terrain demos; 223 Node tests and packaged browser checks through PR 58 | Hosted depression interaction verification after deployment |
+| Software behaves consistently | Street scoring/recovery; five synthetic terrain demos; 223 Node tests and packaged browser checks through PR 58 | Hosted depression checks passed 2026-10-18; repeat after relevant changes |
 | Maps are usable on paper | Letter portrait/landscape downloads; user-accepted geographic B&W workflow; inspected sample PDFs | Sequence-specific sheet inspection and remaining actual device/paper measurements |
-| Questions and answers are suitable | Deterministic synthetic answers, source preparation and draft Redmond pack | Bounded neighborhood source review, independent content review and equivalent pilot materials |
+| Questions and answers are suitable | Deterministic synthetic answers, source preparation and draft Redmond pack | [Bounded draft packet](materials/redmond-r1/README.md) prepared; independent content review and equivalent pilot materials pending |
 | Learners can complete the activities | Automated keyboard/reflow checks | Observed learner/instructor usability, assistance and explanation quality |
 | Skills transfer and persist | Existing pilot protocol and reporting tool | Actual unfamiliar-map immediate/delayed observations; no learning outcome established yet |
 

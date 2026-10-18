@@ -37,3 +37,8 @@ The first wider candidate exceeded the report issue budget; narrowing the area p
 ## Still required
 
 Review usable road/landmark content, restrictions and excluded boundary geometry; create reviewed exercises; inspect rendered labels and printed extent; perform a genuinely newer source comparison when available. Pack remains draft with zero exercises and access unknown. Plan 02 is not complete.
+
+
+## Retained replay and bounded teaching draft — 2026-10-18
+
+Recovered the original checkpoint; current-tool import reproduced source, acquisition, prepared pack and report exactly. SHA-256 values for all four files are pinned in the [draft instructor manifest](../materials/redmond-r1/instructor-manifest.json). A fresh preparation of the bounded [Cleveland/Brown material packet](../materials/redmond-r1/README.md) reproduces its pack and manifest byte-for-byte. Eight ways are retained without geometry edits; the display clips to a smaller focus extent. Four authored reference markers are tied to original node IDs. All 60 selected candidate edges retain unknown access and topology remains partial. The full source and untranslated restriction report remain in the retained checkpoint. Independent content review, route approval and newer-source comparison have not occurred.
