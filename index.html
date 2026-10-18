@@ -46,10 +46,11 @@
       <label>Heading<select id="heading"><option value="">Hidden</option><option value="0">North</option><option value="90">East</option><option value="180">South</option><option value="270">West</option></select></label>
       <label>Print scale<select id="scale"><option value="1000">1:1,000</option><option value="5000" selected>1:5,000</option><option value="10000">1:10,000</option></select></label>
       <label>Print output<select id="print-output"><option value="map">Map only</option><option value="learner">Learner worksheet</option><option value="instructor">Instructor guide</option></select></label>
-      <label>Exercise<select id="print-exercise" disabled><option value="">No exercises loaded</option></select></label>
+      <label class="map-option"><input id="print-follow-current" type="checkbox" checked>Follow current practice question</label><label>Question to print (changing this overrides follow)<select id="print-exercise" disabled><option value="">No exercises loaded</option></select></label>
       <button id="lesson-pdf" aria-describedby="lesson-pdf-status" type="button" disabled>Download lesson PDF</button>
-      <button id="print" type="button" disabled>Print lesson output</button>
+      <button id="print-current" type="button" aria-describedby="print-selection-status" disabled>Print current question</button><button id="print" type="button" disabled>Print lesson output</button>
     </section>
+    <p id="print-selection-status" role="status" aria-live="polite"></p>
     <p id="lesson-pdf-status" role="status" aria-live="polite">Load a lesson map to download a fixed-size Letter PDF.</p>
     <a id="lesson-pdf-link" class="map-action" hidden>Save prepared lesson PDF</a>
     <section class="controls" aria-label="Saved view preferences">
@@ -62,7 +63,7 @@
     <section id="practice-workspace" aria-labelledby="lesson-title">
       <h2 id="lesson-title" tabindex="-1">Practice lessons</h2>
       <button id="lesson-start" type="button" disabled>Begin lesson session</button>
-      <p id="lesson-revision" class="note"></p><p id="lesson-prompt"></p>
+      <p id="lesson-summary" class="note"></p><p id="lesson-progress" role="status" aria-live="polite"></p><details id="lesson-record-details" hidden><summary>Session record details</summary><p id="lesson-revision" class="note"></p><p id="lesson-record" class="note"></p></details><p id="lesson-prompt"></p>
       <div class="practice-grid"><div class="practice-map">    <section id="map-panel" class="map-panel" tabindex="0" aria-label="Map viewer" aria-describedby="map-help lesson-prompt"><div id="map"></div></section>
     <section id="profile-panel" hidden aria-label="Elevation profile"><h3>Elevation profile from S to E</h3><div id="profile-chart"></div><details><summary>Profile values</summary><table><thead><tr><th>Distance from S (m)</th><th>Elevation (m)</th></tr></thead><tbody id="profile-values"></tbody></table></details></section>
     <details class="map-context"><summary>Map instructions</summary><p id="map-help" class="note">Keyboard alternatives: choose a road in Feature selection, or build a path with Start graph node, Next directed edge and Add edge below.</p>
@@ -76,7 +77,7 @@
         <label id="lesson-elevation" hidden>Contour A elevation in metres<input id="answer-elevation" type="number" step="any"></label>
         <p id="lesson-route" hidden></p>
       </fieldset>
-    <section id="route-review" class="route-review" aria-labelledby="trace-title">
+    <div id="practice-route-slot"><section id="route-review" class="route-review" aria-labelledby="trace-title">
       <h2 id="trace-title" tabindex="-1">Trace a path</h2>
       <div class="trace-controls">
         <label>Trace mode<select id="trace-mode" disabled><option value="drive">Driving</option><option value="walk">Walking</option></select></label>
@@ -88,19 +89,20 @@
       <p id="trace-status" role="status" aria-live="polite">Select a start graph node to trace a path.</p>
       <details id="trace-details" open><summary>Trace steps and data limitations</summary><ol tabindex="0" id="trace-steps" aria-label="Trace steps"></ol>
       <p class="note">This is a path drawn from the loaded graph. Unknown access and incomplete data require review. It does not provide live navigation or turn-by-turn directions. Traces stay in memory and are not included in lesson-pack export.</p></details>
-    </section>
-      <div class="editor-actions"><button id="lesson-submit" type="button" disabled>Submit answer</button><button id="lesson-reset" type="button" disabled>Reset draft answer</button><button id="lesson-hint" type="button" disabled>Show next hint</button><button id="lesson-retry" type="button" disabled>Retry exercise</button><button id="lesson-next" type="button" disabled>Next exercise</button><button id="lesson-end" type="button" disabled>End session</button></div>
-      <ol id="lesson-hints"></ol><p id="lesson-status" role="status" aria-live="polite">Load a reviewed pack to practice.</p>
+    </section></div>
+      <div class="editor-actions"><button id="lesson-submit" type="button" disabled>Submit answer</button><button id="lesson-reset" type="button" disabled>Reset draft answer</button><button id="lesson-hint" type="button" disabled>Show next hint</button><button id="lesson-retry" type="button" disabled>Retry exercise</button><button id="lesson-next" type="button" disabled>Next exercise</button><button id="lesson-pause" type="button" disabled>Pause session</button><button id="lesson-resume" type="button" hidden>Resume paused session</button><button id="lesson-end" type="button" disabled>End session</button></div>
+      <details id="lesson-score-details" hidden><summary>Scoring details</summary><pre id="lesson-score-record"></pre></details><details id="lesson-answer-review" hidden><summary>Review question coverage</summary><ol id="lesson-answer-results"></ol></details><ol id="lesson-hints"></ol><p id="lesson-status" role="status" aria-live="polite">Load a reviewed pack to practice.</p>
 </div></div>
     <p id="attribution" class="note" aria-label="Map sources"></p>
     <details id="session-tools" open><summary>Saved sessions and backups</summary>      <p class="note">Practice while stationary. Progress saves in this browser after accepted actions. Check the save status and keep downloaded backups against browser data loss. Unfinished answers are discarded on refresh. Restoring or selecting another pack replaces the current map/session. Exercises follow reviewed pack order.</p>
       <p id="save-status" role="status" aria-live="polite">Opening browser storage…</p>
       <div class="editor-actions"><button id="save-retry" type="button" disabled>Retry saving</button><button id="save-reload" type="button" disabled>Reload latest, discard changes</button><button id="save-fork" type="button" disabled>Save as new session</button></div>
       <label>Saved session<select id="saved-session"><option value="">Choose a saved session</option></select></label>
-      <div class="editor-actions"><button id="saved-refresh" type="button" disabled>Refresh saved sessions</button><button id="saved-next" type="button" disabled>Next saved-session page</button><button id="saved-resume" type="button" disabled>Resume selected session</button></div><p id="saved-list-status" class="note" role="status"></p>
+      <div class="editor-actions"><button id="saved-refresh" type="button" disabled>Refresh saved sessions</button><button id="saved-next" type="button" disabled>Next saved-session page</button><button id="saved-resume" type="button" disabled>Open selected session</button></div><p id="saved-list-status" class="note" role="status"></p>
       <div class="editor-actions"><button id="lesson-export" type="button" disabled>Download session backup</button><label class="file-control">Restore session backup<input id="lesson-import" type="file" accept=".json,application/json"></label></div>
 </details>
     </section>
+    <details id="manual-trace-tools" open><summary>Independent path review</summary><div id="manual-route-slot"></div></details>
     <section class="inspection"><label>Find feature<input id="feature-filter" type="search" maxlength="120" disabled></label><label>Feature selection<select id="feature"><option value="">No feature selected</option></select><span id="feature-matches" class="note"></span></label><p id="selection">Choose a road on the map or use the feature list.</p></section>
     <section class="label-editor" aria-labelledby="label-editor-title">
       <h2 id="label-editor-title">Review label placement</h2>

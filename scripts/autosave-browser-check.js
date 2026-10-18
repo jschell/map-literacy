@@ -12,7 +12,7 @@ export async function checkAutosave(page, base) {
     await page.evaluate(() => { window.originalTransaction = IDBDatabase.prototype.transaction; IDBDatabase.prototype.transaction = function (names, mode, ...args) { if (mode === 'readwrite' && Array.from(names).includes('sessions')) throw new DOMException('Test quota exhausted', 'QuotaExceededError'); return window.originalTransaction.call(this, names, mode, ...args); }; });
     await page.locator('#answer-heading').fill('359'); await page.locator('#lesson-submit').click();
     await page.waitForFunction(() => document.getElementById('save-status').textContent.startsWith('Changes are not saved.'));
-    assert.ok((await page.locator('#lesson-revision').textContent()).includes('1 attempts'));
+    assert.ok((await page.locator('#lesson-revision').textContent()).includes('1 attempt'));
     assert.equal(await page.locator('#lesson-export').isDisabled(), false);
     const events = await page.evaluate(() => window.progressEvents);
     assert.equal(events.find((e) => e.name === 'answer-submitted').detail.answer.degrees, 359);
@@ -25,7 +25,7 @@ export async function checkAutosave(page, base) {
     assert.equal(await page.locator('#map svg').count(), 0);
     await page.locator('#saved-session').selectOption(sessionId); await page.locator('#saved-resume').click();
     await page.waitForFunction(() => document.getElementById('lesson-status').textContent.includes('Saved session resumed'));
-    assert.ok((await page.locator('#lesson-revision').textContent()).includes('1 attempts'));
+    assert.ok((await page.locator('#lesson-revision').textContent()).includes('1 attempt'));
     assert.equal(await page.locator('#lesson-submit').isDisabled(), true);
     const other = await context.newPage(); await other.goto(base);
     await other.locator(`#saved-session option[value="${sessionId}"]`).waitFor({ state: 'attached' });
@@ -50,7 +50,7 @@ export async function checkAutosave(page, base) {
     await memory.goto(base); await memory.locator('#demo').click(); await memory.locator('#map svg').waitFor();
     await memory.locator('#lesson-start').click(); await memory.locator('#answer-heading').fill('0'); await memory.locator('#lesson-submit').click();
     await memory.waitForFunction(() => document.getElementById('save-status').textContent.startsWith('Changes are not saved'));
-    assert.ok((await memory.locator('#lesson-revision').textContent()).includes('1 attempts'));
+    assert.ok((await memory.locator('#lesson-revision').textContent()).includes('1 attempt'));
     const downloadEvent = memory.waitForEvent('download'); await memory.locator('#lesson-export').click(); const download = await downloadEvent;
     assert.ok((await download.path())); await memory.close();
     return { degradedBackup: 'passed', reload: 'passed', quotaRetry: 'passed', crossTabConflict: 'passed', forkAndReload: 'passed' };

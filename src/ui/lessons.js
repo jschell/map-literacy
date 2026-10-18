@@ -1,3 +1,5 @@
+import {sessionProgress,progressText} from '../lesson/progress.js';
+import {answerFeedback} from '../lesson/feedback.js';
 import { exerciseAnnotations } from '../lesson/annotations.js';
 import { deriveLessonProfile } from '../terrain/lesson-pack.js';
 import { openStorage } from '../storage/indexeddb.js';
@@ -5,7 +7,6 @@ import { createAutosave, findStoredVersion, forkSessionBundle } from '../storage
 import { readBackup, serializeBackup } from '../storage/backup.js';
 import { createLessonSession, resumeLessonSession } from '../lesson/session.js';
 const get = (id) => document.getElementById(id);
-const messages = { correct: 'Correct.', incorrect: 'Try again.', 'needs-review': 'This answer needs review.', unanswered: 'Enter a valid answer before submitting.' };
 export function createLessons({ getPack, getTrace, getEndpoint, installPack, cancelPackLoad }) {
   let controller = null, restoreJob = null, storage = null, storageReady = false, canDiscard = false, listJob = 0, nextPage = null, connecting = null;
   let pendingFocus = null, viewExerciseKey = null;
@@ -19,7 +20,7 @@ export function createLessons({ getPack, getTrace, getEndpoint, installPack, can
     if (state?.session.id !== pending.sessionId || state.session.version !== pending.version || ![document.body, pending.origin].includes(document.activeElement)) return;
     const answerTarget = state.exercise.type === 'heading' ? 'answer-heading' : state.exercise.type === 'endpoint' ? 'endpoint-reference' : state.exercise.type === 'terrain-form' ? 'answer-landform' : state.exercise.type === 'profile-value' ? 'answer-profile' : state.exercise.type === 'relative-slope' ? 'answer-slope' : state.exercise.type === 'contour-elevation' ? 'answer-elevation' : 'trace-edge';
     const last = state.attempts.find((a) => a.id === state.session.answers[state.exercise.id]);
-    const target = state.phase === 'completed' ? 'lesson-export' : state.phase === 'feedback' ? (last?.result.status === 'correct' ? 'lesson-next' : 'lesson-retry') : pending.origin.id === 'lesson-hint' && !get('lesson-hint').disabled ? 'lesson-hint' : answerTarget;
+    const target = state.phase === 'paused' ? 'lesson-resume' : ['completed','ended'].includes(state.phase) ? 'lesson-export' : state.phase === 'feedback' ? (last?.result.status === 'correct' ? 'lesson-next' : 'lesson-retry') : pending.origin.id === 'lesson-hint' && !get('lesson-hint').disabled ? 'lesson-hint' : answerTarget;
     get(target).focus();
   }
   const emit = (name, detail) => document.dispatchEvent(new CustomEvent(name, { detail }));
@@ -34,7 +35,12 @@ export function createLessons({ getPack, getTrace, getEndpoint, installPack, can
     try {
       const page = await storage.listSessions({ afterId }); if (token !== listJob) return;
       const previous = get('saved-session').value; get('saved-session').replaceChildren(new Option('Choose a saved session', ''));
-      for (const s of page.sessions) get('saved-session').add(new Option(`${s.packId} r${s.packRevision} · ${s.status} · ${s.updatedAt} · ${s.id}`, s.id));
+      for (const s of page.sessions) {
+        const coverage=s.coverage ? `${s.coverage.answered}/${s.coverage.total} answered` : 'coverage unavailable';
+        const label=s.status==='active'?'In progress':s.coverage?.answered===s.coverage?.total && s.coverage?'All questions answered':'Ended';
+        const option=new Option(`${s.title ?? 'Unavailable lesson'} · ${label} · ${coverage} · ${new Date(s.updatedAt).toLocaleString(undefined,{dateStyle:'medium',timeStyle:'short'})}`,s.id);
+        option.title=`Pack ${s.packId} · revision ${s.packRevision} · session ${s.id}`; get('saved-session').add(option);
+      }
       if (page.sessions.some((s) => s.id === previous)) get('saved-session').value = previous;
       nextPage = page.next; get('saved-list-status').textContent = `${page.sessions.length} saved sessions on this page${nextPage ? '; more available' : ''}.`; refresh();
     } catch (e) { if (token === listJob) { get('saved-list-status').textContent = `Saved sessions unavailable: ${e.message}`; } }
@@ -50,7 +56,7 @@ export function createLessons({ getPack, getTrace, getEndpoint, installPack, can
     finally { storageReady = true; refresh(); }
   }
   const save = () => { canDiscard = false; void writer.save(bundle()).catch(() => {}); };
-  function restored(next, version) { controller = next; clearAnswer(); get('lesson-hints').replaceChildren(); writer.bind(bundle(), version);
+  function restored(next, version) { controller = next; clearAnswer(); get('lesson-hints').replaceChildren(); writer.bind(bundle(), version); emit('lesson-session-selected');
     const state = controller.snapshot(); for (const text of state.exercise.hints.slice(0, state.session.hintCounts[state.exercise.id])) { const li = document.createElement('li'); li.textContent = text; get('lesson-hints').append(li); }
   }
   const cancelPending = () => { restoreJob?.abort(); restoreJob = null; };
@@ -68,21 +74,46 @@ export function createLessons({ getPack, getTrace, getEndpoint, installPack, can
     const state = controller?.snapshot(), active = state?.session.status === 'active', practicing = active && !busy && state.phase === 'practicing', e = state?.exercise;
     get('lesson-export').disabled = !controller;
     get('lesson-start').disabled = busy || !getPack() || Boolean(active) || getPack().review.status !== 'reviewed' || !getPack().exercises.some((e) => e.review === 'reviewed');
-    get('lesson-fields').disabled = !practicing;
+    get('lesson-hints').hidden = !active || state.phase==='paused';
+    get('lesson-fields').disabled = !practicing; get('lesson-fields').hidden = !active || state.phase==='paused';
     get('lesson-landform').hidden=e?.type!=='terrain-form';
     get('lesson-profile').hidden=e?.type!=='profile-value';
     get('profile-answer-label').textContent=e?.type==='profile-value'?`${e.rubric.quantity==='net-change'?'Signed net elevation change':e.rubric.quantity==='ascent'?'Total ascent':'Total descent'} in metres`:'Profile answer in metres';
     get('lesson-slope').hidden = e?.type !== 'relative-slope';
     get('lesson-elevation').hidden = e?.type !== 'contour-elevation';
-    get('lesson-heading').hidden = e?.type !== 'heading'; get('lesson-endpoint').hidden = e?.type !== 'endpoint'; get('lesson-route').hidden = !active || !['route', 'detour'].includes(e?.type);
-    get('route-review').hidden = Boolean(active) && !['route','detour'].includes(e?.type);
+    get('lesson-heading').hidden = e?.type !== 'heading'; get('lesson-endpoint').hidden = e?.type !== 'endpoint'; get('lesson-route').hidden = !active || state.phase==='paused' || !['route', 'detour'].includes(e?.type);
+    const taskRoute=active && state.phase!=='paused' && ['route','detour'].includes(e?.type);
+    const traceSlot=get(taskRoute?'practice-route-slot':'manual-route-slot');
+    if(get('route-review').parentElement!==traceSlot) traceSlot.append(get('route-review'));
+    get('manual-trace-tools').hidden=Boolean(active);
+    get('route-review').hidden = Boolean(active) && (state.phase==='paused' || !['route','detour'].includes(e?.type));
     get('lesson-submit').disabled = !practicing; get('lesson-reset').disabled = !practicing;
     get('lesson-retry').disabled = busy || !active || state.phase !== 'feedback'; get('lesson-next').disabled = busy || !active || state.phase !== 'feedback'; get('lesson-end').disabled = busy || !active;
-    get('lesson-hint').disabled = busy || !active || (state.session.hintCounts[e.id] ?? 0) >= e.hints.length;
-    get('lesson-prompt').textContent = active ? `${state.session.index + 1}/${state.session.exerciseOrder.length} · ${e.prompt}` : 'Begin a session to answer reviewed exercises in pack order.';
-    get('lesson-revision').textContent = state ? `Pack ${state.session.packId} · revision ${state.session.packRevision} · ${state.attempts.length} attempts · ${state.session.status}` : '';
-    get('lesson-route').textContent = active && e && ['route', 'detour'].includes(e.type) ? `Trace a path: start ${e.rubric.startNodeId}, end ${e.rubric.endNodeId}, ${e.rubric.mode === 'drive' ? 'driving' : 'walking'}. Submit the current trace here.${e.rubric.objective === 'max-distance' ? ` Maximum distance: ${e.rubric.maxDistanceM} m.` : ' Any valid route is accepted.'}${e.scenario ? ` ${e.scenario.label} Closed directed edges: ${e.scenario.closedEdgeIds.join(', ')}.` : ''}` : '';
-    const nextView = active ? e?.id : null;
+    get('lesson-hint').disabled = busy || !active || state.phase==='paused' || (state.session.hintCounts[e.id] ?? 0) >= e.hints.length;
+    get('lesson-pause').disabled = busy || !active || state.phase==='paused';
+    get('lesson-resume').hidden = state?.phase!=='paused'; get('lesson-resume').disabled = busy || state?.phase!=='paused';
+    const progress=state ? sessionProgress(state) : null;
+    get('lesson-progress').textContent=progress ? `${state.phase==='paused'?'Paused':progress.label} · ${progressText(progress)}` : '';
+    get('lesson-answer-review').hidden = !state || (active && state.phase!=='paused');
+    get('lesson-answer-results').replaceChildren();
+    if(state && (!active || state.phase==='paused')) {
+      const attempts=new Map(state.attempts.map(a=>[a.id,a])), exercises=new Map(getPack().exercises.map(e=>[e.id,e]));
+      for(const id of state.session.exerciseOrder) {
+        const result=attempts.get(state.session.answers[id])?.result.status;
+        const item=document.createElement('li');item.textContent=`${exercises.get(id).prompt} — ${result==='correct'?'Correct on latest answer':result==='incorrect'?'To revisit':result==='needs-review'?'Needs instructor review':'Not answered'}`;
+        get('lesson-answer-results').append(item);
+      }
+    }
+    get('lesson-summary').textContent=state ? `${getPack().title} · revision ${state.session.packRevision}` : '';
+    get('lesson-record-details').hidden=!state;
+    get('lesson-record').textContent=state ? `Pack ${state.session.packId} · revision ${state.session.packRevision} · session ${state.session.id} · stored lifecycle ${state.session.status} · ${state.session.updatedAt}` : '';
+    const last=state?.attempts.find(a=>a.id===state.session.answers[e.id]);
+    get('lesson-score-details').hidden=state?.phase!=='feedback' || !last;
+    get('lesson-score-record').textContent=state?.phase==='feedback' && last ? JSON.stringify(last.result,null,2) : '';
+    get('lesson-prompt').textContent = active && state.phase!=='paused' ? `${state.session.index + 1}/${state.session.exerciseOrder.length} · ${e.prompt}` : state?.phase==='paused' ? 'Session paused. Resume when ready; unfinished answers and traces were cleared.' : state ? `${progress.label}. Begin a new session to practice again.` : 'Begin a session to answer reviewed exercises in pack order.';
+    get('lesson-revision').textContent = state ? `Pack ${state.session.packId} · revision ${state.session.packRevision} · ${state.attempts.length} ${state.attempts.length===1?'attempt':'attempts'} · ${state.phase==='paused'?'paused':progress.label.toLowerCase()}` : '';
+    get('lesson-route').textContent = active && state.phase!=='paused' && e && ['route', 'detour'].includes(e.type) ? `Trace a path: start ${e.rubric.startNodeId}, end ${e.rubric.endNodeId}, ${e.rubric.mode === 'drive' ? 'driving' : 'walking'}. Submit the current trace here.${e.rubric.objective === 'max-distance' ? ` Maximum distance: ${e.rubric.maxDistanceM} m.` : ' Any valid route is accepted.'}${e.scenario ? ` ${e.scenario.label} Closed directed edges: ${e.scenario.closedEdgeIds.join(', ')}.` : ''}` : '';
+    const nextView = active && state.phase!=='paused' ? e?.id : null;
     if (nextView !== viewExerciseKey) { viewExerciseKey = nextView; emit('lesson-view-changed'); }
     finishKeyboardAction();
   }
@@ -103,7 +134,7 @@ export function createLessons({ getPack, getTrace, getEndpoint, installPack, can
       } else pendingFocus = focusRequest;
     } catch (error) { status(error.message); } refresh();
   };
-  get('lesson-start').addEventListener('click', (event) => run(() => { guardReplacement(); controller = createLessonSession(getPack()); clearAnswer(); get('lesson-hints').replaceChildren(); status('Session started. Check the save status after accepted actions; unfinished answers stay in memory.'); }, true, event));
+  get('lesson-start').addEventListener('click', (event) => run(() => { guardReplacement(); controller = createLessonSession(getPack()); clearAnswer(); get('lesson-hints').replaceChildren(); emit('lesson-session-selected'); status('Session started. Check the save status after accepted actions; unfinished answers stay in memory.'); }, true, event));
   get('lesson-submit').addEventListener('click', (event) => run(() => {
     const e = controller.snapshot().exercise; let answer;
     if (e.type === 'heading') answer = get('answer-heading').value.trim() ? { type: e.type, degrees: Number(get('answer-heading').value) } : null;
@@ -118,12 +149,14 @@ export function createLessons({ getPack, getTrace, getEndpoint, installPack, can
       answer = { type: e.type, edgeIds: trace.edgeIds };
     }
     controller.setAnswer(answer); const score = controller.submit();
-    status(`${messages[score.status]} ${score.reasonCode.replaceAll('-', ' ')}. ${e.type==='terrain-form'?'Compare contour bends with H (higher) and L (lower).':e.type==='profile-value'&&Number.isFinite(score.metrics.profileErrorM)?`Profile error: ${Number(score.metrics.profileErrorM.toFixed(2))} m` : e.type === 'relative-slope' ? 'For the same elevation change, compare the horizontal distances between the end ticks.' : e.type === 'contour-elevation' && Number.isFinite(score.metrics.elevationErrorM) ? `Elevation error: ${Number(score.metrics.elevationErrorM.toFixed(2))} m` : Object.entries(score.metrics).map(([key, value]) => `${key}: ${Number(value.toFixed(2))}`).join(' · ')}`);
+    status(answerFeedback(e,score));
   }, true, event));
   get('lesson-reset').addEventListener('click', () => run(() => { controller.reset(); emit('lesson-draft-cleared'); emit('session-reset', { sessionId: controller.snapshot().session.id, exerciseId: controller.snapshot().exercise.id }); clearAnswer(); status('Draft answer cleared. Submitted attempts and hints are retained. The current trace is cleared.'); }));
   get('lesson-retry').addEventListener('click', (event) => run(() => { controller.retry(); clearAnswer(); emit('lesson-draft-cleared', {retainTrace:true}); status('Try another answer. Earlier attempts and hints are retained.'); }, true, event));
-  get('lesson-next').addEventListener('click', (event) => run(() => { controller.next(); clearAnswer(); get('lesson-hints').replaceChildren(); status(controller.snapshot().phase === 'completed' ? 'Session completed. Check the save status before closing.' : 'Next exercise. Route questions start with a fresh trace.'); }, true, event));
-  get('lesson-end').addEventListener('click', (event) => run(() => { controller.end(); clearAnswer(); status('Session ended. Check the save status before closing.'); }, true, event));
+  get('lesson-next').addEventListener('click', (event) => run(() => { controller.next(); clearAnswer(); get('lesson-hints').replaceChildren(); const state=controller.snapshot(); status(state.session.status==='completed' ? `${state.phase==='completed'?'Session completed: all questions answered.':'Session ended before every question had an answer.'} ${progressText(sessionProgress(state))} Check the save status before closing.` : 'Next exercise. Route questions start with a fresh trace.'); }, true, event));
+  get('lesson-pause').addEventListener('click', event=>run(()=>{controller.pause(); clearAnswer(); status('Paused in this view. Submitted answers and hints are retained. Check the save status before closing; keep a backup if saving is unavailable. Resume here, or reopen the saved in-progress session later.');},true,event));
+  get('lesson-resume').addEventListener('click', event=>run(()=>{controller.resume(); clearAnswer(); status('Session resumed. Unfinished answers and traces start fresh.');},true,event));
+  get('lesson-end').addEventListener('click', (event) => run(() => { controller.end(); clearAnswer(); status(`Session ended. ${progressText(sessionProgress(controller.snapshot()))} Check the save status before closing.`); }, true, event));
   get('lesson-hint').addEventListener('click', (event) => run(() => { const hint = controller.hint(); if (hint !== null) { const li = document.createElement('li'); li.textContent = hint; get('lesson-hints').append(li); status('Hint shown. Hints are counted separately from correctness.'); } }, true, event));
   get('lesson-export').addEventListener('click', () => run(() => {
     const { session, attempts } = controller.snapshot();
@@ -172,7 +205,7 @@ export function createLessons({ getPack, getTrace, getEndpoint, installPack, can
       const value = await storage.loadSession(get('saved-session').value, { signal: current.signal });
       if (restoreJob !== current || current.signal.aborted) return;
       if (!value) throw new Error('Saved session no longer exists. Refresh the list.');
-      const next = resumeLessonSession(value); installPack(value.pack); restored(next, value.session.version); status('Saved session resumed. Unfinished drafts and review traces are discarded.');
+      const next = resumeLessonSession(value); installPack(value.pack); restored(next, value.session.version); status(next.snapshot().session.status==='completed' ? 'Ended session opened for review. Stored answers are unchanged.' : 'Saved session resumed. Unfinished drafts and review traces are discarded.');
     } catch (e) { if (!current || (restoreJob === current && !current.signal.aborted)) status(`Session not resumed: ${e.message}`); } finally { if (restoreJob === current) restoreJob = null; refresh(); }
   });
   get('save-reload').addEventListener('click', async () => {
@@ -193,5 +226,5 @@ export function createLessons({ getPack, getTrace, getEndpoint, installPack, can
   window.addEventListener('pageshow', (event) => { if (event.persisted) void connectStorage(); });
   window.addEventListener('pagehide', () => { cancelPending(); storage?.close(); storage = null; });
   refresh(); void connectStorage();
-  return { exercise() {const s=controller?.snapshot();return s?.session.status==='active'?s.exercise:null;}, isPracticing() {return controller?.snapshot().phase==='practicing' && !get('lesson-fields').disabled;}, profile() {const state=controller?.snapshot();return state?.session.status==='active'&&state.exercise.type==='profile-value'?deriveLessonProfile(getPack(),state.exercise):null;}, guardReplacement, cancelPending, annotations() { const state=controller?.snapshot(); return state?.session.status==='active' ? exerciseAnnotations(getPack(),state.exercise) : null; }, installed() { cancelPending(); controller = null; clearAnswer(); get('lesson-hints').replaceChildren(); status('Select a reviewed pack to practice or resume a saved session. Unfinished answers are discarded on refresh. Practice while stationary.'); refresh(); }, packChanged() { this.installed(); status('Pack content changed. The old session has ended; review the new revision before practicing.'); } };
+  return { exercise() {const s=controller?.snapshot();return s?.session.status==='active' && s.phase!=='paused'?s.exercise:null;}, currentExercise() {const s=controller?.snapshot();return s?.session.status==='active'?s.exercise:null;}, isPracticing() {return controller?.snapshot().phase==='practicing' && !get('lesson-fields').disabled;}, profile() {const state=controller?.snapshot();return state?.session.status==='active'&&state.phase!=='paused'&&state.exercise.type==='profile-value'?deriveLessonProfile(getPack(),state.exercise):null;}, guardReplacement, cancelPending, annotations() { const state=controller?.snapshot(); return state?.session.status==='active' && state.phase!=='paused' ? exerciseAnnotations(getPack(),state.exercise) : null; }, installed() { cancelPending(); controller = null; clearAnswer(); get('lesson-hints').replaceChildren(); status('Select a reviewed pack to practice or resume a saved session. Unfinished answers are discarded on refresh. Practice while stationary.'); refresh(); }, packChanged() { this.installed(); status('Pack content changed. The old session has ended; review the new revision before practicing.'); } };
 }

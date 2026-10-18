@@ -25,7 +25,7 @@ export async function checkTerrainSlopes(page,base,output) {
   for(const s of sizes)assert.deepEqual([+s[1],+s[2]],orientation==='portrait'?[612,792]:[792,612]);
  }
  for(const choice of ['B','equal']) {await page.locator('#lesson-next').click();await saved();await page.locator('#answer-slope').selectOption(choice);await page.locator('#lesson-submit').click();await saved();assert.match(await page.locator('#lesson-status').textContent(),/^Correct/);}
- await page.locator('#lesson-next').click();await saved();assert.match(await page.locator('#lesson-revision').textContent(),/completed/);
+ await page.locator('#lesson-next').click();await saved();assert.match(await page.locator('#lesson-progress').textContent(),/All questions answered/);
  await page.locator('#lesson-import').setInputFiles({name:'slope-backup.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(backup))});
  await page.waitForFunction(()=>document.getElementById('lesson-status').textContent.startsWith('Session restored'));
  await page.waitForFunction(()=>!document.getElementById('save-fork').disabled);await page.locator('#save-fork').click();await saved();

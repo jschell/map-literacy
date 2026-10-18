@@ -242,3 +242,11 @@ h2.sheet-block { font-size: 12pt; line-height: 1.4; }
 #practice-workspace[data-task=route] .trace-print,
 #practice-workspace[data-task=detour] .trace-print { display: none; }
 #trace-details summary { cursor: pointer; padding: 10px 0; font-size: .85rem; }
+#lesson-progress { font-size: .95rem; line-height: 1.5; }
+#lesson-record, #lesson-score-record { overflow-wrap: anywhere; white-space: pre-wrap; }
+#lesson-score-details summary, #lesson-record-details summary { cursor: pointer; padding: 10px 0; font-size: .85rem; }
+#lesson-answer-review summary { cursor: pointer; padding: 10px 0; }
+#lesson-answer-results { padding-left: 24px; line-height: 1.5; }
+#lesson-answer-results li { margin-bottom: 8px; }
+#lesson-answer-results, #lesson-revision { overflow-wrap: anywhere; }
+#manual-trace-tools > summary { cursor: pointer; padding: 14px 0; font-weight: 600; }

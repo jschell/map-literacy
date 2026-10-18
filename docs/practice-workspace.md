@@ -25,3 +25,15 @@ Every new question starts with a fresh trace, even when the previous route could
 ## Evidence boundaries
 
 These interaction changes do not change scoring tolerances, connectivity, source access rules, saved-record formats or independent content approval. Broader navigation, session-completion language and print workflow improvements continue under [Plan 10](plans/active/10-learner-usability-and-workflows.md). Physical device, screen-reader and learning acceptance require separate recorded observations.
+
+## Progress and pausing
+
+The progress line shows how many questions have a submitted answer and how many latest answers are correct. Repeated attempts count once toward coverage. **All questions answered** does not mean all answers are correct or establish mastery. Ended sessions retain a per-question coverage review and all submitted history. Independent path review stays below the session workspace; it is separate from submitted answers. Older saved records marked completed internally use the same derived coverage; the raw lifecycle remains available in Session record details.
+
+Use **Pause session** to continue later. It clears unfinished points/traces but retains submitted answers and hints in this view. Check the save status before closing and keep a backup if saving is unavailable. Resume in this view, or open the in-progress saved session after reloading. Reload/backup restore opens the last committed answer; an unfinished retry is discarded. **End session** closes that record permanently. An early end is labeled Ended early; begin a separate session to practice again. Saved-session choices use lesson names, coverage and local dates; exact IDs remain in details/backups.
+
+## Printing the question you are answering
+
+Beginning or opening an active session selects learner output and follows the current question. **Print current question** prints that question; the caption states the audience, Letter orientation and page count. Choose instructor output explicitly when you need answer criteria, and print it separately. Print audience never reveals an answer key on the practice map.
+
+Changing **Question to print** makes an explicit manual override. Re-enable **Follow current practice question** or choose **Print current question** to return to the active task. Map-only output remains available. A PDF filename identifies the pack revision, question, audience and orientation.

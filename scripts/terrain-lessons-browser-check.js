@@ -88,7 +88,7 @@ export async function checkTerrainLessons(page,base,output) {
     await page.emulateMedia({media:'screen'});
     await page.locator('#print-output').selectOption('learner');
     await page.locator('#lesson-next').click();await saved();await page.locator('#answer-elevation').fill('90');await page.locator('#lesson-submit').click();await saved();await page.locator('#lesson-next').click();await saved();
-    assert.match(await page.locator('#lesson-revision').textContent(),/completed/);
+    assert.match(await page.locator('#lesson-progress').textContent(),/All questions answered/);
     const restore=page.locator('#lesson-import');await restore.setInputFiles({name:'terrain-session.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(backup))});
     await page.waitForFunction(()=>document.getElementById('lesson-status').textContent.startsWith('Session restored'));
     assert.match(await page.locator('#lesson-revision').textContent(),/2 attempts/);

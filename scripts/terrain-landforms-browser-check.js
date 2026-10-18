@@ -22,7 +22,7 @@ export async function checkTerrainLandforms(page,base,output) {
  }
  for(const choice of ['ridge','valley','ridge']){await page.locator('#lesson-next').click();await saved();await page.locator('#answer-landform').selectOption(choice);await page.locator('#lesson-submit').click();await saved();assert.match(await page.locator('#lesson-status').textContent(),/^Correct/);}
  await page.setViewportSize({width:375,height:820});assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false);assert.ok(await page.locator('#map .contour-elevation-label').count()>0);await page.locator('#map').screenshot({path:new URL('landforms-narrow.png',output).pathname});
- await page.locator('#lesson-next').click();await saved();assert.match(await page.locator('#lesson-revision').textContent(),/completed/);
+ await page.locator('#lesson-next').click();await saved();assert.match(await page.locator('#lesson-progress').textContent(),/All questions answered/);
  await page.locator('#lesson-import').setInputFiles({name:'landform-backup.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(backup))});await page.waitForFunction(()=>document.getElementById('lesson-status').textContent.startsWith('Session restored'));await page.waitForFunction(()=>!document.getElementById('save-fork').disabled);await page.locator('#save-fork').click();await saved();
  await page.setViewportSize({width:1280,height:1000});return{ridgeAndValley:true,reverseAxis:true,keyboardRetry:true,hintsAndReload:true,backupFork:true,invalidImportRetained:true,letterDownloads:4,nativeDocuments:4,narrowReflow:true};
 }

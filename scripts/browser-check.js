@@ -1,3 +1,4 @@
+import { checkSessionProgress } from './session-progress-browser-check.js';
 import { checkPracticeWorkspace } from './practice-workspace-browser-check.js';
 import { checkTerrainDepressions } from './terrain-depressions-browser-check.js';
 import { checkTerrainLandforms } from './terrain-landforms-browser-check.js';
@@ -90,7 +91,7 @@ try {
   await page.reload();
   await afterInstall(() => page.locator('#lesson-import').setInputFiles(sessionBackupPath));
   await page.waitForFunction(() => document.getElementById('lesson-status').textContent.includes('Session restored from revision'));
-  assert.ok((await page.locator('#lesson-revision').textContent()).includes('1 attempts'));
+  assert.ok((await page.locator('#lesson-revision').textContent()).includes('1 attempt'));
   assert.equal(await page.locator('#lesson-hint').isDisabled(), true);
   assert.equal(await page.locator('#answer-heading').inputValue(), '');
   assert.equal(await page.locator('#lesson-hints li').count(), 1);
@@ -118,7 +119,7 @@ try {
   await page.locator('#lesson-import').setInputFiles({ name: 'oversized-backup.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(oversizedBackup)) });
   await page.waitForFunction(() => document.getElementById('lesson-status').textContent.includes('Session not restored') && document.getElementById('lesson-status').textContent.includes('initial browser limit'));
   assert.equal(await page.locator('#map .feature').count(), 6);
-  assert.ok((await page.locator('#lesson-revision').textContent()).includes('1 attempts'));
+  assert.ok((await page.locator('#lesson-revision').textContent()).includes('1 attempt'));
   assert.equal(await page.locator('#lesson-submit').isDisabled(), true);
   await page.locator('#lesson-retry').click();
   await page.locator('#answer-heading').fill('16');
@@ -458,6 +459,7 @@ try {
     await page.emulateMedia({ media: 'screen' });
   }
   const pagesPackageChecks = process.env.MAP_LITERACY_RELEASE_CHECK === '1' ? await checkPagesPackage(page) : null;
+  const sessionProgressChecks = await checkSessionProgress(page,base,output);
   const practiceWorkspaceChecks = await checkPracticeWorkspace(page,base,output);
   const terrainLessonChecks = await checkTerrainLessons(page,base,output);
   const lessonPdfChecks = await checkLessonPdf(page,base,output);
@@ -503,6 +505,6 @@ try {
   await mobile.close();
   assert.equal(sourceRejectionMessages.length, geographicChecks.sourceRejections);
   assert.deepEqual(errors, []);
-  console.log(JSON.stringify({ practiceWorkspaceChecks, terrainDepressionChecks, terrainLandformChecks, terrainProfileLessonChecks, terrainSlopeChecks, lessonPdfChecks, terrainLessonChecks, terrainOverlayChecks, geographicChecks, printQuality, syntheticFeatures: 6, pagesPackageChecks, storageChecks, autosaveChecks, preferenceChecks, accessibilityChecks, memoryLessonSessions: 'passed', sessionBackupControls: 'passed', variantsAndSelection: 'passed', labelEditingAndExport: 'passed', directedTracingAndPrint: 'passed', exerciseSheetsAndPagination: 'passed', boundedSearchAndRenderLimits: 'passed', invalidImportRetainsMap: 'passed', pdfDimensions: physical, mobileOverflow: false, realPack, browserErrors: errors }));
+  console.log(JSON.stringify({ sessionProgressChecks, practiceWorkspaceChecks, terrainDepressionChecks, terrainLandformChecks, terrainProfileLessonChecks, terrainSlopeChecks, lessonPdfChecks, terrainLessonChecks, terrainOverlayChecks, geographicChecks, printQuality, syntheticFeatures: 6, pagesPackageChecks, storageChecks, autosaveChecks, preferenceChecks, accessibilityChecks, memoryLessonSessions: 'passed', sessionBackupControls: 'passed', variantsAndSelection: 'passed', labelEditingAndExport: 'passed', directedTracingAndPrint: 'passed', exerciseSheetsAndPagination: 'passed', boundedSearchAndRenderLimits: 'passed', invalidImportRetainsMap: 'passed', pdfDimensions: physical, mobileOverflow: false, realPack, browserErrors: errors }));
 } finally { await browser.close(); server?.kill(); }
 

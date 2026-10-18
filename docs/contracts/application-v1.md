@@ -21,7 +21,7 @@ readImport(file,signal), storage.open/load/commit/export and source.prepare use 
 
 Zero exercises is successful preview-only with "No reviewed exercises are available." No location default. Cancel returns prior ready/empty state, not error. Invalid import leaves prior selection intact. Unknown correctness feedback uses "This answer needs review." Correct/incorrect feedback includes deterministic reason and metrics without claiming driving skill.
 
-Session={id:UUID,version:nonnegative safe integer,packId,packRevision,exerciseOrder:ID[],index,answers:map,hintCounts:map,startedAt,updatedAt,status:active/completed}. UUID via browser crypto; revision locked for session. Selection of a newer pack offers new session; old attempts retain old rubric/revision. Reset clears current draft answer only; committed attempts remain. Retry creates another attempt. End marks session completed after save; failed save leaves memory state and visible pending indicator.
+Session={id:UUID,version:nonnegative safe integer,packId,packRevision,exerciseOrder:ID[],index,answers:map,hintCounts:map,startedAt,updatedAt,status:active/completed}. UUID via browser crypto; revision locked for session. Selection of a newer pack offers new session; old attempts retain old rubric/revision. Reset clears current draft answer only; committed attempts remain. Retry creates another attempt. End stores the historical closed lifecycle value completed after save; it does not establish coverage, correctness or mastery. The UI derives ended-early versus all-answered from actual answer links. Pause keeps an active record resumable without adding persisted fields; failed saves leave memory state and a visible pending indicator.
 
 ## Event contract
 
@@ -158,3 +158,12 @@ Saved values override pack view defaults; absent settings leave authored print p
 ## Synthetic contour envelope v2 follow-up
 
 The application now supports the separate [synthetic contour lesson contract](terrain-lessons-v2.md) with a numeric metre input and exercise-supplied reference/target annotations. Existing pack revision/session/save/conflict/backup behavior applies without a database or backup-envelope migration. Version-1 street data remains unchanged; real terrain-v1/draft geographic sidecars and routing capabilities remain unsupported.
+
+
+## Plan 10 session presentation and print selection
+
+The version-1 storage/backup format is unchanged. See [lifecycle/coverage decision](../decisions.md#session-lifecycle-and-derived-coverage--2026-10-18). Closed controllers expose phase ended when any question lacks a submitted answer and completed only when every question has one; both retain stored status completed. A session index at the last item is not coverage evidence. Accuracy uses the latest linked attempt per question; retries retain history and do not add covered items. Unknown/missing coverage is explicit, and malformed full bundles remain rejected.
+
+Pause/resume are memory-only controller transitions: phase paused disables answering/hints and clears drafts, while the saved session remains active. Resume in the same view restores practice/feedback phase. File/saved-session opening restores the last committed answer as before. End may close a paused session but never reopens an ended record. UI summaries distinguish coverage, latest correctness, hints/attempt history and lifecycle. Raw IDs and metric keys are optional details.
+
+listSessions adds derived title and coverage (or null) to bounded headers, reading referenced pack titles in the same read-only transaction. No stored fields are added; full validation remains mandatory on opening. Starting/opening an active practice session defaults print output to learner and follows the current question. Changing the question selector explicitly disables following; Print current question restores following and uses the selected learner/instructor audience (map-only becomes learner). The visible print caption states audience, question, orientation and page count. Changing print audience cannot change learner screen annotations. PDFs include pack revision, question and audience in their filenames. All-page preview and whole-lesson exports remain Plan 10 package D.

@@ -1,6 +1,6 @@
 # Plan 10 — Learner usability and website workflows
 
-Status: active; package A implemented on a review branch, merge/deployment acceptance pending. Packages B–E remain open. Authorized 2026-10-18 after the critical website review.
+Status: active; package A merged and hosted behavior verified after PR 64. Package B implemented on a review branch; merge/deployment acceptance pending. Packages C–E remain open. Authorized 2026-10-18 after the critical website review.
 Dependencies: existing Plan 02–05 capabilities; supports their unfinished acceptance and Plan 06. Plan 02 remains queued for content/source acceptance. Plan 08 feature expansion stays paused.
 
 ## Outcome and boundaries
@@ -44,11 +44,11 @@ Likely touchpoints: index.html, styles.css, src/ui/app.js, src/ui/lessons.js, sr
 
 ### B — Honest session progress, useful feedback and current-task printing
 
-- [ ] Specify lifecycle, item coverage and accuracy separately before changing persistence. Ending early must not imply all questions were answered or mastered. Show an honest summary and define pause/resume/end behavior, including repeat attempts and revision-locked sessions.
-- [ ] Review the [application contract](../../contracts/application-v1.md), storage/import/export and fixtures together. Decide whether coverage can be derived safely or requires a versioned schema/migration. Old “completed” records may have ended early: preserve them and show unknown coverage where reconstruction is unreliable. Never silently relabel all legacy records as fully answered or discard user data.
-- [ ] Clear stale task instructions after ending/changing lessons. Display human lesson names, covered-item counts and friendly dates; retain IDs and exact values in details/export.
-- [ ] Replace raw scorer-property feedback with an explanation, units and a useful next action. Round display values appropriately while retaining scoring/storage precision and optional diagnostic detail.
-- [ ] Default an explicit “Print current question” action to the active task. Retain a clearly labeled manual question override; show selected question, audience and orientation. Keep instructor content separate from learner practice.
+- [x] Specify lifecycle, item coverage and accuracy separately before changing persistence. Ending early must not imply all questions were answered or mastered. Show an honest summary and define pause/resume/end behavior, including repeat attempts and revision-locked sessions.
+- [x] Review the [application contract](../../contracts/application-v1.md), storage/import/export and fixtures together. Decide whether coverage can be derived safely or requires a versioned schema/migration. Old “completed” records may have ended early: preserve them and show unknown coverage where reconstruction is unreliable. Never silently relabel all legacy records as fully answered or discard user data.
+- [x] Clear stale task instructions after ending/changing lessons. Display human lesson names, covered-item counts and friendly dates; retain IDs and exact values in details/export.
+- [x] Replace raw scorer-property feedback with an explanation, units and a useful next action. Round display values appropriately while retaining scoring/storage precision and optional diagnostic detail.
+- [x] Default an explicit “Print current question” action to the active task. Retain a clearly labeled manual question override; show selected question, audience and orientation. Keep instructor content separate from learner practice.
 
 Acceptance: end a four-item lesson after three items and observe truthful partial coverage; complete all items with mistakes and see coverage distinguished from accuracy; reload/resume; import representative legacy/current backups and verify no loss or invented mastery. Navigate to detour and print it without reselecting its type; verify intentional override and audience changes. Add meaningful regression tests for these cases, not just coordinate-filled happy paths.
 
@@ -86,7 +86,7 @@ Completion requires A–D outcomes demonstrated and E evidence recorded, with ma
 
 ## Next action
 
-Package A is prepared for review; verify it after merge, then implement package B. Capture a before/after walkthrough of endpoint, route/detour and profile practice. Resolve the persistence contract decision at the start of B; do not postpone compatibility until after changing saved records.
+Package B is prepared for review. After merge, verify CI, automatic Pages deployment and hosted early-end/pause/current-question print behavior, then implement package C. The lifecycle/coverage compatibility decision is recorded in docs/decisions.md; no storage migration is required.
 
 
 ## Package A execution record — 2026-10-18
@@ -95,4 +95,13 @@ Implemented responsive map/chart/answer placement, tentative pointer and keyboar
 
 Author checks include known-answer annotation/answer-isolation tests and task-based browser placement, rotation, retry/reset, route-context and responsive-layout walkthroughs. The full release suite and final evidence are recorded in the PR. Independent screen-reader, physical touch/Safari and curriculum/learner observations remain pending; simulated browser touch does not close those gates.
 
-After package A merges: verify CI, Pages deployment and hosted endpoint/detour/profile behavior, then implement B, beginning with its lifecycle/coverage compatibility decision. C–E are not delivered by this slice.
+Package A merge, CI, deployment and hosted endpoint/detour/profile behavior were verified after PR 64. Package B follows the recorded lifecycle/coverage compatibility decision. C–E are not delivered by these slices.
+
+
+## Package B execution record — 2026-10-18
+
+PR 64 merged as 669bd20df6008c72e9e4ce5b4cd3ff829636797e; CI and automatic Pages deployment succeeded. Hosted checks verified endpoint selection, a fresh detour trace with two closure marks and Start/End references, and a profile chart/question in the shared workspace. Physical device and independent acceptance remain open.
+
+Package B derives exact recorded coverage separately from latest-answer correctness, labels closed partial sessions Ended early, adds a per-question coverage review, and provides memory-only Pause/Resume while preserving strict v1 records/backups. Legacy closed sessions stay immutable; missing coverage is never inferred from the lifecycle or last-item index. Friendly saved-session labels retain raw IDs/timestamps in details. Feedback uses plain explanations/actions with full-precision diagnostic details; print key rounding stays finer than the rubric or retains exact values. Practice defaults to learner/current-question printing, manual overrides are explicit, and filenames identify the question and audience.
+
+Validation includes legacy/current v1 roundtrips, end-early and all-answered-but-incorrect cases, repeat attempts, pause/reload, last-item legacy gaps and tolerance-boundary display checks. Browser acceptance covers current-question printing, override recovery, audience isolation, backup preservation and saved labels, plus the existing full release checks. Exact results are recorded in the PR. C–E remain undelivered; software tests do not replace independent content, physical Safari/touch, assistive-technology or learning observations.
