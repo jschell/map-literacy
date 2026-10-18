@@ -35,6 +35,7 @@
     <h2>Lesson map and print</h2>
     <section class="controls" aria-label="Map controls">
       <button id="demo" type="button">Load synthetic map</button>
+      <button id="slope-demo" type="button">Load slope lesson</button>
       <button id="terrain-demo" type="button">Load contour lesson</button>
       <label class="file-control">Import lesson pack<input id="import" type="file" accept=".json,application/json"></label>
       <label>Labels<select id="variant"><option value="labeled">Labeled</option><option value="partial">Partly labeled</option><option value="blank">Blank</option></select></label>
@@ -60,7 +61,7 @@
     <p id="attribution" class="note" aria-label="Map sources"></p>
     <section class="inspection"><label>Find feature<input id="feature-filter" type="search" maxlength="120" disabled></label><label>Feature selection<select id="feature"><option value="">No feature selected</option></select><span id="feature-matches" class="note"></span></label><p id="selection">Choose a road on the map or use the feature list.</p></section>
     <section class="label-editor" aria-labelledby="lesson-title">
-      <h2 id="lesson-title" tabindex="-1">Practice street lessons</h2>
+      <h2 id="lesson-title" tabindex="-1">Practice lessons</h2>
       <p class="note">Practice while stationary. Progress saves in this browser after accepted actions. Check the save status and keep downloaded backups against browser data loss. Unfinished answers are discarded on refresh. Restoring or selecting another pack replaces the current map/session. Exercises follow reviewed pack order.</p>
       <p id="save-status" role="status" aria-live="polite">Opening browser storage…</p>
       <div class="editor-actions"><button id="save-retry" type="button" disabled>Retry saving</button><button id="save-reload" type="button" disabled>Reload latest, discard changes</button><button id="save-fork" type="button" disabled>Save as new session</button></div>
@@ -71,6 +72,7 @@
       <fieldset id="lesson-fields" aria-describedby="lesson-prompt lesson-revision" disabled><legend>Current answer</legend>
         <label id="lesson-heading" hidden>True heading in degrees (0–359.999)<input id="answer-heading" type="number" min="0" max="359.999" step="any"></label>
         <div id="lesson-endpoint" class="label-inputs" hidden><label>Endpoint longitude<input id="answer-lon" type="number" min="-180" max="180" step="any"></label><label>Endpoint latitude<input id="answer-lat" type="number" min="-90" max="90" step="any"></label></div>
+        <label id="lesson-slope" hidden>Which marked span is steeper?<select id="answer-slope"><option value="">Choose an answer</option><option value="A">A is steeper</option><option value="B">B is steeper</option><option value="equal">Equal average slope</option></select></label>
         <label id="lesson-elevation" hidden>Contour A elevation in metres<input id="answer-elevation" type="number" step="any"></label>
         <p id="lesson-route" hidden></p>
       </fieldset>

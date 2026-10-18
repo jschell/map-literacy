@@ -16,7 +16,7 @@ export function createLessons({ getPack, getTrace, installPack, cancelPackLoad }
     const pending = pendingFocus; pendingFocus = null;
     const state = controller?.snapshot();
     if (state?.session.id !== pending.sessionId || state.session.version !== pending.version || ![document.body, pending.origin].includes(document.activeElement)) return;
-    const answerTarget = state.exercise.type === 'heading' ? 'answer-heading' : state.exercise.type === 'endpoint' ? 'answer-lon' : state.exercise.type === 'contour-elevation' ? 'answer-elevation' : 'trace-start';
+    const answerTarget = state.exercise.type === 'heading' ? 'answer-heading' : state.exercise.type === 'endpoint' ? 'answer-lon' : state.exercise.type === 'relative-slope' ? 'answer-slope' : state.exercise.type === 'contour-elevation' ? 'answer-elevation' : 'trace-start';
     const last = state.attempts.find((a) => a.id === state.session.answers[state.exercise.id]);
     const target = state.phase === 'completed' ? 'lesson-export' : state.phase === 'feedback' ? (last?.result.status === 'correct' ? 'lesson-next' : 'lesson-retry') : pending.origin.id === 'lesson-hint' && !get('lesson-hint').disabled ? 'lesson-hint' : answerTarget;
     get(target).focus();
@@ -54,7 +54,7 @@ export function createLessons({ getPack, getTrace, installPack, cancelPackLoad }
   }
   const cancelPending = () => { restoreJob?.abort(); restoreJob = null; };
   const status = (text) => { get('lesson-status').textContent = text; };
-  function clearAnswer() { for (const id of ['answer-heading', 'answer-lon', 'answer-lat', 'answer-elevation']) get(id).value = ''; }
+  function clearAnswer() { for (const id of ['answer-heading', 'answer-lon', 'answer-lat', 'answer-elevation', 'answer-slope']) get(id).value = ''; }
   function refresh() {
     const saveState = writer.snapshot(); const busy = !storageReady || saveState.state === 'saving';
     get('save-status').textContent = !storageReady ? 'Opening browser storage…' : !controller ? (storage ? 'Browser storage ready. Keep downloaded backups against browser data loss.' : 'Memory only: browser storage is unavailable. Download session backups.') : !storage ? 'Changes are not saved: browser storage connection is unavailable. Download a session backup, retry storage or reload.' : saveState.state === 'saved' ? `Saved in this browser · version ${saveState.savedVersion}. Keep a downloaded backup.` : saveState.state === 'saving' ? 'Saving progress…' : saveState.state === 'conflict' ? (saveState.error?.code === 'revision-conflict' ? 'Changes are not saved: this pack revision already has different stored content. Download progress and select a reviewed pack with a new revision.' : 'Changes are not saved: another session version conflicts. Download, reload latest or save as a new session.') : `Changes are not saved. ${saveState.error?.message ?? ''} Retry saving or download a session backup.`;
@@ -68,6 +68,7 @@ export function createLessons({ getPack, getTrace, installPack, cancelPackLoad }
     get('lesson-export').disabled = !controller;
     get('lesson-start').disabled = busy || !getPack() || Boolean(active) || getPack().review.status !== 'reviewed' || !getPack().exercises.some((e) => e.review === 'reviewed');
     get('lesson-fields').disabled = !practicing;
+    get('lesson-slope').hidden = e?.type !== 'relative-slope';
     get('lesson-elevation').hidden = e?.type !== 'contour-elevation';
     get('lesson-heading').hidden = e?.type !== 'heading'; get('lesson-endpoint').hidden = e?.type !== 'endpoint'; get('lesson-route').hidden = !['route', 'detour'].includes(e?.type);
     get('lesson-submit').disabled = !practicing; get('lesson-reset').disabled = !practicing;
@@ -102,6 +103,7 @@ export function createLessons({ getPack, getTrace, installPack, cancelPackLoad }
     const e = controller.snapshot().exercise; let answer;
     if (e.type === 'heading') answer = get('answer-heading').value.trim() ? { type: e.type, degrees: Number(get('answer-heading').value) } : null;
     else if (e.type === 'endpoint') answer = get('answer-lon').value.trim() && get('answer-lat').value.trim() ? { type: e.type, coordinate: [Number(get('answer-lon').value), Number(get('answer-lat').value)] } : null;
+    else if (e.type === 'relative-slope') answer = get('answer-slope').value ? {type:e.type,choice:get('answer-slope').value} : null;
     else if (e.type === 'contour-elevation') answer = get('answer-elevation').value.trim() ? {type:e.type,elevationM:Number(get('answer-elevation').value)} : null;
     else {
       const trace = getTrace();
@@ -109,7 +111,7 @@ export function createLessons({ getPack, getTrace, installPack, cancelPackLoad }
       answer = { type: e.type, edgeIds: trace.edgeIds };
     }
     controller.setAnswer(answer); const score = controller.submit();
-    status(`${messages[score.status]} ${score.reasonCode.replaceAll('-', ' ')}. ${e.type === 'contour-elevation' && Number.isFinite(score.metrics.elevationErrorM) ? `Elevation error: ${Number(score.metrics.elevationErrorM.toFixed(2))} m` : Object.entries(score.metrics).map(([key, value]) => `${key}: ${Number(value.toFixed(2))}`).join(' · ')}`);
+    status(`${messages[score.status]} ${score.reasonCode.replaceAll('-', ' ')}. ${e.type === 'relative-slope' ? 'For the same elevation change, compare the horizontal distances between the end ticks.' : e.type === 'contour-elevation' && Number.isFinite(score.metrics.elevationErrorM) ? `Elevation error: ${Number(score.metrics.elevationErrorM.toFixed(2))} m` : Object.entries(score.metrics).map(([key, value]) => `${key}: ${Number(value.toFixed(2))}`).join(' · ')}`);
   }, true, event));
   get('lesson-reset').addEventListener('click', () => run(() => { controller.reset(); emit('session-reset', { sessionId: controller.snapshot().session.id, exerciseId: controller.snapshot().exercise.id }); clearAnswer(); status('Draft answer cleared. Submitted attempts and hints are retained. The review trace is unchanged.'); }));
   get('lesson-retry').addEventListener('click', (event) => run(() => { controller.retry(); clearAnswer(); status('Try another answer. Earlier attempts and hints are retained.'); }, true, event));

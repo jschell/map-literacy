@@ -81,6 +81,18 @@ export function renderMap(doc, model, { selectedId = null, headingDeg = null, ro
       const x = a[0] + (b[0] - a[0]) / 3, y = a[1] + (b[1] - a[1]) / 3;
       marks.append(element(doc, 'path', { d: `M${x-2},${y-2} L${x+2},${y+2} M${x-2},${y+2} L${x+2},${y-2}`, class: 'closure-line', 'stroke-width': .8 }));
     }
+    for (const span of annotations.spans ?? []) {
+      const a=model.convert(span.from),b=model.convert(span.to),length=Math.hypot(b[0]-a[0],b[1]-a[1]);
+      const dx=(b[0]-a[0])/length,dy=(b[1]-a[1])/length,unit=model.paper?1:4;
+      const g=element(doc,'g',{class:'slope-span','data-span':span.text});marks.append(g);
+      const d=`M${a.join(',')} L${b.join(',')}`;
+      g.append(element(doc,'path',{d,fill:'none',stroke:'white','stroke-width':1.4*unit}));
+      g.append(element(doc,'path',{d,fill:'none',stroke:'black','stroke-width':.6*unit}));
+      for(const p of [a,b])g.append(element(doc,'path',{d:`M${p[0]-dy*1.2*unit},${p[1]+dx*1.2*unit} L${p[0]+dy*1.2*unit},${p[1]-dx*1.2*unit}`,stroke:'black','stroke-width':.4*unit}));
+      const x=a[0]-dx*6*unit,y=a[1]-dy*6*unit;
+      g.append(element(doc,'circle',{cx:x,cy:y,r:2.4*unit,fill:'white',stroke:'black','stroke-width':.3*unit}));
+      g.append(element(doc,'text',{x,y,class:'exercise-mark','text-anchor':'middle','dominant-baseline':'central','font-size':model.paper?3:13,fill:'black'},span.text));
+    }
     for (const marker of annotations.markers) {
       const [cx, cy] = model.convert(marker.coordinate);
       const font = model.paper ? 3 : 13, radius = model.paper ? 3 : 13;

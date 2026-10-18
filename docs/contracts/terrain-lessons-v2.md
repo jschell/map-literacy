@@ -4,9 +4,9 @@ Status: first terrain capability implemented across validation, import/export, s
 
 ## Compatibility and scope
 
-Street packs remain `schemaVersion: 1`, `module: street`, `capabilities: [street-core]`. The new envelope uses `schemaVersion: 2`, `module: topographic`, `capabilities: [terrain-contours-v1]`. Other version-2 module/capability combinations are unsupported. Version-1 readers reject v2 before writes. The older placeholder `terrain-v1`, routing capabilities and real DEM payloads remain unsupported; none is silently upgraded.
+Street packs remain `schemaVersion: 1`, `module: street`, `capabilities: [street-core]`. The new envelope uses `schemaVersion: 2`, `module: topographic`, `capabilities: [terrain-contours-v1]`. An optional ordered companion capability `[terrain-contours-v1,terrain-slopes-v1]` adds the [relative-slope contract](terrain-slopes-v1.md). Other version-2 module/capability combinations are unsupported. Version-1 readers reject v2 before writes. The older placeholder `terrain-v1`, routing capabilities and real DEM payloads remain unsupported; none is silently upgraded.
 
-Common envelope fields, sources, feature properties, print presets, review states, JSON/file/render bounds and revision rules retain the [v1 contract](lesson-pack-v1.md). The only additional envelope field is `terrain`. This capability is terrain-only: contour LineStrings, no road graph, no authored labels and only `contour-elevation` exercises. No new database version or backup envelope is needed: existing revision-locked pack/session records retain the complete v2 payload and recompute its score before accepting restored records.
+Common envelope fields, sources, feature properties, print presets, review states, JSON/file/render bounds and revision rules retain the [v1 contract](lesson-pack-v1.md). The only additional envelope field is `terrain`. This capability is terrain-only: contour LineStrings, no road graph, no authored labels and `contour-elevation` exercises; `relative-slope` additionally requires the companion capability. No new database version or backup envelope is needed: existing revision-locked pack/session records retain the complete v2 payload and recompute its score before accepting restored records.
 
 ## Terrain payload
 
@@ -44,4 +44,6 @@ Reference/target annotations are supplied by the exercise, so free label editing
 
 The deterministic analytic hill fixture has contours at 80, 85 and 90 m. Its two questions use successively higher reference/target contours with a stated 5 m interval. Regeneration, geometry/source tampering, compatibility rejection, tolerance boundaries, draft review, session/backup integrity, wrong-score rejection and learner/instructor separation have automated coverage. Browser checks exercise numeric/keyboard feedback, reload and conflict-safe file recovery, malformed import retention, narrow reflow and both Letter orientations.
 
-The fixture is a technical instructional demonstration, not the multi-pack learning pilot or evidence of transfer/retention. Real-grid payloads, actual road/trail alignment, independent terrain-answer review, index/intermediate labeling policy, slope/ridge/valley/profile exercises and target-device/physical-paper acceptance remain separate Plan 08 work.
+The fixture is a technical instructional demonstration, not the multi-pack learning pilot or evidence of transfer/retention. Real-grid payloads, actual road/trail alignment, independent terrain-answer review, index/intermediate labeling policy, ridge/valley/profile exercises and broader slope instruction and target-device/physical-paper acceptance remain separate Plan 08 work.
+
+The separate **Load slope lesson** demo uses the same analytic hill with three comparisons (A steeper, B steeper, equal). Its answers are derived from validated contour vertices and metric distances; the original elevation fixture and stored revisions remain unchanged.

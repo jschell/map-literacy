@@ -39,7 +39,15 @@ export function validateTerrainPack(pack) {
     for(let j=0;j<e.coordinates.length;j++)if(distanceM(f.geometry.coordinates[j],e.coordinates[j])>1e-6||!inside(f.geometry.coordinates[j],pack.bounds))fail('contours must reproduce the grid and fit the lesson extent');
   }
   for(const x of pack.exercises) {
-    if(x.type!=='contour-elevation'||x.scenario!==null||x.sourceIds.length!==1||x.sourceIds[0]!==g.id)fail('unsupported terrain exercise/scenario/source');
+    if(!['contour-elevation','relative-slope'].includes(x.type)||x.scenario!==null||x.sourceIds.length!==1||x.sourceIds[0]!==g.id)fail('unsupported terrain exercise/scenario/source');
+    if(x.type==='relative-slope') {
+      if(!pack.capabilities.includes('terrain-slopes-v1'))fail('relative slope requires terrain-slopes-v1');
+      const {a,b}=slopeComparison(pack,x);
+      if([a,b].some(v=>Math.abs(v.riseM-t.intervalM)>1e-9||v.runM<.1))fail('slope spans must cross one interval with positive horizontal distance');
+      const same=(p,q)=>distanceM(p,q)<1e-6;
+      if((same(a.from,b.from)&&same(a.to,b.to))||(same(a.from,b.to)&&same(a.to,b.from)))fail('slope spans must be distinct');
+      continue;
+    }
     const target=t.contours.find(c=>c.featureId===x.rubric.featureId),reference=t.contours.find(c=>c.featureId===x.rubric.referenceFeatureId);
     if(!target||!reference||target.levelM===reference.levelM||x.rubric.toleranceM>=t.intervalM/4)fail('distinct reference/target levels and bounded tolerance required');
   }
@@ -50,10 +58,32 @@ export const contourLevel = (pack,id) => pack.terrain.contours.find(c=>c.feature
 
 /** Reference elevations are visible; the learner's target answer is not printed. */
 export function terrainExerciseAnnotations(pack,exercise,instructor=false) {
+  if(exercise?.type==='relative-slope') { const {a,b}=slopeComparison(pack,exercise);return {closedEdges:[],markers:[],spans:[{from:a.from,to:a.to,text:'A'},{from:b.from,to:b.to,text:'B'}]}; }
   if(exercise?.type!=='contour-elevation')return null;
   const anchor=(id,reference=false)=>{const points=pack.features.features.find(f=>f.id===id).geometry.coordinates;return points[reference?0:Math.floor((points.length-1)/2)];};
   return {closedEdges:[],markers:[
     {coordinate:anchor(exercise.rubric.referenceFeatureId,true),text:`${contourLevel(pack,exercise.rubric.referenceFeatureId)} m`},
     {coordinate:anchor(exercise.rubric.featureId),text:instructor?`A: ${contourLevel(pack,exercise.rubric.featureId)} m`:'A'}
   ]};
+}
+
+
+/** Average endpoint grade magnitudes, never a claim about local terrain or traversability. */
+export function slopeComparison(pack, exercise) {
+  const projection=createProjection(pack.terrain.frame.center);
+  const measure=span=>{
+    const endpoint=(id,index)=>{
+      const f=pack.features.features.find(f=>f.id===id);
+      if(!f||!Number.isInteger(index)||index<0||index>=f.geometry.coordinates.length)fail('slope endpoint must name a contour vertex');
+      return f.geometry.coordinates[index];
+    };
+    const from=endpoint(span.fromFeatureId,span.fromVertex),to=endpoint(span.toFeatureId,span.toVertex);
+    const p=projection.project(from),q=projection.project(to),runM=Math.hypot(p[0]-q[0],p[1]-q[1]);
+    const riseM=Math.abs(contourLevel(pack,span.fromFeatureId)-contourLevel(pack,span.toFeatureId));
+    if(!Number.isFinite(runM)||runM<.1||!riseM)fail('slope needs distinct levels and nonzero horizontal distance');
+    return {from,to,runM,riseM,grade:riseM/runM};
+  };
+  const a=measure(exercise.rubric.spanA),b=measure(exercise.rubric.spanB);
+  const equal=Math.abs(a.grade-b.grade)<=1e-9*Math.max(1,a.grade,b.grade);
+  return {a,b,choice:equal?'equal':a.grade>b.grade?'A':'B'};
 }
