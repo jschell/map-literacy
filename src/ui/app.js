@@ -125,6 +125,7 @@ function install(value) {
   get('orientation').value = pack.print.orientation;
 
   get('attribution').textContent = pack.sources.map((s) => `${s.attribution} · ${s.license} · source ${s.sourceAt?.slice(0, 10) ?? 'date unknown'}`).join(' | ');
+  get('map-help').textContent = pack.module === 'topographic' ? 'Begin a lesson session to show its contour references or slope spans. Use the labeled answer field and Submit answer; hints and retry are available.' : 'Keyboard alternatives: choose a road in Feature selection, or build a path with Start graph node, Next directed edge and Add edge below.';
   featurePicker.set(pack.features.features.map((f) => ({ id: f.id, text: `${f.properties.name ?? 'Unnamed feature'} (${f.id})` })), '', true); featurePicker.enabled(true);
   get('selection').textContent = pack.module === 'topographic' ? 'Synthetic contour lesson; elevations increase toward the hill center. No real terrain is represented.' : 'Choose a road on the map or use the feature list.'; editor.installed(); trace.installed(); lessons.installed(); preferences.installed(); updateView();
   get('map').dataset.loadVersion = String(++loadVersion);
@@ -152,6 +153,7 @@ get('demo').addEventListener('click', () => load(async (signal) => {
   if (!response.ok) throw new Error('Synthetic map could not be loaded.');
   return readImport(await response.blob(), signal);
 }));
+get('slope-demo').addEventListener('click', () => load(async(signal) => { const r=await fetch('tests/fixtures/terrain-slopes.json',{signal});if(!r.ok)throw new Error('Slope lesson could not be loaded.');return readImport(await r.blob(),signal); }));
 get('terrain-demo').addEventListener('click', () => load(async(signal) => { const response=await fetch('tests/fixtures/terrain-hill.json',{signal}); if(!response.ok) throw new Error('Contour lesson could not be loaded.'); return readImport(await response.blob(),signal); }));
 document.addEventListener('lesson-view-changed', () => requestAnimationFrame(updateView));
 get('import').addEventListener('change', () => { const file = get('import').files[0]; if (file) load((signal) => readImport(file, signal)); get('import').value = ''; });

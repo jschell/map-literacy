@@ -1,4 +1,4 @@
-import { contourLevel, terrainExerciseAnnotations } from '../terrain/lesson-pack.js';
+import { contourLevel, terrainExerciseAnnotations, slopeComparison } from '../terrain/lesson-pack.js';
 import { validatePack } from '../data/validate-pack.js';
 
 /** Printable teaching content, deliberately separate from scoring and transient traces. */
@@ -11,7 +11,8 @@ export function createExercisePrint(pack, exerciseId, audience) {
   const instructor = audience === 'instructor', rubric = exercise.rubric;
   const draft = pack.review.status !== 'reviewed' || exercise.review !== 'reviewed';
   const kind = instructor ? 'Instructor guide' : 'Learner worksheet';
-  const exerciseName = exercise.type === 'contour-elevation' ? 'Contour elevation' : exercise.type;
+  const exerciseName = exercise.type === 'contour-elevation' ? 'Contour elevation' : exercise.type === 'relative-slope' ? 'Relative slope' : exercise.type;
+  let slopeAnnotations = null;
   const blocks = [], markers = [], closedEdges = [];
   const add = (text, type = 'paragraph') => blocks.push({ type, text });
   add(pack.title, 'heading');
@@ -30,6 +31,11 @@ export function createExercisePrint(pack, exerciseId, audience) {
       markers.push({ coordinate: rubric.expected, text: 'X' });
       add(`Expected endpoint (longitude, latitude): ${rubric.expected.join(', ')}. X marks the answer on the instructor map. Accept geographic distance up to ${rubric.toleranceM} m (inclusive).`, 'answer');
     } else add('Mark the endpoint on the map and explain how you located it.');
+  } else if(exercise.type==='relative-slope') {
+    slopeAnnotations=terrainExerciseAnnotations(pack,exercise);
+    add(`Both tick-to-tick spans change elevation by ${pack.terrain.intervalM} m. Compare straight horizontal distances; this is average slope magnitude, not walking distance or local slope everywhere.`);
+    if(instructor) {const {a,b,choice}=slopeComparison(pack,exercise);add(`Expected comparison: ${choice==='equal'?'equal average slope':`${choice} is steeper`}. A: rise ${a.riseM} m / run ${Number(a.runM.toFixed(3))} m; B: rise ${b.riseM} m / run ${Number(b.runM.toFixed(3))} m.`, 'answer');}
+    else add('Circle A, B or equal and explain how equal rise and horizontal distance support your choice.');
   } else if (exercise.type === 'contour-elevation') {
     const annotations = terrainExerciseAnnotations(pack,exercise,instructor); markers.push(...annotations.markers);
     add(`Synthetic terrain; elevations use a synthetic zero reference. Contour interval: ${pack.terrain.intervalM} m.`);
@@ -62,7 +68,7 @@ export function createExercisePrint(pack, exerciseId, audience) {
     if (!exercise.hints.length) add('No authored hints.');
     for (const hint of exercise.hints) add(hint, 'hint');
     if (pack.topology.completeness === 'partial') add('Topology is incomplete. Review the pack exclusions before accepting route answers.');
-    add(exercise.type === 'contour-elevation' ? 'Use these answer criteria to check the handwritten elevation and explanation.' : 'These are authored answer criteria for manual checking. Automatic scoring, learner records and real-world driving permission are not provided by this print tool.');
+    add(['contour-elevation','relative-slope'].includes(exercise.type) ? 'Use these answer criteria to check the handwritten answer and explanation.' : 'These are authored answer criteria for manual checking. Automatic scoring, learner records and real-world driving permission are not provided by this print tool.');
   } else {
     add('Answer and explanation', 'heading'); add('', 'answer-space');
   }
@@ -73,7 +79,7 @@ export function createExercisePrint(pack, exerciseId, audience) {
   if (blocks.reduce((sum, b) => sum + b.text.length, 0) > 100000) throw new Error('Exercise print text exceeds the layout limit; use a smaller source/lesson selection.');
   const inside = ([lon, lat]) => lon >= pack.bounds[0] && lon <= pack.bounds[2] && lat >= pack.bounds[1] && lat <= pack.bounds[3];
   if ((exercise.type === 'endpoint' && !inside(rubric.expected)) || !markers.every((m) => inside(m.coordinate)) || !closedEdges.every((e) => e.shape.every(inside))) throw new Error('Exercise endpoints or closures leave this print extent; choose a suitable lesson extent.');
-  return { kind, exerciseId, audience, draft, blocks, annotations: { markers, closedEdges }, headingDeg,
+  return { kind, exerciseId, audience, draft, blocks, annotations: slopeAnnotations ?? { markers, closedEdges }, headingDeg,
     title: `${kind} — ${exerciseName}${draft ? ' — UNREVIEWED DRAFT' : ''}`,
-    summary: exercise.type === 'contour-elevation' ? `Synthetic terrain; elevation increases toward the center. Contour interval: ${pack.terrain.intervalM} m. Questions${instructor ? ' and answer criteria' : ''} and source credits follow the map.` : `${exercise.type} · Questions${instructor ? ' and answer criteria' : ''} and source credits follow the map.` };
+    summary: exercise.type === 'relative-slope' ? `Synthetic terrain. A and B each span ${pack.terrain.intervalM} m of elevation change. Compare distances between the end ticks. Questions and source credits follow the map.` : exercise.type === 'contour-elevation' ? `Synthetic terrain; elevation increases toward the center. Contour interval: ${pack.terrain.intervalM} m. Questions${instructor ? ' and answer criteria' : ''} and source credits follow the map.` : `${exercise.type} · Questions${instructor ? ' and answer criteria' : ''} and source credits follow the map.` };
 }

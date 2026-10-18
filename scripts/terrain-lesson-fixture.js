@@ -29,3 +29,23 @@ export function buildTerrainLessonFixture() {
     print:{paper:'letter',orientation:'portrait',marginMm:10,scaleDenominator:1000,labelMinPt:8,mapRotationDeg:0},extensions:{},
     terrain:{format:'synthetic-contours-v1',grid,frame:{center,origin},intervalM:5,contours}};
 }
+
+/** Same analytic hill, a separate revision-locked lesson and explicit optional capability. */
+export function buildTerrainSlopeFixture() {
+  const p=buildTerrainLessonFixture();p.id='synthetic-terrain-slopes';p.title='Synthetic hill — relative slope';p.capabilities.push('terrain-slopes-v1');
+  const projection=createProjection(p.terrain.frame.center);
+  const vertex=(level,axis,sign)=>{
+    const id=p.terrain.contours.find(c=>c.levelM===level).featureId;
+    const points=p.features.features.find(f=>f.id===id).geometry.coordinates;
+    let index=0;points.forEach((v,i)=>{if(sign*projection.project(v)[axis]>sign*projection.project(points[index])[axis]+1e-7)index=i;});
+    return {id,index};
+  };
+  const span=(axis,sign)=>{const a=vertex(80,axis,sign),b=vertex(85,axis,sign);return {fromFeatureId:a.id,fromVertex:a.index,toFeatureId:b.id,toVertex:b.index};};
+  p.exercises=[[span(0,1),span(1,1)],[span(1,1),span(0,1)],[span(0,1),span(0,-1)]].map(([spanA,spanB],i)=>({
+    id:`slope-${i+1}`,type:'relative-slope',review:'reviewed',sourceIds:[p.terrain.grid.id],scenario:null,
+    prompt:'On this synthetic hill, A and B each span one 5 m contour interval. Compare average slope magnitude between each pair of end ticks: which span is steeper, or are they equal? Use straight horizontal ground distance, not the direction the line points.',
+    hints:['Both spans have the same 5 m elevation change.','For equal rise, the shorter horizontal distance has the steeper average slope. Equal distances give equal slopes.'],rubric:{spanA,spanB}
+  }));
+  p.review.note='Analytic hill: each span rises 5 m; east/west runs are 5 m, north run 10 m. Average grade magnitudes are 1 and 0.5. Synthetic instructional fixture, not traversability or learning-effectiveness evidence.';
+  return p;
+}

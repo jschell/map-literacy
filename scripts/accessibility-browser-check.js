@@ -55,7 +55,7 @@ export async function checkAccessibility(page, base) {
     }).map((node) => node.id || node.outerHTML));
     assert.deepEqual(unnamed, [], 'all native controls have names');
     await page.getByRole('region', { name: 'Map viewer' }).waitFor();
-    await page.getByRole('region', { name: 'Practice street lessons' }).waitFor();
+    await page.getByRole('region', { name: 'Practice lessons' }).waitFor();
     await page.getByRole('img', { name: /Synthetic streets and bridge crossing/ }).waitFor();
     assert.ok((await page.locator('#lesson-fields').getAttribute('aria-describedby')).includes('lesson-prompt'));
     const semantics = await page.locator('main').ariaSnapshot();

@@ -1,0 +1,414 @@
+{
+  "schemaVersion": 2,
+  "id": "synthetic-terrain-slopes",
+  "title": "Synthetic hill — relative slope",
+  "revision": 1,
+  "module": "topographic",
+  "capabilities": [
+    "terrain-contours-v1",
+    "terrain-slopes-v1"
+  ],
+  "review": {
+    "status": "reviewed",
+    "reviewedAt": "2026-10-17T00:00:00.000Z",
+    "note": "Analytic hill: each span rises 5 m; east/west runs are 5 m, north run 10 m. Average grade magnitudes are 1 and 0.5. Synthetic instructional fixture, not traversability or learning-effectiveness evidence."
+  },
+  "bounds": [
+    -0.00026979610912290054,
+    -0.0004496601818606074,
+    0.00026979610912290054,
+    0.0004496601818606074
+  ],
+  "sourceBounds": [
+    -0.00027979610912290056,
+    -0.00045966018186060744,
+    0.00027979610912290056,
+    0.00045966018186060744
+  ],
+  "sources": [
+    {
+      "id": "hill",
+      "kind": "synthetic",
+      "url": null,
+      "query": null,
+      "fetchedAt": "2026-10-16T00:00:00.000Z",
+      "sourceAt": null,
+      "version": "recipe-v1",
+      "sha256": "202d008891b0ae70d3f4ef6b93582c1a8c7320174617e117245eb45f369e4cb8",
+      "license": "CC0-1.0",
+      "attribution": "Invented Map Literacy terrain fixtures; no geographic source.",
+      "transforms": [
+        {
+          "name": "generate-analytic-grid",
+          "version": "1",
+          "parameters": {
+            "recipeFile": "terrain-recipe.json",
+            "case": "hill"
+          }
+        }
+      ]
+    }
+  ],
+  "features": {
+    "type": "FeatureCollection",
+    "features": [
+      {
+        "type": "Feature",
+        "id": "contour-1",
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -0.0001798640727449076,
+              0
+            ],
+            [
+              -0.00008993203637274922,
+              -0.00017986407274483374
+            ],
+            [
+              0,
+              -0.0003597281454898152
+            ],
+            [
+              0.00008993203637274922,
+              -0.00017986407274483374
+            ],
+            [
+              0.0001798640727449076,
+              0
+            ],
+            [
+              0.00008993203637274922,
+              0.00017986407274483374
+            ],
+            [
+              0,
+              0.0003597281454898152
+            ],
+            [
+              -0.00008993203637274922,
+              0.00017986407274483374
+            ],
+            [
+              -0.0001798640727449076,
+              0
+            ]
+          ]
+        },
+        "properties": {
+          "sourceId": "hill",
+          "role": "contour",
+          "name": "Contour 1",
+          "tags": {}
+        }
+      },
+      {
+        "type": "Feature",
+        "id": "contour-2",
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -0.00013489805455868073,
+              0
+            ],
+            [
+              -0.00008993203637252766,
+              -0.00008993203637241687
+            ],
+            [
+              -0.00004496601818637461,
+              -0.00017986407274488917
+            ],
+            [
+              0,
+              -0.0002697961091173614
+            ],
+            [
+              0.00004496601818637461,
+              -0.00017986407274488917
+            ],
+            [
+              0.00008993203637252766,
+              -0.00008993203637241687
+            ],
+            [
+              0.00013489805455868073,
+              0
+            ],
+            [
+              0.00008993203637252766,
+              0.00008993203637241687
+            ],
+            [
+              0.00004496601818637461,
+              0.00017986407274488917
+            ],
+            [
+              0,
+              0.0002697961091173614
+            ],
+            [
+              -0.00004496601818637461,
+              0.00017986407274488917
+            ],
+            [
+              -0.00008993203637252766,
+              0.00008993203637241687
+            ],
+            [
+              -0.00013489805455868073,
+              0
+            ]
+          ]
+        },
+        "properties": {
+          "sourceId": "hill",
+          "role": "contour",
+          "name": "Contour 2",
+          "tags": {}
+        }
+      },
+      {
+        "type": "Feature",
+        "id": "contour-3",
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -0.00008993203637245379,
+              0
+            ],
+            [
+              0,
+              -0.0001798640727449076
+            ],
+            [
+              0.00008993203637245379,
+              0
+            ],
+            [
+              0,
+              0.0001798640727449076
+            ],
+            [
+              -0.00008993203637245379,
+              0
+            ]
+          ]
+        },
+        "properties": {
+          "sourceId": "hill",
+          "role": "contour",
+          "name": "Contour 3",
+          "tags": {}
+        }
+      }
+    ]
+  },
+  "topology": {
+    "nodes": [],
+    "edges": [],
+    "restrictions": [],
+    "completeness": "complete",
+    "exclusions": []
+  },
+  "labels": [],
+  "exercises": [
+    {
+      "id": "slope-1",
+      "type": "relative-slope",
+      "review": "reviewed",
+      "sourceIds": [
+        "hill"
+      ],
+      "scenario": null,
+      "prompt": "On this synthetic hill, A and B each span one 5 m contour interval. Compare average slope magnitude between each pair of end ticks: which span is steeper, or are they equal? Use straight horizontal ground distance, not the direction the line points.",
+      "hints": [
+        "Both spans have the same 5 m elevation change.",
+        "For equal rise, the shorter horizontal distance has the steeper average slope. Equal distances give equal slopes."
+      ],
+      "rubric": {
+        "spanA": {
+          "fromFeatureId": "contour-1",
+          "fromVertex": 4,
+          "toFeatureId": "contour-2",
+          "toVertex": 6
+        },
+        "spanB": {
+          "fromFeatureId": "contour-1",
+          "fromVertex": 6,
+          "toFeatureId": "contour-2",
+          "toVertex": 9
+        }
+      }
+    },
+    {
+      "id": "slope-2",
+      "type": "relative-slope",
+      "review": "reviewed",
+      "sourceIds": [
+        "hill"
+      ],
+      "scenario": null,
+      "prompt": "On this synthetic hill, A and B each span one 5 m contour interval. Compare average slope magnitude between each pair of end ticks: which span is steeper, or are they equal? Use straight horizontal ground distance, not the direction the line points.",
+      "hints": [
+        "Both spans have the same 5 m elevation change.",
+        "For equal rise, the shorter horizontal distance has the steeper average slope. Equal distances give equal slopes."
+      ],
+      "rubric": {
+        "spanA": {
+          "fromFeatureId": "contour-1",
+          "fromVertex": 6,
+          "toFeatureId": "contour-2",
+          "toVertex": 9
+        },
+        "spanB": {
+          "fromFeatureId": "contour-1",
+          "fromVertex": 4,
+          "toFeatureId": "contour-2",
+          "toVertex": 6
+        }
+      }
+    },
+    {
+      "id": "slope-3",
+      "type": "relative-slope",
+      "review": "reviewed",
+      "sourceIds": [
+        "hill"
+      ],
+      "scenario": null,
+      "prompt": "On this synthetic hill, A and B each span one 5 m contour interval. Compare average slope magnitude between each pair of end ticks: which span is steeper, or are they equal? Use straight horizontal ground distance, not the direction the line points.",
+      "hints": [
+        "Both spans have the same 5 m elevation change.",
+        "For equal rise, the shorter horizontal distance has the steeper average slope. Equal distances give equal slopes."
+      ],
+      "rubric": {
+        "spanA": {
+          "fromFeatureId": "contour-1",
+          "fromVertex": 4,
+          "toFeatureId": "contour-2",
+          "toVertex": 6
+        },
+        "spanB": {
+          "fromFeatureId": "contour-1",
+          "fromVertex": 0,
+          "toFeatureId": "contour-2",
+          "toVertex": 0
+        }
+      }
+    }
+  ],
+  "print": {
+    "paper": "letter",
+    "orientation": "portrait",
+    "marginMm": 10,
+    "scaleDenominator": 1000,
+    "labelMinPt": 8,
+    "mapRotationDeg": 0
+  },
+  "extensions": {},
+  "terrain": {
+    "format": "synthetic-contours-v1",
+    "grid": {
+      "format": "map-literacy-elevation-grid-v1",
+      "id": "hill",
+      "width": 5,
+      "height": 5,
+      "horizontal": {
+        "crs": "LOCAL_METRIC",
+        "units": "m",
+        "axisOrder": "easting,northing",
+        "origin": [
+          1000,
+          2000
+        ],
+        "step": [
+          10,
+          -20
+        ],
+        "registration": "sample-center"
+      },
+      "vertical": {
+        "units": "m",
+        "reference": "synthetic-zero",
+        "nodata": null,
+        "uncertaintyM": 0
+      },
+      "source": {
+        "kind": "synthetic",
+        "productId": "analytic-grids",
+        "version": "recipe-v1",
+        "acquiredAt": "2026-10-16T00:00:00.000Z",
+        "url": null,
+        "sha256": "202d008891b0ae70d3f4ef6b93582c1a8c7320174617e117245eb45f369e4cb8",
+        "license": "CC0-1.0",
+        "attribution": "Invented Map Literacy terrain fixtures; no geographic source.",
+        "transforms": [
+          {
+            "operation": "generate-analytic-grid",
+            "version": "1",
+            "parameters": {
+              "recipeFile": "terrain-recipe.json",
+              "case": "hill"
+            }
+          }
+        ]
+      },
+      "samples": [
+        60,
+        70,
+        80,
+        70,
+        60,
+        70,
+        80,
+        90,
+        80,
+        70,
+        80,
+        90,
+        100,
+        90,
+        80,
+        70,
+        80,
+        90,
+        80,
+        70,
+        60,
+        70,
+        80,
+        70,
+        60
+      ]
+    },
+    "frame": {
+      "center": [
+        0,
+        0
+      ],
+      "origin": [
+        1020,
+        1960
+      ]
+    },
+    "intervalM": 5,
+    "contours": [
+      {
+        "featureId": "contour-1",
+        "levelM": 80
+      },
+      {
+        "featureId": "contour-2",
+        "levelM": 85
+      },
+      {
+        "featureId": "contour-3",
+        "levelM": 90
+      }
+    ]
+  }
+}

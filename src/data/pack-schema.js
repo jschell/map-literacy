@@ -69,10 +69,14 @@ export const packSchema = object({
 });
 
 
+const slopeSpan = object({ fromFeatureId: id, fromVertex: number(0,100000,true), toFeatureId: id, toVertex: number(0,100000,true) });
 // A new envelope keeps version-1 street readers rejecting this capability.
 export const terrainPackSchema = object({
   ...packSchema.fields, schemaVersion: enumeration(2), module: enumeration('topographic'),
-  capabilities: array(enumeration('terrain-contours-v1'),1,1),
-  exercises: array(object({...commonExercise,type:enumeration('contour-elevation'),rubric:object({featureId:id,referenceFeatureId:id,toleranceM:number(0,.1)})}),200),
+  capabilities: array(enumeration('terrain-contours-v1','terrain-slopes-v1'),2,1),
+  exercises: array({type:'discriminated',key:'type',choices:{
+    'contour-elevation':object({...commonExercise,type:enumeration('contour-elevation'),rubric:object({featureId:id,referenceFeatureId:id,toleranceM:number(0,.1)})}),
+    'relative-slope':object({...commonExercise,type:enumeration('relative-slope'),rubric:object({spanA:slopeSpan,spanB:slopeSpan})})
+  }},200),
   terrain: json
 });
