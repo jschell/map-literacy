@@ -49,3 +49,13 @@ test('unknown exercise/audience and off-map answer markers cannot produce mislea
   const p = structuredClone(pack); p.bounds = [.0001, .0001, .001, .001]; p.exercises.forEach((e) => { e.review = 'draft'; });
   for (const audience of ['learner', 'instructor']) assert.throws(() => createExercisePrint(p, 'endpoint', audience), /leave this print extent/);
 });
+
+test('instructor display rounding stays finer than the authored tolerance',()=>{
+ const p=structuredClone(pack);p.exercises[0].rubric.expectedDeg=46.974934010123;p.exercises[0].rubric.toleranceDeg=.01;
+ const guide=text(createExercisePrint(p,'heading','instructor'));
+ const displayed=Number(/Expected true heading: ([\d.]+)°/.exec(guide)[1]);
+ assert.ok(Math.abs(displayed-p.exercises[0].rubric.expectedDeg)<.001);
+ assert.ok(!guide.includes('46.974934010123'),'avoid unnecessary decimal noise when the rubric permits rounding');
+ p.exercises[0].rubric.toleranceDeg=1e-20;
+ assert.ok(text(createExercisePrint(p,'heading','instructor')).includes('46.974934010123'),'very small tolerance retains the precise key');
+});

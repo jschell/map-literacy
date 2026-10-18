@@ -42,7 +42,7 @@ test('resume retains committed feedback and hints but discards drafts; retry add
   const next = resumeLessonSession({ pack, session: state.session, attempts: state.attempts });
   assert.equal(next.snapshot().exercise.id, 'endpoint'); assert.equal(next.snapshot().phase, 'practicing');
   next.end(); const ended = next.snapshot();
-  assert.equal(resumeLessonSession({ pack, session: ended.session, attempts: ended.attempts }).snapshot().phase, 'completed');
+  assert.equal(resumeLessonSession({ pack, session: ended.session, attempts: ended.attempts }).snapshot().phase, 'ended');
 });
 
 test('resume remains exportable when the local clock precedes the backup clock', () => {

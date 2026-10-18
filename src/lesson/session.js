@@ -1,3 +1,4 @@
+import { sessionProgress } from './progress.js';
 import { validatePack } from '../data/validate-pack.js';
 import { checkedBundle } from '../storage/records.js';
 import { scoreAnswer } from './score.js';
@@ -21,9 +22,11 @@ export function resumeLessonSession(value, options = {}) {
 
 function lessonController(pack, session, attempts, { id = () => crypto.randomUUID(), now = () => new Date().toISOString() } = {}) {
   const order = session.exerciseOrder;
-  let phase = session.status === 'completed' ? 'completed' : Object.hasOwn(session.answers, order[session.index]) ? 'feedback' : 'practicing', draft = null;
+  const closedPhase = () => sessionProgress({session,attempts}).coverage?.answered === order.length ? 'completed' : 'ended';
+  let phase = session.status === 'completed' ? closedPhase() : Object.hasOwn(session.answers, order[session.index]) ? 'feedback' : 'practicing', draft = null, pausedPhase = null;
   const exercise = () => pack.exercises.find((e) => e.id === order[session.index]);
-  const active = () => { if (session.status !== 'active') fail('session-ended', 'Start a new session.'); };
+  const ongoing = () => { if (session.status !== 'active') fail('session-ended', 'Start a new session.'); };
+  const active = () => { ongoing(); if (phase==='paused') fail('session-paused','Resume the paused session first.'); };
   const timestamp = () => { const value = now(); return value < session.updatedAt ? session.updatedAt : value; };
   const touch = () => { session.version += 1; session.updatedAt = timestamp(); };
   return {
@@ -46,10 +49,12 @@ function lessonController(pack, session, attempts, { id = () => crypto.randomUUI
     retry() { active(); if (phase !== 'feedback') fail('no-feedback', 'Submit an answer before retrying.'); draft = null; phase = 'practicing'; touch(); },
     next() {
       active(); if (phase !== 'feedback') fail('no-feedback', 'Submit an answer before continuing.');
-      if (session.index === order.length - 1) { session.status = 'completed'; phase = 'completed'; }
+      if (session.index === order.length - 1) { session.status = 'completed'; phase = closedPhase(); }
       else { session.index += 1; draft = null; phase = 'practicing'; }
       touch();
     },
-    end() { active(); session.status = 'completed'; phase = 'completed'; draft = null; touch(); }
+    pause() { active(); pausedPhase=phase; phase='paused'; draft=null; },
+    resume() { ongoing(); if (phase!=='paused') fail('not-paused','This session is not paused.'); phase=pausedPhase; pausedPhase=null; },
+    end() { ongoing(); session.status = 'completed'; phase = closedPhase(); draft = null; touch(); }
   };
 }

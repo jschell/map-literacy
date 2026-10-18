@@ -3,6 +3,13 @@ import { deriveLandform } from '../terrain/landforms.js';
 import { contourLevel, terrainExerciseAnnotations, slopeComparison, deriveLessonProfile, profileAnswer } from '../terrain/lesson-pack.js';
 import { validatePack } from '../data/validate-pack.js';
 
+// Keep display rounding comfortably finer than the rubric's allowed error.
+const displayValue=(value,tolerance,minimum=1,unitsPerDegree=1)=>{
+  if(tolerance===0)return value;
+  const digits=Math.max(minimum,Math.ceil(Math.log10(unitsPerDegree/tolerance))+1);
+  return !Number.isFinite(digits) || digits>14 ? value : Number(value.toFixed(digits));
+};
+
 /** Printable teaching content, deliberately separate from scoring and transient traces. */
 export function createExercisePrint(pack, exerciseId, audience) {
   if (!validatePack(pack).valid) throw new Error('Choose a validated lesson pack.');
@@ -26,18 +33,18 @@ export function createExercisePrint(pack, exerciseId, audience) {
   if (exercise.type === 'heading') {
     if (instructor) {
       headingDeg = rubric.expectedDeg;
-      add(`Expected true heading: ${rubric.expectedDeg}°. Accept circular angular error up to ${rubric.toleranceDeg}° (inclusive); north is 0° and angles increase clockwise.`, 'answer');
+      add(`Expected true heading: ${displayValue(rubric.expectedDeg,rubric.toleranceDeg)}°. Accept circular angular error up to ${rubric.toleranceDeg}° (inclusive); north is 0° and angles increase clockwise.`, 'answer');
     } else add('Write the true heading in degrees and draw an arrow on the map.');
   } else if (exercise.type === 'endpoint') {
     if (instructor) {
       markers.push({ coordinate: rubric.expected, text: 'X' });
-      add(`Expected endpoint (longitude, latitude): ${rubric.expected.join(', ')}. X marks the answer on the instructor map. Accept geographic distance up to ${rubric.toleranceM} m (inclusive).`, 'answer');
+      add(`Expected endpoint (longitude, latitude): ${rubric.expected.map(n=>displayValue(n,rubric.toleranceM,6,111320)).join(', ')}. X marks the answer on the instructor map. Accept geographic distance up to ${rubric.toleranceM} m (inclusive).`, 'answer');
     } else add('Mark the endpoint on the map and explain how you located it.');
   } else if(exercise.type==='profile-value') {
     profile=deriveLessonProfile(pack,exercise);slopeAnnotations=terrainExerciseAnnotations(pack,exercise);
     add('', 'profile-chart');
     add('S and E mark the start and end of a synthetic transect, not a road or trail. The horizontal axis is distance from S; read elevation from the vertical axis. Axes use different scales.');
-    if(instructor)add(`Expected ${rubric.quantity}: ${Number(profileAnswer(pack,exercise).toFixed(6))} m. Accept error up to ${rubric.toleranceM} m (inclusive).`, 'answer');
+    if(instructor)add(`Expected ${rubric.quantity}: ${displayValue(profileAnswer(pack,exercise),rubric.toleranceM)} m. Accept error up to ${rubric.toleranceM} m (inclusive).`, 'answer');
     else add('Write your answer in metres and show which elevation changes you counted.');
   } else if(exercise.type==='relative-slope') {
     slopeAnnotations=terrainExerciseAnnotations(pack,exercise);

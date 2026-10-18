@@ -61,7 +61,7 @@ export function createRouteTrace({ getPack, redraw }) {
         startPicker.choose(state.startNodeId); get('trace-mode').value = state.mode;
         toggle(true); refresh();
         message('New question: trace cleared. Start and travel mode are set from the prompt. Tap connected roads or choose the next segment below.');
-      } else { state = null; toggle(false); refresh(); }
+      } else { state = null; startPicker.choose(''); toggle(false); refresh(); }
     },
     clear() { if (state) state = {...state,edgeIds:[]}; refresh(); },
     isTracing: () => tracing,

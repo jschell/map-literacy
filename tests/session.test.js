@@ -33,7 +33,7 @@ test('draft and empty content cannot start scored sessions; transitions cannot s
   assert.throws(() => createLessonSession(pack), (e) => e.code === 'no-reviewed-exercises');
   pack.review.status = 'reviewed'; pack.review.reviewedAt = packs.base.review.reviewedAt; pack.exercises[0].review = 'draft';
   const c = createLessonSession(pack, options()); assert.equal(c.snapshot().exercise.id, 'endpoint');
-  assert.throws(() => c.next(), (e) => e.code === 'no-feedback'); c.end(); assert.equal(c.snapshot().phase, 'completed');
+  assert.throws(() => c.next(), (e) => e.code === 'no-feedback'); c.end(); assert.equal(c.snapshot().phase, 'ended');
 });
 
 test('valid imported IDs cannot collide with object prototype names', () => {

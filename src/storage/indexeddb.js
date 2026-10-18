@@ -1,3 +1,4 @@
+import {recordedCoverage} from '../lesson/progress.js';
 import { checkedSettings } from './settings.js';
 import { checkedBackup } from './backup.js';
 import { canonical, checkedBundle, checkedPack, storageError } from './records.js';
@@ -182,14 +183,19 @@ export function openStorage({ factory = globalThis.indexedDB, name = 'map-litera
           }, signal);
         },
         listSessions({ afterId, signal } = {}) {
-          return transaction(['sessions'], 'readonly', ({ tx, read, result }) => {
+          return transaction(['sessions','packs'], 'readonly', ({ tx, read, result }) => {
             const range = afterId === undefined ? undefined : IDBKeyRange.lowerBound(afterId, true);
             read(tx.objectStore('sessions').getAll(range, 101), (records) => {
               const values = records.slice(0, 100).map((s) => {
                 if (typeof s.id !== 'string' || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(s.id) || typeof s.packId !== 'string' || s.packId.length > 128 || !Number.isSafeInteger(s.packRevision) || s.packRevision < 0 || !Number.isSafeInteger(s.version) || s.version < 0 || typeof s.updatedAt !== 'string' || s.updatedAt.length > 32 || !Number.isFinite(Date.parse(s.updatedAt)) || !['active', 'completed'].includes(s.status)) throw storageError('invalid-record', 'Stored session summary is invalid.');
-                return { id: s.id, packId: s.packId, packRevision: s.packRevision, version: s.version, status: s.status, updatedAt: s.updatedAt };
+                return { id: s.id, packId: s.packId, packRevision: s.packRevision, version: s.version, status: s.status, updatedAt: s.updatedAt, coverage: recordedCoverage(s) };
               });
-              result({ sessions: values, next: records.length > 100 ? values.at(-1).id : null });
+              if (!values.length) { result({sessions:[],next:null}); return; }
+              let remaining=values.length;
+              for (const s of values) read(tx.objectStore('packs').get([s.packId,s.packRevision]),pack=>{
+                s.title=typeof pack?.title==='string' ? pack.title : null;
+                if (--remaining===0) result({ sessions: values, next: records.length > 100 ? values.at(-1).id : null });
+              });
             });
           }, signal);
         },

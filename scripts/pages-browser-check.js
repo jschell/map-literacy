@@ -39,7 +39,7 @@ export async function checkPagesPackage(page) {
     await preview.locator(`#saved-session option[value="${id}"]`).waitFor({ state: 'attached' });
     await preview.locator('#saved-session').selectOption(id); await preview.locator('#saved-resume').click();
     await preview.waitForFunction(() => document.getElementById('lesson-status').textContent.includes('Saved session resumed'));
-    assert.ok((await preview.locator('#lesson-revision').textContent()).includes('1 attempts'));
+    assert.ok((await preview.locator('#lesson-revision').textContent()).includes('1 attempt'));
     assert.equal(await preview.locator('#orientation').inputValue(), 'portrait');
     const pdf = await preview.pdf({ preferCSSPageSize: true, printBackground: true });
     assert.ok(/\/MediaBox\s*\[0 0 612 792\]/.test(pdf.toString('latin1')));
