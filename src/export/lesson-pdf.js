@@ -1,3 +1,4 @@
+import { renderProfileChart } from '../terrain/profile-chart.js';
 import { imagePagesPdf } from './image-pdf.js';
 import { losslessPixels } from './lossless-pixels.js';
 
@@ -33,6 +34,7 @@ export async function lessonPdf(document, { svg, model, title, summary, footer, 
   if (!model.paper || !['portrait', 'landscape'].includes(model.orientation) || !svg) throw new Error('Choose an available lesson print layout.');
   // Freeze everything before image decode/compression can yield to view changes.
   const snapshot = frozenSvg(document, svg, model.width, model.height);
+  const chartSnapshot=spec?.profile?new XMLSerializer().serializeToString(renderProfileChart(document,spec.profile,{paper:true})):null;
   const blocks = spec ? spec.blocks.map(b => ({ ...b })) : [];
   const kind = spec?.kind;
   const [sheetWidth, sheetHeight] = model.orientation === 'portrait' ? [215.9, 279.4] : [279.4, 215.9];
@@ -82,7 +84,10 @@ export async function lessonPdf(document, { svg, model, title, summary, footer, 
     // Layout text first, then paint so every page receives an accurate total.
     const textPages = [[]]; let content = textPages[0]; y = 25;
     const next = () => { if (textPages.length >= 63) throw new Error('Lesson exceeds 64 PDF pages.'); content = []; textPages.push(content); y = 25; };
-    for (const block of blocks) {
+    for (const [blockIndex, block] of blocks.entries()) {
+      if(block.type==='profile-chart') {
+        if(y+70>sheetHeight-25)next();content.push({chart:true,y});y+=74;continue;
+      }
       if (block.type === 'answer-space') {
         if (y + 40 > sheetHeight - 25) next();
         content.push({ rule: true, y: y + 40 }); y += 44; continue;
@@ -90,7 +95,8 @@ export async function lessonPdf(document, { svg, model, title, summary, footer, 
       const bold = block.type === 'heading', pt = bold ? 12 : 10, step = bold ? 6 : 5;
       font(pt, bold);
       const lines = wrap(block.text, sheetWidth - 20);
-      if (bold && y + Math.min(lines.length, 2) * step + 10 > sheetHeight - 25) next();
+      const reserve=chartSnapshot && blocks[blockIndex+1]?.type==='answer-space'?44:10;
+      if (bold && y + Math.min(lines.length, 2) * step + reserve > sheetHeight - 25) next();
       for (const text of lines) {
         if (y + step > sheetHeight - 25) next();
         content.push({ text, y, pt, bold }); y += step;
@@ -100,7 +106,11 @@ export async function lessonPdf(document, { svg, model, title, summary, footer, 
     for (const [i, entries] of textPages.entries()) {
       clear(); font(11, true); draw([`Map Literacy - ${kind}`], 10, 10, 5);
       for (const item of entries) {
-        if (item.rule) { ctx.strokeStyle = '#888'; ctx.lineWidth = .25 * U; ctx.beginPath(); ctx.moveTo(10 * U, item.y * U); ctx.lineTo((sheetWidth - 10) * U, item.y * U); ctx.stroke(); }
+        if(item.chart) {
+          const {image,url}=await loadSvg(chartSnapshot);
+          try{ctx.drawImage(image,10*U,item.y*U,180*U,70*U);}finally{URL.revokeObjectURL(url);}
+        }
+        else if (item.rule) { ctx.strokeStyle = '#888'; ctx.lineWidth = .25 * U; ctx.beginPath(); ctx.moveTo(10 * U, item.y * U); ctx.lineTo((sheetWidth - 10) * U, item.y * U); ctx.stroke(); }
         else { font(item.pt, item.bold); draw([item.text], 10, item.y, 5); }
       }
       font(8); const label = `${kind} · ${packId} revision ${revision} · Page ${i + 2} of ${textPages.length + 1}`;

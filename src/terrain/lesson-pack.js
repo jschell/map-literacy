@@ -1,3 +1,4 @@
+import { deriveTerrainProfile } from './profile.js';
 import { validateElevationGrid } from './grid.js';
 import { deriveContourLines } from './contour-lines.js';
 import { createProjection } from '../geo/projection.js';
@@ -38,8 +39,16 @@ export function validateTerrainPack(pack) {
     ids.add(c.featureId);
     for(let j=0;j<e.coordinates.length;j++)if(distanceM(f.geometry.coordinates[j],e.coordinates[j])>1e-6||!inside(f.geometry.coordinates[j],pack.bounds))fail('contours must reproduce the grid and fit the lesson extent');
   }
+  let profileCount=0,profileSamples=0;
   for(const x of pack.exercises) {
-    if(!['contour-elevation','relative-slope'].includes(x.type)||x.scenario!==null||x.sourceIds.length!==1||x.sourceIds[0]!==g.id)fail('unsupported terrain exercise/scenario/source');
+    if(!['contour-elevation','relative-slope','profile-value'].includes(x.type)||x.scenario!==null||x.sourceIds.length!==1||x.sourceIds[0]!==g.id)fail('unsupported terrain exercise/scenario/source');
+    if(x.type==='profile-value') {
+      if(!pack.capabilities.includes('terrain-profiles-v1')||++profileCount>16)fail('profile capability/count required');
+      const profile=deriveLessonProfile(pack,x);profileSamples+=profile.samples.length;
+      if(profile.summary.totalsStatus!=='complete'||profile.samples.length>2000||profileSamples>10000)fail('complete bounded profiles required');
+      if(x.rubric.path.some(p=>!inside(convert(p),pack.bounds)))fail('profile leaves map extent');
+      continue;
+    }
     if(x.type==='relative-slope') {
       if(!pack.capabilities.includes('terrain-slopes-v1'))fail('relative slope requires terrain-slopes-v1');
       const {a,b}=slopeComparison(pack,x);
@@ -58,6 +67,12 @@ export const contourLevel = (pack,id) => pack.terrain.contours.find(c=>c.feature
 
 /** Reference elevations are visible; the learner's target answer is not printed. */
 export function terrainExerciseAnnotations(pack,exercise,instructor=false) {
+  if(exercise?.type==='profile-value') {
+    const projection=createProjection(pack.terrain.frame.center),origin=pack.terrain.frame.origin;
+    const coordinates=exercise.rubric.path.map(p=>projection.inverse([p[0]-origin[0],p[1]-origin[1]]));
+    const markers=distanceM(coordinates[0],coordinates.at(-1))<1e-6?[{coordinate:coordinates[0],text:'S/E'}]:[{coordinate:coordinates[0],text:'S'},{coordinate:coordinates.at(-1),text:'E'}];
+    return {closedEdges:[],markers,lines:[coordinates]};
+  }
   if(exercise?.type==='relative-slope') { const {a,b}=slopeComparison(pack,exercise);return {closedEdges:[],markers:[],spans:[{from:a.from,to:a.to,text:'A'},{from:b.from,to:b.to,text:'B'}]}; }
   if(exercise?.type!=='contour-elevation')return null;
   const anchor=(id,reference=false)=>{const points=pack.features.features.find(f=>f.id===id).geometry.coordinates;return points[reference?0:Math.floor((points.length-1)/2)];};
@@ -87,3 +102,13 @@ export function slopeComparison(pack, exercise) {
   const equal=Math.abs(a.grade-b.grade)<=1e-9*Math.max(1,a.grade,b.grade);
   return {a,b,choice:equal?'equal':a.grade>b.grade?'A':'B'};
 }
+
+
+export function deriveLessonProfile(pack, exercise) {
+  return deriveTerrainProfile(pack.terrain.grid,exercise.rubric.path,{spacingM:exercise.rubric.spacingM});
+}
+export const profileAnswer = (pack,exercise) => {
+  const profile=deriveLessonProfile(pack,exercise);
+  if(profile.summary.totalsStatus!=='complete')fail('scored profile has missing data');
+  return profile.summary[{'ascent':'ascentM','descent':'descentM','net-change':'netChangeM'}[exercise.rubric.quantity]];
+};

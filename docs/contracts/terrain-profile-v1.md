@@ -1,6 +1,6 @@
 # Draft terrain profiles
 
-`deriveTerrainProfile(grid, path, {spacingM})` produces a standalone `map-literacy-terrain-profile-v1` preparation artifact. This does not add a lesson capability, route approval, browser menu or scored profile exercise. Every result is marked `reviewStatus: draft` even for synthetic grids. Real terrain answers still require independent source/alignment and instructional review.
+`deriveTerrainProfile(grid, path, {spacingM})` produces a standalone `map-literacy-terrain-profile-v1` preparation artifact. This calculation artifact alone does not add a lesson capability or route approval; the separate [synthetic lesson wrapper](terrain-profile-lessons-v1.md) validates its teaching inputs and exposes chart/questions. Every result is marked `reviewStatus: draft` even for synthetic grids. Real terrain answers still require independent source/alignment and instructional review.
 
 ## Coordinates, sampling and budgets
 
@@ -28,4 +28,4 @@ node scripts/derive-terrain-profile.js GRID.json REQUEST.json OUTPUT.json
 
 Request fields are exactly `{format: "map-literacy-profile-request-v1", path: [[x,y],...], spacingM: number}`. The command reads at most 32 MiB of grid bytes and 256 KiB of request bytes, rejects output above 8 MiB and creates output exclusively (no overwrite). SHA-256 hashes of the exact input files are added as `inputHashes.gridFileSha256` and `requestFileSha256`, separate from the original source hash. It performs no network requests. Large real artifacts stay outside git.
 
-Tests cover analytic flat/plane/hill/valley, reverse/bent/closed paths, feet conversions, off-midpoint bilinear extrema at coarse/refined spacing, hidden nodata between valid endpoints, outside coverage, all-missing values, immutable snapshots, input/count/distance limits and CLI hashing/overwrite behavior. Scored route-profile questions, profile charts and actual-device/paper learning validation remain separate Plan 08 work.
+Tests cover analytic flat/plane/hill/valley, reverse/bent/closed paths, feet conversions, off-midpoint bilinear extrema at coarse/refined spacing, hidden nodata between valid endpoints, outside coverage, all-missing values, immutable snapshots, input/count/distance limits and CLI hashing/overwrite behavior. The synthetic chart/question wrapper is implemented separately; real road/trail route-profile instruction and actual-device/paper learning validation remain Plan 08 work.

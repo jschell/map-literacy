@@ -1,4 +1,4 @@
-import { contourLevel, terrainExerciseAnnotations, slopeComparison } from '../terrain/lesson-pack.js';
+import { contourLevel, terrainExerciseAnnotations, slopeComparison, deriveLessonProfile, profileAnswer } from '../terrain/lesson-pack.js';
 import { validatePack } from '../data/validate-pack.js';
 
 /** Printable teaching content, deliberately separate from scoring and transient traces. */
@@ -11,8 +11,8 @@ export function createExercisePrint(pack, exerciseId, audience) {
   const instructor = audience === 'instructor', rubric = exercise.rubric;
   const draft = pack.review.status !== 'reviewed' || exercise.review !== 'reviewed';
   const kind = instructor ? 'Instructor guide' : 'Learner worksheet';
-  const exerciseName = exercise.type === 'contour-elevation' ? 'Contour elevation' : exercise.type === 'relative-slope' ? 'Relative slope' : exercise.type;
-  let slopeAnnotations = null;
+  const exerciseName = exercise.type === 'profile-value' ? 'Elevation profile' : exercise.type === 'contour-elevation' ? 'Contour elevation' : exercise.type === 'relative-slope' ? 'Relative slope' : exercise.type;
+  let slopeAnnotations = null, profile = null;
   const blocks = [], markers = [], closedEdges = [];
   const add = (text, type = 'paragraph') => blocks.push({ type, text });
   add(pack.title, 'heading');
@@ -31,6 +31,12 @@ export function createExercisePrint(pack, exerciseId, audience) {
       markers.push({ coordinate: rubric.expected, text: 'X' });
       add(`Expected endpoint (longitude, latitude): ${rubric.expected.join(', ')}. X marks the answer on the instructor map. Accept geographic distance up to ${rubric.toleranceM} m (inclusive).`, 'answer');
     } else add('Mark the endpoint on the map and explain how you located it.');
+  } else if(exercise.type==='profile-value') {
+    profile=deriveLessonProfile(pack,exercise);slopeAnnotations=terrainExerciseAnnotations(pack,exercise);
+    add('', 'profile-chart');
+    add('S and E mark the start and end of a synthetic transect, not a road or trail. The horizontal axis is distance from S; read elevation from the vertical axis. Axes use different scales.');
+    if(instructor)add(`Expected ${rubric.quantity}: ${Number(profileAnswer(pack,exercise).toFixed(6))} m. Accept error up to ${rubric.toleranceM} m (inclusive).`, 'answer');
+    else add('Write your answer in metres and show which elevation changes you counted.');
   } else if(exercise.type==='relative-slope') {
     slopeAnnotations=terrainExerciseAnnotations(pack,exercise);
     add(`Both tick-to-tick spans change elevation by ${pack.terrain.intervalM} m. Compare straight horizontal distances; this is average slope magnitude, not walking distance or local slope everywhere.`);
@@ -68,7 +74,7 @@ export function createExercisePrint(pack, exerciseId, audience) {
     if (!exercise.hints.length) add('No authored hints.');
     for (const hint of exercise.hints) add(hint, 'hint');
     if (pack.topology.completeness === 'partial') add('Topology is incomplete. Review the pack exclusions before accepting route answers.');
-    add(['contour-elevation','relative-slope'].includes(exercise.type) ? 'Use these answer criteria to check the handwritten answer and explanation.' : 'These are authored answer criteria for manual checking. Automatic scoring, learner records and real-world driving permission are not provided by this print tool.');
+    add(['contour-elevation','relative-slope','profile-value'].includes(exercise.type) ? 'Use these answer criteria to check the handwritten answer and explanation.' : 'These are authored answer criteria for manual checking. Automatic scoring, learner records and real-world driving permission are not provided by this print tool.');
   } else {
     add('Answer and explanation', 'heading'); add('', 'answer-space');
   }
@@ -79,7 +85,7 @@ export function createExercisePrint(pack, exerciseId, audience) {
   if (blocks.reduce((sum, b) => sum + b.text.length, 0) > 100000) throw new Error('Exercise print text exceeds the layout limit; use a smaller source/lesson selection.');
   const inside = ([lon, lat]) => lon >= pack.bounds[0] && lon <= pack.bounds[2] && lat >= pack.bounds[1] && lat <= pack.bounds[3];
   if ((exercise.type === 'endpoint' && !inside(rubric.expected)) || !markers.every((m) => inside(m.coordinate)) || !closedEdges.every((e) => e.shape.every(inside))) throw new Error('Exercise endpoints or closures leave this print extent; choose a suitable lesson extent.');
-  return { kind, exerciseId, audience, draft, blocks, annotations: slopeAnnotations ?? { markers, closedEdges }, headingDeg,
+  return { kind, exerciseId, audience, draft, blocks, profile, annotations: slopeAnnotations ?? { markers, closedEdges }, headingDeg,
     title: `${kind} — ${exerciseName}${draft ? ' — UNREVIEWED DRAFT' : ''}`,
-    summary: exercise.type === 'relative-slope' ? `Synthetic terrain. A and B each span ${pack.terrain.intervalM} m of elevation change. Compare distances between the end ticks. Questions and source credits follow the map.` : exercise.type === 'contour-elevation' ? `Synthetic terrain; elevation increases toward the center. Contour interval: ${pack.terrain.intervalM} m. Questions${instructor ? ' and answer criteria' : ''} and source credits follow the map.` : `${exercise.type} · Questions${instructor ? ' and answer criteria' : ''} and source credits follow the map.` };
+    summary: exercise.type === 'profile-value' ? 'Synthetic transect from S to E. The elevation profile, question and source credits follow the map.' : exercise.type === 'relative-slope' ? `Synthetic terrain. A and B each span ${pack.terrain.intervalM} m of elevation change. Compare distances between the end ticks. Questions and source credits follow the map.` : exercise.type === 'contour-elevation' ? `Synthetic terrain; elevation increases toward the center. Contour interval: ${pack.terrain.intervalM} m. Questions${instructor ? ' and answer criteria' : ''} and source credits follow the map.` : `${exercise.type} · Questions${instructor ? ' and answer criteria' : ''} and source credits follow the map.` };
 }

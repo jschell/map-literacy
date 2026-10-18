@@ -204,3 +204,9 @@ h2.sheet-block { font-size: 12pt; line-height: 1.4; }
 #print-preview-content:not(:empty) { max-width: 900px; padding: 20px; background: white; border: 1px solid #cbd1c9; color: black; }
 #print-preview-content[data-orientation=portrait] { max-width: 620px; }
 #print-preview-content .print-map { width: 100%; height: auto; border: 1px solid #ddd; }
+
+#profile-panel { margin: 20px 0; padding: 16px; background: white; border: 1px solid #cbd1c9; }
+.screen-profile { display: block; width: 100%; max-width: 900px; height: auto; }
+.paper-profile { display: block; width: 180mm; height: 70mm; max-width: 100%; margin: 0 0 3mm; }
+#profile-panel table { width: 100%; border-collapse: collapse; }
+#profile-panel th, #profile-panel td { padding: 6px; text-align: right; border-bottom: 1px solid #ddd; }

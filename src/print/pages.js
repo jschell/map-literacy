@@ -1,3 +1,4 @@
+import { renderProfileChart } from '../terrain/profile-chart.js';
 const create = (doc, tag, className, text = '') => {
   const node = doc.createElement(tag); node.className = className; node.textContent = text; return node;
 };
@@ -18,8 +19,14 @@ export function paginateExercise(doc, spec, pack, orientation) {
   const fits = () => content.scrollHeight <= content.clientHeight + 1;
   try {
     nextPage();
-    for (const block of spec.blocks) {
+    for (const [blockIndex, block] of spec.blocks.entries()) {
       const tag = block.type === 'heading' ? 'h2' : 'p', className = `sheet-block sheet-${block.type}`;
+      if(block.type==='profile-chart') {
+        const chart=renderProfileChart(doc,spec.profile,{paper:true});content.append(chart);
+        if(!fits()){chart.remove();nextPage();content.append(chart);}
+        if(!fits())throw new Error('Profile chart cannot fit this page layout.');
+        continue;
+      }
       if (block.type === 'answer-space') {
         const space = create(doc, 'div', className); space.setAttribute('aria-label', 'Space for handwritten answer'); content.append(space);
         if (!fits()) { space.remove(); nextPage(); content.append(space); }
@@ -29,6 +36,10 @@ export function paginateExercise(doc, spec, pack, orientation) {
       let remaining = block.text;
       while (remaining.length) {
         const node = create(doc, tag, className, remaining); content.append(node);
+        if(spec.profile && block.type==='heading' && spec.blocks[blockIndex+1]?.type==='answer-space' && fits()) {
+          const probe=create(doc,'div','sheet-block sheet-answer-space');content.append(probe);const together=fits();probe.remove();
+          if(!together && content.children.length>1){node.remove();nextPage();content.append(node);}
+        }
         if (fits()) break;
         node.remove();
         if (content.children.length) { nextPage(); continue; }
