@@ -63,4 +63,4 @@ Project code and original documentation are licensed under [MIT](LICENSE). Gener
 
 
 
-Offline terrain preparation also supports [draft metric profiles and ascent/descent](docs/contracts/terrain-profile-v1.md), including explicit missing-data gaps and source provenance. Profile exercises and a chart are not yet exposed in the browser.
+Offline terrain preparation also supports [draft metric profiles and ascent/descent](docs/contracts/terrain-profile-v1.md), including explicit missing-data gaps and source provenance. Choose **Load profile lesson** to read a synthetic S-to-E transect and answer four ascent, descent and signed net-change questions. A labeled chart and expandable value table accompany the lesson; learner/instructor print output includes the same profile.

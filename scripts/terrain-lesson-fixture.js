@@ -49,3 +49,16 @@ export function buildTerrainSlopeFixture() {
   p.review.note='Analytic hill: each span rises 5 m; east/west runs are 5 m, north run 10 m. Average grade magnitudes are 1 and 0.5. Synthetic instructional fixture, not traversability or learning-effectiveness evidence.';
   return p;
 }
+
+export function buildTerrainProfileFixture() {
+ const p=buildTerrainLessonFixture();p.id='synthetic-terrain-profiles';p.title='Synthetic hill — elevation profiles';p.capabilities.push('terrain-profiles-v1');
+ const full=[[1000,1960],[1040,1960]],bent=[[1000,1960],[1020,1960],[1020,1940]];
+ p.exercises=[['ascent',full],['descent',bent],['net-change',bent],['net-change',[...bent].reverse()]].map(([quantity,path],i)=>({
+  id:`profile-${i+1}`,type:'profile-value',review:'reviewed',sourceIds:[p.terrain.grid.id],scenario:null,
+  prompt:quantity==='ascent'?'Read the profile from S to E. How many metres of total ascent are there? Add upward changes; do not subtract descent.':quantity==='descent'?'Read the profile from S to E. How many metres of total descent are there? Report descent as a positive number.':'Read the profile from S to E. What is the signed net elevation change in metres? Subtract the starting elevation from the ending elevation; a decrease is negative.',
+  hints:quantity==='net-change'?['Read the elevation at S and at E.','Net change is E minus S, regardless of rises and falls between them.']:['Read the chart in order from S to E.',quantity==='ascent'?'Add the upward changes only.':'Add the magnitudes of the downward changes only.'],
+  rubric:{path,spacingM:5,quantity,toleranceM:.01}
+ }));
+ p.review.note='Analytic hill transects: full crossing 80–100–80 m gives 20 m ascent; bent 80–100–90 m gives 10 m descent and +10 m net; reversed bent gives -10 m net. Technical fixture review, not learning-effectiveness evidence.';
+ return p;
+}

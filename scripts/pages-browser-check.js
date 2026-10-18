@@ -57,6 +57,11 @@ export async function checkPagesPackage(page) {
     await preview.locator('#lesson-start').click(); await saved();
     await preview.locator('#answer-slope').selectOption('A');await preview.locator('#lesson-submit').click();await saved();
     assert.match(await preview.locator('#lesson-status').textContent(), /^Correct/);
+    await preview.locator('#profile-demo').click();await preview.waitForFunction(()=>document.getElementById('status').textContent.includes('elevation profiles'));
+    await preview.locator('#lesson-start').click();await saved();await preview.locator('#answer-profile').fill('20');await preview.locator('#lesson-submit').click();await saved();
+    assert.match(await preview.locator('#lesson-status').textContent(),/^Correct/);
+    await preview.locator('#profile-panel').waitFor({state:'visible'});
+    const profileDownload=preview.waitForEvent('download');await preview.locator('#lesson-pdf').click();assert.ok(await (await profileDownload).path());
     assert.ok(requests.every((url) => url.startsWith(base) || url.startsWith(`blob:${new URL(base).origin}/`) || url.startsWith('https://tile.openstreetmap.org/') || url.startsWith('https://basemap.nationalmap.gov/') || url.startsWith('https://overpass-api.de/') || url.startsWith('https://carto.nationalmap.gov/') || url.startsWith('https://elevation.nationalmap.gov/') || new URL(url).pathname === '/favicon.ico'), 'app assets stay under the project prefix');
     await preview.evaluate(() => {
       window.pagesViolations = [];
@@ -66,7 +71,7 @@ export async function checkPagesPackage(page) {
     await preview.waitForFunction(() => window.pagesViolations.some((directive) => directive.startsWith('script-src')));
     assert.equal(await preview.evaluate(() => window.inlinePagesScriptRan === true), false);
     assert.deepEqual(errors, []);
-    return { geographicChecks, projectPath: '/map-literacy/', terrainSlope: 'passed', terrainLesson: 'passed', lessonPdf: 'passed', metaCspBlocksInline: 'passed', reloadAndPreferences: 'passed', backup: 'passed', portraitPdf: 'passed' };
+    return { geographicChecks, projectPath: '/map-literacy/', terrainProfiles: 'passed', terrainSlope: 'passed', terrainLesson: 'passed', lessonPdf: 'passed', metaCspBlocksInline: 'passed', reloadAndPreferences: 'passed', backup: 'passed', portraitPdf: 'passed' };
   } finally {
     await preview.close(); await new Promise((resolve) => server.close(resolve));
   }

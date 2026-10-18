@@ -81,6 +81,11 @@ export function renderMap(doc, model, { selectedId = null, headingDeg = null, ro
       const x = a[0] + (b[0] - a[0]) / 3, y = a[1] + (b[1] - a[1]) / 3;
       marks.append(element(doc, 'path', { d: `M${x-2},${y-2} L${x+2},${y+2} M${x-2},${y+2} L${x+2},${y-2}`, class: 'closure-line', 'stroke-width': .8 }));
     }
+    for(const coordinates of annotations.lines ?? []) {
+      const d=coordinates.map((p,i)=>`${i?'L':'M'}${model.convert(p).join(',')}`).join(' ');
+      marks.append(element(doc,'path',{d,class:'profile-transect',fill:'none',stroke:'white','stroke-width':model.paper?1.5:7}));
+      marks.append(element(doc,'path',{d,class:'profile-transect',fill:'none',stroke:'black','stroke-width':model.paper?.6:3,'stroke-dasharray':model.paper?'2 1':'8 4'}));
+    }
     for (const span of annotations.spans ?? []) {
       const a=model.convert(span.from),b=model.convert(span.to),length=Math.hypot(b[0]-a[0],b[1]-a[1]);
       const dx=(b[0]-a[0])/length,dy=(b[1]-a[1])/length,unit=model.paper?1:4;

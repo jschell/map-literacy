@@ -37,7 +37,7 @@ export function validatePack(value) {
   checkJSON(value, '$', 0);
   if (errors.length) return result();
   if (!plain(value)) { add('$', 'invalid-import', 'Expected a pack object.'); return result(); }
-  const terrainVersion = value.schemaVersion === 2 && value.module === 'topographic' && Array.isArray(value.capabilities) && ['terrain-contours-v1','terrain-contours-v1,terrain-slopes-v1'].includes(value.capabilities.join(','));
+  const terrainVersion = value.schemaVersion === 2 && value.module === 'topographic' && Array.isArray(value.capabilities) && ['terrain-contours-v1','terrain-contours-v1,terrain-slopes-v1','terrain-contours-v1,terrain-profiles-v1','terrain-contours-v1,terrain-slopes-v1,terrain-profiles-v1'].includes(value.capabilities.join(','));
   if (value.schemaVersion !== 1 && !terrainVersion) { add('$.schemaVersion', 'unsupported-version', 'Unsupported pack version/capability; street v1 and synthetic contour v2 are supported.'); return result(); }
   if (!terrainVersion && (value.module === 'topographic' || (Array.isArray(value.capabilities)
     && value.capabilities.some((c) => c === 'terrain-v1' || c === 'directions-v1')))) {

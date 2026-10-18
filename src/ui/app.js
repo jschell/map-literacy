@@ -1,3 +1,4 @@
+import { renderProfileChart } from '../terrain/profile-chart.js';
 import { lessonPdf } from '../export/lesson-pdf.js';
 import { createExplorer } from './explorer.js';
 import { createPreferences } from './preferences.js';
@@ -50,7 +51,13 @@ function updateView() {
   const screenHeight = Math.max(320, Math.min(560, screenWidth * .56));
   const screenKey = `${variant}:${rotation}:${screenWidth}`;
   const model = cachedModel(screenModels, screenKey, () => createMapModel(pack, { variant, rotationDeg: rotation, screenWidth, screenHeight })); currentModel = model;
-  const overlay = trace.overlay(), lessonAnnotations = lessons.annotations();
+  const overlay = trace.overlay(), lessonAnnotations = lessons.annotations(), profile = lessons.profile();
+  get('profile-panel').hidden = !profile;
+  const profileKey = profile ? JSON.stringify([pack.id,pack.revision,profile.path,Math.round(get('profile-chart').clientWidth)]) : '';
+  if(get('profile-chart').dataset.key!==profileKey) {
+    get('profile-chart').dataset.key=profileKey;get('profile-chart').replaceChildren(...(profile?[renderProfileChart(document,profile)]:[]));
+    get('profile-values').replaceChildren(...(profile?profile.samples.map(p=>{const row=document.createElement('tr');for(const value of [p.distanceM,p.elevationM]) {const cell=document.createElement('td');cell.textContent=Number(value.toFixed(2));row.append(cell);}return row;}):[]));
+  }
   const viewKey = JSON.stringify([rotation, screenWidth, screenHeight, headingDeg, overlay?.startNodeId, overlay?.mode, overlay?.edgeIds,lessonAnnotations]);
   if (screenViewKey !== viewKey) {
     get('map').replaceChildren(renderMap(document, model, { selectedId: selected, headingDeg, route: overlay, annotations:lessonAnnotations, onSelect: (id) => { if (!editor.isPlacing()) { if (trace.isTracing()) trace.selectFeature(id); else selectFeature(id); } } }));
@@ -153,6 +160,7 @@ get('demo').addEventListener('click', () => load(async (signal) => {
   if (!response.ok) throw new Error('Synthetic map could not be loaded.');
   return readImport(await response.blob(), signal);
 }));
+get('profile-demo').addEventListener('click',()=>load(async(signal)=>{const r=await fetch('tests/fixtures/terrain-profiles.json',{signal});if(!r.ok)throw new Error('Profile lesson could not be loaded.');return readImport(await r.blob(),signal);}));
 get('slope-demo').addEventListener('click', () => load(async(signal) => { const r=await fetch('tests/fixtures/terrain-slopes.json',{signal});if(!r.ok)throw new Error('Slope lesson could not be loaded.');return readImport(await r.blob(),signal); }));
 get('terrain-demo').addEventListener('click', () => load(async(signal) => { const response=await fetch('tests/fixtures/terrain-hill.json',{signal}); if(!response.ok) throw new Error('Contour lesson could not be loaded.'); return readImport(await response.blob(),signal); }));
 document.addEventListener('lesson-view-changed', () => requestAnimationFrame(updateView));

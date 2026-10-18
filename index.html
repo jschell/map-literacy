@@ -35,6 +35,7 @@
     <h2>Lesson map and print</h2>
     <section class="controls" aria-label="Map controls">
       <button id="demo" type="button">Load synthetic map</button>
+      <button id="profile-demo" type="button">Load profile lesson</button>
       <button id="slope-demo" type="button">Load slope lesson</button>
       <button id="terrain-demo" type="button">Load contour lesson</button>
       <label class="file-control">Import lesson pack<input id="import" type="file" accept=".json,application/json"></label>
@@ -57,6 +58,7 @@
     <details id="print-preview"><summary>Preview lesson print layout</summary><p class="note">Map page preview; worksheets include additional question pages. In the print dialog, use the selected Letter orientation and 100% / actual size. Turn off browser headers and footers.</p><div id="print-preview-content"></div></details>
     <p id="status" role="status" aria-live="polite">Load the synthetic map or import a validated lesson pack. No lesson pack is selected automatically.</p>
     <section id="map-panel" class="map-panel" tabindex="-1" aria-label="Map viewer" aria-describedby="map-help"><div id="map"></div></section>
+    <section id="profile-panel" hidden aria-label="Elevation profile"><h3>Elevation profile from S to E</h3><div id="profile-chart"></div><details><summary>Profile values</summary><table><thead><tr><th>Distance from S (m)</th><th>Elevation (m)</th></tr></thead><tbody id="profile-values"></tbody></table></details></section>
     <p id="map-help" class="note">Keyboard alternatives: choose a road in Feature selection, or build a path with Start graph node, Next directed edge and Add edge below.</p>
     <p id="attribution" class="note" aria-label="Map sources"></p>
     <section class="inspection"><label>Find feature<input id="feature-filter" type="search" maxlength="120" disabled></label><label>Feature selection<select id="feature"><option value="">No feature selected</option></select><span id="feature-matches" class="note"></span></label><p id="selection">Choose a road on the map or use the feature list.</p></section>
@@ -73,6 +75,7 @@
         <label id="lesson-heading" hidden>True heading in degrees (0–359.999)<input id="answer-heading" type="number" min="0" max="359.999" step="any"></label>
         <div id="lesson-endpoint" class="label-inputs" hidden><label>Endpoint longitude<input id="answer-lon" type="number" min="-180" max="180" step="any"></label><label>Endpoint latitude<input id="answer-lat" type="number" min="-90" max="90" step="any"></label></div>
         <label id="lesson-slope" hidden>Which marked span is steeper?<select id="answer-slope"><option value="">Choose an answer</option><option value="A">A is steeper</option><option value="B">B is steeper</option><option value="equal">Equal average slope</option></select></label>
+        <label id="lesson-profile" hidden><span id="profile-answer-label">Profile answer in metres</span><input id="answer-profile" type="number" step="any"></label>
         <label id="lesson-elevation" hidden>Contour A elevation in metres<input id="answer-elevation" type="number" step="any"></label>
         <p id="lesson-route" hidden></p>
       </fieldset>

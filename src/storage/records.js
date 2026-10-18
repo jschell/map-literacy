@@ -46,7 +46,7 @@ export function checkedBundle(value) {
     if (position < 0 || position > session.index || !date(attempt.submittedAt) || attempt.submittedAt < session.startedAt || attempt.submittedAt > session.updatedAt) fail('Attempt exercise/date is invalid.');
     if (!integer(attempt.hintsUsed) || attempt.hintsUsed > session.hintCounts[attempt.exerciseId]) fail('Attempt hint count is invalid.');
     const e = exercises.get(attempt.exerciseId);
-    fields(attempt.answer, e.type === 'heading' ? ['type', 'degrees'] : e.type === 'endpoint' ? ['type', 'coordinate'] : e.type === 'relative-slope' ? ['type','choice'] : e.type === 'contour-elevation' ? ['type','elevationM'] : ['type', 'edgeIds']);
+    fields(attempt.answer, e.type === 'heading' ? ['type', 'degrees'] : e.type === 'endpoint' ? ['type', 'coordinate'] : e.type === 'profile-value' ? ['type','valueM'] : e.type === 'relative-slope' ? ['type','choice'] : e.type === 'contour-elevation' ? ['type','elevationM'] : ['type', 'edgeIds']);
     if (['route', 'detour'].includes(e.type) && (!Array.isArray(attempt.answer.edgeIds) || attempt.answer.edgeIds.length > 1000 || !attempt.answer.edgeIds.every((id) => typeof id === 'string' && /^[a-zA-Z0-9][a-zA-Z0-9:_-]{0,127}$/.test(id)))) fail('Route answers exceed their identifier/edge limits.');
     fields(attempt.result, ['status', 'metrics', 'reasonCode', 'rubricVersion']);
     if (!object(attempt.result.metrics) || Object.keys(attempt.result.metrics).length > 2 || !Object.values(attempt.result.metrics).every((n) => n === null || (typeof n === 'number' && Number.isFinite(n)))) fail('Score metrics must be finite numeric fields.');
