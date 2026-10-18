@@ -1,3 +1,5 @@
+import { deriveDepressionTicks } from '../terrain/depressions.js';
+import { deriveContourLines } from '../terrain/contour-lines.js';
 import { createProjection, boundsPerimeter, rotateScreen } from '../geo/projection.js';
 import { assertRenderable } from './render-limits.js';
 import { validatePack } from '../data/validate-pack.js';
@@ -85,7 +87,13 @@ export function createMapModel(pack, { paper = false, variant = 'labeled', rotat
     if (box[0] < 0 || box[1] < 0 || box[2] > width || box[3] > height || !boxCorners.every((corner) => insideExtent(invert(corner))) || boxes.some((b) => overlaps(box, b))) { suppressed++; continue; }
     boxes.push(box); names.add(l.text); labels.push({ ...l, point: anchor, rotationDeg: l.rotationDeg + rotation, fontSize });
   }
-  return { contourIntervalM: pack.terrain?.intervalM, contourLabelsAllowed: !pack.exercises.some(x => x.type === 'contour-elevation'), width, height, paper, orientation, rotationDeg: rotation, scaleDenominator, paths, landmarks, labels, suppressedLabels: suppressed,
+  let depressionTicks=[];
+  if(pack.capabilities.includes('terrain-depressions-v1')) {
+    const frameProjection=createProjection(pack.terrain.frame.center),origin=pack.terrain.frame.origin;
+    const geographic=p=>frameProjection.inverse([p[0]-origin[0],p[1]-origin[1]]);
+    depressionTicks=deriveDepressionTicks(pack.terrain.grid,deriveContourLines(pack.terrain.grid,[...new Set(pack.terrain.contours.map(c=>c.levelM))])).map(t=>({from:geographic(t.from),to:geographic(t.to)}));
+  }
+  return { depressionTicks, contourIntervalM: pack.terrain?.intervalM, contourLabelsAllowed: !pack.exercises.some(x => x.type === 'contour-elevation'), width, height, paper, orientation, rotationDeg: rotation, scaleDenominator, paths, landmarks, labels, suppressedLabels: suppressed,
     projection, convert, invert, metersToUnits: factor, clip: projected.map(([x, y]) => [width / 2 + (x - offsetX) * factor, centerY + (y - offsetY) * factor]),
     draft: pack.review.status !== 'reviewed', variant, packId: pack.id, title: pack.title };
 }

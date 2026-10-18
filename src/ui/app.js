@@ -162,6 +162,7 @@ get('demo').addEventListener('click', () => load(async (signal) => {
   if (!response.ok) throw new Error('Synthetic map could not be loaded.');
   return readImport(await response.blob(), signal);
 }));
+get('depression-demo').addEventListener('click',()=>load(async(signal)=>{const r=await fetch('tests/fixtures/terrain-depressions.json',{signal});if(!r.ok)throw new Error('Depression lesson could not be loaded.');return readImport(await r.blob(),signal);}));
 get('landform-demo').addEventListener('click',()=>load(async(signal)=>{const r=await fetch('tests/fixtures/terrain-landforms.json',{signal});if(!r.ok)throw new Error('Landform lesson could not be loaded.');return readImport(await r.blob(),signal);}));
 get('profile-demo').addEventListener('click',()=>load(async(signal)=>{const r=await fetch('tests/fixtures/terrain-profiles.json',{signal});if(!r.ok)throw new Error('Profile lesson could not be loaded.');return readImport(await r.blob(),signal);}));
 get('slope-demo').addEventListener('click', () => load(async(signal) => { const r=await fetch('tests/fixtures/terrain-slopes.json',{signal});if(!r.ok)throw new Error('Slope lesson could not be loaded.');return readImport(await r.blob(),signal); }));

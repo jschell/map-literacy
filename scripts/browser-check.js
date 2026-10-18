@@ -1,3 +1,4 @@
+import { checkTerrainDepressions } from './terrain-depressions-browser-check.js';
 import { checkTerrainLandforms } from './terrain-landforms-browser-check.js';
 import { checkTerrainProfileLessons } from './terrain-profile-lessons-browser-check.js';
 import { checkTerrainSlopes } from './terrain-slopes-browser-check.js';
@@ -457,6 +458,7 @@ try {
   const terrainLessonChecks = await checkTerrainLessons(page,base,output);
   const lessonPdfChecks = await checkLessonPdf(page,base,output);
   const terrainSlopeChecks = await checkTerrainSlopes(page,base,output);
+  const terrainDepressionChecks=await checkTerrainDepressions(page,base,output);
   const terrainLandformChecks=await checkTerrainLandforms(page,base,output);
   const terrainProfileLessonChecks=await checkTerrainProfileLessons(page,base,output);
   const mobile = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
@@ -491,6 +493,6 @@ try {
   await mobile.close();
   assert.equal(sourceRejectionMessages.length, geographicChecks.sourceRejections);
   assert.deepEqual(errors, []);
-  console.log(JSON.stringify({ terrainLandformChecks, terrainProfileLessonChecks, terrainSlopeChecks, lessonPdfChecks, terrainLessonChecks, terrainOverlayChecks, geographicChecks, printQuality, syntheticFeatures: 6, pagesPackageChecks, storageChecks, autosaveChecks, preferenceChecks, accessibilityChecks, memoryLessonSessions: 'passed', sessionBackupControls: 'passed', variantsAndSelection: 'passed', labelEditingAndExport: 'passed', directedTracingAndPrint: 'passed', exerciseSheetsAndPagination: 'passed', boundedSearchAndRenderLimits: 'passed', invalidImportRetainsMap: 'passed', pdfDimensions: physical, mobileOverflow: false, realPack, browserErrors: errors }));
+  console.log(JSON.stringify({ terrainDepressionChecks, terrainLandformChecks, terrainProfileLessonChecks, terrainSlopeChecks, lessonPdfChecks, terrainLessonChecks, terrainOverlayChecks, geographicChecks, printQuality, syntheticFeatures: 6, pagesPackageChecks, storageChecks, autosaveChecks, preferenceChecks, accessibilityChecks, memoryLessonSessions: 'passed', sessionBackupControls: 'passed', variantsAndSelection: 'passed', labelEditingAndExport: 'passed', directedTracingAndPrint: 'passed', exerciseSheetsAndPagination: 'passed', boundedSearchAndRenderLimits: 'passed', invalidImportRetainsMap: 'passed', pdfDimensions: physical, mobileOverflow: false, realPack, browserErrors: errors }));
 } finally { await browser.close(); server?.kill(); }
 

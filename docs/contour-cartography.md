@@ -2,7 +2,7 @@
 
 The synthetic terrain lesson renderer uses dark intermediate contours and heavier index contours every fifth interval, measured from synthetic zero. At the current 5 m interval, index levels are multiples of 25 m. The original 80/85/90 m hill contains only intermediate contours; the legend shows both conventions without inventing an extra contour or changing pack revisions.
 
-The map legend states interval, index spacing and the synthetic vertical reference. No hachures are drawn: a closed ring alone does not establish a depression. Depression symbols, index/label treatment for real geographic sidecars and optional lesson hillshade remain future reviewed work. This does not change the separate USGS reference-map composition.
+The map legend states interval, index spacing and the synthetic vertical reference. A closed ring alone does not establish a depression. Optional [exact synthetic basin hachures](contracts/terrain-depressions-v1.md) require lower-inside/higher-outside grid evidence and add inward ticks with a lower-inside legend. Ordinary hills remain unhatched. Index/label treatment for real geographic sidecars and optional lesson hillshade remain future reviewed work. This does not change the separate USGS reference-map composition.
 
 Terrain maps reserve a legend band and bottom scale-bar clearance. Screen maps fit within the remaining space. Paper contours retain the selected metres-to-millimetres factor and north-up geometry; the extent-fit check includes the reserved bands, and an oversized extent is rejected rather than silently shrunk. Source geometry is neither smoothed nor generalized.
 

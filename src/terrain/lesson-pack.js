@@ -1,3 +1,4 @@
+import { deriveDepressionTicks } from './depressions.js';
 import { deriveLandform } from './landforms.js';
 import { deriveTerrainProfile } from './profile.js';
 import { validateElevationGrid } from './grid.js';
@@ -31,6 +32,7 @@ export function validateTerrainPack(pack) {
   for(const c of [0,g.width-1])for(const r of [0,g.height-1])if(!inside(convert([h.origin[0]+c*h.step[0],h.origin[1]+r*h.step[1]]),pack.sourceBounds))fail('grid leaves source bounds');
   const derived=deriveContourLines(g,levels);
   if(derived.contours.some(c=>c.topologyStatus!=='unbranched'))fail('ambiguous contour junctions need review');
+  if(pack.capabilities.includes('terrain-depressions-v1'))deriveDepressionTicks(g,derived);
   const expected=derived.contours.flatMap(c=>c.lines.map(line=>({levelM:c.levelM,coordinates:line.coordinates.map(convert)})));
   if(expected.length!==t.contours.length||pack.features.features.length!==expected.length)fail('contour geometry is missing or duplicated');
   const ids=new Set();

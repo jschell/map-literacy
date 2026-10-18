@@ -1,6 +1,6 @@
 # Synthetic profile questions and charts
 
-Status: bounded browser/scoring/recovery/print integration of the [draft profile calculation](terrain-profile-v1.md). Envelope v2 requires `terrain-contours-v1` first and `terrain-profiles-v1` after the optional `terrain-slopes-v1`; the landform companion may follow profiles. Missing, duplicated, reordered or unknown capabilities are rejected. Existing street v1, contour-only v2 and slope v2 packs retain their contracts and stored revisions. No database/backup version changes.
+Status: bounded browser/scoring/recovery/print integration of the [draft profile calculation](terrain-profile-v1.md). Envelope v2 requires `terrain-contours-v1` first and `terrain-profiles-v1` after the optional `terrain-slopes-v1`; the landform and depression companions may follow profiles, in that order. Missing, duplicated, reordered or unknown capabilities are rejected. Existing street v1, contour-only v2 and slope v2 packs retain their contracts and stored revisions. No database/backup version changes.
 
 ## Validated exercise inputs
 

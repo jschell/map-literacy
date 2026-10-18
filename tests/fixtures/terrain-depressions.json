@@ -1,0 +1,422 @@
+{
+  "schemaVersion": 2,
+  "id": "synthetic-terrain-depressions",
+  "title": "Synthetic basin — depression contours",
+  "revision": 1,
+  "module": "topographic",
+  "capabilities": [
+    "terrain-contours-v1",
+    "terrain-depressions-v1"
+  ],
+  "review": {
+    "status": "reviewed",
+    "reviewedAt": "2026-10-17T00:00:00.000Z",
+    "note": "Analytic basin with elevations decreasing inward. Every segment midpoint and tick checks lower inside and higher outside; technical fixture review, not independent curriculum/real-source approval."
+  },
+  "bounds": [
+    -0.00035972824549454176,
+    -0.0003597282454874518,
+    0.00035972824549454176,
+    0.0003597282454874518
+  ],
+  "sourceBounds": [
+    -0.0003697281454945418,
+    -0.00036972814548745183,
+    0.0003697281454945418,
+    0.00036972814548745183
+  ],
+  "sources": [
+    {
+      "id": "depression",
+      "kind": "synthetic",
+      "url": null,
+      "query": null,
+      "fetchedAt": "2026-10-16T00:00:00.000Z",
+      "sourceAt": null,
+      "version": "recipe-v1",
+      "sha256": "f99cd00487809b6291edeb4cc6ebbbda9c4dc89f708917caf66fc54da4b0ab92",
+      "license": "CC0-1.0",
+      "attribution": "Invented Map Literacy terrain fixtures; no geographic source.",
+      "transforms": [
+        {
+          "name": "generate-analytic-depression",
+          "version": "1",
+          "parameters": {
+            "recipe": "depressions-v1: z=100+5*(abs(column-4)+abs(row-4)); 9x9; origin=[0,80]; step=[10,-10]"
+          }
+        }
+      ]
+    }
+  ],
+  "features": {
+    "type": "FeatureCollection",
+    "features": [
+      {
+        "type": "Feature",
+        "id": "contour-1",
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -0.00008993203637245379,
+              0
+            ],
+            [
+              0,
+              -0.00008993203637245379
+            ],
+            [
+              0.00008993203637245379,
+              0
+            ],
+            [
+              0,
+              0.00008993203637245379
+            ],
+            [
+              -0.00008993203637245379,
+              0
+            ]
+          ]
+        },
+        "properties": {
+          "sourceId": "depression",
+          "role": "contour",
+          "name": "Contour 1",
+          "tags": {}
+        }
+      },
+      {
+        "type": "Feature",
+        "id": "contour-2",
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -0.0001798640727449076,
+              0
+            ],
+            [
+              -0.00008993203637252766,
+              -0.00008993203637241687
+            ],
+            [
+              0,
+              -0.0001798640727449076
+            ],
+            [
+              0.00008993203637252766,
+              -0.00008993203637241687
+            ],
+            [
+              0.0001798640727449076,
+              0
+            ],
+            [
+              0.00008993203637252766,
+              0.00008993203637241687
+            ],
+            [
+              0,
+              0.0001798640727449076
+            ],
+            [
+              -0.00008993203637252766,
+              0.00008993203637241687
+            ],
+            [
+              -0.0001798640727449076,
+              0
+            ]
+          ]
+        },
+        "properties": {
+          "sourceId": "depression",
+          "role": "contour",
+          "name": "Contour 2",
+          "tags": {}
+        }
+      },
+      {
+        "type": "Feature",
+        "id": "contour-3",
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [
+              -0.00026979610911736146,
+              0
+            ],
+            [
+              -0.00017986407274505533,
+              -0.00008993203637230609
+            ],
+            [
+              -0.00008993203637274922,
+              -0.00017986407274483374
+            ],
+            [
+              0,
+              -0.0002697961091173614
+            ],
+            [
+              0.00008993203637274922,
+              -0.00017986407274483374
+            ],
+            [
+              0.00017986407274505533,
+              -0.00008993203637230609
+            ],
+            [
+              0.00026979610911736146,
+              0
+            ],
+            [
+              0.00017986407274505533,
+              0.00008993203637230609
+            ],
+            [
+              0.00008993203637274922,
+              0.00017986407274483374
+            ],
+            [
+              0,
+              0.0002697961091173614
+            ],
+            [
+              -0.00008993203637274922,
+              0.00017986407274483374
+            ],
+            [
+              -0.00017986407274505533,
+              0.00008993203637230609
+            ],
+            [
+              -0.00026979610911736146,
+              0
+            ]
+          ]
+        },
+        "properties": {
+          "sourceId": "depression",
+          "role": "contour",
+          "name": "Contour 3",
+          "tags": {}
+        }
+      }
+    ]
+  },
+  "topology": {
+    "nodes": [],
+    "edges": [],
+    "restrictions": [],
+    "completeness": "complete",
+    "exclusions": []
+  },
+  "labels": [],
+  "exercises": [
+    {
+      "id": "depression-1",
+      "type": "contour-elevation",
+      "review": "reviewed",
+      "sourceIds": [
+        "depression"
+      ],
+      "scenario": null,
+      "prompt": "This synthetic basin has inward ticks on its depression contours. Elevations decrease toward the center. With a 5 m contour interval, what is the elevation of contour A in metres?",
+      "hints": [
+        "The short ticks point toward the lower, inside ground.",
+        "Start at the labeled reference; subtract one 5 m interval for each contour crossed inward."
+      ],
+      "rubric": {
+        "featureId": "contour-2",
+        "referenceFeatureId": "contour-3",
+        "toleranceM": 0.01
+      }
+    },
+    {
+      "id": "depression-2",
+      "type": "contour-elevation",
+      "review": "reviewed",
+      "sourceIds": [
+        "depression"
+      ],
+      "scenario": null,
+      "prompt": "This synthetic basin has inward ticks on its depression contours. Elevations decrease toward the center. With a 5 m contour interval, what is the elevation of contour A in metres?",
+      "hints": [
+        "The short ticks point toward the lower, inside ground.",
+        "Start at the labeled reference; subtract one 5 m interval for each contour crossed inward."
+      ],
+      "rubric": {
+        "featureId": "contour-1",
+        "referenceFeatureId": "contour-2",
+        "toleranceM": 0.01
+      }
+    }
+  ],
+  "print": {
+    "paper": "letter",
+    "orientation": "portrait",
+    "marginMm": 10,
+    "scaleDenominator": 1000,
+    "labelMinPt": 8,
+    "mapRotationDeg": 0
+  },
+  "extensions": {},
+  "terrain": {
+    "format": "synthetic-contours-v1",
+    "grid": {
+      "format": "map-literacy-elevation-grid-v1",
+      "id": "depression",
+      "width": 9,
+      "height": 9,
+      "horizontal": {
+        "crs": "LOCAL_METRIC",
+        "units": "m",
+        "axisOrder": "easting,northing",
+        "origin": [
+          0,
+          80
+        ],
+        "step": [
+          10,
+          -10
+        ],
+        "registration": "sample-center"
+      },
+      "vertical": {
+        "units": "m",
+        "reference": "synthetic-zero",
+        "nodata": null,
+        "uncertaintyM": 0
+      },
+      "source": {
+        "kind": "synthetic",
+        "productId": "analytic-depression",
+        "version": "recipe-v1",
+        "acquiredAt": "2026-10-16T00:00:00.000Z",
+        "url": null,
+        "sha256": "f99cd00487809b6291edeb4cc6ebbbda9c4dc89f708917caf66fc54da4b0ab92",
+        "license": "CC0-1.0",
+        "attribution": "Invented Map Literacy terrain fixtures; no geographic source.",
+        "transforms": [
+          {
+            "operation": "generate-analytic-depression",
+            "version": "1",
+            "parameters": {
+              "recipe": "depressions-v1: z=100+5*(abs(column-4)+abs(row-4)); 9x9; origin=[0,80]; step=[10,-10]"
+            }
+          }
+        ]
+      },
+      "samples": [
+        140,
+        135,
+        130,
+        125,
+        120,
+        125,
+        130,
+        135,
+        140,
+        135,
+        130,
+        125,
+        120,
+        115,
+        120,
+        125,
+        130,
+        135,
+        130,
+        125,
+        120,
+        115,
+        110,
+        115,
+        120,
+        125,
+        130,
+        125,
+        120,
+        115,
+        110,
+        105,
+        110,
+        115,
+        120,
+        125,
+        120,
+        115,
+        110,
+        105,
+        100,
+        105,
+        110,
+        115,
+        120,
+        125,
+        120,
+        115,
+        110,
+        105,
+        110,
+        115,
+        120,
+        125,
+        130,
+        125,
+        120,
+        115,
+        110,
+        115,
+        120,
+        125,
+        130,
+        135,
+        130,
+        125,
+        120,
+        115,
+        120,
+        125,
+        130,
+        135,
+        140,
+        135,
+        130,
+        125,
+        120,
+        125,
+        130,
+        135,
+        140
+      ]
+    },
+    "frame": {
+      "center": [
+        0,
+        0
+      ],
+      "origin": [
+        40,
+        40
+      ]
+    },
+    "intervalM": 5,
+    "contours": [
+      {
+        "featureId": "contour-1",
+        "levelM": 105
+      },
+      {
+        "featureId": "contour-2",
+        "levelM": 110
+      },
+      {
+        "featureId": "contour-3",
+        "levelM": 115
+      }
+    ]
+  }
+}
