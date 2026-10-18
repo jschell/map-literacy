@@ -1,3 +1,4 @@
+import { deriveLandform } from '../terrain/landforms.js';
 import { contourLevel, slopeComparison, profileAnswer } from '../terrain/lesson-pack.js';
 import { validatePack } from '../data/validate-pack.js';
 import { distanceM } from '../geo/distance.js';
@@ -31,6 +32,11 @@ export function scoreAnswer(pack, exerciseId, answer) {
     // Nanometre rounding allowance only; the authored tolerance is not expanded for display rounding.
     const within = endpointErrorM <= rubric.toleranceM + 1e-9;
     return decide(within, within ? 'within-tolerance' : 'outside-tolerance', { endpointErrorM });
+  }
+  if(exercise.type==='terrain-form') {
+    if(!['ridge','valley'].includes(answer.choice))return result('unanswered','invalid-answer');
+    const form=deriveLandform(pack.terrain.grid,rubric),correct=answer.choice===form.choice;
+    return decide(correct,correct?'landform-match':'landform-mismatch',{alongFallM:form.alongFallM,minCrossReliefM:form.minCrossReliefM});
   }
   if(exercise.type==='profile-value') {
     if(!finite(answer.valueM))return result('unanswered','invalid-answer');

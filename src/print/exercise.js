@@ -1,3 +1,4 @@
+import { deriveLandform } from '../terrain/landforms.js';
 import { contourLevel, terrainExerciseAnnotations, slopeComparison, deriveLessonProfile, profileAnswer } from '../terrain/lesson-pack.js';
 import { validatePack } from '../data/validate-pack.js';
 
@@ -11,7 +12,7 @@ export function createExercisePrint(pack, exerciseId, audience) {
   const instructor = audience === 'instructor', rubric = exercise.rubric;
   const draft = pack.review.status !== 'reviewed' || exercise.review !== 'reviewed';
   const kind = instructor ? 'Instructor guide' : 'Learner worksheet';
-  const exerciseName = exercise.type === 'profile-value' ? 'Elevation profile' : exercise.type === 'contour-elevation' ? 'Contour elevation' : exercise.type === 'relative-slope' ? 'Relative slope' : exercise.type;
+  const exerciseName = exercise.type === 'terrain-form' ? 'Ridge or valley' : exercise.type === 'profile-value' ? 'Elevation profile' : exercise.type === 'contour-elevation' ? 'Contour elevation' : exercise.type === 'relative-slope' ? 'Relative slope' : exercise.type;
   let slopeAnnotations = null, profile = null;
   const blocks = [], markers = [], closedEdges = [];
   const add = (text, type = 'paragraph') => blocks.push({ type, text });
@@ -42,6 +43,11 @@ export function createExercisePrint(pack, exerciseId, audience) {
     add(`Both tick-to-tick spans change elevation by ${pack.terrain.intervalM} m. Compare straight horizontal distances; this is average slope magnitude, not walking distance or local slope everywhere.`);
     if(instructor) {const {a,b,choice}=slopeComparison(pack,exercise);add(`Expected comparison: ${choice==='equal'?'equal average slope':`${choice} is steeper`}. A: rise ${a.riseM} m / run ${Number(a.runM.toFixed(3))} m; B: rise ${b.riseM} m / run ${Number(b.runM.toFixed(3))} m.`, 'answer');}
     else add('Circle A, B or equal and explain how equal rise and horizontal distance support your choice.');
+  } else if (exercise.type === 'terrain-form') {
+    slopeAnnotations=terrainExerciseAnnotations(pack,exercise);
+    add('H is the higher end of the marked axis; L is the lower end. Read the contour elevations across A. Valley contours point uphill; ridge contours point downhill. This bounded synthetic shape does not establish a stream, route or permission to travel.');
+    if(instructor) {const form=deriveLandform(pack.terrain.grid,exercise.rubric);add(`Expected landform: ${form.choice}. All three transverse sections have ${form.choice==='valley'?'higher':'lower'} ground on both sides; the longitudinal axis falls ${form.alongFallM} m. Minimum cross-section relief: ${form.minCrossReliefM} m.`, 'answer');}
+    else add('Circle ridge or valley and explain the contour elevations on both sides of A.');
   } else if (exercise.type === 'contour-elevation') {
     slopeAnnotations = terrainExerciseAnnotations(pack,exercise,instructor); markers.push(...slopeAnnotations.markers);
     add(`Synthetic terrain; elevations use a synthetic zero reference. Contour interval: ${pack.terrain.intervalM} m.`);
@@ -74,7 +80,7 @@ export function createExercisePrint(pack, exerciseId, audience) {
     if (!exercise.hints.length) add('No authored hints.');
     for (const hint of exercise.hints) add(hint, 'hint');
     if (pack.topology.completeness === 'partial') add('Topology is incomplete. Review the pack exclusions before accepting route answers.');
-    add(['contour-elevation','relative-slope','profile-value'].includes(exercise.type) ? 'Use these answer criteria to check the handwritten answer and explanation.' : 'These are authored answer criteria for manual checking. Automatic scoring, learner records and real-world driving permission are not provided by this print tool.');
+    add(['contour-elevation','relative-slope','profile-value','terrain-form'].includes(exercise.type) ? 'Use these answer criteria to check the handwritten answer and explanation.' : 'These are authored answer criteria for manual checking. Automatic scoring, learner records and real-world driving permission are not provided by this print tool.');
   } else {
     add('Answer and explanation', 'heading'); add('', 'answer-space');
   }
@@ -87,5 +93,5 @@ export function createExercisePrint(pack, exerciseId, audience) {
   if ((exercise.type === 'endpoint' && !inside(rubric.expected)) || !markers.every((m) => inside(m.coordinate)) || !closedEdges.every((e) => e.shape.every(inside))) throw new Error('Exercise endpoints or closures leave this print extent; choose a suitable lesson extent.');
   return { kind, exerciseId, audience, draft, blocks, profile, annotations: slopeAnnotations ?? { markers, closedEdges }, headingDeg,
     title: `${kind} — ${exerciseName}${draft ? ' — UNREVIEWED DRAFT' : ''}`,
-    summary: exercise.type === 'profile-value' ? 'Synthetic transect from S to E. The elevation profile, question and source credits follow the map.' : exercise.type === 'relative-slope' ? `Synthetic terrain. A and B each span ${pack.terrain.intervalM} m of elevation change. Compare distances between the end ticks. Questions and source credits follow the map.` : exercise.type === 'contour-elevation' ? `Synthetic terrain; elevation increases toward the center. Contour interval: ${pack.terrain.intervalM} m. Questions${instructor ? ' and answer criteria' : ''} and source credits follow the map.` : `${exercise.type} · Questions${instructor ? ' and answer criteria' : ''} and source credits follow the map.` };
+    summary: exercise.type === 'terrain-form' ? 'Classify landform A. H is higher; L is lower along the marked axis. Questions and source credits follow the map.' : exercise.type === 'profile-value' ? 'Synthetic transect from S to E. The elevation profile, question and source credits follow the map.' : exercise.type === 'relative-slope' ? `Synthetic terrain. A and B each span ${pack.terrain.intervalM} m of elevation change. Compare distances between the end ticks. Questions and source credits follow the map.` : exercise.type === 'contour-elevation' ? `Synthetic terrain; elevation increases toward the center. Contour interval: ${pack.terrain.intervalM} m. Questions${instructor ? ' and answer criteria' : ''} and source credits follow the map.` : `${exercise.type} · Questions${instructor ? ' and answer criteria' : ''} and source credits follow the map.` };
 }

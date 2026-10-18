@@ -35,6 +35,7 @@
     <h2>Lesson map and print</h2>
     <section class="controls" aria-label="Map controls">
       <button id="demo" type="button">Load synthetic map</button>
+      <button id="landform-demo" type="button">Load ridge/valley lesson</button>
       <button id="profile-demo" type="button">Load profile lesson</button>
       <button id="slope-demo" type="button">Load slope lesson</button>
       <button id="terrain-demo" type="button">Load contour lesson</button>
@@ -75,6 +76,7 @@
         <label id="lesson-heading" hidden>True heading in degrees (0–359.999)<input id="answer-heading" type="number" min="0" max="359.999" step="any"></label>
         <div id="lesson-endpoint" class="label-inputs" hidden><label>Endpoint longitude<input id="answer-lon" type="number" min="-180" max="180" step="any"></label><label>Endpoint latitude<input id="answer-lat" type="number" min="-90" max="90" step="any"></label></div>
         <label id="lesson-slope" hidden>Which marked span is steeper?<select id="answer-slope"><option value="">Choose an answer</option><option value="A">A is steeper</option><option value="B">B is steeper</option><option value="equal">Equal average slope</option></select></label>
+        <label id="lesson-landform" hidden>Landform at A<select id="answer-landform"><option value="">Choose a landform</option><option value="ridge">Ridge</option><option value="valley">Valley</option></select></label>
         <label id="lesson-profile" hidden><span id="profile-answer-label">Profile answer in metres</span><input id="answer-profile" type="number" step="any"></label>
         <label id="lesson-elevation" hidden>Contour A elevation in metres<input id="answer-elevation" type="number" step="any"></label>
         <p id="lesson-route" hidden></p>

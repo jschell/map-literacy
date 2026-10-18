@@ -16,7 +16,7 @@ export function createLessons({ getPack, getTrace, installPack, cancelPackLoad }
     const pending = pendingFocus; pendingFocus = null;
     const state = controller?.snapshot();
     if (state?.session.id !== pending.sessionId || state.session.version !== pending.version || ![document.body, pending.origin].includes(document.activeElement)) return;
-    const answerTarget = state.exercise.type === 'heading' ? 'answer-heading' : state.exercise.type === 'endpoint' ? 'answer-lon' : state.exercise.type === 'profile-value' ? 'answer-profile' : state.exercise.type === 'relative-slope' ? 'answer-slope' : state.exercise.type === 'contour-elevation' ? 'answer-elevation' : 'trace-start';
+    const answerTarget = state.exercise.type === 'heading' ? 'answer-heading' : state.exercise.type === 'endpoint' ? 'answer-lon' : state.exercise.type === 'terrain-form' ? 'answer-landform' : state.exercise.type === 'profile-value' ? 'answer-profile' : state.exercise.type === 'relative-slope' ? 'answer-slope' : state.exercise.type === 'contour-elevation' ? 'answer-elevation' : 'trace-start';
     const last = state.attempts.find((a) => a.id === state.session.answers[state.exercise.id]);
     const target = state.phase === 'completed' ? 'lesson-export' : state.phase === 'feedback' ? (last?.result.status === 'correct' ? 'lesson-next' : 'lesson-retry') : pending.origin.id === 'lesson-hint' && !get('lesson-hint').disabled ? 'lesson-hint' : answerTarget;
     get(target).focus();
@@ -54,7 +54,7 @@ export function createLessons({ getPack, getTrace, installPack, cancelPackLoad }
   }
   const cancelPending = () => { restoreJob?.abort(); restoreJob = null; };
   const status = (text) => { get('lesson-status').textContent = text; };
-  function clearAnswer() { for (const id of ['answer-heading', 'answer-lon', 'answer-lat', 'answer-elevation', 'answer-slope', 'answer-profile']) get(id).value = ''; }
+  function clearAnswer() { for (const id of ['answer-heading', 'answer-lon', 'answer-lat', 'answer-elevation', 'answer-slope', 'answer-profile', 'answer-landform']) get(id).value = ''; }
   function refresh() {
     const saveState = writer.snapshot(); const busy = !storageReady || saveState.state === 'saving';
     get('save-status').textContent = !storageReady ? 'Opening browser storage…' : !controller ? (storage ? 'Browser storage ready. Keep downloaded backups against browser data loss.' : 'Memory only: browser storage is unavailable. Download session backups.') : !storage ? 'Changes are not saved: browser storage connection is unavailable. Download a session backup, retry storage or reload.' : saveState.state === 'saved' ? `Saved in this browser · version ${saveState.savedVersion}. Keep a downloaded backup.` : saveState.state === 'saving' ? 'Saving progress…' : saveState.state === 'conflict' ? (saveState.error?.code === 'revision-conflict' ? 'Changes are not saved: this pack revision already has different stored content. Download progress and select a reviewed pack with a new revision.' : 'Changes are not saved: another session version conflicts. Download, reload latest or save as a new session.') : `Changes are not saved. ${saveState.error?.message ?? ''} Retry saving or download a session backup.`;
@@ -68,6 +68,7 @@ export function createLessons({ getPack, getTrace, installPack, cancelPackLoad }
     get('lesson-export').disabled = !controller;
     get('lesson-start').disabled = busy || !getPack() || Boolean(active) || getPack().review.status !== 'reviewed' || !getPack().exercises.some((e) => e.review === 'reviewed');
     get('lesson-fields').disabled = !practicing;
+    get('lesson-landform').hidden=e?.type!=='terrain-form';
     get('lesson-profile').hidden=e?.type!=='profile-value';
     get('profile-answer-label').textContent=e?.type==='profile-value'?`${e.rubric.quantity==='net-change'?'Signed net elevation change':e.rubric.quantity==='ascent'?'Total ascent':'Total descent'} in metres`:'Profile answer in metres';
     get('lesson-slope').hidden = e?.type !== 'relative-slope';
@@ -105,6 +106,7 @@ export function createLessons({ getPack, getTrace, installPack, cancelPackLoad }
     const e = controller.snapshot().exercise; let answer;
     if (e.type === 'heading') answer = get('answer-heading').value.trim() ? { type: e.type, degrees: Number(get('answer-heading').value) } : null;
     else if (e.type === 'endpoint') answer = get('answer-lon').value.trim() && get('answer-lat').value.trim() ? { type: e.type, coordinate: [Number(get('answer-lon').value), Number(get('answer-lat').value)] } : null;
+    else if(e.type==='terrain-form') answer=get('answer-landform').value?{type:e.type,choice:get('answer-landform').value}:null;
     else if(e.type==='profile-value') answer=get('answer-profile').value.trim()?{type:e.type,valueM:Number(get('answer-profile').value)}:null;
     else if (e.type === 'relative-slope') answer = get('answer-slope').value ? {type:e.type,choice:get('answer-slope').value} : null;
     else if (e.type === 'contour-elevation') answer = get('answer-elevation').value.trim() ? {type:e.type,elevationM:Number(get('answer-elevation').value)} : null;

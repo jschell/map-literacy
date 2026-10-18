@@ -1,6 +1,6 @@
 # Synthetic relative-slope lessons
 
-Status: first bounded slope comparison supported in envelope v2. Requires the ordered capabilities `[terrain-contours-v1,terrain-slopes-v1]` (the profile companion may follow) and the existing validated synthetic contour payload. Contour-only packs remain valid and cannot silently accept slope exercises. Earlier readers reject the new companion capability before writes. No database or backup envelope version changes.
+Status: first bounded slope comparison supported in envelope v2. Requires the ordered capabilities `[terrain-contours-v1,terrain-slopes-v1]` (the profile and landform companions may follow, in that order) and the existing validated synthetic contour payload. Contour-only packs remain valid and cannot silently accept slope exercises. Earlier readers reject the new companion capability before writes. No database or backup envelope version changes.
 
 ## Exercise and derived answer
 

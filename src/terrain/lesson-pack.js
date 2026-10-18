@@ -1,3 +1,4 @@
+import { deriveLandform } from './landforms.js';
 import { deriveTerrainProfile } from './profile.js';
 import { validateElevationGrid } from './grid.js';
 import { deriveContourLines } from './contour-lines.js';
@@ -39,9 +40,15 @@ export function validateTerrainPack(pack) {
     ids.add(c.featureId);
     for(let j=0;j<e.coordinates.length;j++)if(distanceM(f.geometry.coordinates[j],e.coordinates[j])>1e-6||!inside(f.geometry.coordinates[j],pack.bounds))fail('contours must reproduce the grid and fit the lesson extent');
   }
-  let profileCount=0,profileSamples=0;
+  let profileCount=0,profileSamples=0,landformCount=0;
   for(const x of pack.exercises) {
-    if(!['contour-elevation','relative-slope','profile-value'].includes(x.type)||x.scenario!==null||x.sourceIds.length!==1||x.sourceIds[0]!==g.id)fail('unsupported terrain exercise/scenario/source');
+    if(!['contour-elevation','relative-slope','profile-value','terrain-form'].includes(x.type)||x.scenario!==null||x.sourceIds.length!==1||x.sourceIds[0]!==g.id)fail('unsupported terrain exercise/scenario/source');
+    if(x.type==='terrain-form') {
+      if(!pack.capabilities.includes('terrain-landforms-v1')||++landformCount>16)fail('landform capability/count required');
+      const form=deriveLandform(g,x.rubric);
+      if(form.paths.flat().some(p=>!inside(convert(p),pack.bounds)))fail('landform sections leave map extent');
+      continue;
+    }
     if(x.type==='profile-value') {
       if(!pack.capabilities.includes('terrain-profiles-v1')||++profileCount>16)fail('profile capability/count required');
       const profile=deriveLessonProfile(pack,x);profileSamples+=profile.samples.length;
@@ -67,6 +74,11 @@ export const contourLevel = (pack,id) => pack.terrain.contours.find(c=>c.feature
 
 /** Reference elevations are visible; the learner's target answer is not printed. */
 export function terrainExerciseAnnotations(pack,exercise,instructor=false) {
+  if(exercise?.type==='terrain-form') {
+    const form=deriveLandform(pack.terrain.grid,exercise.rubric),projection=createProjection(pack.terrain.frame.center),origin=pack.terrain.frame.origin;
+    const convert=p=>projection.inverse([p[0]-origin[0],p[1]-origin[1]]);
+    return {closedEdges:[],contourElevations:true,lines:[exercise.rubric.axis.map(convert)],markers:[{coordinate:convert(form.high),text:'H'},{coordinate:convert(form.low),text:'L'},{coordinate:convert(exercise.rubric.axis[0].map((v,i)=>(v+exercise.rubric.axis[1][i])/2)),text:'A'}]};
+  }
   if(exercise?.type==='profile-value') {
     const projection=createProjection(pack.terrain.frame.center),origin=pack.terrain.frame.origin;
     const coordinates=exercise.rubric.path.map(p=>projection.inverse([p[0]-origin[0],p[1]-origin[1]]));
