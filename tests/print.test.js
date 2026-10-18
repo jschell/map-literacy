@@ -23,7 +23,10 @@ test('route/detour sheets use problem endpoints/closures without inventing a uni
   const learner = createExercisePrint(pack, 'detour', 'learner');
   assert.deepEqual(learner.annotations.markers.map((m) => m.text), ['S', 'E']);
   assert.deepEqual(learner.annotations.closedEdges.map((e) => e.id), ['BC']);
-  assert.ok(text(learner).includes('Closed edge BC: B → C'));
+  assert.equal(text(learner).includes('Closed edge BC: B → C'), false);
+  const detourInstructor = createExercisePrint(pack, 'detour', 'instructor');
+  assert.ok(text(detourInstructor).includes('Closed edge BC: B → C'));
+  assert.equal(learner.annotations.closedEdges.length, detourInstructor.annotations.closedEdges.length);
   assert.ok(!text(learner).includes('Accept any connected'));
   const instructor = createExercisePrint(pack, 'route', 'instructor');
   assert.ok(text(instructor).includes('no single exact-match route answer'));

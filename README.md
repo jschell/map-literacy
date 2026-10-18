@@ -4,7 +4,7 @@ Learn to understand where you are, which direction you face, how routes connect 
 
 Street lessons cover orientation, roads, landmarks, addresses, return routes and detours. Synthetic topographic lessons cover contour elevations, relative slope, profiles and ridge/valley recognition. Real terrain lessons remain under development. Both use shared map, lesson, print and progress components.
 
-**Current priority:** complete one reviewed neighborhood learning sequence on screen and paper, then prepare unfamiliar-map and delayed-check materials using the existing pilot protocol. New terrain capabilities are paused. Software correctness is well tested; independent neighborhood content review and observed learning remain pending. See [practice sequence, evidence and next work](docs/learning-sequence.md).
+**Current priority:** complete one reviewed neighborhood learning sequence on screen and paper, and review the prepared unfamiliar-map and delayed-check material candidates using the existing pilot protocol. New terrain capabilities are paused. Software correctness is well tested; independent neighborhood content review and observed learning remain pending. See [practice sequence, evidence and next work](docs/learning-sequence.md).
 
 **Current state:** a vanilla JavaScript geographic browser opening on a Redmond example at zoom 15, with direct map printing and a Letter portrait/landscape print area, mouse/touch panning, zoom and coordinate/OpenStreetMap-link jumps, alongside a map review interface with pack import, rotation, label variants, heading arrows, feature selection and fixed-scale print output. Data validation and OSM preparation are implemented; the Redmond draft renders but remains unreviewed. Reviewed street lessons now support heading, endpoint, route and detour scoring in revision-locked sessions, with hints, retries and multiple valid routes. Accepted progress saves in this browser with explicit saved-session resume, failed-save retry and conflict recovery. Session backup download/restore preserves committed attempts and hints; unfinished answers remain memory only. Labels, screen rotation, print scale and Letter orientation now save independently. Reviewed real lessons and routing deployment remain pending.
 
@@ -37,6 +37,7 @@ Contour printing: loading the synthetic contour lesson starts a learner workshee
 - [Depression contours and bounds](docs/contracts/terrain-depressions-v1.md)
 - [Synthetic contour cartography and label/answer rules](docs/contour-cartography.md)
 - [Local address lessons: draft design and evidence](docs/address-lessons.md)
+- [Five draft street pilot sets and review gates](docs/materials/pilot-v1/README.md)
 - [Exploratory pilot kit and local reporting](docs/learning-pilot.md)
 - [Run the map review interface](docs/map-review.md)
 - [Renderer validation evidence](docs/validation/render-evidence.md)
