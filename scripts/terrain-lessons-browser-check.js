@@ -6,9 +6,28 @@ export async function checkTerrainLessons(page,base,output) {
   const saved=()=>page.waitForFunction(()=>document.getElementById('save-status').textContent.startsWith('Saved in this browser'));
   try {
     await page.setViewportSize({width:1280,height:1000});
-    await page.goto(base);await page.locator('#terrain-demo').click();
+    await page.goto(base);
+    await page.waitForFunction(()=>!document.getElementById('scale').disabled);
+    await page.locator('#scale').selectOption('5000');await page.locator('#orientation').selectOption('landscape');
+    await page.waitForFunction(()=>document.getElementById('preferences-status').textContent.includes('View preferences saved'));
+    await page.locator('#heading').selectOption('0');
+    await page.locator('#terrain-demo').click();
     await page.waitForFunction(()=>document.getElementById('status').textContent.includes('Synthetic hill'));
     assert.equal(await page.locator('#map .feature--contour').count(),3);
+    assert.equal(await page.locator('#scale').inputValue(),'1000');
+    assert.equal(await page.locator('#orientation').inputValue(),'portrait');
+    assert.equal(await page.locator('#print-output').inputValue(),'learner');
+    assert.equal(await page.locator('#paper-map .heading-arrow').count(),0);
+    assert.deepEqual(await page.locator('#paper-map .exercise-mark').allTextContents(),['80 m','A']);
+    await page.locator('#print-preview summary').click();
+    await page.locator('#print-preview-content svg').waitFor({state:'visible'});
+    const previewMarks=await page.locator('#print-preview-content .exercise-mark').allTextContents();
+    assert.deepEqual(previewMarks,['80 m','A']);
+    // Map-only output keeps terrain guidance and no stale heading/route wording.
+    await page.locator('#print-output').selectOption('map');
+    assert.match(await page.locator('#paper-summary').textContent(),/Contour interval: 5 m/);
+    assert.equal(await page.locator('#paper-map .heading-arrow').count(),0);
+    await page.locator('#print-output').selectOption('learner');
     await page.locator('#lesson-start').click();await saved();
     await page.waitForFunction(()=>document.querySelector('#map .exercise-annotations')?.textContent.includes('80 m'));
     assert.deepEqual(await page.locator('#map .exercise-mark').allTextContents(),['80 m','A']);
@@ -47,6 +66,14 @@ export async function checkTerrainLessons(page,base,output) {
       assert.ok(dimensions.length>=2);for(const d of dimensions)assert.deepEqual([Number(d[1]),Number(d[2])],orientation==='portrait'?[612,792]:[792,612]);
       await page.emulateMedia({media:'screen'});
     }
+    await page.locator('#print-output').selectOption('map');
+    await page.locator('#orientation').selectOption('portrait');
+    await page.evaluate(()=>document.body.dataset.printTarget='lesson');
+    await page.emulateMedia({media:'print'});
+    assert.equal(await page.locator('body').evaluate(el=>getComputedStyle(el).page),'letter-portrait');
+    const mapPdf=await page.pdf({path:new URL('terrain-map-portrait.pdf',output).pathname,preferCSSPageSize:true,printBackground:true});
+    assert.equal([...mapPdf.toString('latin1').matchAll(/\/MediaBox\s*\[/g)].length,1);
+    await page.emulateMedia({media:'screen'});
     await page.locator('#print-output').selectOption('learner');
     await page.locator('#lesson-next').click();await saved();await page.locator('#answer-elevation').fill('90');await page.locator('#lesson-submit').click();await saved();await page.locator('#lesson-next').click();await saved();
     assert.match(await page.locator('#lesson-revision').textContent(),/completed/);

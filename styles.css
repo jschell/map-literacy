@@ -63,6 +63,10 @@ input[type=file] { max-width: 240px; }
   body { margin: 0; padding: 0; }
   main { display: none; }
   .skip-links { display: none; }
+  html:has(> body[data-print-target=lesson][data-print-orientation=portrait]),
+  body[data-print-target=lesson][data-print-orientation=portrait] { page: letter-portrait; }
+  html:has(> body[data-print-target=lesson][data-print-orientation=landscape]),
+  body[data-print-target=lesson][data-print-orientation=landscape] { page: letter-landscape; }
   #print-sheet { display: block; break-after: avoid; }
   #print-sheet[data-orientation=landscape] { page: letter-landscape; width: 259.4mm; height: 195.9mm; }
   #print-sheet[data-orientation=portrait] { page: letter-portrait; width: 195.9mm; height: 259.4mm; }
@@ -194,3 +198,9 @@ h2.sheet-block { font-size: 12pt; line-height: 1.4; }
 #explorer-terrain-roads-wrap[hidden] { display: none; }
 
 .feature--contour { fill: none; }
+
+#print-preview { margin: 20px 0; }
+#print-preview summary { cursor: pointer; padding: 12px 0; font-weight: 600; }
+#print-preview-content:not(:empty) { max-width: 900px; padding: 20px; background: white; border: 1px solid #cbd1c9; color: black; }
+#print-preview-content[data-orientation=portrait] { max-width: 620px; }
+#print-preview-content .print-map { width: 100%; height: auto; border: 1px solid #ddd; }

@@ -35,7 +35,8 @@ function updateView() {
   const variant = get('variant').value, scaleDenominator = Number(get('scale').value);
   const orientation = get('orientation').value;
   get('print-sheet').dataset.orientation = orientation;
-  const headingDeg = get('heading').value === '' ? null : Number(get('heading').value);
+  document.body.dataset.printOrientation = orientation;
+  const headingDeg = pack.module === 'topographic' ? null : get('heading').value === '' ? null : Number(get('heading').value);
   const screenWidth = Math.max(280, Math.min(2000, Math.round(get('map').clientWidth)));
   const screenHeight = Math.max(320, Math.min(560, screenWidth * .56));
   const screenKey = `${variant}:${rotation}:${screenWidth}`;
@@ -77,9 +78,18 @@ function updateView() {
     paperVariant = variant;
     get('print').disabled = false;
     get('paper-title').textContent = spec?.title ?? `${pack.title} — ${variant}${paper.draft ? ' — UNREVIEWED DRAFT' : ''}`;
-    get('paper-summary').textContent = spec?.summary ?? 'Mark a route, indicate your heading and explain how the roads connect.';
+    get('paper-summary').textContent = spec?.summary ?? (pack.module === 'topographic' ? `Synthetic hill; elevations rise toward the center. Contour interval: ${pack.terrain.intervalM} m. Choose Learner worksheet for a labeled reference and an elevation question.` : 'Mark a route, indicate your heading and explain how the roads connect.');
     get('paper-footer').textContent = spec ? `Letter ${orientation} · North up · 1:${scaleDenominator.toLocaleString()} · Print at 100% / actual size; measure the scale bar. ${spec.kind} · Page 1 of ${get('exercise-pages').children.length + 1} · Source credits follow the map.` : `Letter ${orientation} · ${printTrace ? `Trace preview: ${printTrace.edges.length} steps, ${Math.round(printTrace.lengthM)} m; S start, E end${printTrace.warnings.length ? '; needs review' : ''}; not route approval. ` : ''}North up · 1:${scaleDenominator.toLocaleString()} · Print at 100% / actual size; measure the scale bar. ${pack.sources.map((s) => `${s.attribution} · source ${s.sourceAt?.slice(0, 10) ?? 'date unknown'}`).join(' | ')}`;
+    if (get('print-preview').open) {
+      const preview = get('print-preview-content');
+      preview.dataset.orientation = orientation;
+      const title = document.createElement('h3'); title.textContent = get('paper-title').textContent;
+      const summary = document.createElement('p'); summary.textContent = get('paper-summary').textContent;
+      const footer = document.createElement('p'); footer.className = 'note'; footer.textContent = get('paper-footer').textContent;
+      preview.replaceChildren(renderMap(document, paper, { headingDeg: paperHeading, route: paperTrace, annotations: spec?.annotations }), title, summary, footer);
+    }
   } catch (error) {
+    get('print-preview-content').replaceChildren();
     get('paper-map').replaceChildren(); get('exercise-pages').replaceChildren(); printPagesKey = null; paperViewKey = null; get('print').disabled = true; printError = error.message;
     get('paper-summary').textContent = '';
     get('paper-title').textContent = 'Print output is unavailable'; get('paper-footer').textContent = printError;
@@ -94,7 +104,8 @@ function install(value) {
   for (const exercise of pack.exercises) get('print-exercise').add(new Option(`${exercise.type} · ${exercise.id}${exercise.review !== 'reviewed' ? ' · draft' : ''}`, exercise.id));
   if (!pack.exercises.length) get('print-exercise').add(new Option('No exercises in this pack', ''));
   get('print-exercise').disabled = !pack.exercises.length;
-  get('print-output').value = 'map';
+  get('print-output').value = pack.module === 'topographic' ? 'learner' : 'map';
+  get('heading').disabled = pack.module === 'topographic';
   get('scale').value = String(pack.print.scaleDenominator);
   get('orientation').value = pack.print.orientation;
 
@@ -117,6 +128,7 @@ const editor = createLabelEditor({ getPack: () => pack, getModel: () => currentM
 const preferences = createPreferences({
   readView: () => ({ labels: get('variant').value, mapRotationDeg: rotation, printScale: Number(get('scale').value), orientation: get('orientation').value }),
   applyView: (values) => { get('variant').value = values.labels; rotation = values.mapRotationDeg; get('scale').value = String(values.printScale); get('orientation').value = values.orientation; updateView(); },
+  preferPackPrintDefaults: () => pack?.module === 'topographic',
   packDefaults: () => ({ labels: 'labeled', mapRotationDeg: 0, printScale: pack?.print.scaleDenominator ?? 5000, orientation: pack?.print.orientation ?? 'landscape' })
 });
 
@@ -132,6 +144,7 @@ get('rotate').addEventListener('click', () => { rotation = (rotation + 90) % 360
 for (const id of ['variant', 'scale', 'orientation']) get(id).addEventListener('change', () => preferences.changed());
 for (const id of ['heading', 'print-output', 'print-exercise']) get(id).addEventListener('change', updateView);
 get('feature').addEventListener('change', () => selectFeature(get('feature').value));
+get('print-preview').addEventListener('toggle', updateView);
 get('print').addEventListener('click', () => { updateView(); if (!get('print').disabled) { document.body.dataset.printTarget = 'lesson'; window.print(); } });
 let lastWidth = 0;
 new ResizeObserver(() => {

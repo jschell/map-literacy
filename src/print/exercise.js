@@ -11,11 +11,12 @@ export function createExercisePrint(pack, exerciseId, audience) {
   const instructor = audience === 'instructor', rubric = exercise.rubric;
   const draft = pack.review.status !== 'reviewed' || exercise.review !== 'reviewed';
   const kind = instructor ? 'Instructor guide' : 'Learner worksheet';
+  const exerciseName = exercise.type === 'contour-elevation' ? 'Contour elevation' : exercise.type;
   const blocks = [], markers = [], closedEdges = [];
   const add = (text, type = 'paragraph') => blocks.push({ type, text });
   add(pack.title, 'heading');
   add(`Exercise ID: ${exercise.id} · Pack revision ${pack.revision}`);
-  add(`${kind} · ${exercise.type}${draft ? ' · UNREVIEWED DRAFT' : ''}`, 'heading');
+  add(`${kind} · ${exerciseName}${draft ? ' · UNREVIEWED DRAFT' : ''}`, 'heading');
   add(exercise.prompt);
   if (draft) add('This lesson requires content review before use. Printed output is a draft preview.');
   let headingDeg = null;
@@ -61,7 +62,7 @@ export function createExercisePrint(pack, exerciseId, audience) {
     if (!exercise.hints.length) add('No authored hints.');
     for (const hint of exercise.hints) add(hint, 'hint');
     if (pack.topology.completeness === 'partial') add('Topology is incomplete. Review the pack exclusions before accepting route answers.');
-    add('These are authored answer criteria for manual checking. Automatic scoring, learner records and real-world driving permission are not provided by this print tool.');
+    add(exercise.type === 'contour-elevation' ? 'Use these answer criteria to check the handwritten elevation and explanation.' : 'These are authored answer criteria for manual checking. Automatic scoring, learner records and real-world driving permission are not provided by this print tool.');
   } else {
     add('Answer and explanation', 'heading'); add('', 'answer-space');
   }
@@ -73,6 +74,6 @@ export function createExercisePrint(pack, exerciseId, audience) {
   const inside = ([lon, lat]) => lon >= pack.bounds[0] && lon <= pack.bounds[2] && lat >= pack.bounds[1] && lat <= pack.bounds[3];
   if ((exercise.type === 'endpoint' && !inside(rubric.expected)) || !markers.every((m) => inside(m.coordinate)) || !closedEdges.every((e) => e.shape.every(inside))) throw new Error('Exercise endpoints or closures leave this print extent; choose a suitable lesson extent.');
   return { kind, exerciseId, audience, draft, blocks, annotations: { markers, closedEdges }, headingDeg,
-    title: `${kind} — ${exercise.type === 'contour-elevation' ? 'Contour elevation' : exercise.type}${draft ? ' — UNREVIEWED DRAFT' : ''}`,
+    title: `${kind} — ${exerciseName}${draft ? ' — UNREVIEWED DRAFT' : ''}`,
     summary: exercise.type === 'contour-elevation' ? `Synthetic terrain; elevation increases toward the center. Contour interval: ${pack.terrain.intervalM} m. Questions${instructor ? ' and answer criteria' : ''} and source credits follow the map.` : `${exercise.type} · Questions${instructor ? ' and answer criteria' : ''} and source credits follow the map.` };
 }
