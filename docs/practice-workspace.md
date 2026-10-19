@@ -24,7 +24,7 @@ Every new question starts with a fresh trace, even when the previous route could
 
 ## Evidence boundaries
 
-These interaction changes do not change scoring tolerances, connectivity, source access rules, saved-record formats or independent content approval. Whole-lesson printing and integrated device/content acceptance continue under [Plan 10](plans/active/10-learner-usability-and-workflows.md). Physical device, screen-reader and learning acceptance require separate recorded observations.
+These interaction changes do not change scoring tolerances, connectivity, source access rules, saved-record formats or independent content approval. Integrated device/content acceptance continues under [Plan 10](plans/active/10-learner-usability-and-workflows.md). Physical device, screen-reader and learning acceptance require separate recorded observations.
 
 ## Progress and pausing
 
@@ -43,8 +43,19 @@ Changing **Question to print** makes an explicit manual override. Re-enable **Fo
 
 **Explore and print** browses real geography without changing the loaded lesson or submitted progress. **Practice** keeps the current question, map and answer controls together. **Review/edit materials** reveals independent path tracing, feature inspection and label editing below the same prepared map. Switching these tasks preserves drafts in this view; it does not pause/end a session. Native Back/Forward, task links and keyboard skip links work across these sections. Save warnings and relevant retry/conflict actions remain visible outside collapsed sections and across tasks.
 
-Open **Map view, print output and saved preferences** for rotation, labels, output audience, the current-question print action, PDFs and saved view settings. These tools are expanded in Review. Letter orientation is currently shared by both map contexts and labeled **all outputs**; loading a pack may apply its paper defaults. Separating those settings remains Plan 10 package D work.
+Open **Map view, print output and saved preferences** for rotation, labels, output audience, the current-question print action, PDFs and saved view settings. These tools are expanded in Review. **Lesson Letter orientation** and **Lesson print scale** affect prepared output only. **Geographic Letter orientation** is in Explore; loading a pack cannot change it. Older shared preferences initially seed both orientations, with a visible notice; the next explicit change saves separate values. Preference exports/backups retain both choices, and old v1 files remain supported.
 
 Begin is unavailable while a replacement pack is being read/validated; a failed load retains the previous map and reports the error. Switching to another task does not make a pending load a successful one.
 
 Street basics covers orienting, locating, connecting and detouring. Terrain examples follow contours (including depressions as a variant), relative slope, then landforms/profiles. The on-screen evidence names technical validation and author review separately from independent curriculum approval. An imported schema review flag does not supply independent approval; source-backed drafts remain drafts. Existing scoring gates are unchanged.
+
+
+## Previewing and exporting every page
+
+**Preview every browser print page** shows the map, question/answer-space and source-credit pages used by the browser Print actions. Inspect its audience, question, Letter orientation and page count. Browser paper settings can still override the request; print at actual size and measure the scale bar.
+
+**Preview PDF pages** prepares the exact same document as the PDF download. Choose Selected output or Whole lesson, then Prepare PDF preview. Use the page selector or Previous/Next to inspect every page and its teaching text. PDF pagination can differ from browser printing; its own count is authoritative for that file. Profiles may need a separate answer-space/credit page to keep the chart and writing space readable.
+
+Choose **Download whole-lesson PDF** for all authored questions in order. Choose Learner worksheet first for handouts; Instructor guide deliberately includes answers and hints. Whole-lesson export does not change the practice question, unfinished draft, screen rotation or session progress. Filenames include pack revision, whole-lesson scope, audience and orientation. Print the completed PDF at actual size. Existing browser Print current question / Print lesson output actions still print the selected output. Documents over 64 pages or 64 MiB fail with guidance to export selected questions instead.
+
+In **Review/edit materials**, expand **Coordinator review catalogue: draft packets** for Redmond and pilot-v2 revision/limitation notes, separate learner/instructor notes, pack download and map/PDF review. Those packets remain unapproved: opening or printing one does not enable Begin lesson session or grant independent review. Source-backed Redmond content retains OSM/ODbL attribution; synthetic pilot content is CC0-1.0.

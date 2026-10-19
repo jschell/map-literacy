@@ -72,7 +72,8 @@ export async function checkLessonPdf(page, base, output) {
   assert.equal(await page.locator('#lesson-pdf').isEnabled(),true);
   await page.evaluate(()=>{URL.createObjectURL=window.originalCreateObjectURL;});
   await download('lesson-download-retry.pdf');
-  // A pending export must not publish a snapshot after the user changes the view.
+  // A pending fresh export must not publish after the user changes the view.
+  await page.locator('#variant').selectOption('partial');
   await page.evaluate(()=>{
     window.originalCreateObjectURL=URL.createObjectURL;
     URL.createObjectURL=function(blob){

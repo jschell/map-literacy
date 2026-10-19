@@ -93,7 +93,7 @@ export async function checkExplorer(page, base) {
     window.print = () => { window.mapPrintCalls++; window.printChecks.push(window.inMapClick); };
   });
   for (const orientation of ['landscape', 'portrait']) {
-    await page.locator('#orientation').selectOption(orientation); await ready();
+    await page.locator('#explorer-orientation').selectOption(orientation); await ready();
     const previous = await page.evaluate(() => window.mapPrintCalls);
     await page.locator('#explorer-print').click();
     assert.equal(await page.evaluate(() => window.mapPrintCalls), previous + 1);
@@ -124,7 +124,7 @@ export async function checkExplorer(page, base) {
   }
   assert.deepEqual(await page.evaluate(() => window.printChecks), [true, true]);
   await page.evaluate(() => { window.print = window.nativeMapPrint; HTMLImageElement.prototype.decode = window.originalMapDecode; delete document.body.dataset.printTarget; });
-  await page.locator('#orientation').selectOption('landscape'); await ready();
+  await page.locator('#explorer-orientation').selectOption('landscape'); await ready();
   await page.locator('#explorer-labels').selectOption('blank');
   assert.equal(await page.locator('#explorer-vector [data-street-label]:not([data-street-label=""])').count(), 0);
   await page.locator('#explorer-labels').selectOption('partial');
@@ -194,7 +194,7 @@ export async function checkExplorer(page, base) {
   failSource = 'http'; await page.locator('#explorer-retry').click();
   await page.waitForFunction(() => document.getElementById('explorer-street-status').textContent.includes('(406)'));
   for (const orientation of ['portrait', 'landscape']) {
-    await page.locator('#orientation').selectOption(orientation);
+    await page.locator('#explorer-orientation').selectOption(orientation);
     await page.waitForFunction(() => !document.getElementById('explorer-print').disabled);
     await page.locator('#explorer-print').click();
     assert.equal(await page.locator('#geographic-print').getAttribute('data-orientation'), orientation);
@@ -236,7 +236,7 @@ export async function checkExplorer(page, base) {
   assert.equal(await page.locator('#explorer-labels').isDisabled(), true);
   assert.match(await page.locator('#explorer-credit').textContent(), /USGS/);
   for (const orientation of ['portrait', 'landscape']) {
-    await page.locator('#orientation').selectOption(orientation);
+    await page.locator('#explorer-orientation').selectOption(orientation);
     await page.waitForFunction(() => !document.getElementById('explorer-print').disabled);
     await page.locator('#explorer-print').click();
     assert.equal(await page.locator('#geographic-paper-tiles').getAttribute('data-basemap'), 'topo', JSON.stringify(await page.evaluate(() => ({status:document.getElementById('explorer-status').textContent, target:document.body.dataset.printTarget, map:document.getElementById('explorer-basemap').value, ready:document.getElementById('explorer-print-status').textContent}))));

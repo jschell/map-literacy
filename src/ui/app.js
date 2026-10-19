@@ -1,8 +1,10 @@
+import { createMaterialCatalogue } from './material-catalogue.js';
 import { createTaskNavigation } from './task-navigation.js';
 import { packEvidence } from '../lesson/evidence.js';
 import { createEndpointAnswer } from './endpoint-answer.js';
 import { renderProfileChart } from '../terrain/profile-chart.js';
-import { lessonPdf } from '../export/lesson-pdf.js';
+import { createLessonOutput } from './lesson-output.js';
+import { browserPrintPreview, fitBrowserPreview } from './browser-print-preview.js';
 import { createExplorer } from './explorer.js';
 import { createPreferences } from './preferences.js';
 import { createLessons } from './lessons.js';
@@ -16,14 +18,8 @@ import { createExercisePrint } from '../print/exercise.js';
 import { paginateExercise } from '../print/pages.js';
 import { renderMap, updateMapLabels } from '../map/render.js';
 let explorer = null;
-let pdfSnapshot = null, pdfGeneration = 0, makingLessonPdf = false, lessonPdfUrl = null, lastPdfKey = null;
-function invalidateLessonPdf() {
-  pdfGeneration++; pdfSnapshot = null;
-  if (lessonPdfUrl) URL.revokeObjectURL(lessonPdfUrl);
-  lessonPdfUrl = null;
-  get('lesson-pdf-link').hidden = true; get('lesson-pdf-link').removeAttribute('href');
-  get('lesson-pdf-status').textContent = 'Download the selected lesson output as a fixed-size Letter PDF. Print the PDF at actual size.';
-}
+let pdfSnapshot=null,lastPdfKey=null,lessonOutput=null,browserPreviewKey=null;
+function invalidateLessonPdf() {pdfSnapshot=null;lessonOutput?.invalidate();}
 const get = (id) => document.getElementById(id);
 let pack = null, rotation = 0, selected = null, job = null, currentModel = null, loadVersion = 0;
 let printPagesKey = null, screenViewKey = null, paperViewKey = null, screenSelected = null, screenVariant = null, paperVariant = null;
@@ -113,16 +109,12 @@ function updateView() {
     get('paper-footer').textContent = spec ? `Letter ${orientation} · North up · 1:${scaleDenominator.toLocaleString()} · Print at 100% / actual size; measure the scale bar. ${spec.kind} · Page 1 of ${get('exercise-pages').children.length + 1} · Source credits follow the map.` : `Letter ${orientation} · ${printTrace ? `Trace preview: ${printTrace.edges.length} steps, ${Math.round(printTrace.lengthM)} m; S start, E end${printTrace.warnings.length ? '; needs review' : ''}; not route approval. ` : ''}North up · 1:${scaleDenominator.toLocaleString()} · Print at 100% / actual size; measure the scale bar. ${pack.sources.map((s) => `${s.attribution} · source ${s.sourceAt?.slice(0, 10) ?? 'date unknown'}`).join(' | ')}`;
     const pdfKey = JSON.stringify([pack.id, pagesKey, paperKeyForView, variant]);
     if (pdfKey !== lastPdfKey) { invalidateLessonPdf(); lastPdfKey = pdfKey; }
-    pdfSnapshot = { svg: get('paper-map').querySelector('svg'), model: paper, title: get('paper-title').textContent, summary: get('paper-summary').textContent, footer: get('paper-footer').textContent, spec, packId: pack.id, revision: pack.revision };
-    get('lesson-pdf').disabled = makingLessonPdf;
-    if (get('print-preview').open) {
-      const preview = get('print-preview-content');
-      preview.dataset.orientation = orientation;
-      const title = document.createElement('h3'); title.textContent = get('paper-title').textContent;
-      const summary = document.createElement('p'); summary.textContent = get('paper-summary').textContent;
-      const footer = document.createElement('p'); footer.className = 'note'; footer.textContent = get('paper-footer').textContent;
-      preview.replaceChildren(renderMap(document, paper, { headingDeg: paperHeading, route: paperTrace, annotations: spec?.annotations ?? mapAnnotations }), title, summary, footer);
+    pdfSnapshot = { svg: get('paper-map').querySelector('svg'), model: paper, title: get('paper-title').textContent, summary: get('paper-summary').textContent, footer: get('paper-footer').textContent, spec, packId: pack.id, revision: pack.revision, questionNumber: pack.exercises.findIndex(e=>e.id===spec?.exerciseId)+1 };
+    lessonOutput?.available();
+    if(get('print-preview').open && browserPreviewKey!==pdfKey) {
+      browserPrintPreview(document,get('print-preview-content'),orientation);browserPreviewKey=pdfKey;
     }
+
   } catch (error) {
     get('print-selection-status').textContent = `Print unavailable: ${error.message}`;
     invalidateLessonPdf(); get('lesson-pdf').disabled = true;
@@ -175,10 +167,10 @@ const endpoint = createEndpointAnswer({getPack:()=>pack,getModel:()=>currentMode
 const editor = createLabelEditor({ getPack: () => pack, getModel: () => currentModel, applyPack: (value) => { assertRenderable(value); lessons.guardReplacement(); pack = value; screenModels.clear(); paperModels.clear(); printPagesKey = null; screenViewKey = null; paperViewKey = null; screenSelected = null; trace.packChanged(); lessons.packChanged(); updateView(); } });
 
 const preferences = createPreferences({
-  readView: () => ({ labels: get('variant').value, mapRotationDeg: rotation, printScale: Number(get('scale').value), orientation: get('orientation').value }),
-  applyView: (values) => { get('variant').value = values.labels; rotation = values.mapRotationDeg; get('scale').value = String(values.printScale); get('orientation').value = values.orientation; updateView(); },
+  readView: () => ({ labels: get('variant').value, mapRotationDeg: rotation, printScale: Number(get('scale').value), orientation: get('orientation').value, geographicOrientation:get('explorer-orientation').value }),
+  applyView: (values) => { get('variant').value = values.labels; rotation = values.mapRotationDeg; get('scale').value = String(values.printScale); get('orientation').value = values.orientation; get('explorer-orientation').value=values.geographicOrientation; updateView(); },
   preferPackPrintDefaults: () => pack?.module === 'topographic',
-  packDefaults: () => ({ labels: 'labeled', mapRotationDeg: 0, printScale: pack?.print.scaleDenominator ?? 5000, orientation: pack?.print.orientation ?? 'landscape' })
+  packDefaults: () => ({ labels: 'labeled', mapRotationDeg: 0, printScale: pack?.print.scaleDenominator ?? 5000, orientation: pack?.print.orientation ?? 'landscape', geographicOrientation:get('explorer-orientation').value })
 });
 
 get('demo').addEventListener('click', () => load(async (signal) => {
@@ -201,7 +193,7 @@ document.addEventListener('lesson-answer-cleared', () => { endpoint.clear(); if(
 document.addEventListener('lesson-draft-cleared', event => { if (!event.detail?.retainTrace) trace.clear(); });
 get('import').addEventListener('change', () => { const file = get('import').files[0]; if (file) load((signal) => readImport(file, signal)); get('import').value = ''; });
 get('rotate').addEventListener('click', () => { rotation = (rotation + 90) % 360; preferences.changed(); });
-for (const id of ['variant', 'scale', 'orientation']) get(id).addEventListener('change', () => preferences.changed());
+for (const id of ['variant', 'scale', 'orientation', 'explorer-orientation']) get(id).addEventListener('change', () => preferences.changed());
 for (const id of ['heading', 'print-output', 'print-follow-current']) get(id).addEventListener('change', updateView);
 get('print-exercise').addEventListener('change',()=>{get('print-follow-current').checked=false;updateView();});
 document.addEventListener('lesson-session-selected',()=>{if(lessons.currentExercise()){get('print-follow-current').checked=true;get('print-output').value='learner';updateView();}});
@@ -212,26 +204,21 @@ get('print-current').addEventListener('click',()=>{
   updateView();if(!get('print').disabled){document.body.dataset.printTarget='lesson';window.print();}
 });
 get('feature').addEventListener('change', () => selectFeature(get('feature').value));
-get('lesson-pdf').addEventListener('click', async () => {
-  if (makingLessonPdf) return;
-  updateView(); if (!pdfSnapshot) return;
-  const snapshot = pdfSnapshot, generation = pdfGeneration;
-  makingLessonPdf = true; get('lesson-pdf').disabled = true; get('lesson-pdf').setAttribute('aria-busy', 'true');
-  get('lesson-pdf-status').textContent = 'Preparing the selected lesson PDF…';
-  try {
-    const bytes = await lessonPdf(document, snapshot);
-    if (generation !== pdfGeneration) return;
-    if (lessonPdfUrl) URL.revokeObjectURL(lessonPdfUrl);
-    lessonPdfUrl = URL.createObjectURL(new Blob([bytes], { type: 'application/pdf' }));
-    const link = get('lesson-pdf-link'); link.href = lessonPdfUrl;
-    const safe = text => text.replace(/[^a-zA-Z0-9_-]/g,'-').slice(0,60);
-    link.download = `map-literacy-${safe(snapshot.packId)}-r${snapshot.revision}-${safe(snapshot.spec?.exerciseId ?? 'map')}-${snapshot.spec?.audience ?? 'map'}-${snapshot.model.orientation}.pdf`; link.hidden = false;
-    get('lesson-pdf-status').textContent = `PDF ready: Letter ${snapshot.model.orientation}, 1:${snapshot.model.scaleDenominator.toLocaleString()}. Save this snapshot and print at actual size / 100%. Lossless 300 dpi; no browser headers or footers.`;
-    link.click();
-  } catch (error) { if (generation === pdfGeneration) get('lesson-pdf-status').textContent = `PDF not prepared: ${error.message} Retry the download.`; }
-  finally { makingLessonPdf = false; get('lesson-pdf').removeAttribute('aria-busy'); get('lesson-pdf').disabled = !pdfSnapshot; }
-});
-get('print-preview').addEventListener('toggle', updateView);
+function wholeLessonSnapshots(stage) {
+  if(!pack)return [];
+  if(pack.exercises.length>32)throw new Error('Whole-lesson output needs more than 64 pages. Export selected questions instead.');
+  const orientation=get('orientation').value,scaleDenominator=Number(get('scale').value),variant=get('variant').value,audience=get('print-output').value;
+  if(!['learner','instructor'].includes(audience))throw new Error('Choose Learner worksheet or Instructor guide for a whole lesson.');
+  const model=createMapModel(pack,{paper:true,variant,scaleDenominator,orientation});
+  return pack.exercises.map((exercise,index)=>{
+    const spec=createExercisePrint(pack,exercise.id,audience),svg=renderMap(document,model,{headingDeg:spec.headingDeg,annotations:spec.annotations});stage.append(svg);
+    return {svg,model,title:spec.title,summary:spec.summary,footer:`Letter ${orientation} · North up · 1:${scaleDenominator.toLocaleString()} · Print at actual size; measure the scale bar. ${spec.kind} · Source credits follow the map.`,spec,packId:pack.id,revision:pack.revision,questionNumber:index+1};
+  });
+}
+lessonOutput=createLessonOutput({getSnapshot:()=>pdfSnapshot,getWholeSnapshots:wholeLessonSnapshots,updateView});
+let previewWidth=0;
+new ResizeObserver(()=>{const width=get('print-preview-content').clientWidth;if(width!==previewWidth){previewWidth=width;fitBrowserPreview(get('print-preview-content'));}}).observe(get('print-preview-content'));
+get('print-preview').addEventListener('toggle',()=>{browserPreviewKey=null;updateView();fitBrowserPreview(get('print-preview-content'));});
 get('print').addEventListener('click', () => { updateView(); if (!get('print').disabled) { document.body.dataset.printTarget = 'lesson'; window.print(); } });
 let lastWidth = 0;
 new ResizeObserver(() => {
@@ -248,3 +235,11 @@ new ResizeObserver(() => {
 explorer = createExplorer();
 
 createTaskNavigation(updateView);
+
+createMaterialCatalogue(entry=>load(async signal=>{
+  const response=await fetch(entry.path,{signal});if(!response.ok)throw new Error('Draft material could not be loaded.');
+  const value=readImport(await response.blob(),signal);
+  const pack=await value;
+  if(pack.id!==entry.id || pack.revision!==entry.revision || pack.review.status!=='draft' || pack.exercises.some(e=>e.review!=='draft'))throw new Error('Catalogue revision/review mismatch; the previous map is retained.');
+  return pack;
+}));

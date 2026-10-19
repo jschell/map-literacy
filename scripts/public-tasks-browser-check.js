@@ -21,6 +21,7 @@ export async function checkPublicTasks(parent,base,output) {
     await page.waitForFunction(()=>!document.getElementById('explorer-print').disabled);
     assert.equal(await page.locator('#explorer-labels').isDisabled(),true);
     assert.equal(await page.locator('#explorer-markings').isVisible(),false);
+    await page.waitForFunction(()=>!document.getElementById('explorer-orientation').disabled);
     await page.clock.runFor(700);assert.ok(sourceRequests>0);
     await page.clock.fastForward(26000);
     await page.waitForFunction(()=>document.getElementById('explorer-street-status').textContent.includes('timed out'));
