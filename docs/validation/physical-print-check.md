@@ -12,6 +12,10 @@ Status: partial user-reported acceptance; formal calibration and the broader dev
 
 These observations are recorded in [Plan 05](../plans/queue/05-persistence-and-browser-release.md) and [Plan 08](../plans/queue/08-topographic-learning.md). They are not formal ruler measurements or complete device test records. The procedure and blank record below collect the remaining evidence.
 
+## Latest worksheet evidence
+
+The [PR 68 integrated author review](../reviews/2026-10-18-integrated-acceptance.md) records full browser/PDF previews, independent paper settings and whole-lesson export. Twelve whole draft-packet downloads contained 176 pages, with sampled rendered inspection. These are file/author checks only. No new printer, ruler, Safari/iPad or physical touch result was supplied; every pending calibration/device row below stays pending.
+
 ## Physical calibration
 
 Use the synthetic street-square revision 2 pack, scale 1:1,000, and test both US Letter orientations. Print a map-only page and a learner/instructor exercise pair in monochrome. Select 8.5 x 11 inch paper, the matching orientation, 100% / actual size, and disable browser headers/footers. Check the print preview page count against the generated document. Record the browser, OS, printer/driver and all dialog settings.

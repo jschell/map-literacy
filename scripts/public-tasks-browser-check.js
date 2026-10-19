@@ -3,18 +3,19 @@ import {geographicFixture} from './geographic-fixture.js';
 
 export async function checkPublicTasks(parent,base,output) {
   const page=await parent.context().newPage(), errors=[];
-  let sourceMode='timeout', tileRequests=0, sourceRequests=0;
+  let sourceMode='timeout', tileRequests=0;
   page.on('pageerror',error=>errors.push(error.message));
   await page.route('https://tile.openstreetmap.org/**',route=>{tileRequests++;return route.fallback();});
   await page.route('https://overpass-api.de/**',route=>{
-    sourceRequests++;
     if(sourceMode==='timeout')return; // Let the real application abort deadline fire.
     if(sourceMode==='offline')return route.abort('internetdisconnected');
     return route.fulfill({contentType:'application/json',body:JSON.stringify(geographicFixture(new URLSearchParams(route.request().postData()).get('data')))});
   });
   const saved=()=>page.waitForFunction(()=>document.getElementById('save-status').textContent.startsWith('Saved in this browser'));
   try {
-    await page.clock.install(); await page.goto(base);
+    await page.clock.install();
+    const sourceStarted=page.waitForRequest('https://overpass-api.de/**');
+    await page.goto(base);
     assert.equal(await page.locator('#nav-explore').getAttribute('aria-current'),'page');
     assert.equal(await page.locator('#demo').isVisible(),false);
     assert.equal(await page.locator('#label-text').isVisible(),false);
@@ -22,7 +23,9 @@ export async function checkPublicTasks(parent,base,output) {
     assert.equal(await page.locator('#explorer-labels').isDisabled(),true);
     assert.equal(await page.locator('#explorer-markings').isVisible(),false);
     await page.waitForFunction(()=>!document.getElementById('explorer-orientation').disabled);
-    await page.clock.runFor(700);assert.ok(sourceRequests>0);
+    // Advancing page timers does not flush browser/network protocol events.
+    // Observe the actual request before advancing its real abort deadline.
+    await page.clock.runFor(700);await sourceStarted;
     await page.clock.fastForward(26000);
     await page.waitForFunction(()=>document.getElementById('explorer-street-status').textContent.includes('timed out'));
     assert.match(await page.locator('#explorer-print-status').textContent(),/visible tile map/);

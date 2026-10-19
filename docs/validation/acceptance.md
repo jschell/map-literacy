@@ -18,6 +18,10 @@ Initial budgets and pilot parameters are engineering proposals; record measured 
 
 Proposed target browser matrix: latest stable Chrome and Firefox desktop, latest stable Safari on macOS, and Safari on a touch iPad. Record exact OS/browser/hardware at execution; no presumed version numbers or claimed compatibility. Aim to test an older user-available tablet as a performance stress case; exact device pending. Dev-machine performance is provisional until physical tablet runs. Unsupported capability shows an actionable message. Browser automation is useful but cannot replace physical touch/paper/pilot evidence.
 
+## Current integrated acceptance
+
+The [2026-10-18 author walkthrough](../reviews/2026-10-18-integrated-acceptance.md) records PR 68 merge/deployment, hosted practice/print/recovery, packaged keyboard/reflow tests and six-packet export checks. It also names owner roles and next actions for each missing device, screen-reader, zoom, paper, independent content/comparability and participant gate. These remain pending; this record does not declare a supported browser matrix or pilot readiness.
+
 ## Exploratory pilot protocol
 
 The original proposal below is retained as planning history. The [version-1 pilot kit](../learning-pilot.md) now specifies five sets, exact capture fields, comparison eligibility, denominators and ordered gates; use that protocol for preparation/reporting. No observations or recruited participants exist.

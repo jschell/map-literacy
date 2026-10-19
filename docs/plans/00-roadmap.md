@@ -1,6 +1,6 @@
 # Plan 00 — Roadmap
 
-Status: reference, reprioritized 2026-10-18 after PR 58. Plan 10 is active for observed website usability defects; Plan 02 neighborhood acceptance follows. Existing street and synthetic terrain software is sufficient for initial material evaluation; Plan 08 returns to the queue with its acceptance gaps retained. Printing is usable in the user-reported workflow; independent material review and observed transfer remain open.
+Status: reference, reprioritized 2026-10-18 after PR 58. Plan 10 A–D usability repairs are deployed through PR 68; E author checks are recorded and actual device/content acceptance remains open. Plan 02 neighborhood acceptance follows. Existing street and synthetic terrain software is sufficient for initial material evaluation; Plan 08 returns to the queue with its acceptance gaps retained. Printing is usable in the user-reported workflow; independent material review and observed transfer remain open.
 
 ## Milestones
 

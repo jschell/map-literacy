@@ -12,7 +12,7 @@ Run `npm run browser:check`. The accessibility helper uses real Tab, Enter, Home
 - Keyboard activation downloads session and view preference files, changes labels/Letter orientation and invokes printing. The print callback is intercepted for this keyboard check; the separate PDF checks verify real Chromium Letter portrait/landscape output.
 - Every reached control has a visible keyboard outline. At 640- and 320-pixel viewport widths, the document has no horizontal overflow and the focused backup action fits the viewport. Forced-colors emulation retains focus outlines.
 
-125 Node tests, reproducible fixtures and the full Chromium browser suite pass. These checks do not establish WCAG conformance, screen-reader usability, actual browser zoom behavior or learning effectiveness. SVG naming and native controls do not provide a complete nonvisual equivalent of spatial map instruction.
+Current evidence through PR 68: 250 Node tests, reproducible fixtures and the full packaged Chromium browser suite pass. The [integrated acceptance record](../reviews/2026-10-18-integrated-acceptance.md) maps the spatial task, progress, print and navigation helpers to their acceptance requirements and records exact revision/environment plus unperformed manual gates. These checks do not establish WCAG conformance, screen-reader usability, actual browser zoom behavior or learning effectiveness. SVG naming and native controls do not provide a complete nonvisual equivalent of spatial map instruction.
 
 ## Manual release checks still required
 
