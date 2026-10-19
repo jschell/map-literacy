@@ -1,6 +1,6 @@
 # Plan 10 — Learner usability and website workflows
 
-Status: active; packages A and B merged, CI/deployment and hosted behavior verified. Package C implemented on a review branch; merge/deployment acceptance pending. Packages D–E remain open. Authorized 2026-10-18 after the critical website review.
+Status: active; packages A–C merged, CI/deployment and hosted workflows verified. Package D implemented on a review branch; merge/deployment acceptance pending. Package E remains open. Authorized 2026-10-18 after the critical website review.
 Dependencies: existing Plan 02–05 capabilities; supports their unfinished acceptance and Plan 06. Plan 02 remains queued for content/source acceptance. Plan 08 feature expansion stays paused.
 
 ## Outcome and boundaries
@@ -64,10 +64,10 @@ Acceptance: a new visitor can choose browsing or practice, start/resume a lesson
 
 ### D — Reliable print and coordinator workflows
 
-- [ ] Resolve orientation/scale preference ownership explicitly: separate browse and lesson context, or make global effects unmistakable. Define migration/defaults and preserve accepted user settings; loading an unrelated lesson must not silently alter another output context.
-- [ ] Preview every generated page with question, audience, orientation and page count, including question and attribution pages. Preserve Letter portrait/landscape fit, readable B&W output, physical scale guidance and screen-rotation versus paper-north behavior.
-- [ ] Add whole-lesson/multi-question export using existing rendering. Preserve question-specific markers and closures, ordering, appropriate filenames, attribution and distinct learner/instructor outputs. Do not leak keys through preview, downloads or shared state.
-- [ ] Provide a read-only coordinator catalogue for existing Redmond and pilot-v2 draft review packets with revision, limitations and links to learner/instructor material. Draft scoring remains disabled; catalogue access does not approve a pack.
+- [x] Resolve orientation/scale preference ownership explicitly: separate browse and lesson context, or make global effects unmistakable. Define migration/defaults and preserve accepted user settings; loading an unrelated lesson must not silently alter another output context.
+- [x] Preview every generated page with question, audience, orientation and page count, including question and attribution pages. Preserve Letter portrait/landscape fit, readable B&W output, physical scale guidance and screen-rotation versus paper-north behavior.
+- [x] Add whole-lesson/multi-question export using existing rendering. Preserve question-specific markers and closures, ordering, appropriate filenames, attribution and distinct learner/instructor outputs. Do not leak keys through preview, downloads or shared state.
+- [x] Provide a read-only coordinator catalogue for existing Redmond and pilot-v2 draft review packets with revision, limitations and links to learner/instructor material. Draft scoring remains disabled; catalogue access does not approve a pack.
 
 Acceptance: inspect rendered PDFs for heading, endpoint, route, detour and profile tasks in both orientations and both audiences; test a mixed whole-lesson export. Preview page count/content matches the download, credits do not orphan onto an unnecessary page, and reference identities match the screen. Recheck the previously accepted B&W workflow and record physical ruler/device checks separately. All published review assets retain provenance and draft status.
 
@@ -86,7 +86,7 @@ Completion requires A–D outcomes demonstrated and E evidence recorded, with ma
 
 ## Next action
 
-Package C is prepared for review. After merge, verify CI, automatic Pages deployment and hosted task navigation, street-basics entry/resume, detail fallback/retry and external-search/World return behavior. Then implement package D: explicit context ownership for paper settings, all-page preview, whole-lesson output and the draft coordinator catalogue. Independent material/device/learner gates remain open.
+Package D is prepared for review. After merge, verify CI, automatic Pages deployment and hosted independent paper preferences, full browser/PDF previews, whole-lesson download and draft catalogue behavior. Then execute E: integrated author task walkthroughs, update Plans 03–05 acceptance evidence, and retain explicit blockers/owners for actual Safari/touch, screen-reader, physical-paper, independent curriculum/source/equivalence and participant observations. Do not add capabilities to substitute for those gates.
 
 
 ## Package A execution record — 2026-10-18
@@ -127,3 +127,16 @@ Street basics explains orient/locate/connect/detour expectations and saved-work 
 Map readiness separates usable tiles from optional detail failures. Matching vector availability controls labels, markings and exports; non-street modes omit those settings. Targeted street-detail retry preserves tiles, existing cooldowns and source protections. External search supports Enter and explains the return-by-map-URL flow; World view can restore its prior center/zoom/type or reset to the documented example.
 
 Validation includes a virtual-clock test of the real 25-second request deadline, offline/error retry, tile-preserving targeted retry, mode controls, search popup URL agreement, navigation/focus/history, draft preservation, saved-session reopening and failed pack retention. Existing keyboard, saving/conflict, geometry/scoring and full packaged PDF/browser checks remain required. Exact release/CI results are recorded in the PR. Shared paper settings are labeled globally here; package D will resolve their context ownership and print/coordinator workflow requirements. Independent curriculum, screen-reader, physical Safari/touch and participant observations remain open.
+
+
+## Package D execution record — 2026-10-18
+
+PR 67 merged as 1e6c0a4b52069d199b5052c9416b4854d4692573. Foundation CI and automatic Pages deployment succeeded. Hosted checks verified task links, a heading draft retained across Explore/Practice, friendly saved reopening at 1/4 answered, separate Review tools, World return to the prior Redmond example and honest tile fallback. A timed-out optional street request left printing available; targeted detail retry retained all 18 loaded tiles while restarting the detail request. Enter also opened the matching OpenStreetMap Redmond search in a separate tab. External-search instructions remained explicit. Package C deployment acceptance is recorded; physical-device, source/content and learning gates remain separate.
+
+Package D separates geographic and lesson Letter orientations, while keeping printScale lesson-only. Preferences v2 adds geographicOrientation; valid old v1 records seed both controls in memory and remain unchanged until an explicit save/import. Both versions remain strict, backed up and CAS-protected; future versions remain retained/read-only. Pack loading/defaults cannot alter geographic paper, and Explore reports its preference-save state. Database and backup-envelope versions and learning records are unchanged.
+
+Every browser print page is previewed at physical proportions with audience/question/orientation/count. PDF preview decodes the exact lossless samples embedded in its download, one page at a time, with page navigation and teaching text. Whole-lesson PDFs reuse the current question renderers in pack order, retain question-specific clues/closures and separate learner/instructor content, and number all pages across the document. Snapshot generation is bounded to 64 pages/64 MiB and aborts on stale selections. Native browser Print remains selected-output only; whole-lesson printing uses the generated PDF.
+
+Review includes a read-only catalogue for the existing Redmond-r1 and five pilot-v2 drafts, with revision, evidence/limitations, separate learner/instructor notes and map/PDF inspection. Exactly six small pack JSON assets are added to the release and local-preview allowlists with unchanged bytes and source credits. Draft scored sessions remain disabled; raw archives and participant data are not published.
+
+Author checks cover legacy record preservation, separate settings across pack loading/reload, geographic browser print context, every native preview page, whole street outputs for both audiences and Letter orientations, document-wide numbering/source credits, preview/PDF pixel hashes, unchanged learner drafts, stale instructor-output rejection, all six catalogue loads/draft gates and source bytes, Redmond and profile whole documents, and phone layout under the Pages project prefix/meta CSP. Existing scale, topology, scoring, conflict/recovery and full release checks remain required; exact results are recorded in the PR. Representative PDF map/question/profile/answer-space pages are rendered and visually inspected. Three-page landscape profile questions retain chart and writing-space readability; credits stay with the answer section. These are technical/author checks, not independent content, assistive-technology, physical-device/ruler or observed-learning acceptance. Package E remains open.

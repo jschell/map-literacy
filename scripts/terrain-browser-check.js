@@ -60,7 +60,7 @@ export async function checkTerrain(page, checkPdfDownload) {
     assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,'terrain controls fit a phone');
     await page.setViewportSize(terrainViewport);await ready();
     for (const orientation of ['landscape','portrait']) {
-      await page.locator('#orientation').selectOption(orientation); await ready(); await metadataReady();
+      await page.locator('#explorer-orientation').selectOption(orientation); await ready(); await metadataReady();
       await page.locator('#explorer-print').click();
       const canvas = page.locator('#geographic-paper-tiles canvas');
       const samples = await canvas.evaluate((c) => ({ width:c.width,height:c.height,water:[...c.getContext('2d').getImageData(180,200,1,1).data],background:[...c.getContext('2d').getImageData(20,20,1,1).data],localStreet:c.getContext('2d').getImageData(600,700,1,1).data[0] }));

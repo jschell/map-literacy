@@ -1,8 +1,8 @@
 import { openStorage } from '../storage/indexeddb.js';
-import { checkedSettings, createPreferenceWriter } from '../storage/settings.js';
+import { checkedSettings, settingsValues, createPreferenceWriter } from '../storage/settings.js';
 const get = (id) => document.getElementById(id);
 export function createPreferences({ readView, applyView, packDefaults, preferPackPrintDefaults = () => false }) {
-  let storage = null, ready = false, active = false, warnings = [], loading = null, editGeneration = 0;
+  let storage = null, ready = false, active = false, warnings = [], notices = [], loading = null, editGeneration = 0;
   const writer = createPreferenceWriter({ storage: { saveSettings: (...args) => storage ? storage.saveSettings(...args) : Promise.reject(Object.assign(new Error('Browser storage is unavailable.'), { code: 'storage-unavailable' })) }, onChange: refresh });
   function applySaved(values, useDefaults = false) {
     const defaults = packDefaults();
@@ -10,12 +10,13 @@ export function createPreferences({ readView, applyView, packDefaults, preferPac
   }
   function refresh() {
     const state = writer.snapshot();
-    get('preferences-status').textContent = !ready ? 'Loading view preferences…' : `${warnings.join(' ')} ${state.state === 'saved' ? 'View preferences saved in this browser.' : state.state === 'saving' ? 'Saving view preferences…' : state.state === 'conflict' ? 'View preferences are not saved: another tab changed them. Reload saved preferences or download your choices.' : state.state === 'error' ? `View preferences are not saved. ${state.error.message} Retry or download your choices.` : 'Pack view defaults apply until you choose a preference.'}`.trim();
+    get('preferences-status').textContent = !ready ? 'Loading view preferences…' : `${[...notices,...warnings].join(' ')} ${state.state === 'saved' ? 'View preferences saved in this browser.' : state.state === 'saving' ? 'Saving view preferences…' : state.state === 'conflict' ? 'View preferences are not saved: another tab changed them. Reload saved preferences or download your choices.' : state.state === 'error' ? `View preferences are not saved. ${state.error.message} Retry or download your choices.` : 'Pack view defaults apply until you choose a preference.'}`.trim();
+    get('explorer-preferences-status').textContent = !ready ? 'Loading geographic paper preference…' : `${notices.join(' ')} ${['error','conflict'].includes(state.state)||warnings.length ? `${get('preferences-status').textContent} Open Review/edit materials for preference retry, reload or export.` : state.state==='saving' ? 'Saving geographic and lesson view preferences…' : state.state==='saved' ? 'Geographic Letter orientation is saved separately from lesson orientation.' : 'Choose geographic Letter orientation here; lesson paper settings are separate.'}`.trim();
     get('preferences-retry').disabled = !ready || state.state === 'saving' || state.state === 'saved';
     get('preferences-reload').disabled = !ready || state.state === 'saving';
     get('preferences-defaults').disabled = !ready; get('preferences-export').disabled = !ready;
     get('preferences-import').disabled = !ready;
-    for (const id of ['variant', 'rotate', 'scale', 'orientation']) get(id).disabled = !ready;
+    for (const id of ['variant', 'rotate', 'scale', 'orientation', 'explorer-orientation']) get(id).disabled = !ready;
   }
   async function connect(reload = false) {
     if (loading) return loading;
@@ -24,13 +25,13 @@ export function createPreferences({ readView, applyView, packDefaults, preferPac
       try {
         if (!storage) { const opening = new AbortController(); storage = await openStorage({ signal: opening.signal, onBlocked: () => { opening.abort(); get('preferences-status').textContent = 'Close other tabs to unblock view preference storage, then retry.'; }, onVersionChange: () => { storage = null; get('preferences-status').textContent = 'Preference storage changed. Download your choices and reload.'; } }); }
         const raw = await storage.loadSettings(); if (generation !== editGeneration) return;
-        const recovered = writer.initialize(raw); warnings = recovered.warnings;
+        const recovered = writer.initialize(raw); warnings = recovered.warnings; notices = recovered.notices;
         if (reload || recovered.record || recovered.warnings.length) { active = true; applySaved(recovered.values, !reload); }
       } catch (e) { warnings = [e.message]; }
       finally { ready = true; refresh(); loading = null; }
     })(); return loading;
   }
-  function change(values = readView()) { editGeneration++; active = true; warnings = []; applyView(values); void writer.change(values).catch(() => {}); }
+  function change(values = readView()) { editGeneration++; active = true; warnings = []; notices = []; applyView(values); void writer.change(values).catch(() => {}); }
   get('preferences-retry').addEventListener('click', async () => {
     if (!storage) { try { storage = await openStorage(); } catch (e) { warnings = [e.message]; refresh(); return; } }
     void writer.retry().catch(() => {});
@@ -38,7 +39,7 @@ export function createPreferences({ readView, applyView, packDefaults, preferPac
   get('preferences-reload').addEventListener('click', () => connect(true));
   get('preferences-defaults').addEventListener('click', () => change(packDefaults()));
   get('preferences-export').addEventListener('click', () => {
-    const record = { singleton: 'singleton', settingsVersion: 1, version: writer.snapshot().version ?? 0, values: readView() };
+    const record = { singleton: 'singleton', settingsVersion: 2, version: writer.snapshot().version ?? 0, values: readView() };
     const url = URL.createObjectURL(new Blob([JSON.stringify(checkedSettings(record))], { type: 'application/json' }));
     const link = document.createElement('a'); link.href = url; link.download = 'map-literacy-view-preferences.json'; link.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
   });
@@ -48,7 +49,7 @@ export function createPreferences({ readView, applyView, packDefaults, preferPac
     try {
       if (file.size > 16384) throw new Error('Preference file exceeds 16 KiB.');
       const record = checkedSettings(JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(await file.arrayBuffer())));
-      if (generation !== editGeneration) return; change(record.values);
+      if (generation !== editGeneration) return; change(settingsValues(record));
     } catch (e) { if (generation !== editGeneration) return; warnings = [`Preferences not restored: ${e.message} Previous choices retained.`]; refresh(); }
   });
   window.addEventListener('pagehide', () => { storage?.close(); storage = null; });

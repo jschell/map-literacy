@@ -14,9 +14,9 @@ All five pack revisions advance together to lock a coherent review bundle and ca
 
 ## Review and use
 
-Follow the existing [protocol](../../learning-pilot.md). Import one map into Lesson map and print, choose the question and audience, then Download lesson PDF. Scored sessions stay disabled before approval. Use labeled/partial maps; required clues remain visible. Blank maps belong to separate reconstruction practice. All roads, reference letters and permissions are invented; source content is CC0-1.0. Street labels omit Road: Ash means Ash Road.
+Follow the existing [protocol](../../learning-pilot.md). Open one draft in Review/edit materials → Coordinator review catalogue, or import its map; choose a question and audience, then Download lesson PDF. Scored sessions stay disabled before approval. Use labeled/partial maps; required clues remain visible. Blank maps belong to separate reconstruction practice. All roads, reference letters and permissions are invented; source content is CC0-1.0. Street labels omit Road: Ash means Ash Road.
 
-Keep instructor keys, answer JSON and material-index.json separate from learner sheets. Route examples are not exhaustive; accept any graph-valid alternative respecting the authored closure. Paper is north-up at 1:1,000; screen rotation is practice only unless a later assessment procedure controls it. The existing exporter saves one selected question at a time.
+Keep instructor keys, answer JSON and material-index.json separate from learner sheets. Route examples are not exhaustive; accept any graph-valid alternative respecting the authored closure. Paper is north-up at 1:1,000; screen rotation is practice only unless a later assessment procedure controls it. Download whole-lesson PDF also exports all eight questions in pack order; inspect every page in PDF preview and keep learner/instructor output separate.
 
 Use the [forty-item checklist](review-checklist.md) and desk review to resolve content/ambiguity, tolerance, clue visibility, answer separation, paper/device use and cross-set overlap. No independent reviewer role/date is recorded yet. Material approval and ConditionsComparable remain null.
 

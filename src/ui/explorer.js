@@ -21,7 +21,7 @@ export function createExplorer() {
   const size = () => [viewport.clientWidth, viewport.clientHeight];
   function tileSnapshot() {
     if (basemap === 'terrain') return null;
-    if (!lastView || lastView.zoom !== zoom || lastView.orientation !== get('orientation').value || lastView.center.some((value, i) => value !== center[i])) return null;
+    if (!lastView || lastView.zoom !== zoom || lastView.orientation !== get('explorer-orientation').value || lastView.center.some((value, i) => value !== center[i])) return null;
     const view = geographicView(center, zoom, lastView.orientation);
     const tiles = visibleTiles(center, zoom, view.worldWidth, view.worldHeight, basemap);
     if (!tiles.length || !tiles.every((tile) => { const image = images.get(tile.key); return image?.complete && image.naturalWidth > 0; })) return null;
@@ -29,7 +29,7 @@ export function createExplorer() {
   }
   function currentVector() {
     const view = streets.view(), focus = unproject(...center, zoom);
-    return basemap === 'street' && streets.ready() && view.zoom === zoom && view.orientation === get('orientation').value && view.center.every((value, i) => Math.abs(value - focus[i]) <= 1e-9);
+    return basemap === 'street' && streets.ready() && view.zoom === zoom && view.orientation === get('explorer-orientation').value && view.center.every((value, i) => Math.abs(value - focus[i]) <= 1e-9);
   }
   function updatePrintAvailability() {
     const vectorReady = currentVector();
@@ -59,7 +59,7 @@ export function createExplorer() {
   }
   function updateFrame({ sourceUpdate = true } = {}) {
     if (viewport.clientWidth === 0 || viewport.clientHeight === 0) return;
-    const orientation = get('orientation').value;
+    const orientation = get('explorer-orientation').value;
     const frame = pageFrame(...size(), orientation);
     lastView = { orientation, frame, width: viewport.clientWidth, height: viewport.clientHeight, center: [...center], zoom };
     const outline = get('explorer-frame');
@@ -89,7 +89,7 @@ export function createExplorer() {
     layer.style.transform = `scale(${displayScale})`;
     if (basemap === 'terrain') {
       generation++; images.clear(); layer.replaceChildren();
-      terrain.update(geographicView(center, zoom, get('orientation').value), terrainOptions());
+      terrain.update(geographicView(center, zoom, get('explorer-orientation').value), terrainOptions());
       return;
     }
     const current = ++generation, [width, height] = size();
@@ -149,7 +149,7 @@ export function createExplorer() {
     if (basemap === 'terrain') return prepareTerrainPrint();
     const snapshot = basemap === 'street' ? streets.snapshot() : null;
     const focus = unproject(...center, zoom);
-    if (!snapshot || snapshot.model.view.zoom !== zoom || snapshot.model.view.orientation !== get('orientation').value || snapshot.model.view.center.some((value, i) => Math.abs(value - focus[i]) > 1e-9)) {
+    if (!snapshot || snapshot.model.view.zoom !== zoom || snapshot.model.view.orientation !== get('explorer-orientation').value || snapshot.model.view.center.some((value, i) => Math.abs(value - focus[i]) > 1e-9)) {
       return prepareTilePrint();
     }
     get('geographic-print-status').textContent = '';
@@ -227,7 +227,7 @@ export function createExplorer() {
     const link = get('explorer-pdf-link'); link.hidden = true;
     try {
       if (!preparePrint()) throw new Error('The current map is not ready. Retry PDF download.');
-      const view = geographicView([...center], zoom, get('orientation').value);
+      const view = geographicView([...center], zoom, get('explorer-orientation').value);
       const bytes = await geographicPdf(document, { view, children: [...get('geographic-paper-tiles').children], credit: get('geographic-paper-credit').textContent, appearance: get('explorer-appearance').value });
       if (pdfUrl) URL.revokeObjectURL(pdfUrl);
       pdfUrl = URL.createObjectURL(new Blob([bytes], { type: 'application/pdf' }));
@@ -253,10 +253,10 @@ export function createExplorer() {
   };
   window.addEventListener('beforeprint', () => {
     if (document.body.dataset.printTarget === 'lesson') return;
-    if (document.body.dataset.printTarget === 'geographic' || !get('map').querySelector('svg')) {
+    if (document.body.dataset.task === 'explore' || document.body.dataset.printTarget === 'geographic' || !get('map').querySelector('svg')) {
       document.body.dataset.printTarget = 'geographic';
-      get('geographic-print').dataset.orientation = get('orientation').value;
-      document.body.dataset.printOrientation = get('orientation').value;
+      get('geographic-print').dataset.orientation = get('explorer-orientation').value;
+      document.body.dataset.printOrientation = get('explorer-orientation').value;
       if (!preparePrint()) get('geographic-print-status').textContent = 'The current map is not ready for this area. Close printing and retry the map.';
     }
   });
@@ -281,10 +281,10 @@ export function createExplorer() {
   get('explorer-example').onclick = () => { priorArea = null; get('explorer-return').hidden = true; restoreArea({...DEFAULT_VIEW,basemap:'street'}); };
   get('explorer-detail-retry').onclick = () => {
     if (basemap !== 'street') return;
-    try { streets.update(geographicView(center,zoom,get('orientation').value),{retry:true}); }
+    try { streets.update(geographicView(center,zoom,get('explorer-orientation').value),{retry:true}); }
     catch (error) { get('explorer-street-status').textContent = error.message; }
   };
-  get('explorer-retry').onclick = () => { if (basemap === 'terrain') terrain.invalidate(); images.clear(); layer.replaceChildren(); settle(); try { if (basemap === 'street') streets.update(geographicView(center, zoom, get('orientation').value), { retry: true }); } catch {} };
+  get('explorer-retry').onclick = () => { if (basemap === 'terrain') terrain.invalidate(); images.clear(); layer.replaceChildren(); settle(); try { if (basemap === 'street') streets.update(geographicView(center, zoom, get('explorer-orientation').value), { retry: true }); } catch {} };
   get('explorer-jump').onsubmit = (event) => {
     event.preventDefault();
     try {

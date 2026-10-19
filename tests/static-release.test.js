@@ -1,8 +1,9 @@
+import {PUBLIC_REVIEW_PACKS} from '../src/materials/catalogue.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdtemp, mkdir, writeFile, readFile, rm, symlink, rename } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
 import { once } from 'node:events';
 import { buildStatic, verifyStatic } from '../scripts/static-package.js';
 import { createStaticServer } from '../scripts/static-server.js';
@@ -13,12 +14,13 @@ async function fixture(t) {
   t.after(() => rm(root, { recursive: true, force: true }));
   for (const directory of ['src/ui', 'tests/fixtures', 'data/raw', 'node_modules']) await mkdir(join(root, directory), { recursive: true });
   const assets = {
+    ...Object.fromEntries(PUBLIC_REVIEW_PACKS.map(path=>[path,'{}'])),
     'index.html': '<!doctype html>\n<head>\n  <meta charset="utf-8">\n<script type="module" src="src/ui/app.js"></script></head>',
     'styles.css': 'body { color: black; }', 'LICENSE': 'MIT fixture',
     'src/ui/app.js': 'export const loaded = true;', 'tests/fixtures/street-square.json': '{}', 'tests/fixtures/terrain-hill.json': '{}', 'tests/fixtures/terrain-slopes.json': '{}', 'tests/fixtures/terrain-depressions.json': '{}', 'tests/fixtures/terrain-landforms.json': '{}', 'tests/fixtures/terrain-profiles.json': '{}',
     'data/raw/home.json': 'excluded raw data', '.env': 'excluded configuration', 'node_modules/index.js': 'excluded dependency'
   };
-  for (const [path, content] of Object.entries(assets)) await writeFile(join(root, path), content);
+  for (const [path, content] of Object.entries(assets)) { await mkdir(dirname(join(root,path)),{recursive:true}); await writeFile(join(root,path),content); }
   return root;
 }
 

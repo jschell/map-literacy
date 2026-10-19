@@ -2,11 +2,11 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { DEFAULT_SETTINGS, checkedSettings, recoverSettings, createPreferenceWriter } from '../src/storage/settings.js';
 import { checkedBackup } from '../src/storage/backup.js';
-const record = (values = DEFAULT_SETTINGS, version = 0) => ({ singleton: 'singleton', settingsVersion: 1, version, values: structuredClone(values) });
+const record = (values = DEFAULT_SETTINGS, version = 0) => ({ singleton: 'singleton', settingsVersion: 2, version, values: structuredClone(values) });
 test('invalid/future stored values use visible defaults without mutating the original', () => {
   const old = record({ ...DEFAULT_SETTINGS, labels: 'future-style', printScale: 1000 }), before = JSON.stringify(old);
   const recovered = recoverSettings(old); assert.equal(recovered.values.labels, 'labeled'); assert.equal(recovered.values.printScale, 1000); assert.equal(recovered.warnings.length, 1); assert.equal(recovered.version, 0); assert.equal(JSON.stringify(old), before);
-  old.settingsVersion = 2; assert.equal(recoverSettings(old).writable, false); assert.throws(() => checkedSettings(old), (e) => e.code === 'invalid-settings');
+  old.settingsVersion = 3; assert.equal(recoverSettings(old).writable, false); assert.throws(() => checkedSettings(old), (e) => e.code === 'invalid-settings');
   for (const values of [{ ...DEFAULT_SETTINGS, mapRotationDeg: 360 }, { ...DEFAULT_SETTINGS, orientation: 'a4' }, { ...DEFAULT_SETTINGS, printScale: 2000 }]) assert.throws(() => checkedSettings(record(values)));
 });
 test('rapid preference changes serialize against committed versions and save the latest choice', async () => {
@@ -26,4 +26,19 @@ test('failed preference write retains pending values and the version lease for r
 test('full progress backup accepts a strict settings record and keeps legacy empty settings valid', () => {
   const empty = { backupVersion: 1, exportedAt: new Date().toISOString(), packs: [], sessions: [], attempts: [], settings: {} };
   assert.deepEqual(checkedBackup(empty).settings, {}); assert.deepEqual(checkedBackup({ ...empty, settings: record() }).settings, record());
+});
+
+test('legacy shared orientation seeds both contexts without rewriting v1; explicit changes save independent v2 values',async()=>{
+  const legacy={singleton:'singleton',settingsVersion:1,version:7,values:{labels:'partial',mapRotationDeg:90,printScale:1000,orientation:'portrait'}};
+  const before=structuredClone(legacy),calls=[];
+  const writer=createPreferenceWriter({storage:{async saveSettings(value,options){calls.push({value,options});return {version:value.version};}}});
+  const recovered=writer.initialize(legacy);
+  assert.equal(calls.length,0);assert.deepEqual(checkedSettings(legacy),before);assert.deepEqual(writer.snapshot().record,before);
+  assert.equal(recovered.values.geographicOrientation,'portrait');assert.equal(recovered.values.orientation,'portrait');assert.equal(recovered.notices.length,1);
+  await writer.change({...recovered.values,orientation:'landscape'});
+  assert.equal(calls[0].options.expectedVersion,7);assert.equal(calls[0].value.settingsVersion,2);assert.equal(calls[0].value.version,8);
+  assert.equal(calls[0].value.values.orientation,'landscape');assert.equal(calls[0].value.values.geographicOrientation,'portrait');assert.deepEqual(legacy,before);
+  const empty={backupVersion:1,exportedAt:new Date().toISOString(),packs:[],sessions:[],attempts:[]};
+  assert.deepEqual(checkedBackup({...empty,settings:legacy}).settings,legacy);
+  assert.deepEqual(checkedBackup({...empty,settings:calls[0].value}).settings,calls[0].value);
 });

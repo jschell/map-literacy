@@ -1,11 +1,12 @@
+import { PUBLIC_REVIEW_PACKS } from '../src/materials/catalogue.js';
 import { createHash, randomUUID } from 'node:crypto';
 import { lstat, readdir, readFile, mkdir, writeFile, rename, rm } from 'node:fs/promises';
 import { join, dirname } from 'node:path';
 import { HOST_HEADERS, META_CSP } from './static-policy.js';
 
 const sha256 = (bytes) => createHash('sha256').update(bytes).digest('hex');
-const allowed = (path) => ['index.html', 'styles.css', 'LICENSE', 'NOTICE.txt', '_headers', '.nojekyll', 'tests/fixtures/street-square.json', 'tests/fixtures/terrain-depressions.json', 'tests/fixtures/terrain-landforms.json', 'tests/fixtures/terrain-profiles.json', 'tests/fixtures/terrain-slopes.json', 'tests/fixtures/terrain-hill.json'].includes(path) || /^src\/[a-zA-Z0-9/_-]+\.js$/.test(path);
-const notice = 'Map Literacy code: MIT; see LICENSE.\nSynthetic street-square.json, terrain-hill.json, terrain-slopes.json, terrain-profiles.json, terrain-landforms.json and terrain-depressions.json: CC0-1.0, invented geometry/terrain, not real conditions.\nhttps://creativecommons.org/publicdomain/zero/1.0/\nImported third-party packs retain their own provenance, licenses and attribution.\n';
+const allowed = (path) => ['index.html', 'styles.css', 'LICENSE', 'NOTICE.txt', '_headers', '.nojekyll', 'tests/fixtures/street-square.json', 'tests/fixtures/terrain-depressions.json', 'tests/fixtures/terrain-landforms.json', 'tests/fixtures/terrain-profiles.json', 'tests/fixtures/terrain-slopes.json', 'tests/fixtures/terrain-hill.json'].includes(path) || PUBLIC_REVIEW_PACKS.includes(path) || /^src\/[a-zA-Z0-9/_-]+\.js$/.test(path);
+const notice = 'Map Literacy code: MIT; see LICENSE.\nSynthetic street-square.json, terrain-hill.json, terrain-slopes.json, terrain-profiles.json, terrain-landforms.json and terrain-depressions.json: CC0-1.0, invented geometry/terrain, not real conditions.\nhttps://creativecommons.org/publicdomain/zero/1.0/\nRedmond review draft: OpenStreetMap contributors, ODbL-1.0; source date and lineage in docs/materials/redmond-r1/pack.json. Pilot-v2 drafts: invented CC0-1.0 geometry. All catalogue packs are unapproved review drafts. Imported third-party packs retain their own provenance, licenses and attribution.\n';
 
 async function regular(root, path) {
   const parts = path.split('/'); let target = root;
@@ -30,7 +31,7 @@ async function filesUnder(root, path) {
 
 /** Copies an explicit public asset set. Never reads raw packs, local state or credentials. */
 export async function buildStatic(root) {
-  const paths = ['index.html', 'styles.css', 'LICENSE', 'tests/fixtures/street-square.json', 'tests/fixtures/terrain-depressions.json', 'tests/fixtures/terrain-landforms.json', 'tests/fixtures/terrain-profiles.json', 'tests/fixtures/terrain-slopes.json', 'tests/fixtures/terrain-hill.json', ...await filesUnder(root, 'src')].sort();
+  const paths = ['index.html', 'styles.css', 'LICENSE', 'tests/fixtures/street-square.json', 'tests/fixtures/terrain-depressions.json', 'tests/fixtures/terrain-landforms.json', 'tests/fixtures/terrain-profiles.json', 'tests/fixtures/terrain-slopes.json', 'tests/fixtures/terrain-hill.json', ...PUBLIC_REVIEW_PACKS, ...await filesUnder(root, 'src')].sort();
   const assets = new Map();
   for (const path of paths) {
     if (!allowed(path)) throw new Error(`Unexpected source asset: ${path}`);

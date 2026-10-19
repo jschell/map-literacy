@@ -1,12 +1,12 @@
 # Cleveland / Brown Street draft learning packet
 
-This is a source-backed **material draft**, not an approved lesson or current route guide. Import [pack.json](pack.json) into the existing Lesson map interface to inspect the map and print each selected question. Begin lesson remains disabled because independent review is pending. No new UI or scoring type is introduced.
+This is a source-backed **material draft**, not an approved lesson or current route guide. Open the draft from Review/edit materials → Coordinator review catalogue, or import [pack.json](pack.json) into the prepared-map interface to inspect the map and print each selected question. Begin lesson remains disabled because independent review is pending. No new UI or scoring type is introduced.
 
 The focus is a small portion of the retained downtown Redmond snapshot. A–D are authored reference points at recorded source nodes, not asserted physical landmarks. Required street labels and references appear in labeled/partial variants; blank is only for instructor-led reconstruction, not the four question sheets. The packet is not a complete road map; full selected way geometry is preserved and clipped for display, with other roads omitted. Unknown access/turn restrictions prevent approved route or detour use.
 
 ## Use and reproducibility
 
-For each question choose Learner worksheet and Download lesson PDF; separately choose Instructor guide. Use Letter portrait or landscape at 100% actual size. Keep [instructor-manifest.json](instructor-manifest.json) and the instructor notes away from learner handouts: they contain answers. The existing exporter prints the selected question, not a combined multi-question booklet.
+For each question choose Learner worksheet and Download lesson PDF; separately choose Instructor guide. Use Letter portrait or landscape at 100% actual size. Keep [instructor-manifest.json](instructor-manifest.json) and the instructor notes away from learner handouts: they contain answers. Download whole-lesson PDF exports all four questions in order; selected-question output remains available. PDF preview exposes every page and preserves separate learner/instructor output.
 
 The retained `map-literacy-redmond-source-20261012.zip` supplies source.osm.json, acquisition.json, pack.json and review-report.json. Extract to a local working directory, then run:
 

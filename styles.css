@@ -204,7 +204,7 @@ h2.sheet-block { font-size: 12pt; line-height: 1.4; }
 #print-preview summary { cursor: pointer; padding: 12px 0; font-weight: 600; }
 #print-preview-content:not(:empty) { max-width: 900px; padding: 20px; background: white; border: 1px solid #cbd1c9; color: black; }
 #print-preview-content[data-orientation=portrait] { max-width: 620px; }
-#print-preview-content .print-map { width: 100%; height: auto; border: 1px solid #ddd; }
+#print-preview-content .print-map { width: auto; height: auto; }
 
 #profile-panel { margin: 20px 0; padding: 16px; background: white; border: 1px solid #cbd1c9; }
 .screen-profile { display: block; width: 100%; max-width: 900px; height: auto; }
@@ -271,3 +271,37 @@ body[data-task=practice]:not([data-pack-ready]) #lesson-start { display: none; }
 @media (max-width: 650px) { .lesson-sequence { grid-template-columns: minmax(0,1fr); gap: 4px; } }
 
 #lesson-entry > summary { cursor: pointer; padding: 12px 0; font-weight: 650; }
+
+.pdf-render-stage { position: absolute; left: -10000px; top: 0; visibility: hidden; }
+#pdf-preview { margin: 20px 0; }
+#pdf-preview > summary { padding: 12px 0; cursor: pointer; font-weight: 600; }
+#pdf-preview-canvas { display: block; width: 100%; max-width: 900px; height: auto; border: 1px solid #bac5bf; }
+#pdf-preview-page { max-width: min(100%,600px); }
+#pdf-preview-text { white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.5; }
+.browser-preview-page { margin: 16px 0; }
+.browser-preview-page figcaption { margin-bottom: 8px; font-size: .85rem; }
+.browser-preview-frame { width: 100%; overflow: hidden; }
+.browser-preview-paper { transform-origin: top left; padding: 10mm; background: white; color: black; outline: 1px solid #bac5bf; }
+.browser-preview-paper[data-orientation=landscape] { width: 279.4mm; height: 215.9mm; }
+.browser-preview-paper[data-orientation=portrait] { width: 215.9mm; height: 279.4mm; }
+.browser-preview-copy { margin: 0; }
+.preview-print-sheet[data-orientation=landscape] { width:259.4mm; height:195.9mm; }
+.preview-print-sheet[data-orientation=portrait] { width:195.9mm; height:259.4mm; }
+[data-orientation=landscape] .preview-paper-map { width:259.4mm; height:145mm; }
+[data-orientation=portrait] .preview-paper-map { width:195.9mm; height:208.5mm; }
+.preview-paper-footer { height:20.9mm; font-size:8pt; line-height:1.3; overflow-wrap:anywhere; }
+@media print { .pdf-render-stage { display:none; } }
+
+#material-catalogue { margin:24px 0; padding:16px; border:1px solid #bac5bf; }
+#material-catalogue > summary { padding:12px 0; cursor:pointer; font-weight:650; }
+#material-catalogue-list { list-style:none; margin:0; padding:0; }
+#material-catalogue-list li { border-top:1px solid #bac5bf; padding:12px 0; }
+#material-catalogue-list p { line-height:1.5; }
+#material-catalogue-list .controls { align-items:center; }
+#material-catalogue-list a { padding:10px 0; }
+#print-preview-content .preview-paper-map .print-map { width:100%; height:100%; }
+.preview-print-sheet .worksheet { height:30mm; padding:4mm 0; font-size:10pt; overflow:hidden; }
+.preview-print-sheet .worksheet p { margin:2mm 0 0; }
+#pdf-preview .controls > label { min-width:0; max-width:100%; }
+#pdf-preview .controls select { min-width:0; max-width:100%; }
+.browser-preview-page figcaption { overflow-wrap:anywhere; }

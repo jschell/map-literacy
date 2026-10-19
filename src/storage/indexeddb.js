@@ -177,7 +177,7 @@ export function openStorage({ factory = globalThis.indexedDB, name = 'map-litera
           return transaction(['settings'], 'readwrite', ({ tx, read, abort, result }) => {
             const store = tx.objectStore('settings'); read(store.get('singleton'), (old) => {
               if ((old ? old.version : null) !== expectedVersion || (old && record.version !== old.version + 1) || (!old && record.version !== 0)) { abort(storageError('conflict', 'Preferences changed in another tab. Reload saved preferences before saving.')); return; }
-              if (old && old.settingsVersion !== 1) { abort(storageError('unsupported-version', 'Stored preference version is unsupported.')); return; }
+              if (old && ![1,2].includes(old.settingsVersion)) { abort(storageError('unsupported-version', 'Stored preference version is unsupported.')); return; }
               store.put(record); result({ version: record.version });
             });
           }, signal);
