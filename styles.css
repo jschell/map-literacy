@@ -250,3 +250,24 @@ h2.sheet-block { font-size: 12pt; line-height: 1.4; }
 #lesson-answer-results li { margin-bottom: 8px; }
 #lesson-answer-results, #lesson-revision { overflow-wrap: anywhere; }
 #manual-trace-tools > summary { cursor: pointer; padding: 14px 0; font-weight: 600; }
+
+.task-navigation { display: flex; flex-wrap: wrap; gap: 8px; margin: 24px 0 16px; }
+.task-navigation a { padding: 12px 16px; border: 1px solid #597865; border-radius: 6px; color: #244a3b; background: white; text-decoration: none; }
+.task-navigation a[aria-current] { color: white; background: #305e4d; }
+.shared-paper { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.shared-paper p { max-width: 420px; }
+body:not([data-task=review]) .review-only { display: none; }
+body[data-task=practice]:not([data-pack-ready]) #material-settings,
+body[data-task=practice]:not([data-pack-ready]) .practice-answer,
+body[data-task=practice]:not([data-pack-ready]) #lesson-start { display: none; }
+#lesson-entry { max-width: 900px; }
+.lesson-sequence { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 24px; padding-left: 24px; }
+.lesson-sequence p { font-size: .85rem; line-height: 1.5; }
+.lesson-sequence button { margin: 4px 0; }
+#material-settings { margin: 24px 0; padding: 14px; border: 1px solid #cbd1c9; }
+#material-settings > summary { cursor: pointer; padding: 10px 0; }
+#explorer-readiness { border-left: 3px solid #597865; padding: 4px 16px 14px; margin-top: 16px; }
+#save-overview { border-left: 3px solid #597865; padding: 4px 16px; margin: 16px 0; }
+@media (max-width: 650px) { .lesson-sequence { grid-template-columns: minmax(0,1fr); gap: 4px; } }
+
+#lesson-entry > summary { cursor: pointer; padding: 12px 0; font-weight: 650; }

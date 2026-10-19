@@ -1,6 +1,6 @@
 # Plan 10 — Learner usability and website workflows
 
-Status: active; package A merged and hosted behavior verified after PR 64. Package B merged in PR 65; its post-merge browser check failed and blocked Pages publication. A focused responsive-check repair is prepared; deployment and hosted acceptance remain pending. Packages C–E remain open. Authorized 2026-10-18 after the critical website review.
+Status: active; packages A and B merged, CI/deployment and hosted behavior verified. Package C implemented on a review branch; merge/deployment acceptance pending. Packages D–E remain open. Authorized 2026-10-18 after the critical website review.
 Dependencies: existing Plan 02–05 capabilities; supports their unfinished acceptance and Plan 06. Plan 02 remains queued for content/source acceptance. Plan 08 feature expansion stays paused.
 
 ## Outcome and boundaries
@@ -54,11 +54,11 @@ Acceptance: end a four-item lesson after three items and observe truthful partia
 
 ### C — Clear public tasks, entry points and truthful loading states
 
-- [ ] Separate Explore and print, Practice, and Review/edit materials through accessible navigation and progressive disclosure. Keep recovery/conflict actions available when relevant; reduce irrelevant disabled controls in the normal entry flow.
-- [ ] Offer a clear street-basics start/resume path with skill/task expectations. Explain that browsing real geography does not automatically create reviewed lessons. Order terrain options by prerequisites: contours, relative slope, then landforms/profiles; describe depressions as a contour variant. Preserve existing capabilities without implying all demos are independently approved.
-- [ ] Distinguish technically validated synthetic fixtures, source-backed draft display materials and independently approved curriculum. Replace ambiguous review badges with their actual evidence basis.
-- [ ] Consolidate loading/readiness messages without hiding failures. Distinguish usable tile output from optional street-detail readiness, disable/hide ineffective settings, and provide targeted detail retry. Exercise timeout, offline/error and successful retry; do not treat the audit timeout as proof of a universal provider outage.
-- [ ] Explain the external place-search flow and support Enter consistently with its existing link. Add a clear return to prior area/reset to example after World view. Integrated geocoding remains a separate policy decision.
+- [x] Separate Explore and print, Practice, and Review/edit materials through accessible navigation and progressive disclosure. Keep recovery/conflict actions available when relevant; reduce irrelevant disabled controls in the normal entry flow.
+- [x] Offer a clear street-basics start/resume path with skill/task expectations. Explain that browsing real geography does not automatically create reviewed lessons. Order terrain options by prerequisites: contours, relative slope, then landforms/profiles; describe depressions as a contour variant. Preserve existing capabilities without implying all demos are independently approved.
+- [x] Distinguish technically validated synthetic fixtures, source-backed draft display materials and independently approved curriculum. Replace ambiguous review badges with their actual evidence basis.
+- [x] Consolidate loading/readiness messages without hiding failures. Distinguish usable tile output from optional street-detail readiness, disable/hide ineffective settings, and provide targeted detail retry. Exercise timeout, offline/error and successful retry; do not treat the audit timeout as proof of a universal provider outage.
+- [x] Explain the external place-search flow and support Enter consistently with its existing link. Add a clear return to prior area/reset to example after World view. Integrated geocoding remains a separate policy decision.
 
 Acceptance: a new visitor can choose browsing or practice, start/resume a lesson and find advanced tools without passing through internal review controls. Verify navigation/focus, loading/failure recovery, human-readable saved records and mode-specific controls. Real geography, prepared lessons and draft/approved evidence remain distinguishable.
 
@@ -86,7 +86,7 @@ Completion requires A–D outcomes demonstrated and E evidence recorded, with ma
 
 ## Next action
 
-Merge the focused release-check repair, then verify CI, automatic Pages deployment and hosted early-end/pause/current-question print behavior for package B before implementing package C. The lifecycle/coverage compatibility decision is recorded in docs/decisions.md; no storage migration is required.
+Package C is prepared for review. After merge, verify CI, automatic Pages deployment and hosted task navigation, street-basics entry/resume, detail fallback/retry and external-search/World return behavior. Then implement package D: explicit context ownership for paper settings, all-page preview, whole-lesson output and the draft coordinator catalogue. Independent material/device/learner gates remain open.
 
 
 ## Package A execution record — 2026-10-18
@@ -114,3 +114,16 @@ PR 65 merged as 0862884a263b60d4f805c5eb1c326e0baf7c17a4. All 247 Node tests, fi
 The check took map, answer and profile rectangles in separate browser protocol calls immediately after resizing. The app redraws its responsive SVG/chart through ResizeObserver and requestAnimationFrame; measurements could span different layouts or scroll anchoring. The repair waits for the resized map, reads all three rectangles in one page evaluation, retains the order/spacing assertions, adds landscape-to-portrait transitions and includes the measured rectangles in a failure. Fixture loading also waits for the new validated map before starting its session. This changes the test harness only; it does not relax layout bounds, bypass browser checks or change application data/scoring.
 
 Validation and exact release results are recorded in the repair PR. Package C remains next after successful deployment and hosted package B checks. Physical device, assistive-technology, curriculum and learner acceptance remain separate.
+
+
+## Package C execution record — 2026-10-18
+
+PR 66 merged as 6dc46319303c8ca7937c4a6b052e3852cafa7798. Foundation CI and automatic Pages deployment succeeded. Hosted package B checks recorded three submitted/correct answers out of four, current learner printing of detour question 4 with two closure marks and two pages, Pause/Resume, and an early end saved as version 7 with 3/4 coverage and a friendly Ended saved-session label. Stale route instructions cleared and current-question printing became unavailable after ending. This closes the package B deployment blocker; it does not establish curriculum or device acceptance.
+
+Package C separates Explore and print, Practice and Review/edit materials with native task links/history, synchronous keyboard focus and skip-link destinations. Task changes preserve the current draft/session. Practice collapses lesson choices after load and keeps view/print/preferences expandable; Review exposes the advanced controls. Relevant save/conflict recovery stays outside collapsed sections. Slow/failed pack replacement cannot start the previous pack by mistake.
+
+Street basics explains orient/locate/connect/detour expectations and saved-work entry. Terrain choices follow contour prerequisites, depression variant, relative slope and landforms/profiles. Evidence labels distinguish technical synthetic checks, source-backed material, author review flags and unrecorded independent approval; scoring gates and record formats are unchanged.
+
+Map readiness separates usable tiles from optional detail failures. Matching vector availability controls labels, markings and exports; non-street modes omit those settings. Targeted street-detail retry preserves tiles, existing cooldowns and source protections. External search supports Enter and explains the return-by-map-URL flow; World view can restore its prior center/zoom/type or reset to the documented example.
+
+Validation includes a virtual-clock test of the real 25-second request deadline, offline/error retry, tile-preserving targeted retry, mode controls, search popup URL agreement, navigation/focus/history, draft preservation, saved-session reopening and failed pack retention. Existing keyboard, saving/conflict, geometry/scoring and full packaged PDF/browser checks remain required. Exact release/CI results are recorded in the PR. Shared paper settings are labeled globally here; package D will resolve their context ownership and print/coordinator workflow requirements. Independent curriculum, screen-reader, physical Safari/touch and participant observations remain open.

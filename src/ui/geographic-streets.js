@@ -37,7 +37,7 @@ export function createGeographicStreets(get, onChange = () => {}) {
     } catch (error) {
       if (token !== version) return;
       if (error.retryMs) nextRequest = Math.max(nextRequest, Date.now() + error.retryMs);
-      status(active.signal.aborted ? 'Street source timed out. Retry map.' : `${error.message} Basic map printing remains available when map tiles are loaded.`);
+      status(active.signal.aborted ? 'Optional street details timed out for this request. Loaded map tiles can still print. Retry street details only.' : `${error.message} Basic map printing remains available when map tiles are loaded.`);
     } finally { clearTimeout(timeout); if (controller === active) controller = null; }
   }
   function update(next, { retry = false } = {}) {
@@ -49,7 +49,7 @@ export function createGeographicStreets(get, onChange = () => {}) {
     if (source) { render(); return; }
     get('explorer-vector').replaceChildren(); get('geographic-paper-tiles').replaceChildren(); get('explorer-svg').disabled = true; get('explorer-source').disabled = true;
     try { geographicQuery(view.bounds); } catch (error) { status(`${error.message} Basic map printing remains available when map tiles are loaded.`); return; }
-    status('Loading street geometry and names…');
+    status('Loading optional street geometry and names…');
     timer = setTimeout(() => request(version), 650);
   }
   // The frame can resize after the viewport callback as responsive layout settles.

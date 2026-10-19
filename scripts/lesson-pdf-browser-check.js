@@ -12,7 +12,7 @@ function firstPageSamples(bytes) {
   return { width: Number(match[1]), height: Number(match[2]), pixels };
 }
 export async function checkLessonPdf(page, base, output) {
-  await page.goto(base); await page.locator('#terrain-demo').click();
+  await page.goto(base); await page.locator('#nav-review').click(); await page.locator('#terrain-demo').click();
   await page.waitForFunction(()=>!document.getElementById('lesson-pdf').disabled);
   const download = async (name) => {
     const event = page.waitForEvent('download'); await page.locator('#lesson-pdf').click();

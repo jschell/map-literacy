@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 export async function checkTerrainSlopes(page,base,output) {
  const saved=()=>page.waitForFunction(()=>document.getElementById('save-status').textContent.startsWith('Saved in this browser'));
- await page.goto(base);await page.locator('#slope-demo').click();await page.waitForFunction(()=>document.getElementById('status').textContent.includes('relative slope'));
+ await page.goto(base); await page.locator('#nav-review').click();await page.locator('#slope-demo').click();await page.waitForFunction(()=>document.getElementById('status').textContent.includes('relative slope'));
  assert.equal(await page.locator('#paper-map .slope-span').count(),2);
  await page.locator('#lesson-start').click();await saved();await page.waitForFunction(()=>document.querySelectorAll('#map .slope-span').length===2);
  assert.equal(await page.locator('#answer-slope').isVisible(),true);

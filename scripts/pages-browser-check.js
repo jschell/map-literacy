@@ -23,6 +23,7 @@ export async function checkPagesPackage(page) {
     const geographicChecks = await checkExplorer(preview, base);
     const modules = requests.filter((url) => url.startsWith(base) && new URL(url).pathname.endsWith('.js'));
     assert.ok(modules.length > 10 && modules.every((url) => new URL(url).searchParams.get('v') === version), 'all module imports use one release fingerprint');
+    await preview.locator('#nav-review').click();
     await preview.locator('#demo').click(); await preview.locator('#map svg').waitFor();
     assert.equal(await preview.locator('#map .feature').count(), 6);
     await preview.locator('#lesson-start').click();

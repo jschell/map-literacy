@@ -1,3 +1,5 @@
+import { createTaskNavigation } from './task-navigation.js';
+import { packEvidence } from '../lesson/evidence.js';
 import { createEndpointAnswer } from './endpoint-answer.js';
 import { renderProfileChart } from '../terrain/profile-chart.js';
 import { lessonPdf } from '../export/lesson-pdf.js';
@@ -129,11 +131,12 @@ function updateView() {
     get('paper-summary').textContent = '';
     get('paper-title').textContent = 'Print output is unavailable'; get('paper-footer').textContent = printError;
   }
-  announce(`${pack.title} · ${pack.review.status === 'reviewed' ? 'Reviewed pack' : 'Unreviewed draft'} · ${pack.features.features.length} features · ${model.labels.length + get('map').querySelectorAll('.contour-elevation-label').length} labels shown${model.suppressedLabels ? `, ${model.suppressedLabels} suppressed to avoid collisions/edges` : ''} · screen rotated ${rotation}°. ${printError}`);
+  announce(`${pack.title} · ${packEvidence(pack)} · ${pack.features.features.length} features · ${model.labels.length + get('map').querySelectorAll('.contour-elevation-label').length} labels shown${model.suppressedLabels ? `, ${model.suppressedLabels} suppressed to avoid collisions/edges` : ''} · screen rotated ${rotation}°. ${printError}`);
 }
 function install(value) {
   assertRenderable(value); lessons.guardReplacement();
   invalidateLessonPdf(); lastPdfKey = null;
+  document.body.dataset.packReady = 'true';
   pack = value; selected = null; rotation = 0;
   screenModels.clear(); paperModels.clear(); printPagesKey = null; screenViewKey = null; paperViewKey = null; screenSelected = null;
   get('print-exercise').replaceChildren();
@@ -151,16 +154,23 @@ function install(value) {
   featurePicker.set(pack.features.features.map((f) => ({ id: f.id, text: `${f.properties.name ?? 'Unnamed feature'} (${f.id})` })), '', true); featurePicker.enabled(true);
   get('selection').textContent = pack.module === 'topographic' ? 'Synthetic terrain lesson. Use the contour elevations and marked exercise references. No real terrain is represented.' : 'Choose a road on the map or use the feature list.'; editor.installed(); trace.installed(); lessons.installed(); preferences.installed(); updateView();
   get('map').dataset.loadVersion = String(++loadVersion);
+  if (document.body.dataset.task === 'practice') {
+    const entryFocused = get('lesson-entry').contains(document.activeElement);
+    get('lesson-entry').open = false;
+    if (entryFocused) (get('lesson-start').disabled ? get('lesson-title') : get('lesson-start')).focus();
+  }
 }
 async function load(operation) {
   lessons.cancelPending(); job?.abort(); const current = new AbortController(); job = current;
+  lessons.setPackLoading(true);
   announce('Reading and validating map…');
   try { const value = await operation(current.signal); if (job === current && !current.signal.aborted) install(value); }
   catch (error) { if (job === current && !current.signal.aborted) announce(`Map not loaded: ${error.message} ${error.errors?.[0]?.path ?? ''} The previous map is retained.`); }
+  finally { if (job === current) lessons.setPackLoading(false); }
 }
 const featurePicker = createSearchSelect({ select: get('feature'), filter: get('feature-filter'), summary: get('feature-matches'), placeholder: 'No feature selected' });
 const trace = createRouteTrace({ getPack: () => pack, redraw: updateView });
-const lessons = createLessons({ getPack: () => pack, getTrace: () => trace.overlay(), getEndpoint: () => endpoint.answer(), cancelPackLoad: () => { job?.abort(); if (pack) updateView(); else announce('Choose a map or restore a session backup.'); }, installPack: (value) => { job?.abort(); install(value); } });
+const lessons = createLessons({ getPack: () => pack, getTrace: () => trace.overlay(), getEndpoint: () => endpoint.answer(), cancelPackLoad: () => { job?.abort(); lessons.setPackLoading(false); if (pack) updateView(); else announce('Choose a map or restore a session backup.'); }, installPack: (value) => { job?.abort(); lessons.setPackLoading(false); install(value); } });
 const endpoint = createEndpointAnswer({getPack:()=>pack,getModel:()=>currentModel,isPracticing:()=>lessons.exercise()?.type==='endpoint' && lessons.isPracticing(),redraw:updateView});
 const editor = createLabelEditor({ getPack: () => pack, getModel: () => currentModel, applyPack: (value) => { assertRenderable(value); lessons.guardReplacement(); pack = value; screenModels.clear(); paperModels.clear(); printPagesKey = null; screenViewKey = null; paperViewKey = null; screenSelected = null; trace.packChanged(); lessons.packChanged(); updateView(); } });
 
@@ -236,3 +246,5 @@ new ResizeObserver(() => {
 
 
 explorer = createExplorer();
+
+createTaskNavigation(updateView);

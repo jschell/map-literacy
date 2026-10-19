@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';import {readFile} from 'node:fs/promises';import {buildTerrainLessonFixture} from './terrain-lesson-fixture.js';
 export async function checkTerrainDepressions(page,base,output) {
  const saved=()=>page.waitForFunction(()=>document.getElementById('save-status').textContent.startsWith('Saved in this browser'));
- await page.goto(base);await page.locator('#depression-demo').click();await page.waitForFunction(()=>document.getElementById('status').textContent.includes('Synthetic basin'));
+ await page.goto(base); await page.locator('#nav-review').click();await page.locator('#depression-demo').click();await page.waitForFunction(()=>document.getElementById('status').textContent.includes('Synthetic basin'));
  assert.equal(await page.locator('#map .depression-tick').count(),35);assert.equal(await page.locator('#paper-map .depression-tick').count(),35);assert.match(await page.locator('#map .contour-legend').textContent(),/Inward ticks: lower inside/);
  assert.equal(await page.locator('#paper-map .contour-elevation-label').count(),0);assert.deepEqual(await page.locator('#paper-map .exercise-mark').allTextContents(),['115 m','A']);
  await page.locator('#lesson-start').click();await saved();await page.locator('#answer-elevation').fill('120');await page.locator('#lesson-submit').click();await saved();assert.match(await page.locator('#lesson-status').textContent(),/Try again/);

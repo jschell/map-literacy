@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';import {readFile} from 'node:fs/promises';import {buildTerrainLandformFixture} from './terrain-landform-fixture.js';
 export async function checkTerrainLandforms(page,base,output) {
  const saved=()=>page.waitForFunction(()=>document.getElementById('save-status').textContent.startsWith('Saved in this browser'));
- await page.goto(base);await page.locator('#landform-demo').click();await page.waitForFunction(()=>document.getElementById('status').textContent.includes('Synthetic landforms'));
+ await page.goto(base); await page.locator('#nav-review').click();await page.locator('#landform-demo').click();await page.waitForFunction(()=>document.getElementById('status').textContent.includes('Synthetic landforms'));
  assert.ok(await page.locator('#map .contour--index').count()>0);assert.ok(await page.locator('#map .contour--intermediate').count()>0);
  assert.deepEqual(await page.locator('#paper-map .exercise-mark').allTextContents(),['H','L','A']);assert.equal(await page.locator('#profile-panel').isVisible(),false);
  await page.locator('#lesson-start').click();await saved();await page.locator('#lesson-submit').click();assert.match(await page.locator('#lesson-status').textContent(),/Enter a valid answer/);
