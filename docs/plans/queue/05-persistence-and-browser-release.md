@@ -1,6 +1,6 @@
 # Plan 05 — Persistence and browser release
 
-Status: queued for remaining accessibility/browser-matrix acceptance; implementation delivered through PR 45; GitHub Pages is deployed and the user confirmed the B&W print workflow usable after PR 40 (2026-10-15). Recovery, preferences, backup and setup guidance are implemented.
+Status: queued for remaining accessibility/browser-matrix acceptance; implementation and Plan 10 A–D repairs delivered through PR 68; GitHub Pages is deployed and the user confirmed the B&W print workflow usable after PR 40 (2026-10-15). Recovery, preferences, backup and setup guidance are implemented.
 Dependencies: implemented scoring/session slice of 04; address-system and external acceptance remain queued.
 
 ## Outcome
@@ -28,7 +28,7 @@ Deliver a recoverable local browser application and documented static-host deplo
 
 No accounts or sync are required. GitHub Pages has been published by the user; optional hosting changes remain separate work.
 
-## Current acceptance summary (2026-10-17)
+## Current acceptance summary (2026-10-18)
 
 Implementation includes transactional progress/preferences, revision-locked resume, retry/conflict recovery, backup/restore, schema compatibility, packaged static delivery and GitHub Pages publication. User feedback confirms the reported B&W print workflow usable. Plan 10 is now the active implementation plan; this plan remains queued until its external acceptance is supported.
 
@@ -36,7 +36,7 @@ Implementation includes transactional progress/preferences, revision-locked resu
 |---|---|---|
 | Persistence, revision/provenance and rollback | Real container Chromium IndexedDB round trips, conflicting imports, blocked/failed upgrades and reload recovery recorded in [storage evidence](../../validation/storage.md) | Automated checks completed for version 1; actual future transformations need new fixtures |
 | Keyboard/semantics/reflow | Automated Chromium evidence exists; screen reader, actual zoom and intended-device touch/keyboard remain pending | [Manual accessibility observations](../../validation/accessibility.md) |
-| Static deployment | Pages deployed; latest main CI and Pages runs succeeded through PR 45 | Hosted/device matrix still needs explicit selection and observations |
+| Static deployment | Pages deployed; main CI and automatic Pages deployment succeeded through PR 68; see the integrated record below | Hosted/device matrix still needs explicit selection and observations |
 | Printing | User accepted reported page fit and B&W workflow; numerical scale calibration and broader mode/worksheet coverage remain pending | [Scoped physical/device checks](../../validation/physical-print-check.md) |
 | Storage pressure | Injected quota/unavailable tests pass; real quota, eviction and private-mode behavior unverified | Target-device observations; do not delete user data to recover |
 
@@ -165,4 +165,10 @@ B&W fidelity follow-up (2026-10-15): the user accepted physical page fit and req
 
 ### Automatic Pages publication (2026-10-18)
 
-The user requested automatic site updates after PR merges. The Pages workflow now triggers on pushes to main while retaining manual recovery, exact-revision release gates, least-privilege permissions and serialized deployments. Superseded revisions are skipped before publication; successful runs record their commit and site URL in the Actions summary. This supersedes the historical manual-only setup above. First automatic hosted publication requires this change to merge; application/device acceptance gates remain open. See [deployment behavior and progress](../../static-deployment.md#automatic-github-pages-updates).
+The user requested automatic site updates after PR merges. The Pages workflow now triggers on pushes to main while retaining manual recovery, exact-revision release gates, least-privilege permissions and serialized deployments. Superseded revisions are skipped before publication; successful runs record their commit and site URL in the Actions summary. This supersedes the historical manual-only setup above. Automatic hosted publication is verified through PR 68; application/device acceptance gates remain open. See [deployment behavior and progress](../../static-deployment.md#automatic-github-pages-updates).
+
+## Integrated usability acceptance update — 2026-10-18
+
+Plan 10 A–D is deployed through PR 68 (merge 3e794ed298c9829b660ae71cf047032ac4f04f0f), with successful CI/automatic Pages publication and hosted task/print/recovery checks. The [integrated author acceptance record](../../reviews/2026-10-18-integrated-acceptance.md) gives exact environment/revision, current task-test evidence, six-packet screen/PDF walkthrough, pending gate owners and next actions. Spatial answers, shared closure/reference marks, honest partial progress, current/whole printing and separate paper preferences supersede older workflow descriptions above. Existing 250-test/full packaged checks support technical behavior only.
+
+This plan remains queued: actual target-browser/device, screen-reader/zoom and physical-paper acceptance are not supplied by these checks. Follow the record’s relevant manual rows; preserve historical user B&W feedback within its reported scope. Independent content/source review and participant outcomes remain separate. Prioritize these checks and reviewed street materials over the unimplemented address or other capability proposals.

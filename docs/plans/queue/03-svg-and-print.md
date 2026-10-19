@@ -56,3 +56,8 @@ Remaining: actual-device acceptance of the provisional performance budget/pack s
 
 Next action: validate practical pack sizing on the chosen device matrix and complete physical geometry/label acceptance; coordinate physical/device checks when available.
 
+## Integrated usability acceptance update — 2026-10-18
+
+Plan 10 A–D is deployed through PR 68 (merge 3e794ed298c9829b660ae71cf047032ac4f04f0f), with successful CI/automatic Pages publication and hosted task/print/recovery checks. The [integrated author acceptance record](../../reviews/2026-10-18-integrated-acceptance.md) gives exact environment/revision, current task-test evidence, six-packet screen/PDF walkthrough, pending gate owners and next actions. Spatial answers, shared closure/reference marks, honest partial progress, current/whole printing and separate paper preferences supersede older workflow descriptions above. Existing 250-test/full packaged checks support technical behavior only.
+
+This plan remains queued: actual target-browser/device, screen-reader/zoom and physical-paper acceptance are not supplied by these checks. Follow the record’s relevant manual rows; preserve historical user B&W feedback within its reported scope. Independent content/source review and participant outcomes remain separate. Prioritize these checks and reviewed street materials over the unimplemented address or other capability proposals.

@@ -6,7 +6,7 @@ Priority decision: approved 2026-10-18. Build a complete street-learning experie
 
 | Outcome | Available evidence | Still needed |
 |---|---|---|
-| Software behaves consistently | Street scoring/recovery; five synthetic terrain demos; 223 Node tests and packaged browser checks through PR 58 | Hosted depression checks passed 2026-10-18; repeat after relevant changes |
+| Software behaves consistently | 250 Node tests and packaged task/PDF checks; A–D repairs deployed through PR 68; [integrated author walkthrough](reviews/2026-10-18-integrated-acceptance.md) | Repeat after relevant changes; actual device/accessibility checks remain open |
 | Maps are usable on paper | Letter portrait/landscape downloads; user-accepted geographic B&W workflow; inspected sample PDFs | Sequence-specific sheet inspection and remaining actual device/paper measurements |
 | Questions and answers are suitable | Deterministic synthetic answers, source preparation and draft Redmond pack | [Bounded draft packet](materials/redmond-r1/README.md) prepared; independent content review and equivalent pilot materials pending |
 | Learners can complete the activities | Automated keyboard/reflow checks | Observed learner/instructor usability, assistance and explanation quality |
@@ -46,7 +46,7 @@ Do not globally approve an unresolved pack to unlock scoring. Narrow the scope o
 
 ## Preparation order and decision gate
 
-First execute [Plan 10](plans/active/10-learner-usability-and-workflows.md): the current endpoint coordinate-entry, missing street annotations and fragmented practice workspace prevent a fair screen/paper walkthrough. Repair those existing interactions and session/print semantics before participant use. Independent content review may proceed while UI work is underway; it does not approve the software or establish learning outcomes.
+[Plan 10](plans/active/10-learner-usability-and-workflows.md) A–D repairs are deployed: spatial endpoint answers, shared task marks, an adjacent practice workspace, honest partial progress and full print workflows. Its [integrated author walkthrough](reviews/2026-10-18-integrated-acceptance.md) passes; actual device/accessibility and material acceptance remain open before participant use. Independent content review may proceed while UI work is underway; it does not approve the software or establish learning outcomes.
 
 
 [Plan 02](plans/queue/02-source-and-lesson-packs.md) owns neighborhood preparation. First reproduce/inventory the source checkpoint, select a small usable subset, then prepare the sequence and review packet. If the checkpoint is unavailable, record that fact and reacquire reproducibly. Independent review is a blocker to approval, not to drafting the next independent material.

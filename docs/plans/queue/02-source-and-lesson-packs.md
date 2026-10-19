@@ -64,3 +64,5 @@ Validation: 225 Node tests pass; the packet validates and regenerates byte-for-b
 
 
 2026-10-18 material-review continuation: PR-61 merge and deployment passed. An author desk review identified repeated questions despite passing graph/print checks. [Revision 2](../../materials/pilot-v2/README.md) corrects the identified overlaps and preserves revision-1 references. The [desk report](../../reviews/2026-10-18-pilot-materials.md) and independent checklist identify remaining comparability and external-evidence gates. No neighborhood or synthetic material is independently approved by this work.
+
+2026-10-18 after PR 68: the repaired site and six-packet catalogue/export workflow passed the [integrated author walkthrough](../../reviews/2026-10-18-integrated-acceptance.md). Redmond stays an orient/locate draft, not a reviewed six-stage route sequence. Independent source/content/access review, full neighborhood acceptance and genuinely newer snapshot comparison remain pending; reviewer/next-action roles are explicit in that record. No source, answer, revision or approval changed.

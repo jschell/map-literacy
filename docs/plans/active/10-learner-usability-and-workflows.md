@@ -1,6 +1,6 @@
 # Plan 10 — Learner usability and website workflows
 
-Status: active; packages A–C merged, CI/deployment and hosted workflows verified. Package D implemented on a review branch; merge/deployment acceptance pending. Package E remains open. Authorized 2026-10-18 after the critical website review.
+Status: active; packages A–D merged, CI/deployment and hosted workflows verified. Package E technical/author walkthrough and guidance reconciliation are recorded; intended-device, assistive-technology, physical-paper and independent material/participant acceptance remain open. Authorized 2026-10-18 after the critical website review.
 Dependencies: existing Plan 02–05 capabilities; supports their unfinished acceptance and Plan 06. Plan 02 remains queued for content/source acceptance. Plan 08 feature expansion stays paused.
 
 ## Outcome and boundaries
@@ -73,9 +73,9 @@ Acceptance: inspect rendered PDFs for heading, endpoint, route, detour and profi
 
 ### E — Integrated acceptance and return to learning evaluation
 
-- [ ] Add task-based browser coverage: locate without coordinates, read a closure before tracing, keep map/question usable together, end early honestly, print the current task and recover saved work. Retain meaningful topology, scoring, import/export and migration tests.
+- [x] Add task-based browser coverage: locate without coordinates, read a closure before tracing, keep map/question usable together, end early honestly, print the current task and recover saved work. Retain meaningful topology, scoring, import/export and migration tests.
 - [ ] Record desktop/mobile keyboard, touch, zoom and screen-reader task walkthroughs; perform actual Safari/device checks where available. Automated layout checks do not establish spatial accessibility or device acceptance. Missing access is an explicit blocker with owner/next action, not a passing row.
-- [ ] Update user guidance and Plans 03–05 acceptance evidence for changed workflows. Record exact revision, browser/device, task, result and outstanding issues. Keep technical author checks distinct from independent reviews.
+- [x] Update user guidance and Plans 03–05 acceptance evidence for changed workflows. Record exact revision, browser/device, task, result and outstanding issues. Keep technical author checks distinct from independent reviews.
 - [ ] Re-run the internal screen/paper material walkthrough before recruitment. Resume Plan 02 independent neighborhood source/content review and Plan 06 cross-set content/difficulty review and actual participant work. Retain the [pilot-v2 desk-review concerns](../../reviews/2026-10-18-pilot-materials.md), reviewer/date gates and predeclared revise/continue/pause criteria.
 
 ## Delivery and verification after every merge
@@ -86,7 +86,7 @@ Completion requires A–D outcomes demonstrated and E evidence recorded, with ma
 
 ## Next action
 
-Package D is prepared for review. After merge, verify CI, automatic Pages deployment and hosted independent paper preferences, full browser/PDF previews, whole-lesson download and draft catalogue behavior. Then execute E: integrated author task walkthroughs, update Plans 03–05 acceptance evidence, and retain explicit blockers/owners for actual Safari/touch, screen-reader, physical-paper, independent curriculum/source/equivalence and participant observations. Do not add capabilities to substitute for those gates.
+Use the [integrated acceptance record](../../reviews/2026-10-18-integrated-acceptance.md): D is deployed; the author learner/material walkthrough and guidance update are complete. E remains open for actual device/keyboard/touch/zoom/screen-reader observations and independent source/content/comparability/participant coordination. The internal pre-recruitment packet walkthrough is complete, but it does not satisfy the independent-review or participant portion of E. Owner roles and executable next actions are recorded; no external reviewer/device access or participation is assumed. Resume material acceptance under Plans 02/06 without reopening feature expansion. After this evidence/guidance PR merges, verify its CI/deployment and only repeat affected hosted checks; do not manufacture new pass rows or a repeated evidence-only PR when nothing changed.
 
 
 ## Package A execution record — 2026-10-18
@@ -140,3 +140,9 @@ Every browser print page is previewed at physical proportions with audience/ques
 Review includes a read-only catalogue for the existing Redmond-r1 and five pilot-v2 drafts, with revision, evidence/limitations, separate learner/instructor notes and map/PDF inspection. Exactly six small pack JSON assets are added to the release and local-preview allowlists with unchanged bytes and source credits. Draft scored sessions remain disabled; raw archives and participant data are not published.
 
 Author checks cover legacy record preservation, separate settings across pack loading/reload, geographic browser print context, every native preview page, whole street outputs for both audiences and Letter orientations, document-wide numbering/source credits, preview/PDF pixel hashes, unchanged learner drafts, stale instructor-output rejection, all six catalogue loads/draft gates and source bytes, Redmond and profile whole documents, and phone layout under the Pages project prefix/meta CSP. Existing scale, topology, scoring, conflict/recovery and full release checks remain required; exact results are recorded in the PR. Representative PDF map/question/profile/answer-space pages are rendered and visually inspected. Three-page landscape profile questions retain chart and writing-space readability; credits stay with the answer section. These are technical/author checks, not independent content, assistive-technology, physical-device/ruler or observed-learning acceptance. Package E remains open.
+
+## Package D deployment and package E author review — 2026-10-18
+
+PR 68 merged as 3e794ed298c9829b660ae71cf047032ac4f04f0f; merge CI and automatic Pages build/deployment succeeded. Hosted checks demonstrated independent orientation persistence, two-page selected detour preview, eight-page whole street download, final-page credits, 3/4 honest early end at version 7 and exact saved reopening. The six-entry catalogue kept Redmond draft scoring disabled; its eight-page learner preview retained draft/ODbL/date and cleared stale content on audience change.
+
+The [E record](../../reviews/2026-10-18-integrated-acceptance.md) maps existing A–D task-based tests to acceptance requirements; all 250 Node tests and the full packaged release suite pass. Internal review checked all 44 draft questions in labeled/partial learner views and twelve whole-packet documents (176 pages), with sampled rendering from all six packets. No new application blocker was identified in these bounded checks. Stale setup/print guidance and Plan 04 address-first next-action text were corrected. Actual target devices, assistive technology, paper calibration, independent content/equivalence and learning remain unperformed; E and the supporting plans stay open. No capture flags, pack revisions/hashes, protocol thresholds or independent review rows changed.

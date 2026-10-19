@@ -24,7 +24,7 @@ Every new question starts with a fresh trace, even when the previous route could
 
 ## Evidence boundaries
 
-These interaction changes do not change scoring tolerances, connectivity, source access rules, saved-record formats or independent content approval. Integrated device/content acceptance continues under [Plan 10](plans/active/10-learner-usability-and-workflows.md). Physical device, screen-reader and learning acceptance require separate recorded observations.
+These interaction changes do not change scoring tolerances, connectivity, source access rules, saved-record formats or independent content approval. Integrated device/content acceptance continues under [Plan 10](plans/active/10-learner-usability-and-workflows.md). Physical device, screen-reader and learning acceptance require separate recorded observations. The [integrated acceptance record](reviews/2026-10-18-integrated-acceptance.md) distinguishes completed author checks from outstanding gates and next actions.
 
 ## Progress and pausing
 
@@ -34,7 +34,7 @@ Use **Pause session** to continue later. It clears unfinished points/traces but 
 
 ## Printing the question you are answering
 
-Beginning or opening an active session selects learner output and follows the current question. **Print current question** prints that question; the caption states the audience, Letter orientation and page count. Choose instructor output explicitly when you need answer criteria, and print it separately. Print audience never reveals an answer key on the practice map.
+Beginning or opening an active session selects learner output and follows the current question. **Print current question** prints that question; the caption states the audience, Letter orientation and page count. Choose instructor output explicitly when you need answer criteria, and print it separately. For the small street-basics map, 1:1,000 gives a larger map than 1:5,000; choose the lesson scale deliberately and verify the preview/bar. Print audience never reveals an answer key on the practice map.
 
 Changing **Question to print** makes an explicit manual override. Re-enable **Follow current practice question** or choose **Print current question** to return to the active task. Map-only output remains available. A PDF filename identifies the pack revision, question, audience and orientation.
 

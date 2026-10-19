@@ -15,14 +15,13 @@ Plans are work packages with evidence-based completion, not claims that an appli
 | [07 Directions and simulation](queue/07-directions-and-simulation.md) | Queue | 05; 06 findings inform scope | Reviewed maneuvers and stationary playback |
 | [08 Topographic learning](queue/08-topographic-learning.md) | Queue: synthetic teaching capabilities delivered; acceptance pending; new capabilities paused | 01–05 shared core | Terrain layers and contour lessons |
 | [09 Delivery extensions](queue/09-delivery-extensions.md) | Queue | 05; demonstrated need | TinyJS/sync/scale decisions |
-
-| [10 Learner usability and workflows](active/10-learner-usability-and-workflows.md) | Active: planned; implementation pending | Existing 02–05 capabilities | Usable practice, honest progress and coherent print/navigation workflows |
+| [10 Learner usability and workflows](active/10-learner-usability-and-workflows.md) | Active: A–D deployed; E author checks recorded, manual acceptance open | Existing 02–05 capabilities | Usable practice, honest progress and coherent print/navigation workflows |
 
 ## Remaining work and completion methods
 
 | Plan | Remaining work | Completion method |
 |---|---|---|
-| 10 | Practice defects, task navigation, print workflow and deployed acceptance | Task-based automated checks, rendered PDFs and recorded device/accessibility observations |
+| 10 | A–D deployed; E intended-device/assistive-technology and material acceptance open | [Recorded integrated author checks and remaining owner/actions](../reviews/2026-10-18-integrated-acceptance.md); actual device/content observations next |
 | 02 | Reviewed neighborhood lessons, access/restriction decisions, genuinely newer source comparison | Source/content review plus reproducible preparation and comparison |
 | 03 | Pack performance, geometry/label readability, both-orientation worksheet calibration | Target-device observations and measured physical paper checks |
 | 04 | Curriculum acceptance; address implementation only if supported by pilot | Instructor/content review and device completion; later contract/code work |
